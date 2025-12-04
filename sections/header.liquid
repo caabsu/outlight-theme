@@ -1,65 +1,156 @@
-<header>
-  <h2 class="header__title">
-    {{ shop.name | link_to: routes.root_url }}
-  </h2>
-
-  <div class="header__menu">
-    {% for link in section.settings.menu.links %}
-      {{ link.title | link_to: link.url }}
-    {% endfor %}
+<header
+  class="header"
+  style="
+    --logo-width: {{ settings.logo_width }}px;
+    --logo-width-mobile: {{ settings.logo_width_mobile }}px;
+  "
+>
+  <div class="header__logo">
+    <a href="{{ routes.root_url }}" class="header__logo-link">
+      {%- if settings.logo -%}
+        {{ settings.logo | image_url: width: 600 | image_tag: class: 'header__logo-image', loading: 'eager' }}
+      {%- else -%}
+        <span class="header__logo-text">{{ shop.name }}</span>
+      {%- endif -%}
+    </a>
   </div>
 
+  <nav class="header__menu">
+    {%- for link in section.settings.menu.links -%}
+      <a href="{{ link.url }}" class="header__menu-link">
+        {{ link.title }}
+      </a>
+    {%- endfor -%}
+  </nav>
+
   <div class="header__icons">
-    {% if shop.customer_accounts_enabled %}
-      {{ 'icon-account.svg' | inline_asset_content | link_to: routes.account_url }}
-    {% endif %}
+    {%- if shop.customer_accounts_enabled -%}
+      <a href="{{ routes.account_url }}" class="header__icon" aria-label="{{ 'header.account' | t }}">
+        {{ 'icon-account.svg' | inline_asset_content }}
+      </a>
+    {%- endif -%}
 
-    <a href="{{ routes.cart_url }}">
-      {% if cart.item_count > 0 %}
-        <sup>{{ cart.item_count }}</sup>
-      {% endif %}
-
+    <a href="{{ routes.cart_url }}" class="header__icon header__cart" aria-label="{{ 'header.cart' | t }}">
       {{ 'icon-cart.svg' | inline_asset_content }}
+      {%- if cart.item_count > 0 -%}
+        <span class="header__cart-count">{{ cart.item_count }}</span>
+      {%- endif -%}
     </a>
   </div>
 </header>
 
 {% stylesheet %}
-  header {
-    height: 5rem;
+  .header {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    height: 5rem;
+    gap: 2rem;
   }
-  header a {
-    position: relative;
+
+  .header__logo {
+    flex-shrink: 0;
+  }
+
+  .header__logo-link {
+    display: block;
     text-decoration: none;
     color: var(--color-foreground);
   }
-  header a sup {
-    position: absolute;
-    left: 100%;
-    overflow: hidden;
-    max-width: var(--page-margin);
+
+  .header__logo-image {
+    display: block;
+    width: var(--logo-width);
+    height: auto;
   }
-  header svg {
-    width: 2rem;
+
+  .header__logo-text {
+    font-family: var(--font-heading-family);
+    font-size: 1.5rem;
+    font-weight: var(--font-heading-weight);
   }
-  header .header__menu,
-  header .header__icons {
+
+  .header__menu {
+    display: flex;
+    gap: 2rem;
+    flex: 1;
+    justify-content: center;
+  }
+
+  .header__menu-link {
+    text-decoration: none;
+    color: var(--color-foreground);
+    font-size: 0.9rem;
+    transition: opacity 0.2s ease;
+  }
+
+  .header__menu-link:hover {
+    opacity: 0.7;
+  }
+
+  .header__icons {
     display: flex;
     gap: 1rem;
+    flex-shrink: 0;
+  }
+
+  .header__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-foreground);
+    transition: opacity 0.2s ease;
+  }
+
+  .header__icon:hover {
+    opacity: 0.7;
+  }
+
+  .header__icon svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .header__cart {
+    position: relative;
+  }
+
+  .header__cart-count {
+    position: absolute;
+    top: -0.5rem;
+    right: -0.5rem;
+    background: var(--color-accent);
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 600;
+    min-width: 1.1rem;
+    height: 1.1rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @media screen and (max-width: 768px) {
+    .header__logo-image {
+      width: var(--logo-width-mobile);
+    }
+
+    .header__menu {
+      display: none;
+    }
   }
 {% endstylesheet %}
 
 {% schema %}
 {
-  "name": "t:general.header",
+  "name": "t:sections.header.name",
   "settings": [
     {
       "type": "link_list",
       "id": "menu",
-      "label": "t:labels.menu"
+      "label": "t:sections.header.settings.menu",
+      "default": "main-menu"
     }
   ]
 }
