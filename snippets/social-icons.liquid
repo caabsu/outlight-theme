@@ -1,0 +1,108 @@
+{% doc %}
+  Renders social media icons based on theme settings.
+
+  @param {string} [class] - Optional CSS class for the container
+  @param {string} [icon_class] - Optional CSS class for each icon link
+
+  @example
+  {% render 'social-icons' %}
+  {% render 'social-icons', class: 'footer__social', icon_class: 'footer__social-icon' %}
+{% enddoc %}
+
+{%- liquid
+  assign has_social = false
+  if settings.social_instagram_link != blank
+    assign has_social = true
+  endif
+  if settings.social_facebook_link != blank
+    assign has_social = true
+  endif
+  if settings.social_pinterest_link != blank
+    assign has_social = true
+  endif
+  if settings.social_tiktok_link != blank
+    assign has_social = true
+  endif
+  if settings.social_x_link != blank
+    assign has_social = true
+  endif
+  if settings.social_youtube_link != blank
+    assign has_social = true
+  endif
+-%}
+
+{%- if has_social -%}
+  <div class="social-icons {{ class }}">
+    {%- if settings.social_instagram_link != blank -%}
+      <a
+        href="{{ settings.social_instagram_link }}"
+        class="social-icons__link {{ icon_class }}"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="{{ 'social.instagram' | t }}"
+      >
+        {{- 'icon-instagram.svg' | inline_asset_content -}}
+      </a>
+    {%- endif -%}
+
+    {%- if settings.social_facebook_link != blank -%}
+      <a
+        href="{{ settings.social_facebook_link }}"
+        class="social-icons__link {{ icon_class }}"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="{{ 'social.facebook' | t }}"
+      >
+        {{- 'icon-facebook.svg' | inline_asset_content -}}
+      </a>
+    {%- endif -%}
+
+    {%- if settings.social_pinterest_link != blank -%}
+      <a
+        href="{{ settings.social_pinterest_link }}"
+        class="social-icons__link {{ icon_class }}"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="{{ 'social.pinterest' | t }}"
+      >
+        {{- 'icon-pinterest.svg' | inline_asset_content -}}
+      </a>
+    {%- endif -%}
+
+    {%- if settings.social_tiktok_link != blank -%}
+      <a
+        href="{{ settings.social_tiktok_link }}"
+        class="social-icons__link {{ icon_class }}"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="{{ 'social.tiktok' | t }}"
+      >
+        {{- 'icon-tiktok.svg' | inline_asset_content -}}
+      </a>
+    {%- endif -%}
+
+    {%- if settings.social_x_link != blank -%}
+      <a
+        href="{{ settings.social_x_link }}"
+        class="social-icons__link {{ icon_class }}"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="{{ 'social.x' | t }}"
+      >
+        {{- 'icon-x.svg' | inline_asset_content -}}
+      </a>
+    {%- endif -%}
+
+    {%- if settings.social_youtube_link != blank -%}
+      <a
+        href="{{ settings.social_youtube_link }}"
+        class="social-icons__link {{ icon_class }}"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="{{ 'social.youtube' | t }}"
+      >
+        {{- 'icon-youtube.svg' | inline_asset_content -}}
+      </a>
+    {%- endif -%}
+  </div>
+{%- endif -%}

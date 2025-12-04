@@ -80,6 +80,12 @@
       "title": "Title",
       "subtitle": "Subtitle",
       "normal": "Normal text"
+    },
+    "font_weight": {
+      "regular": "Regular",
+      "medium": "Medium",
+      "semibold": "Semibold",
+      "bold": "Bold"
     }
   },
   "settings": {
@@ -131,6 +137,68 @@
       "primary_text": "Text",
       "secondary_background": "Background",
       "secondary_text": "Text"
+    },
+    "social": {
+      "name": "Social media",
+      "headings": {
+        "accounts": "Social accounts"
+      },
+      "instagram": "Instagram",
+      "facebook": "Facebook",
+      "pinterest": "Pinterest",
+      "tiktok": "TikTok",
+      "x": "X (Twitter)",
+      "youtube": "YouTube"
+    }
+  },
+  "sections": {
+    "footer": {
+      "name": "Footer",
+      "settings": {
+        "newsletter": {
+          "header": "Newsletter",
+          "show": "Show newsletter",
+          "title": "Title",
+          "button_text": "Button text"
+        },
+        "brand": {
+          "header": "Brand",
+          "logo": "Logo",
+          "description": "Brand description"
+        },
+        "colors": {
+          "header": "Colors",
+          "background": "Background color",
+          "text": "Text color"
+        },
+        "typography": {
+          "header": "Typography",
+          "heading_size": "Heading font size",
+          "heading_weight": "Heading font weight",
+          "body_size": "Body font size",
+          "body_weight": "Body font weight",
+          "link_size": "Link font size",
+          "link_weight": "Link font weight"
+        },
+        "spacing": {
+          "header": "Spacing",
+          "padding_top": "Padding top",
+          "padding_bottom": "Padding bottom",
+          "section_gap": "Section gap"
+        },
+        "bottom": {
+          "header": "Bottom bar",
+          "show_payment_icons": "Show payment icons"
+        }
+      },
+      "blocks": {
+        "menu": {
+          "name": "Menu column",
+          "settings": {
+            "menu": "Menu"
+          }
+        }
+      }
     }
   }
 }

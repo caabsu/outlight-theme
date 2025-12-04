@@ -30,6 +30,10 @@
   "collections": {
     "title": "Collections"
   },
+  "footer": {
+    "newsletter_placeholder": "Enter your email",
+    "all_rights_reserved": "All rights reserved"
+  },
   "gift_card": {
     "add_to_apple_wallet": "Add to Apple Wallet",
     "card": "Gift card",
@@ -48,5 +52,13 @@
     "submit": "Search",
     "no_results_html": "No results found for {{ terms }}",
     "results_for_html": "{{ count }} results found for {{ terms }}"
+  },
+  "social": {
+    "instagram": "Instagram",
+    "facebook": "Facebook",
+    "pinterest": "Pinterest",
+    "tiktok": "TikTok",
+    "x": "X",
+    "youtube": "YouTube"
   }
 }

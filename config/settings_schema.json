@@ -192,5 +192,44 @@
         "label": "t:settings.buttons.secondary_text"
       }
     ]
+  },
+  {
+    "name": "t:settings.social.name",
+    "settings": [
+      {
+        "type": "header",
+        "content": "t:settings.social.headings.accounts"
+      },
+      {
+        "type": "url",
+        "id": "social_instagram_link",
+        "label": "t:settings.social.instagram"
+      },
+      {
+        "type": "url",
+        "id": "social_facebook_link",
+        "label": "t:settings.social.facebook"
+      },
+      {
+        "type": "url",
+        "id": "social_pinterest_link",
+        "label": "t:settings.social.pinterest"
+      },
+      {
+        "type": "url",
+        "id": "social_tiktok_link",
+        "label": "t:settings.social.tiktok"
+      },
+      {
+        "type": "url",
+        "id": "social_x_link",
+        "label": "t:settings.social.x"
+      },
+      {
+        "type": "url",
+        "id": "social_youtube_link",
+        "label": "t:settings.social.youtube"
+      }
+    ]
   }
 ]
