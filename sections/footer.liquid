@@ -44,18 +44,12 @@
   {%- if section.settings.show_newsletter -%}
     <div class="footer__newsletter">
       <div class="footer__newsletter-inner">
-        {%- comment -%} Desktop Layout {%- endcomment -%}
-        <div class="footer__newsletter-desktop">
-          <div class="footer__newsletter-header">
-            <h2 class="footer__newsletter-title">
-              {{ section.settings.newsletter_title }}
-            </h2>
-            <button type="submit" form="footer-newsletter-form" class="footer__newsletter-button footer__newsletter-button--desktop">
-              {{ section.settings.newsletter_button_text }}
-            </button>
-          </div>
-          {%- form 'customer', id: 'footer-newsletter-form', class: 'footer__newsletter-form' -%}
-            <input type="hidden" name="contact[tags]" value="newsletter">
+        <h2 class="footer__newsletter-title">
+          {{ section.settings.newsletter_title }}
+        </h2>
+        {%- form 'customer', class: 'footer__newsletter-form' -%}
+          <input type="hidden" name="contact[tags]" value="newsletter">
+          <div class="footer__newsletter-input-wrap">
             <input
               type="email"
               name="contact[email]"
@@ -65,32 +59,11 @@
               autocomplete="email"
               aria-label="{{ 'footer.newsletter_placeholder' | t }}"
             >
-          {%- endform -%}
-        </div>
-
-        {%- comment -%} Mobile Layout {%- endcomment -%}
-        <div class="footer__newsletter-mobile">
-          <h2 class="footer__newsletter-title">
-            {{ section.settings.newsletter_title }}
-          </h2>
-          {%- form 'customer', class: 'footer__newsletter-form footer__newsletter-form--mobile' -%}
-            <input type="hidden" name="contact[tags]" value="newsletter">
-            <div class="footer__newsletter-input-wrap">
-              <input
-                type="email"
-                name="contact[email]"
-                class="footer__newsletter-input"
-                placeholder="{{ 'footer.newsletter_placeholder' | t }}"
-                required
-                autocomplete="email"
-                aria-label="{{ 'footer.newsletter_placeholder' | t }}"
-              >
-              <button type="submit" class="footer__newsletter-button footer__newsletter-button--mobile">
-                {{ section.settings.newsletter_button_text }}
-              </button>
-            </div>
-          {%- endform -%}
-        </div>
+            <button type="submit" class="footer__newsletter-button">
+              {{ section.settings.newsletter_button_text }}
+            </button>
+          </div>
+        {%- endform -%}
       </div>
     </div>
   {%- endif -%}
@@ -213,34 +186,48 @@
     margin: 0 auto;
   }
 
-  /* Desktop Newsletter */
-  .footer__newsletter-desktop {
-    display: block;
-  }
-
-  .footer__newsletter-mobile {
-    display: none;
-  }
-
-  .footer__newsletter-header {
-    display: flex;
-    align-items: baseline;
-    gap: 24px;
-    margin-bottom: 12px;
-  }
-
   .footer__newsletter-title {
     font-family: var(--font-heading-family);
     font-size: var(--newsletter-title-size-desktop);
     font-weight: var(--newsletter-title-weight);
     color: var(--newsletter-title-color);
-    margin: 0;
+    margin: 0 0 12px;
   }
 
-  .footer__newsletter-button--desktop {
+  .footer__newsletter-form {
+    width: 100%;
+  }
+
+  .footer__newsletter-input-wrap {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--newsletter-input-color);
+  }
+
+  .footer__newsletter-input {
+    flex: 1;
+    padding: 12px 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    font-family: var(--font-primary-family);
+    font-size: var(--newsletter-input-size-desktop);
+    color: var(--newsletter-input-color);
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  .footer__newsletter-input::placeholder {
+    color: var(--newsletter-input-color);
+    opacity: 0.6;
+  }
+
+  .footer__newsletter-button {
     background: transparent;
     border: none;
-    padding: 0;
+    border-radius: 0;
+    padding: 12px 0 12px 16px;
     font-family: var(--font-primary-family);
     font-size: var(--newsletter-button-size-desktop);
     font-weight: var(--newsletter-button-weight);
@@ -248,34 +235,14 @@
     text-transform: uppercase;
     letter-spacing: 0.08em;
     cursor: pointer;
-    text-decoration: underline;
-    text-underline-offset: 3px;
+    white-space: nowrap;
     transition: opacity 0.2s ease;
+    -webkit-appearance: none;
+    appearance: none;
   }
 
-  .footer__newsletter-button--desktop:hover {
+  .footer__newsletter-button:hover {
     opacity: 0.7;
-  }
-
-  .footer__newsletter-form {
-    width: 100%;
-  }
-
-  .footer__newsletter-input {
-    width: 100%;
-    padding: 12px 0;
-    border: none;
-    border-bottom: 1px solid var(--newsletter-input-color);
-    background: transparent;
-    font-family: var(--font-primary-family);
-    font-size: var(--newsletter-input-size-desktop);
-    color: var(--newsletter-input-color);
-    outline: none;
-  }
-
-  .footer__newsletter-input::placeholder {
-    color: var(--newsletter-input-color);
-    opacity: 0.6;
   }
 
   /* Footer Content Container */
@@ -438,54 +405,16 @@
       padding: var(--newsletter-padding-mobile) var(--page-margin);
     }
 
-    .footer__newsletter-desktop {
-      display: none;
-    }
-
-    .footer__newsletter-mobile {
-      display: block;
-    }
-
-    .footer__newsletter-mobile .footer__newsletter-title {
+    .footer__newsletter-title {
       font-size: var(--newsletter-title-size-mobile);
-      margin-bottom: 16px;
-      text-align: center;
     }
 
-    .footer__newsletter-form--mobile {
-      width: 100%;
-    }
-
-    .footer__newsletter-input-wrap {
-      display: flex;
-      align-items: center;
-      border-bottom: 1px solid var(--newsletter-input-color);
-    }
-
-    .footer__newsletter-input-wrap .footer__newsletter-input {
-      flex: 1;
-      border-bottom: none;
-      padding: 12px 0;
+    .footer__newsletter-input {
       font-size: var(--newsletter-input-size-mobile);
     }
 
-    .footer__newsletter-button--mobile {
-      background: transparent;
-      border: none;
-      padding: 12px 0 12px 16px;
-      font-family: var(--font-primary-family);
+    .footer__newsletter-button {
       font-size: var(--newsletter-button-size-mobile);
-      font-weight: var(--newsletter-button-weight);
-      color: var(--newsletter-button-color);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: opacity 0.2s ease;
-    }
-
-    .footer__newsletter-button--mobile:hover {
-      opacity: 0.7;
     }
 
     .footer__main {
