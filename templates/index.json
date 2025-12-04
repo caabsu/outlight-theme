@@ -55,14 +55,9 @@
         "button_padding_x": 32,
         "button_padding_y": 16
       }
-    },
-    "main": {
-      "type": "hello-world",
-      "settings": {}
     }
   },
   "order": [
-    "hero_banner_MERtpM",
-    "main"
+    "hero_banner_MERtpM"
   ]
 }
