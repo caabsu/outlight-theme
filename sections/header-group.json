@@ -14,7 +14,7 @@
     "header": {
       "type": "header",
       "settings": {
-        "menu": "main-menu",
+        "menu": "lights-by-collection",
         "enable_sticky": true,
         "enable_transparent": true,
         "background_color": "#f7f5f0",
