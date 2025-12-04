@@ -45,8 +45,8 @@
         "background_color": "#f7f5f0",
         "text_color": "#1c1917",
         "text_color_transparent": "#ffffff",
-        "mega_menu_bg": "#ffffff",
-        "mega_menu_text": "#1c1917"
+        "mega_menu_bg": "#f7f5f0",
+        "mega_menu_title_size": 21
       }
     }
   },
