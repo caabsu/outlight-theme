@@ -1,8 +1,7 @@
 <section
-  class="hero-banner {% if section.settings.enable_transparent_header %}hero-banner--transparent-header{% endif %}"
+  class="hero-banner full-width {% if section.settings.enable_transparent_header %}hero-banner--transparent-header{% endif %}"
   style="
     --hero-bg: {{ section.settings.background_color }};
-    --hero-border-radius: {{ section.settings.border_radius }}px;
     --hero-min-height-desktop: {{ section.settings.min_height_desktop }}vh;
     --hero-min-height-mobile: {{ section.settings.min_height_mobile }}vh;
     --hero-padding-desktop: {{ section.settings.padding_desktop }}px;
@@ -37,71 +36,66 @@
     --hero-overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
   "
 >
-  {%- comment -%} Desktop Layout {%- endcomment -%}
-  <div class="hero-banner__desktop">
-    <div class="hero-banner__container">
-      <div class="hero-banner__content">
-        {%- if section.settings.eyebrow != blank -%}
-          <span class="hero-banner__eyebrow">{{ section.settings.eyebrow }}</span>
-        {%- endif -%}
-
-        {%- if section.settings.heading != blank -%}
-          <h1 class="hero-banner__heading">{{ section.settings.heading }}</h1>
-        {%- endif -%}
-
-        {%- if section.settings.subheading != blank -%}
-          <p class="hero-banner__subheading">{{ section.settings.subheading }}</p>
-        {%- endif -%}
-
-        {%- if section.settings.button_text != blank -%}
-          <a href="{{ section.settings.button_link }}" class="hero-banner__button">
-            {{ section.settings.button_text }}
-          </a>
-        {%- endif -%}
-      </div>
-
-      {%- if section.settings.image_desktop -%}
-        <div class="hero-banner__image">
-          {{ section.settings.image_desktop | image_url: width: 1600 | image_tag: class: 'hero-banner__img', loading: 'eager' }}
-        </div>
-      {%- endif -%}
-    </div>
+  {%- comment -%} Background Image {%- endcomment -%}
+  <div class="hero-banner__bg hero-banner__bg--desktop">
+    {%- if section.settings.image_desktop -%}
+      {{ section.settings.image_desktop | image_url: width: 2400 | image_tag: class: 'hero-banner__bg-img', loading: 'eager' }}
+    {%- endif -%}
+    <div class="hero-banner__overlay"></div>
   </div>
 
-  {%- comment -%} Mobile Layout {%- endcomment -%}
-  <div class="hero-banner__mobile">
+  <div class="hero-banner__bg hero-banner__bg--mobile">
     {%- if section.settings.image_mobile -%}
-      <div class="hero-banner__mobile-bg">
-        {{ section.settings.image_mobile | image_url: width: 800 | image_tag: class: 'hero-banner__mobile-img', loading: 'eager' }}
-        <div class="hero-banner__mobile-overlay"></div>
-      </div>
+      {{ section.settings.image_mobile | image_url: width: 1200 | image_tag: class: 'hero-banner__bg-img', loading: 'eager' }}
+    {%- else -%}
+      {%- if section.settings.image_desktop -%}
+        {{ section.settings.image_desktop | image_url: width: 1200 | image_tag: class: 'hero-banner__bg-img', loading: 'eager' }}
+      {%- endif -%}
     {%- endif -%}
+    <div class="hero-banner__overlay"></div>
+  </div>
 
-    <div class="hero-banner__mobile-content">
+  {%- comment -%} Content {%- endcomment -%}
+  <div class="hero-banner__container">
+    <div class="hero-banner__content">
+      {%- if section.settings.eyebrow != blank -%}
+        <span class="hero-banner__eyebrow hero-banner__eyebrow--desktop">{{ section.settings.eyebrow }}</span>
+      {%- endif -%}
       {%- if section.settings.eyebrow_mobile != blank -%}
-        <span class="hero-banner__eyebrow">{{ section.settings.eyebrow_mobile }}</span>
+        <span class="hero-banner__eyebrow hero-banner__eyebrow--mobile">{{ section.settings.eyebrow_mobile }}</span>
       {%- elsif section.settings.eyebrow != blank -%}
-        <span class="hero-banner__eyebrow">{{ section.settings.eyebrow }}</span>
+        <span class="hero-banner__eyebrow hero-banner__eyebrow--mobile">{{ section.settings.eyebrow }}</span>
       {%- endif -%}
 
+      {%- if section.settings.heading != blank -%}
+        <h1 class="hero-banner__heading hero-banner__heading--desktop">{{ section.settings.heading }}</h1>
+      {%- endif -%}
       {%- if section.settings.heading_mobile != blank -%}
-        <h1 class="hero-banner__heading">{{ section.settings.heading_mobile }}</h1>
+        <h1 class="hero-banner__heading hero-banner__heading--mobile">{{ section.settings.heading_mobile }}</h1>
       {%- elsif section.settings.heading != blank -%}
-        <h1 class="hero-banner__heading">{{ section.settings.heading }}</h1>
+        <h1 class="hero-banner__heading hero-banner__heading--mobile">{{ section.settings.heading }}</h1>
       {%- endif -%}
 
+      {%- if section.settings.subheading != blank -%}
+        <p class="hero-banner__subheading hero-banner__subheading--desktop">{{ section.settings.subheading }}</p>
+      {%- endif -%}
       {%- if section.settings.subheading_mobile != blank -%}
-        <p class="hero-banner__subheading">{{ section.settings.subheading_mobile }}</p>
+        <p class="hero-banner__subheading hero-banner__subheading--mobile">{{ section.settings.subheading_mobile }}</p>
       {%- elsif section.settings.subheading != blank -%}
-        <p class="hero-banner__subheading">{{ section.settings.subheading }}</p>
+        <p class="hero-banner__subheading hero-banner__subheading--mobile">{{ section.settings.subheading }}</p>
       {%- endif -%}
 
+      {%- if section.settings.button_text != blank -%}
+        <a href="{{ section.settings.button_link }}" class="hero-banner__button hero-banner__button--desktop">
+          {{ section.settings.button_text }}
+        </a>
+      {%- endif -%}
       {%- if section.settings.button_text_mobile != blank -%}
-        <a href="{{ section.settings.button_link_mobile | default: section.settings.button_link }}" class="hero-banner__button">
+        <a href="{{ section.settings.button_link_mobile | default: section.settings.button_link }}" class="hero-banner__button hero-banner__button--mobile">
           {{ section.settings.button_text_mobile }}
         </a>
       {%- elsif section.settings.button_text != blank -%}
-        <a href="{{ section.settings.button_link }}" class="hero-banner__button">
+        <a href="{{ section.settings.button_link }}" class="hero-banner__button hero-banner__button--mobile">
           {{ section.settings.button_text }}
         </a>
       {%- endif -%}
@@ -111,32 +105,57 @@
 
 {% stylesheet %}
   .hero-banner {
+    position: relative;
     width: 100%;
+    min-height: var(--hero-min-height-desktop);
+    background-color: var(--hero-bg);
+    overflow: hidden;
   }
 
   .hero-banner--transparent-header {
     margin-top: calc(-3.5rem);
-    padding-top: calc(3.5rem);
   }
 
-  /* Desktop Layout */
-  .hero-banner__desktop {
-    display: block;
-    background-color: var(--hero-bg);
-    border-radius: var(--hero-border-radius);
-    overflow: hidden;
-    min-height: var(--hero-min-height-desktop);
+  /* Background */
+  .hero-banner__bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
   }
 
+  .hero-banner__bg--mobile {
+    display: none;
+  }
+
+  .hero-banner__bg-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hero-banner__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, var(--hero-overlay-opacity));
+  }
+
+  /* Content */
   .hero-banner__container {
-    display: grid;
-    grid-template-columns: var(--hero-content-width) 1fr;
+    position: relative;
+    z-index: 1;
     min-height: var(--hero-min-height-desktop);
+    padding: var(--hero-padding-desktop);
+    display: flex;
     align-items: center;
   }
 
   .hero-banner__content {
-    padding: var(--hero-padding-desktop);
+    max-width: var(--hero-content-width);
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -152,6 +171,10 @@
     letter-spacing: var(--hero-eyebrow-spacing);
   }
 
+  .hero-banner__eyebrow--mobile {
+    display: none;
+  }
+
   .hero-banner__heading {
     font-family: var(--font-heading-family);
     font-size: var(--hero-heading-size-desktop);
@@ -159,6 +182,10 @@
     color: var(--hero-heading-color);
     line-height: 1.1;
     margin: 0;
+  }
+
+  .hero-banner__heading--mobile {
+    display: none;
   }
 
   .hero-banner__subheading {
@@ -169,6 +196,10 @@
     line-height: 1.5;
     margin: 0;
     max-width: 400px;
+  }
+
+  .hero-banner__subheading--mobile {
+    display: none;
   }
 
   .hero-banner__button {
@@ -191,95 +222,71 @@
     opacity: 0.9;
   }
 
-  .hero-banner__image {
-    height: 100%;
-    overflow: hidden;
-  }
-
-  .hero-banner__img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  /* Mobile Layout */
-  .hero-banner__mobile {
+  .hero-banner__button--mobile {
     display: none;
-    position: relative;
-    min-height: var(--hero-min-height-mobile);
-    overflow: hidden;
-  }
-
-  .hero-banner__mobile-bg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-  }
-
-  .hero-banner__mobile-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .hero-banner__mobile-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, var(--hero-overlay-opacity));
-  }
-
-  .hero-banner__mobile-content {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-end;
-    min-height: var(--hero-min-height-mobile);
-    padding: var(--hero-padding-mobile);
-    gap: 16px;
   }
 
   @media screen and (max-width: 768px) {
-    .hero-banner__desktop {
+    .hero-banner {
+      min-height: var(--hero-min-height-mobile);
+    }
+
+    .hero-banner__bg--desktop {
       display: none;
     }
 
-    .hero-banner__mobile {
+    .hero-banner__bg--mobile {
       display: block;
-      border-radius: var(--hero-border-radius);
     }
 
-    .hero-banner__eyebrow {
+    .hero-banner__container {
+      min-height: var(--hero-min-height-mobile);
+      padding: var(--hero-padding-mobile);
+      align-items: flex-end;
+      padding-top: calc(3.5rem + var(--hero-padding-mobile));
+    }
+
+    .hero-banner__content {
+      max-width: 100%;
+      gap: 16px;
+    }
+
+    .hero-banner__eyebrow--desktop {
+      display: none;
+    }
+
+    .hero-banner__eyebrow--mobile {
+      display: block;
       font-size: var(--hero-eyebrow-size-mobile);
     }
 
-    .hero-banner__heading {
+    .hero-banner__heading--desktop {
+      display: none;
+    }
+
+    .hero-banner__heading--mobile {
+      display: block;
       font-size: var(--hero-heading-size-mobile);
     }
 
-    .hero-banner__subheading {
+    .hero-banner__subheading--desktop {
+      display: none;
+    }
+
+    .hero-banner__subheading--mobile {
+      display: block;
       font-size: var(--hero-subheading-size-mobile);
     }
 
-    .hero-banner__button {
-      font-size: var(--hero-button-size-mobile);
+    .hero-banner__button--desktop {
+      display: none;
+    }
+
+    .hero-banner__button--mobile {
+      display: inline-block;
       width: 100%;
       text-align: center;
-    }
-
-    .hero-banner--transparent-header {
-      margin-top: calc(-3.5rem);
-      padding-top: 0;
-    }
-
-    .hero-banner__mobile-content {
-      padding-top: calc(3.5rem + var(--hero-padding-mobile));
+      font-size: var(--hero-button-size-mobile);
     }
   }
 {% endstylesheet %}
@@ -386,16 +393,6 @@
       "id": "background_color",
       "label": "t:sections.hero_banner.settings.layout.background",
       "default": "#1C1917"
-    },
-    {
-      "type": "range",
-      "id": "border_radius",
-      "label": "t:sections.hero_banner.settings.layout.border_radius",
-      "min": 0,
-      "max": 48,
-      "step": 2,
-      "default": 0,
-      "unit": "px"
     },
     {
       "type": "range",
