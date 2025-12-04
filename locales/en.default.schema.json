@@ -91,7 +91,10 @@
   "settings": {
     "logo": {
       "name": "Logo",
-      "logo": "Logo image",
+      "logo_light": "Logo (for dark backgrounds)",
+      "logo_light_info": "Light/white version of your logo for use on dark backgrounds",
+      "logo_dark": "Logo (for light backgrounds)",
+      "logo_dark_info": "Dark/black version of your logo for use on light backgrounds",
       "logo_width": "Logo width (desktop)",
       "logo_width_mobile": "Logo width (mobile)"
     },

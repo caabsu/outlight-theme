@@ -12,8 +12,15 @@
     "settings": [
       {
         "type": "image_picker",
-        "id": "logo",
-        "label": "t:settings.logo.logo"
+        "id": "logo_light",
+        "label": "t:settings.logo.logo_light",
+        "info": "t:settings.logo.logo_light_info"
+      },
+      {
+        "type": "image_picker",
+        "id": "logo_dark",
+        "label": "t:settings.logo.logo_dark",
+        "info": "t:settings.logo.logo_dark_info"
       },
       {
         "type": "range",

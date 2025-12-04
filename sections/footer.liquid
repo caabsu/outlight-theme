@@ -82,8 +82,8 @@
       <div class="footer__brand">
         <div class="footer__logo">
           <a href="{{ routes.root_url }}" class="footer__logo-link">
-            {%- if settings.logo -%}
-              {{ settings.logo | image_url: width: 400 | image_tag: class: 'footer__logo-image', loading: 'lazy' }}
+            {%- if settings.logo_dark -%}
+              {{ settings.logo_dark | image_url: width: 400 | image_tag: class: 'footer__logo-image', loading: 'lazy' }}
             {%- else -%}
               <span class="footer__logo-text">{{ shop.name }}</span>
             {%- endif -%}
