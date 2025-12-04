@@ -164,7 +164,91 @@
     "header": {
       "name": "Header",
       "settings": {
-        "menu": "Menu"
+        "menu": "Menu",
+        "behavior": {
+          "header": "Header behavior",
+          "enable_sticky": "Enable sticky header",
+          "enable_transparent": "Enable transparent header",
+          "transparent_info": "Header will be transparent over the first section and become solid on scroll"
+        },
+        "colors": {
+          "header": "Colors",
+          "background": "Background color",
+          "text": "Text color",
+          "text_transparent": "Text color (transparent mode)",
+          "text_transparent_info": "Used when header is transparent over dark backgrounds"
+        }
+      }
+    },
+    "hero_banner": {
+      "name": "Hero banner",
+      "settings": {
+        "header": {
+          "header": "Header overlay",
+          "enable_transparent": "Enable transparent header overlay"
+        },
+        "images": {
+          "header": "Images",
+          "desktop": "Desktop image",
+          "mobile": "Mobile image"
+        },
+        "content": {
+          "header": "Content",
+          "eyebrow": "Eyebrow text",
+          "heading": "Heading",
+          "subheading": "Subheading",
+          "button_text": "Button text",
+          "button_link": "Button link"
+        },
+        "content_mobile": {
+          "header": "Content (mobile override)",
+          "info": "Leave blank to use desktop content"
+        },
+        "layout": {
+          "header": "Layout",
+          "background": "Background color",
+          "border_radius": "Border radius",
+          "min_height_desktop": "Minimum height (desktop)",
+          "min_height_mobile": "Minimum height (mobile)",
+          "padding_desktop": "Padding (desktop)",
+          "padding_mobile": "Padding (mobile)",
+          "content_width": "Content width",
+          "overlay_opacity": "Overlay opacity (mobile)",
+          "overlay_opacity_info": "Darkens the background image on mobile"
+        },
+        "eyebrow_style": {
+          "header": "Eyebrow style",
+          "color": "Color",
+          "size_desktop": "Size (desktop)",
+          "size_mobile": "Size (mobile)",
+          "weight": "Weight",
+          "letter_spacing": "Letter spacing"
+        },
+        "heading_style": {
+          "header": "Heading style",
+          "color": "Color",
+          "size_desktop": "Size (desktop)",
+          "size_mobile": "Size (mobile)",
+          "weight": "Weight"
+        },
+        "subheading_style": {
+          "header": "Subheading style",
+          "color": "Color",
+          "size_desktop": "Size (desktop)",
+          "size_mobile": "Size (mobile)",
+          "weight": "Weight"
+        },
+        "button_style": {
+          "header": "Button style",
+          "background": "Background color",
+          "text_color": "Text color",
+          "size_desktop": "Size (desktop)",
+          "size_mobile": "Size (mobile)",
+          "weight": "Weight",
+          "border_radius": "Border radius",
+          "padding_x": "Horizontal padding",
+          "padding_y": "Vertical padding"
+        }
       }
     },
     "footer": {

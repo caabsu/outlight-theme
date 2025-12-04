@@ -1,51 +1,97 @@
-<header
-  class="header"
+<div
+  class="header-wrapper {% if section.settings.enable_sticky %}header-wrapper--sticky{% endif %} {% if section.settings.enable_transparent %}header-wrapper--transparent{% endif %}"
   style="
+    --header-bg: {{ section.settings.background_color }};
+    --header-text: {{ section.settings.text_color }};
+    --header-text-transparent: {{ section.settings.text_color_transparent }};
     --logo-width: {{ settings.logo_width }}px;
     --logo-width-mobile: {{ settings.logo_width_mobile }}px;
   "
+  data-header-wrapper
 >
-  <div class="header__logo">
-    <a href="{{ routes.root_url }}" class="header__logo-link">
-      {%- if settings.logo_dark -%}
-        {{ settings.logo_dark | image_url: width: 600 | image_tag: class: 'header__logo-image', loading: 'eager' }}
-      {%- else -%}
-        <span class="header__logo-text">{{ shop.name }}</span>
-      {%- endif -%}
-    </a>
-  </div>
-
-  <nav class="header__menu">
-    {%- for link in section.settings.menu.links -%}
-      <a href="{{ link.url }}" class="header__menu-link">
-        {{ link.title }}
+  <header class="header">
+    <div class="header__logo">
+      <a href="{{ routes.root_url }}" class="header__logo-link">
+        {%- if settings.logo_dark -%}
+          <span class="header__logo-default">
+            {{ settings.logo_dark | image_url: width: 600 | image_tag: class: 'header__logo-image', loading: 'eager' }}
+          </span>
+        {%- endif -%}
+        {%- if settings.logo_light -%}
+          <span class="header__logo-transparent">
+            {{ settings.logo_light | image_url: width: 600 | image_tag: class: 'header__logo-image', loading: 'eager' }}
+          </span>
+        {%- endif -%}
+        {%- unless settings.logo_dark or settings.logo_light -%}
+          <span class="header__logo-text">{{ shop.name }}</span>
+        {%- endunless -%}
       </a>
-    {%- endfor -%}
-  </nav>
+    </div>
 
-  <div class="header__icons">
-    {%- if shop.customer_accounts_enabled -%}
-      <a href="{{ routes.account_url }}" class="header__icon" aria-label="{{ 'header.account' | t }}">
-        {{ 'icon-account.svg' | inline_asset_content }}
-      </a>
-    {%- endif -%}
+    <nav class="header__menu">
+      {%- for link in section.settings.menu.links -%}
+        <a href="{{ link.url }}" class="header__menu-link">
+          {{ link.title }}
+        </a>
+      {%- endfor -%}
+    </nav>
 
-    <a href="{{ routes.cart_url }}" class="header__icon header__cart" aria-label="{{ 'header.cart' | t }}">
-      {{ 'icon-cart.svg' | inline_asset_content }}
-      {%- if cart.item_count > 0 -%}
-        <span class="header__cart-count">{{ cart.item_count }}</span>
+    <div class="header__icons">
+      {%- if shop.customer_accounts_enabled -%}
+        <a href="{{ routes.account_url }}" class="header__icon" aria-label="{{ 'header.account' | t }}">
+          {{ 'icon-account.svg' | inline_asset_content }}
+        </a>
       {%- endif -%}
-    </a>
-  </div>
-</header>
+
+      <a href="{{ routes.cart_url }}" class="header__icon header__cart" aria-label="{{ 'header.cart' | t }}">
+        {{ 'icon-cart.svg' | inline_asset_content }}
+        {%- if cart.item_count > 0 -%}
+          <span class="header__cart-count">{{ cart.item_count }}</span>
+        {%- endif -%}
+      </a>
+    </div>
+  </header>
+</div>
 
 {% stylesheet %}
+  .header-wrapper {
+    background-color: var(--header-bg);
+    padding: 0 var(--page-margin);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .header-wrapper--sticky {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-wrapper--transparent:not(.is-scrolled) {
+    background-color: transparent;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+  }
+
+  .header-wrapper--transparent.header-wrapper--sticky {
+    position: fixed;
+  }
+
+  .header-wrapper--transparent.is-scrolled {
+    background-color: var(--header-bg);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+
   .header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     height: 5rem;
     gap: 2rem;
+    max-width: var(--page-width);
+    margin: 0 auto;
   }
 
   .header__logo {
@@ -55,7 +101,7 @@
   .header__logo-link {
     display: block;
     text-decoration: none;
-    color: var(--color-foreground);
+    color: var(--header-text);
   }
 
   .header__logo-image {
@@ -68,6 +114,24 @@
     font-family: var(--font-heading-family);
     font-size: 1.5rem;
     font-weight: var(--font-heading-weight);
+    color: var(--header-text);
+  }
+
+  /* Logo switching for transparent mode */
+  .header__logo-transparent {
+    display: none;
+  }
+
+  .header-wrapper--transparent:not(.is-scrolled) .header__logo-default {
+    display: none;
+  }
+
+  .header-wrapper--transparent:not(.is-scrolled) .header__logo-transparent {
+    display: block;
+  }
+
+  .header-wrapper--transparent:not(.is-scrolled) .header__logo-text {
+    color: var(--header-text-transparent);
   }
 
   .header__menu {
@@ -79,9 +143,13 @@
 
   .header__menu-link {
     text-decoration: none;
-    color: var(--color-foreground);
+    color: var(--header-text);
     font-size: 0.9rem;
-    transition: opacity 0.2s ease;
+    transition: opacity 0.2s ease, color 0.3s ease;
+  }
+
+  .header-wrapper--transparent:not(.is-scrolled) .header__menu-link {
+    color: var(--header-text-transparent);
   }
 
   .header__menu-link:hover {
@@ -98,8 +166,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--color-foreground);
-    transition: opacity 0.2s ease;
+    color: var(--header-text);
+    transition: opacity 0.2s ease, color 0.3s ease;
+  }
+
+  .header-wrapper--transparent:not(.is-scrolled) .header__icon {
+    color: var(--header-text-transparent);
   }
 
   .header__icon:hover {
@@ -142,6 +214,30 @@
   }
 {% endstylesheet %}
 
+{% javascript %}
+  const headerWrapper = document.querySelector('[data-header-wrapper]');
+
+  if (headerWrapper && headerWrapper.classList.contains('header-wrapper--transparent')) {
+    let lastScroll = 0;
+    const scrollThreshold = 50;
+
+    function updateHeader() {
+      const currentScroll = window.scrollY;
+
+      if (currentScroll > scrollThreshold) {
+        headerWrapper.classList.add('is-scrolled');
+      } else {
+        headerWrapper.classList.remove('is-scrolled');
+      }
+
+      lastScroll = currentScroll;
+    }
+
+    window.addEventListener('scroll', updateHeader, { passive: true });
+    updateHeader();
+  }
+{% endjavascript %}
+
 {% schema %}
 {
   "name": "t:sections.header.name",
@@ -151,6 +247,46 @@
       "id": "menu",
       "label": "t:sections.header.settings.menu",
       "default": "main-menu"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.header.settings.behavior.header"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sticky",
+      "label": "t:sections.header.settings.behavior.enable_sticky",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_transparent",
+      "label": "t:sections.header.settings.behavior.enable_transparent",
+      "info": "t:sections.header.settings.behavior.transparent_info",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "t:sections.header.settings.colors.header"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "t:sections.header.settings.colors.background",
+      "default": "#F7F5F0"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "t:sections.header.settings.colors.text",
+      "default": "#1C1917"
+    },
+    {
+      "type": "color",
+      "id": "text_color_transparent",
+      "label": "t:sections.header.settings.colors.text_transparent",
+      "info": "t:sections.header.settings.colors.text_transparent_info",
+      "default": "#FFFFFF"
     }
   ]
 }
