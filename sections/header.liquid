@@ -19,94 +19,92 @@
   data-header-wrapper
 >
   <header class="header">
-    {%- comment -%} Left: Menu Toggle (Mobile) / Navigation (Desktop) {%- endcomment -%}
-    <div class="header__left">
-      <button class="header__menu-toggle" aria-label="Menu" data-menu-toggle>
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M3 5h14M3 10h14M3 15h14"/>
-        </svg>
-      </button>
-      <nav class="header__nav">
-      {%- for block in section.blocks -%}
-        {%- case block.type -%}
-          {%- when 'menu_item' -%}
-            <div class="header__nav-item" {{ block.shopify_attributes }}>
-              <a href="{{ block.settings.link }}" class="header__nav-link">
-                {{ block.settings.title }}
-              </a>
-            </div>
+    {%- comment -%} Mobile menu toggle {%- endcomment -%}
+    <button class="header__menu-toggle" aria-label="Menu" data-menu-toggle>
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M3 5h14M3 10h14M3 15h14"/>
+      </svg>
+    </button>
 
-          {%- when 'mega_menu' -%}
-            <div class="header__nav-item header__nav-item--mega" data-mega-menu {{ block.shopify_attributes }}>
-              <button class="header__nav-link header__nav-link--trigger" data-mega-trigger>
-                {{ block.settings.title }}
-                <span class="header__nav-underline"></span>
-              </button>
-              <div class="mega-menu" data-mega-panel>
-                <div class="mega-menu__container">
-                  {%- if block.settings.heading != blank -%}
-                    <p class="mega-menu__heading">{{ block.settings.heading }}</p>
-                  {%- endif -%}
-                  <div class="mega-menu__grid">
-                    {%- for i in (1..6) -%}
-                      {%- assign collection_key = 'collection_' | append: i -%}
-                      {%- assign image_key = 'image_' | append: i -%}
-                      {%- assign title_key = 'title_' | append: i -%}
-                      {%- assign collection = block.settings[collection_key] -%}
-                      {%- assign custom_image = block.settings[image_key] -%}
-                      {%- assign custom_title = block.settings[title_key] -%}
+    {%- comment -%} Logo - Desktop: left, Mobile: center {%- endcomment -%}
+    <a href="{{ routes.root_url }}" class="header__logo-link">
+      {%- if settings.logo_dark -%}
+        <span class="header__logo-default">
+          {{ settings.logo_dark | image_url: width: 600 | image_tag: class: 'header__logo-image', loading: 'eager' }}
+        </span>
+      {%- endif -%}
+      {%- if settings.logo_light -%}
+        <span class="header__logo-transparent">
+          {{ settings.logo_light | image_url: width: 600 | image_tag: class: 'header__logo-image', loading: 'eager' }}
+        </span>
+      {%- endif -%}
+      {%- unless settings.logo_dark or settings.logo_light -%}
+        <span class="header__logo-text">{{ shop.name }}</span>
+      {%- endunless -%}
+    </a>
 
-                      {%- if collection != blank -%}
-                        <a href="{{ collection.url }}" class="mega-menu__card">
-                          <div class="mega-menu__card-image">
-                            {%- if custom_image != blank -%}
-                              {{ custom_image | image_url: width: 400, height: 300, crop: 'center' | image_tag }}
-                            {%- elsif collection.featured_image -%}
-                              {{ collection.featured_image | image_url: width: 400, height: 300, crop: 'center' | image_tag }}
+    {%- comment -%} Navigation - Desktop: center, Mobile: hidden {%- endcomment -%}
+    <nav class="header__nav">
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+        {%- when 'menu_item' -%}
+          <div class="header__nav-item" {{ block.shopify_attributes }}>
+            <a href="{{ block.settings.link }}" class="header__nav-link">
+              {{ block.settings.title }}
+            </a>
+          </div>
+
+        {%- when 'mega_menu' -%}
+          <div class="header__nav-item header__nav-item--mega" data-mega-menu {{ block.shopify_attributes }}>
+            <button class="header__nav-link header__nav-link--trigger" data-mega-trigger>
+              {{ block.settings.title }}
+              <span class="header__nav-underline"></span>
+            </button>
+            <div class="mega-menu" data-mega-panel>
+              <div class="mega-menu__container">
+                {%- if block.settings.heading != blank -%}
+                  <p class="mega-menu__heading">{{ block.settings.heading }}</p>
+                {%- endif -%}
+                <div class="mega-menu__grid">
+                  {%- for i in (1..6) -%}
+                    {%- assign collection_key = 'collection_' | append: i -%}
+                    {%- assign image_key = 'image_' | append: i -%}
+                    {%- assign title_key = 'title_' | append: i -%}
+                    {%- assign collection = block.settings[collection_key] -%}
+                    {%- assign custom_image = block.settings[image_key] -%}
+                    {%- assign custom_title = block.settings[title_key] -%}
+
+                    {%- if collection != blank -%}
+                      <a href="{{ collection.url }}" class="mega-menu__card">
+                        <div class="mega-menu__card-image">
+                          {%- if custom_image != blank -%}
+                            {{ custom_image | image_url: width: 400, height: 300, crop: 'center' | image_tag }}
+                          {%- elsif collection.featured_image -%}
+                            {{ collection.featured_image | image_url: width: 400, height: 300, crop: 'center' | image_tag }}
+                          {%- else -%}
+                            {{ 'collection-1' | placeholder_svg_tag: 'mega-menu__placeholder' }}
+                          {%- endif -%}
+                        </div>
+                        <div class="mega-menu__card-content">
+                          <h3 class="mega-menu__card-title">
+                            {%- if custom_title != blank -%}
+                              {{ custom_title }}
                             {%- else -%}
-                              {{ 'collection-1' | placeholder_svg_tag: 'mega-menu__placeholder' }}
+                              {{ collection.title }}
                             {%- endif -%}
-                          </div>
-                          <div class="mega-menu__card-content">
-                            <h3 class="mega-menu__card-title">
-                              {%- if custom_title != blank -%}
-                                {{ custom_title }}
-                              {%- else -%}
-                                {{ collection.title }}
-                              {%- endif -%}
-                            </h3>
-                            <span class="mega-menu__card-link">View all</span>
-                          </div>
-                        </a>
-                      {%- endif -%}
-                    {%- endfor -%}
-                  </div>
+                          </h3>
+                          <span class="mega-menu__card-link">View all</span>
+                        </div>
+                      </a>
+                    {%- endif -%}
+                  {%- endfor -%}
                 </div>
               </div>
             </div>
-        {%- endcase -%}
-      {%- endfor -%}
-      </nav>
-    </div>
-
-    {%- comment -%} Center: Logo {%- endcomment -%}
-    <div class="header__center">
-      <a href="{{ routes.root_url }}" class="header__logo-link">
-        {%- if settings.logo_dark -%}
-          <span class="header__logo-default">
-            {{ settings.logo_dark | image_url: width: 600 | image_tag: class: 'header__logo-image', loading: 'eager' }}
-          </span>
-        {%- endif -%}
-        {%- if settings.logo_light -%}
-          <span class="header__logo-transparent">
-            {{ settings.logo_light | image_url: width: 600 | image_tag: class: 'header__logo-image', loading: 'eager' }}
-          </span>
-        {%- endif -%}
-        {%- unless settings.logo_dark or settings.logo_light -%}
-          <span class="header__logo-text">{{ shop.name }}</span>
-        {%- endunless -%}
-      </a>
-    </div>
+          </div>
+      {%- endcase -%}
+    {%- endfor -%}
+    </nav>
 
     {%- comment -%} Right: Icons {%- endcomment -%}
     <div class="header__right">
@@ -253,10 +251,11 @@
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
 
-  /* Header Layout */
+  /* Header Layout - Desktop: logo left, nav center, icons right */
   .header {
     display: grid;
-    grid-template-columns: 1fr auto 1fr;
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas: "logo nav icons";
     align-items: center;
     height: var(--header-height);
     gap: 2rem;
@@ -264,12 +263,7 @@
     margin: 0 auto;
   }
 
-  /* Left: Menu Toggle + Navigation */
-  .header__left {
-    display: flex;
-    align-items: center;
-  }
-
+  /* Menu Toggle - Hidden on desktop, visible on mobile */
   .header__menu-toggle {
     display: none;
     background: none;
@@ -288,19 +282,9 @@
     color: var(--header-text-transparent);
   }
 
-  .header__nav {
-    display: flex;
-    align-items: center;
-    gap: 2.5rem;
-  }
-
-  /* Center: Logo */
-  .header__center {
-    display: flex;
-    justify-content: center;
-  }
-
+  /* Logo - Desktop: left aligned */
   .header__logo-link {
+    grid-area: logo;
     display: block;
     text-decoration: none;
     color: var(--header-text);
@@ -333,6 +317,15 @@
 
   .header-wrapper--transparent:not(.is-scrolled) .header__logo-text {
     color: var(--header-text-transparent);
+  }
+
+  /* Navigation - Desktop: center aligned */
+  .header__nav {
+    grid-area: nav;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2.5rem;
   }
 
   /* Navigation Items */
@@ -380,6 +373,7 @@
 
   /* Right: Icons */
   .header__right {
+    grid-area: icons;
     display: flex;
     align-items: center;
     justify-content: flex-end;
@@ -662,18 +656,32 @@
     background-color: #eee;
   }
 
-  /* Mobile Styles */
+  /* Mobile Styles - menu toggle left, logo center, cart right */
   @media screen and (max-width: 768px) {
     .header {
+      grid-template-columns: 1fr auto 1fr;
+      grid-template-areas: "toggle logo icons";
       height: var(--header-height-mobile);
+    }
+
+    .header__menu-toggle {
+      grid-area: toggle;
+      display: flex;
+      justify-self: start;
+    }
+
+    .header__logo-link {
+      grid-area: logo;
+      justify-self: center;
     }
 
     .header__nav {
       display: none;
     }
 
-    .header__menu-toggle {
-      display: flex;
+    .header__right {
+      grid-area: icons;
+      justify-self: end;
     }
 
     .header__icon--search {
