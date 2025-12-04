@@ -717,6 +717,7 @@
 
   // Mega menu hover behavior (desktop)
   const megaMenuItems = document.querySelectorAll('[data-mega-menu]');
+  let megaMenuOpen = false;
 
   megaMenuItems.forEach(item => {
     let timeout;
@@ -724,11 +725,20 @@
     item.addEventListener('mouseenter', () => {
       clearTimeout(timeout);
       item.classList.add('is-open');
+      megaMenuOpen = true;
+      if (headerWrapper) {
+        headerWrapper.classList.add('is-scrolled');
+      }
     });
 
     item.addEventListener('mouseleave', () => {
       timeout = setTimeout(() => {
         item.classList.remove('is-open');
+        megaMenuOpen = false;
+        // Only remove is-scrolled if not actually scrolled
+        if (headerWrapper && window.scrollY <= 50) {
+          headerWrapper.classList.remove('is-scrolled');
+        }
       }, 100);
     });
   });
