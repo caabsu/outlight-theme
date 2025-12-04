@@ -184,7 +184,8 @@
         "mega_menu": {
           "header": "Mega menu",
           "background": "Background color",
-          "text": "Text color"
+          "text": "Text color",
+          "title_size": "Collection title size"
         }
       },
       "blocks": {

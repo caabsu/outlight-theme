@@ -8,6 +8,7 @@
     --logo-width-mobile: {{ settings.logo_width_mobile }}px;
     --mega-menu-bg: {{ section.settings.mega_menu_bg }};
     --mega-menu-text: {{ section.settings.mega_menu_text }};
+    --mega-menu-title-size: {{ section.settings.mega_menu_title_size }}px;
   "
   data-header-wrapper
 >
@@ -466,7 +467,7 @@
   }
 
   .mega-menu__card-title {
-    font-size: 0.9375rem;
+    font-size: var(--mega-menu-title-size);
     font-weight: 500;
     margin: 0 0 0.25rem;
     color: var(--mega-menu-text);
@@ -792,6 +793,16 @@
       "id": "mega_menu_text",
       "label": "t:sections.header.settings.mega_menu.text",
       "default": "#1C1917"
+    },
+    {
+      "type": "range",
+      "id": "mega_menu_title_size",
+      "label": "t:sections.header.settings.mega_menu.title_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 15
     }
   ],
   "blocks": [
