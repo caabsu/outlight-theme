@@ -181,6 +181,11 @@
           "input_size": "Input size",
           "button_size": "Button size"
         },
+        "newsletter_image": {
+          "header": "Newsletter background image",
+          "image": "Image",
+          "opacity": "Image opacity"
+        },
         "newsletter_colors": {
           "header": "Newsletter colors",
           "background": "Background",

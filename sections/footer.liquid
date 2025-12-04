@@ -9,6 +9,7 @@
     --logo-width-mobile: {{ settings.logo_width_mobile }}px;
 
     --newsletter-bg: {{ section.settings.newsletter_bg_color }};
+    --newsletter-image-opacity: {{ section.settings.newsletter_image_opacity | divided_by: 100.0 }};
     --newsletter-padding-desktop: {{ section.settings.newsletter_padding_desktop }}px;
     --newsletter-padding-mobile: {{ section.settings.newsletter_padding_mobile }}px;
     --newsletter-title-color: {{ section.settings.newsletter_title_color }};
@@ -43,6 +44,12 @@
   {%- comment -%} Newsletter Section {%- endcomment -%}
   {%- if section.settings.show_newsletter -%}
     <div class="footer__newsletter">
+      {%- if section.settings.newsletter_image -%}
+        <div class="footer__newsletter-image-wrap">
+          {{ section.settings.newsletter_image | image_url: width: 1200 | image_tag: class: 'footer__newsletter-image', loading: 'lazy' }}
+          <div class="footer__newsletter-image-fade"></div>
+        </div>
+      {%- endif -%}
       <div class="footer__newsletter-inner">
         <h2 class="footer__newsletter-title">
           {{ section.settings.newsletter_title }}
@@ -179,11 +186,45 @@
     background-color: var(--newsletter-bg);
     padding: var(--newsletter-padding-desktop) var(--page-margin);
     margin-bottom: var(--footer-section-gap);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .footer__newsletter-image-wrap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 60%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  .footer__newsletter-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top left;
+    opacity: var(--newsletter-image-opacity);
+  }
+
+  .footer__newsletter-image-fade {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      to right,
+      transparent 0%,
+      var(--newsletter-bg) 100%
+    );
   }
 
   .footer__newsletter-inner {
     max-width: var(--page-width);
     margin: 0 auto;
+    position: relative;
+    z-index: 1;
   }
 
   .footer__newsletter-title {
@@ -552,6 +593,25 @@
       "id": "newsletter_button_text",
       "label": "t:sections.footer.settings.newsletter.button_text",
       "default": "Join"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.footer.settings.newsletter_image.header"
+    },
+    {
+      "type": "image_picker",
+      "id": "newsletter_image",
+      "label": "t:sections.footer.settings.newsletter_image.image"
+    },
+    {
+      "type": "range",
+      "id": "newsletter_image_opacity",
+      "label": "t:sections.footer.settings.newsletter_image.opacity",
+      "min": 5,
+      "max": 100,
+      "step": 5,
+      "default": 30,
+      "unit": "%"
     },
     {
       "type": "header",
