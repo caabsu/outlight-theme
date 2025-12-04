@@ -110,7 +110,7 @@
                 {%- comment -%} Desktop Menu {%- endcomment -%}
                 <div class="footer__menu-desktop">
                   <h3 class="footer__menu-title">
-                    {{ block.settings.menu.title }}
+                    {{ block.settings.custom_title | default: block.settings.menu.title }}
                   </h3>
                   <ul class="footer__menu-list">
                     {%- for link in block.settings.menu.links -%}
@@ -127,7 +127,7 @@
                 <details class="footer__menu-mobile">
                   <summary class="footer__menu-summary">
                     <span class="footer__menu-title">
-                      {{ block.settings.menu.title }}
+                      {{ block.settings.custom_title | default: block.settings.menu.title }}
                     </span>
                     <span class="footer__menu-icon">
                       <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -931,6 +931,12 @@
           "id": "menu",
           "label": "t:sections.footer.blocks.menu.settings.menu",
           "default": "footer"
+        },
+        {
+          "type": "text",
+          "id": "custom_title",
+          "label": "t:sections.footer.blocks.menu.settings.custom_title",
+          "info": "t:sections.footer.blocks.menu.settings.custom_title_info"
         }
       ]
     }

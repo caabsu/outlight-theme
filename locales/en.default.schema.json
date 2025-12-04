@@ -362,7 +362,9 @@
         "menu": {
           "name": "Menu column",
           "settings": {
-            "menu": "Menu"
+            "menu": "Menu",
+            "custom_title": "Custom title",
+            "custom_title_info": "Override the menu name. Leave blank to use the menu name from Shopify."
           }
         }
       }
