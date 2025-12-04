@@ -169,7 +169,7 @@
           "header": "Header behavior",
           "enable_sticky": "Enable sticky header",
           "enable_transparent": "Enable transparent header",
-          "transparent_info": "Header will be transparent over the first section and become solid on scroll"
+          "transparent_info": "Header will be transparent on the home page only, over the first section, and become solid on scroll"
         },
         "colors": {
           "header": "Colors",

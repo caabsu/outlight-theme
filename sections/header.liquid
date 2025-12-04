@@ -1,5 +1,5 @@
 <div
-  class="header-wrapper {% if section.settings.enable_sticky %}header-wrapper--sticky{% endif %} {% if section.settings.enable_transparent %}header-wrapper--transparent{% endif %}"
+  class="header-wrapper {% if section.settings.enable_sticky %}header-wrapper--sticky{% endif %} {% if section.settings.enable_transparent and template.name == 'index' %}header-wrapper--transparent{% endif %}"
   style="
     --header-bg: {{ section.settings.background_color }};
     --header-text: {{ section.settings.text_color }};
