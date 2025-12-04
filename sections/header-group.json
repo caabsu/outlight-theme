@@ -13,13 +13,40 @@
   "sections": {
     "header": {
       "type": "header",
+      "blocks": {
+        "mega_menu_y9M3ME": {
+          "type": "mega_menu",
+          "settings": {
+            "title": "Shop",
+            "heading": "",
+            "mobile_heading": "",
+            "collection_1": "floor-table-lamps",
+            "image_1": "shopify://shop_images/Delos_2.jpg",
+            "title_1": "",
+            "collection_2": "outdoor-lighting",
+            "title_2": "",
+            "collection_3": "desk-lamp",
+            "title_3": "",
+            "collection_4": "chandeliers",
+            "title_4": "",
+            "collection_5": "",
+            "title_5": "",
+            "collection_6": "",
+            "title_6": ""
+          }
+        }
+      },
+      "block_order": [
+        "mega_menu_y9M3ME"
+      ],
       "settings": {
-        "menu": "lights-by-collection",
         "enable_sticky": true,
         "enable_transparent": true,
         "background_color": "#f7f5f0",
         "text_color": "#1c1917",
-        "text_color_transparent": "#ffffff"
+        "text_color_transparent": "#ffffff",
+        "mega_menu_bg": "#ffffff",
+        "mega_menu_text": "#1c1917"
       }
     }
   },
