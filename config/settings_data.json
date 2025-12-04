@@ -9,6 +9,8 @@
  */
 {
   "current": {
+    "logo_light": "shopify://shop_images/outlight_white.png",
+    "logo_dark": "shopify://shop_images/outlight_black.png",
     "type_primary_font": "urbanist_n4",
     "type_heading_font": "playfair_display_n4",
     "social_instagram_link": "https://www.instagram.com/__outlight/",
