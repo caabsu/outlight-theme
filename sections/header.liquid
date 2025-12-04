@@ -4,6 +4,8 @@
     --header-bg: {{ section.settings.background_color }};
     --header-text: {{ section.settings.text_color }};
     --header-text-transparent: {{ section.settings.text_color_transparent }};
+    --header-height: {{ section.settings.header_height }}px;
+    --header-height-mobile: {{ section.settings.header_height_mobile }}px;
     --logo-width: {{ settings.logo_width }}px;
     --logo-width-mobile: {{ settings.logo_width_mobile }}px;
     --mega-menu-bg: {{ section.settings.mega_menu_bg }};
@@ -256,7 +258,7 @@
     display: grid;
     grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    height: 4.5rem;
+    height: var(--header-height);
     gap: 2rem;
     max-width: var(--page-width);
     margin: 0 auto;
@@ -409,11 +411,11 @@
   /* Mega Menu */
   .mega-menu {
     position: fixed;
-    top: 4.5rem;
+    top: var(--header-height);
     left: 0;
     right: 0;
     background-color: var(--mega-menu-bg);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.08);
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.2s ease, visibility 0.2s ease;
@@ -663,7 +665,7 @@
   /* Mobile Styles */
   @media screen and (max-width: 768px) {
     .header {
-      height: 3.5rem;
+      height: var(--header-height-mobile);
     }
 
     .header__nav {
@@ -776,6 +778,30 @@
       "label": "t:sections.header.settings.behavior.enable_transparent",
       "info": "t:sections.header.settings.behavior.transparent_info",
       "default": false
+    },
+    {
+      "type": "header",
+      "content": "t:sections.header.settings.layout.header"
+    },
+    {
+      "type": "range",
+      "id": "header_height",
+      "label": "t:sections.header.settings.layout.height_desktop",
+      "min": 56,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "header_height_mobile",
+      "label": "t:sections.header.settings.layout.height_mobile",
+      "min": 48,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 56
     },
     {
       "type": "header",
