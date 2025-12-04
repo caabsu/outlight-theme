@@ -13,10 +13,17 @@
   "sections": {
     "header": {
       "type": "header",
-      "settings": {}
+      "settings": {
+        "menu": "main-menu",
+        "enable_sticky": true,
+        "enable_transparent": true,
+        "background_color": "#f7f5f0",
+        "text_color": "#1c1917",
+        "text_color_transparent": "#ffffff"
+      }
     }
   },
   "order": [
     "header"
-  ],
+  ]
 }

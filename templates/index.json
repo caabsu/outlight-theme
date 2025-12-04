@@ -9,12 +9,61 @@
  */
 {
   "sections": {
+    "hero_banner_MERtpM": {
+      "type": "hero-banner",
+      "name": "t:sections.hero_banner.name",
+      "settings": {
+        "enable_transparent_header": true,
+        "image_desktop": "shopify://shop_images/Jova_4.jpg",
+        "image_mobile": "shopify://shop_images/Jova_9.jpg",
+        "eyebrow": "THE SANCTUARY COLLECTION",
+        "heading": "The Golden Hour",
+        "subheading": "Illumination designed to soften the edges of modern life. Turn off the big light.",
+        "button_text": "EXPLORE THE MOOD",
+        "button_link": "",
+        "eyebrow_mobile": "",
+        "heading_mobile": "",
+        "subheading_mobile": "",
+        "button_text_mobile": "",
+        "button_link_mobile": "",
+        "background_color": "#1C1917",
+        "border_radius": 16,
+        "min_height_desktop": 70,
+        "min_height_mobile": 60,
+        "padding_desktop": 60,
+        "padding_mobile": 24,
+        "content_width": 45,
+        "overlay_opacity": 20,
+        "eyebrow_color": "#D97706",
+        "eyebrow_size_desktop": 13,
+        "eyebrow_size_mobile": 12,
+        "eyebrow_weight": "500",
+        "eyebrow_letter_spacing": 0.2,
+        "heading_color": "#FFFFFF",
+        "heading_size_desktop": 72,
+        "heading_size_mobile": 48,
+        "heading_weight": "400",
+        "subheading_color": "#A8A29E",
+        "subheading_size_desktop": 17,
+        "subheading_size_mobile": 15,
+        "subheading_weight": "400",
+        "button_bg_color": "#FFFFFF",
+        "button_text_color": "#1C1917",
+        "button_size_desktop": 13,
+        "button_size_mobile": 13,
+        "button_weight": "500",
+        "button_border_radius": 30,
+        "button_padding_x": 32,
+        "button_padding_y": 16
+      }
+    },
     "main": {
       "type": "hello-world",
       "settings": {}
     }
   },
   "order": [
+    "hero_banner_MERtpM",
     "main"
   ]
 }
