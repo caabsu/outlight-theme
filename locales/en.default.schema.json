@@ -184,8 +184,14 @@
         "mega_menu": {
           "header": "Mega menu",
           "background": "Background color",
-          "text": "Text color",
-          "title_size": "Collection title size"
+          "title_style": "Collection title style",
+          "title_color": "Title color",
+          "title_size": "Title size",
+          "title_weight": "Title weight",
+          "link_style": "View all link style",
+          "link_color": "Link color",
+          "link_size": "Link size",
+          "link_weight": "Link weight"
         }
       },
       "blocks": {
