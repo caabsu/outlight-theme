@@ -10,10 +10,12 @@
 {
   "general": {
     "404": "Not found",
+    "account": "Account",
     "article": "Article",
     "block": "Block",
     "blog": "Blog",
     "cart": "Cart",
+    "close": "Close",
     "collection": "Collection",
     "collections": "Collections",
     "collection_card": "Collection card",
@@ -163,6 +165,7 @@
   "sections": {
     "header": {
       "name": "Header",
+      "view_all": "View all",
       "settings": {
         "menu": "Menu",
         "behavior": {
@@ -177,6 +180,39 @@
           "text": "Text color",
           "text_transparent": "Text color (transparent mode)",
           "text_transparent_info": "Used when header is transparent over dark backgrounds"
+        },
+        "mega_menu": {
+          "header": "Mega menu",
+          "background": "Background color",
+          "text": "Text color"
+        }
+      },
+      "blocks": {
+        "menu_item": {
+          "name": "Menu link",
+          "settings": {
+            "title": "Title",
+            "link": "Link"
+          }
+        },
+        "mega_menu": {
+          "name": "Mega menu",
+          "settings": {
+            "title": "Title",
+            "heading": "Dropdown heading",
+            "heading_info": "Optional heading shown above collection cards",
+            "mobile_heading": "Mobile heading",
+            "mobile_heading_info": "Override heading for mobile drawer",
+            "collection_1": "Collection 1",
+            "collection_2": "Collection 2",
+            "collection_3": "Collection 3",
+            "collection_4": "Collection 4",
+            "collection_5": "Collection 5",
+            "collection_6": "Collection 6",
+            "collection": "Collection",
+            "custom_image": "Custom image",
+            "custom_title": "Custom title"
+          }
         }
       }
     },
