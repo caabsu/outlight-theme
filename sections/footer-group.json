@@ -13,8 +13,47 @@
   "sections": {
     "footer": {
       "type": "footer",
+      "blocks": {
+        "menu_6LyAYX": {
+          "type": "menu",
+          "settings": {
+            "menu": "lights-by-collection"
+          }
+        },
+        "menu_44TfhC": {
+          "type": "menu",
+          "settings": {
+            "menu": "track-return"
+          }
+        },
+        "menu_QgPmFY": {
+          "type": "menu",
+          "settings": {
+            "menu": "footer"
+          }
+        }
+      },
+      "block_order": [
+        "menu_6LyAYX",
+        "menu_44TfhC",
+        "menu_QgPmFY"
+      ],
       "settings": {
-        "menu": "",
+        "show_newsletter": true,
+        "newsletter_title": "Join our newsletter",
+        "newsletter_button_text": "Join",
+        "brand_description": "We curate lighting that turns houses into sanctuaries. Banish the harshness.",
+        "background_color": "#f7f5f0",
+        "text_color": "#1c1917",
+        "heading_font_size": 12,
+        "heading_font_weight": "500",
+        "body_font_size": 14,
+        "body_font_weight": "400",
+        "link_font_size": 14,
+        "link_font_weight": "400",
+        "padding_top": 0,
+        "padding_bottom": 48,
+        "section_gap": 48,
         "show_payment_icons": true
       }
     }
