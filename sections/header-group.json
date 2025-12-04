@@ -42,11 +42,18 @@
       "settings": {
         "enable_sticky": true,
         "enable_transparent": true,
+        "header_height": 80,
+        "header_height_mobile": 68,
         "background_color": "#f7f5f0",
         "text_color": "#1c1917",
         "text_color_transparent": "#ffffff",
         "mega_menu_bg": "#f7f5f0",
-        "mega_menu_title_size": 21
+        "mega_menu_title_color": "#1c1917",
+        "mega_menu_title_size": 21,
+        "mega_menu_title_weight": "500",
+        "mega_menu_link_color": "#78716c",
+        "mega_menu_link_size": 11,
+        "mega_menu_link_weight": "500"
       }
     }
   },
