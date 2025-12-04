@@ -17,27 +17,14 @@
   data-header-wrapper
 >
   <header class="header">
-    {%- comment -%} Left: Logo {%- endcomment -%}
+    {%- comment -%} Left: Menu Toggle (Mobile) / Navigation (Desktop) {%- endcomment -%}
     <div class="header__left">
-      <a href="{{ routes.root_url }}" class="header__logo-link">
-        {%- if settings.logo_dark -%}
-          <span class="header__logo-default">
-            {{ settings.logo_dark | image_url: width: 600 | image_tag: class: 'header__logo-image', loading: 'eager' }}
-          </span>
-        {%- endif -%}
-        {%- if settings.logo_light -%}
-          <span class="header__logo-transparent">
-            {{ settings.logo_light | image_url: width: 600 | image_tag: class: 'header__logo-image', loading: 'eager' }}
-          </span>
-        {%- endif -%}
-        {%- unless settings.logo_dark or settings.logo_light -%}
-          <span class="header__logo-text">{{ shop.name }}</span>
-        {%- endunless -%}
-      </a>
-    </div>
-
-    {%- comment -%} Center: Navigation with Mega Menu {%- endcomment -%}
-    <nav class="header__nav">
+      <button class="header__menu-toggle" aria-label="Menu" data-menu-toggle>
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M3 5h14M3 10h14M3 15h14"/>
+        </svg>
+      </button>
+      <nav class="header__nav">
       {%- for block in section.blocks -%}
         {%- case block.type -%}
           {%- when 'menu_item' -%}
@@ -97,7 +84,27 @@
             </div>
         {%- endcase -%}
       {%- endfor -%}
-    </nav>
+      </nav>
+    </div>
+
+    {%- comment -%} Center: Logo {%- endcomment -%}
+    <div class="header__center">
+      <a href="{{ routes.root_url }}" class="header__logo-link">
+        {%- if settings.logo_dark -%}
+          <span class="header__logo-default">
+            {{ settings.logo_dark | image_url: width: 600 | image_tag: class: 'header__logo-image', loading: 'eager' }}
+          </span>
+        {%- endif -%}
+        {%- if settings.logo_light -%}
+          <span class="header__logo-transparent">
+            {{ settings.logo_light | image_url: width: 600 | image_tag: class: 'header__logo-image', loading: 'eager' }}
+          </span>
+        {%- endif -%}
+        {%- unless settings.logo_dark or settings.logo_light -%}
+          <span class="header__logo-text">{{ shop.name }}</span>
+        {%- endunless -%}
+      </a>
+    </div>
 
     {%- comment -%} Right: Icons {%- endcomment -%}
     <div class="header__right">
@@ -115,12 +122,6 @@
           <circle cx="14" cy="17" r="1.5" fill="currentColor"/>
         </svg>
       </a>
-
-      <button class="header__menu-toggle" aria-label="Menu" data-menu-toggle>
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M3 5h14M3 10h14M3 15h14"/>
-        </svg>
-      </button>
     </div>
   </header>
 </div>
@@ -261,10 +262,40 @@
     margin: 0 auto;
   }
 
-  /* Left: Logo */
+  /* Left: Menu Toggle + Navigation */
   .header__left {
     display: flex;
     align-items: center;
+  }
+
+  .header__menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--header-text);
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+  }
+
+  .header__menu-toggle:hover {
+    opacity: 0.7;
+  }
+
+  .header-wrapper--transparent:not(.is-scrolled) .header__menu-toggle {
+    color: var(--header-text-transparent);
+  }
+
+  .header__nav {
+    display: flex;
+    align-items: center;
+    gap: 2.5rem;
+  }
+
+  /* Center: Logo */
+  .header__center {
+    display: flex;
+    justify-content: center;
   }
 
   .header__logo-link {
@@ -302,13 +333,7 @@
     color: var(--header-text-transparent);
   }
 
-  /* Center: Navigation */
-  .header__nav {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 2.5rem;
-  }
+  /* Navigation Items */
 
   .header__nav-item {
     position: relative;
@@ -379,24 +404,6 @@
   .header__icon svg {
     width: 1.25rem;
     height: 1.25rem;
-  }
-
-  .header__menu-toggle {
-    display: none;
-    background: none;
-    border: none;
-    padding: 0;
-    color: var(--header-text);
-    cursor: pointer;
-    transition: opacity 0.2s ease;
-  }
-
-  .header-wrapper--transparent:not(.is-scrolled) .header__menu-toggle {
-    color: var(--header-text-transparent);
-  }
-
-  .header__menu-toggle:hover {
-    opacity: 0.7;
   }
 
   /* Mega Menu */
@@ -683,14 +690,15 @@
 {% endstylesheet %}
 
 {% javascript %}
-  // Header scroll behavior
   const headerWrapper = document.querySelector('[data-header-wrapper]');
+  const isTransparent = headerWrapper && headerWrapper.classList.contains('header-wrapper--transparent');
+  const scrollThreshold = 50;
+  let megaMenuOpen = false;
 
-  if (headerWrapper && headerWrapper.classList.contains('header-wrapper--transparent')) {
-    const scrollThreshold = 50;
-
+  // Header scroll behavior
+  if (isTransparent) {
     function updateHeader() {
-      if (window.scrollY > scrollThreshold) {
+      if (window.scrollY > scrollThreshold || megaMenuOpen) {
         headerWrapper.classList.add('is-scrolled');
       } else {
         headerWrapper.classList.remove('is-scrolled');
@@ -722,7 +730,6 @@
 
   // Mega menu hover behavior (desktop)
   const megaMenuItems = document.querySelectorAll('[data-mega-menu]');
-  let megaMenuOpen = false;
 
   megaMenuItems.forEach(item => {
     let timeout;
@@ -731,7 +738,7 @@
       clearTimeout(timeout);
       item.classList.add('is-open');
       megaMenuOpen = true;
-      if (headerWrapper) {
+      if (isTransparent && headerWrapper) {
         headerWrapper.classList.add('is-scrolled');
       }
     });
@@ -741,7 +748,7 @@
         item.classList.remove('is-open');
         megaMenuOpen = false;
         // Only remove is-scrolled if not actually scrolled
-        if (headerWrapper && window.scrollY <= 50) {
+        if (isTransparent && headerWrapper && window.scrollY <= scrollThreshold) {
           headerWrapper.classList.remove('is-scrolled');
         }
       }, 100);
