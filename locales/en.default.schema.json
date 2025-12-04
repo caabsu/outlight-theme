@@ -71,6 +71,57 @@
       "title": "Title",
       "subtitle": "Subtitle",
       "normal": "Normal text"
+    }
+  },
+  "settings": {
+    "typography": {
+      "name": "Typography",
+      "headings": {
+        "fonts": "Fonts"
+      },
+      "primary_font": "Primary font",
+      "heading_font": "Heading font"
     },
+    "layout": {
+      "name": "Layout",
+      "page_width": "Page width",
+      "page_margin": "Page margin",
+      "border_radius": "Border radius",
+      "options": {
+        "narrow": "Narrow",
+        "wide": "Wide"
+      }
+    },
+    "colors": {
+      "name": "Colors",
+      "headings": {
+        "base": "Base colors",
+        "surfaces": "Surfaces",
+        "ui": "UI elements",
+        "accent_scale": "Accent scale"
+      },
+      "canvas": "Canvas",
+      "ink": "Ink",
+      "accent": "Accent",
+      "surface": "Surface",
+      "surface_elevated": "Elevated surface",
+      "border": "Border",
+      "subtext": "Subtext",
+      "accent_dark": "Accent dark",
+      "accent_medium": "Accent medium",
+      "accent_light": "Accent light",
+      "accent_subtle": "Accent subtle"
+    },
+    "buttons": {
+      "name": "Buttons",
+      "headings": {
+        "primary": "Primary button",
+        "secondary": "Secondary button"
+      },
+      "primary_background": "Background",
+      "primary_text": "Text",
+      "secondary_background": "Background",
+      "secondary_text": "Text"
+    }
   }
 }
