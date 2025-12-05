@@ -418,8 +418,9 @@
     }
 
     .featured-collection__heading-row {
+      display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: baseline;
       width: 100%;
     }
 
@@ -429,6 +430,8 @@
       padding: 0;
       text-decoration: underline;
       text-underline-offset: 3px;
+      margin-left: auto;
+      flex-shrink: 0;
     }
 
     .featured-collection__view-all--mobile:hover {
@@ -454,19 +457,21 @@
       align-items: center;
       justify-content: space-between;
       gap: 1rem;
+      width: 100%;
     }
 
     .featured-collection__description--mobile {
       display: block;
       font-size: var(--fc-description-size-mobile);
       flex: 1;
+      min-width: 0;
     }
 
     .featured-collection__mobile-nav {
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      margin-left: auto;
+      flex-shrink: 0;
     }
 
     .featured-collection__mobile-arrow {
