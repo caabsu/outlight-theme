@@ -79,7 +79,7 @@
                     <div class="mega-menu__columns">
                       {%- comment -%} Column 1: Indoor Lighting {%- endcomment -%}
                       <div class="mega-menu__column">
-                        <p class="mega-menu__column-header">{{ block.settings.column_1_header | default: 'Indoor Lighting' }}</p>
+                        <a href="{{ block.settings.column_1_url }}" class="mega-menu__column-header">{{ block.settings.column_1_header | default: 'Indoor Lighting' }}</a>
                         <ul class="mega-menu__links">
                           {%- for i in (1..6) -%}
                             {%- assign link_title_key = 'col1_link_' | append: i | append: '_title' -%}
@@ -97,7 +97,7 @@
 
                       {%- comment -%} Column 2: Outdoor Lighting {%- endcomment -%}
                       <div class="mega-menu__column">
-                        <p class="mega-menu__column-header">{{ block.settings.column_2_header | default: 'Outdoor Lighting' }}</p>
+                        <a href="{{ block.settings.column_2_url }}" class="mega-menu__column-header">{{ block.settings.column_2_header | default: 'Outdoor Lighting' }}</a>
                         <ul class="mega-menu__links">
                           {%- for i in (1..6) -%}
                             {%- assign link_title_key = 'col2_link_' | append: i | append: '_title' -%}
@@ -521,14 +521,21 @@
   }
 
   .mega-menu__column-header {
+    display: block;
     font-size: var(--mega-menu-header-size);
     font-weight: var(--mega-menu-header-weight);
     color: var(--mega-menu-header-color);
     text-transform: uppercase;
     letter-spacing: 0.1em;
+    text-decoration: none;
     margin: 0 0 1.5rem;
     padding-bottom: 1rem;
     border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    transition: opacity 0.2s ease;
+  }
+
+  .mega-menu__column-header:hover {
+    opacity: 0.7;
   }
 
   .mega-menu__links {
@@ -1281,6 +1288,11 @@
           "default": "Indoor Lighting"
         },
         {
+          "type": "url",
+          "id": "column_1_url",
+          "label": "t:sections.header.blocks.mega_menu.settings.column_1.url"
+        },
+        {
           "type": "text",
           "id": "col1_link_1_title",
           "label": "t:sections.header.blocks.mega_menu.settings.link_1"
@@ -1349,6 +1361,11 @@
           "id": "column_2_header",
           "label": "t:sections.header.blocks.mega_menu.settings.column_2.title",
           "default": "Outdoor Lighting"
+        },
+        {
+          "type": "url",
+          "id": "column_2_url",
+          "label": "t:sections.header.blocks.mega_menu.settings.column_2.url"
         },
         {
           "type": "text",

@@ -232,11 +232,13 @@
             "title": "Title",
             "column_1": {
               "header": "Column 1",
-              "title": "Column header"
+              "title": "Column header",
+              "url": "Column link"
             },
             "column_2": {
               "header": "Column 2",
-              "title": "Column header"
+              "title": "Column header",
+              "url": "Column link"
             },
             "link_1": "Link 1 title",
             "link_1_url": "Link 1 URL",
