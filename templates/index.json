@@ -55,9 +55,45 @@
         "button_padding_x": 32,
         "button_padding_y": 16
       }
+    },
+    "featured_collection_fBjcht": {
+      "type": "featured-collection",
+      "name": "t:sections.featured_collection.name",
+      "settings": {
+        "collection": "best-sellers",
+        "products_to_show": 6,
+        "heading": "Table Lamps",
+        "description": "Sculptural pieces for your desk, bedside, or side table.",
+        "mobile_description": "Swipe to explore.",
+        "heading_color": "#1C1917",
+        "heading_size": 48,
+        "heading_size_mobile": 32,
+        "heading_weight": "400",
+        "description_color": "#57534E",
+        "description_size": 16,
+        "description_size_mobile": 14,
+        "description_weight": "400",
+        "product_title_color": "#1C1917",
+        "product_title_size": 18,
+        "product_title_weight": "500",
+        "product_variant_color": "#7d7570",
+        "product_variant_size": 14,
+        "product_variant_weight": "400",
+        "product_price_color": "#1C1917",
+        "product_price_size": 16,
+        "product_price_weight": "400",
+        "card_background": "#FFFFFF",
+        "card_radius": 4,
+        "arrow_color": "#1C1917",
+        "arrow_background": "#FFFFFF",
+        "background_color": "#f7f5f0",
+        "padding_top": 60,
+        "padding_bottom": 60
+      }
     }
   },
   "order": [
-    "hero_banner_MERtpM"
+    "hero_banner_MERtpM",
+    "featured_collection_fBjcht"
   ]
 }
