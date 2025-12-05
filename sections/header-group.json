@@ -47,11 +47,11 @@
             "promo_1_image": "shopify://shop_images/Zela_6.jpg",
             "promo_1_label": "Shop now",
             "promo_1_title": "Best Sellers",
-            "promo_1_link": "",
+            "promo_1_link": "shopify://collections/best-sellers",
             "promo_2_image": "shopify://shop_images/Neris_5R.jpg",
             "promo_2_label": "Shop now",
             "promo_2_title": "New Arrivals",
-            "promo_2_link": "",
+            "promo_2_link": "shopify://collections/new-arrivals",
             "mobile_heading": ""
           }
         }
