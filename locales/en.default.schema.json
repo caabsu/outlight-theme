@@ -413,8 +413,8 @@
           "size_mobile": "Size (mobile)",
           "weight": "Weight"
         },
-        "product_variant_style": {
-          "header": "Product variant style",
+        "product_subheader_style": {
+          "header": "Product subheader style",
           "color": "Color",
           "size_desktop": "Size (desktop)",
           "size_mobile": "Size (mobile)",
@@ -451,7 +451,9 @@
         "product": {
           "name": "Product",
           "settings": {
-            "product": "Product"
+            "product": "Product",
+            "subheader": "Subheader",
+            "subheader_info": "Custom text shown below product title (e.g., category, material, style)"
           }
         }
       }
