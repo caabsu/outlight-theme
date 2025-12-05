@@ -495,27 +495,18 @@
     }
 
     .featured-collection__carousel {
-      overflow-x: auto;
-      overflow-y: visible;
-      scroll-snap-type: x mandatory;
-      scrollbar-width: none;
-      -ms-overflow-style: none;
+      overflow: hidden;
       padding-bottom: 8px;
     }
 
-    .featured-collection__carousel::-webkit-scrollbar {
-      display: none;
-    }
-
     .featured-collection__track {
-      transition: none;
+      transition: transform 0.3s ease;
       padding-right: var(--page-margin);
     }
 
     .featured-collection__card {
       flex: 0 0 70vw;
       max-width: 280px;
-      scroll-snap-align: start;
     }
 
     .featured-collection__card:hover .featured-collection__card-inner {
@@ -619,49 +610,40 @@
       });
     }
 
-    // Mobile: scroll to prev/next card on arrow tap
-    function mobileScrollBy(direction) {
+    // Mobile: use transform-based scrolling (same as desktop)
+    let mobileIndex = 0;
+
+    function getMobileMaxIndex() {
+      return Math.max(0, cards.length - 1);
+    }
+
+    function updateMobileCarousel() {
       const card = cards[0];
       if (!card) return;
       const cardWidth = card.offsetWidth + gap;
-      const currentScroll = carousel.scrollLeft;
-      const targetScroll = direction === 'next'
-        ? currentScroll + cardWidth
-        : Math.max(0, currentScroll - cardWidth);
-
-      // Use scrollLeft directly for maximum compatibility
-      const startScroll = carousel.scrollLeft;
-      const distance = targetScroll - startScroll;
-      const duration = 300;
-      let startTime = null;
-
-      function animateScroll(timestamp) {
-        if (!startTime) startTime = timestamp;
-        const elapsed = timestamp - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        const easeProgress = progress * (2 - progress);
-        carousel.scrollLeft = startScroll + (distance * easeProgress);
-        if (progress < 1) {
-          requestAnimationFrame(animateScroll);
-        }
-      }
-      requestAnimationFrame(animateScroll);
+      const offset = mobileIndex * cardWidth;
+      track.style.transform = 'translateX(-' + offset + 'px)';
+      track.style.transition = 'transform 0.3s ease';
     }
 
     if (mobilePrevBtn) {
       mobilePrevBtn.addEventListener('click', function(e) {
         e.preventDefault();
-        e.stopPropagation();
-        mobileScrollBy('prev');
-      }, { passive: false });
+        if (mobileIndex > 0) {
+          mobileIndex--;
+          updateMobileCarousel();
+        }
+      });
     }
 
     if (mobileNextBtn) {
       mobileNextBtn.addEventListener('click', function(e) {
         e.preventDefault();
-        e.stopPropagation();
-        mobileScrollBy('next');
-      }, { passive: false });
+        if (mobileIndex < getMobileMaxIndex()) {
+          mobileIndex++;
+          updateMobileCarousel();
+        }
+      });
     }
 
     updateCarousel();
