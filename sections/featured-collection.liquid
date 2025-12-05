@@ -12,7 +12,7 @@
     --fc-description-weight: {{ section.settings.description_weight }};
     --fc-card-bg: {{ section.settings.card_background }};
     --fc-card-radius: {{ section.settings.card_radius }}px;
-    --fc-card-shadow: {{ section.settings.card_shadow_opacity }};
+    --fc-card-shadow: {{ section.settings.card_shadow_opacity | divided_by: 100.0 }};
     --fc-card-padding: {{ section.settings.card_padding }}px;
     --fc-title-color: {{ section.settings.product_title_color }};
     --fc-title-size: {{ section.settings.product_title_size }}px;
@@ -587,9 +587,9 @@
       "id": "card_shadow_opacity",
       "label": "t:sections.featured_collection.settings.card_style.shadow",
       "min": 0,
-      "max": 0.3,
-      "step": 0.02,
-      "default": 0.08
+      "max": 30,
+      "step": 2,
+      "default": 8
     },
     {
       "type": "header",
