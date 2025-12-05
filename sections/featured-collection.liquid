@@ -213,7 +213,6 @@
     text-decoration: none;
     background-color: transparent;
     border: 1px solid var(--fc-heading-color);
-    border-radius: 100px;
     padding: 0.5rem 1.25rem;
     transition: background-color 0.2s ease, color 0.2s ease;
     white-space: nowrap;
@@ -415,11 +414,13 @@
 
     .featured-collection__heading {
       font-size: var(--fc-heading-size-mobile);
+      white-space: nowrap;
     }
 
     .featured-collection__heading-row {
       justify-content: space-between;
       align-items: center;
+      width: 100%;
     }
 
     .featured-collection__view-all--mobile {
@@ -596,23 +597,44 @@
     }
 
     // Mobile: scroll to prev/next card on arrow tap
+    function smoothScrollTo(element, target) {
+      const start = element.scrollLeft;
+      const distance = target - start;
+      const duration = 300;
+      let startTime = null;
+
+      function animation(currentTime) {
+        if (!startTime) startTime = currentTime;
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const ease = progress * (2 - progress);
+        element.scrollLeft = start + distance * ease;
+        if (elapsed < duration) {
+          requestAnimationFrame(animation);
+        }
+      }
+      requestAnimationFrame(animation);
+    }
+
     if (mobilePrevBtn) {
       mobilePrevBtn.addEventListener('click', function(e) {
         e.preventDefault();
+        e.stopPropagation();
         const cardWidth = cards[0] ? cards[0].offsetWidth + gap : 0;
         const currentScroll = carousel.scrollLeft;
         const prevScroll = Math.max(0, currentScroll - cardWidth);
-        carousel.scrollTo({ left: prevScroll, behavior: 'smooth' });
+        smoothScrollTo(carousel, prevScroll);
       });
     }
 
     if (mobileNextBtn) {
       mobileNextBtn.addEventListener('click', function(e) {
         e.preventDefault();
+        e.stopPropagation();
         const cardWidth = cards[0] ? cards[0].offsetWidth + gap : 0;
         const currentScroll = carousel.scrollLeft;
         const nextScroll = currentScroll + cardWidth;
-        carousel.scrollTo({ left: nextScroll, behavior: 'smooth' });
+        smoothScrollTo(carousel, nextScroll);
       });
     }
 
