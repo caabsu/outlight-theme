@@ -62,37 +62,43 @@
         "product_UzmEp4": {
           "type": "product",
           "settings": {
-            "product": "calen"
+            "product": "calen",
+            "subheader": "MODERN FLOOR LAMP"
           }
         },
         "product_mVKTKt": {
           "type": "product",
           "settings": {
-            "product": "caia"
+            "product": "caia",
+            "subheader": "MODERN FLOOR LAMP"
           }
         },
         "product_Ydbp9M": {
           "type": "product",
           "settings": {
-            "product": "cade"
+            "product": "cade",
+            "subheader": "MODERN FLOOR LAMP"
           }
         },
         "product_Bmaz4F": {
           "type": "product",
           "settings": {
-            "product": "aven"
+            "product": "aven",
+            "subheader": "MODERN FLOOR LAMP"
           }
         },
         "product_fVnU7p": {
           "type": "product",
           "settings": {
-            "product": "aria"
+            "product": "aria",
+            "subheader": ""
           }
         },
         "product_4c3bKa": {
           "type": "product",
           "settings": {
-            "product": "aeris"
+            "product": "aeris",
+            "subheader": ""
           }
         }
       },
@@ -109,6 +115,8 @@
         "heading": "Table Lamps",
         "description": "Sculptural pieces for your desk, bedside, or side table.",
         "mobile_description": "Swipe to explore.",
+        "view_all_text": "View all",
+        "view_all_link": "",
         "heading_color": "#1c1917",
         "heading_size": 48,
         "heading_size_mobile": 32,
@@ -126,11 +134,11 @@
         "product_title_size": 21,
         "product_title_size_mobile": 16,
         "product_title_weight": "400",
-        "product_variant_color": "#7d7570",
-        "product_variant_size": 14,
-        "product_variant_size_mobile": 12,
-        "product_variant_weight": "400",
-        "product_price_color": "#D97706",
+        "product_subheader_color": "#a8a29e",
+        "product_subheader_size": 14,
+        "product_subheader_size_mobile": 12,
+        "product_subheader_weight": "400",
+        "product_price_color": "#d97706",
         "product_price_size": 16,
         "product_price_size_mobile": 14,
         "product_price_weight": "600",
