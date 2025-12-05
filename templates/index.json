@@ -114,7 +114,7 @@
       "settings": {
         "heading": "Floor Lamps",
         "description": "Sculptural pieces for your desk, bedside, or side table.",
-        "mobile_description": "Swipe to explore.",
+        "mobile_description": "Our most popular collection.",
         "view_all_text": "View all",
         "view_all_link": "shopify://collections/floor-table-lamps",
         "heading_color": "#1c1917",
@@ -125,7 +125,6 @@
         "description_size": 16,
         "description_size_mobile": 14,
         "description_weight": "400",
-        "card_width": 320,
         "card_background": "#ffffff",
         "card_radius": 4,
         "card_padding": 16,
