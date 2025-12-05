@@ -620,58 +620,49 @@
     }
 
     // Mobile: scroll to prev/next card on arrow tap
-    let mobileIndex = 0;
+    function mobileScrollBy(direction) {
+      const card = cards[0];
+      if (!card) return;
+      const cardWidth = card.offsetWidth + gap;
+      const currentScroll = carousel.scrollLeft;
+      const targetScroll = direction === 'next'
+        ? currentScroll + cardWidth
+        : Math.max(0, currentScroll - cardWidth);
 
-    function scrollToCard(index) {
-      if (!cards[index]) return;
-      const card = cards[index];
-      const scrollTarget = card.offsetLeft;
-      carousel.scrollTo({ left: scrollTarget, behavior: 'smooth' });
+      // Use scrollLeft directly for maximum compatibility
+      const startScroll = carousel.scrollLeft;
+      const distance = targetScroll - startScroll;
+      const duration = 300;
+      let startTime = null;
+
+      function animateScroll(timestamp) {
+        if (!startTime) startTime = timestamp;
+        const elapsed = timestamp - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easeProgress = progress * (2 - progress);
+        carousel.scrollLeft = startScroll + (distance * easeProgress);
+        if (progress < 1) {
+          requestAnimationFrame(animateScroll);
+        }
+      }
+      requestAnimationFrame(animateScroll);
     }
 
     if (mobilePrevBtn) {
       mobilePrevBtn.addEventListener('click', function(e) {
         e.preventDefault();
-        if (mobileIndex > 0) {
-          mobileIndex--;
-          scrollToCard(mobileIndex);
-        }
-      });
-
-      mobilePrevBtn.addEventListener('touchend', function(e) {
-        e.preventDefault();
-        if (mobileIndex > 0) {
-          mobileIndex--;
-          scrollToCard(mobileIndex);
-        }
-      });
+        e.stopPropagation();
+        mobileScrollBy('prev');
+      }, { passive: false });
     }
 
     if (mobileNextBtn) {
       mobileNextBtn.addEventListener('click', function(e) {
         e.preventDefault();
-        if (mobileIndex < cards.length - 1) {
-          mobileIndex++;
-          scrollToCard(mobileIndex);
-        }
-      });
-
-      mobileNextBtn.addEventListener('touchend', function(e) {
-        e.preventDefault();
-        if (mobileIndex < cards.length - 1) {
-          mobileIndex++;
-          scrollToCard(mobileIndex);
-        }
-      });
+        e.stopPropagation();
+        mobileScrollBy('next');
+      }, { passive: false });
     }
-
-    // Update mobile index when user scrolls manually
-    carousel.addEventListener('scrollend', function() {
-      const cardWidth = cards[0] ? cards[0].offsetWidth + gap : 0;
-      if (cardWidth > 0) {
-        mobileIndex = Math.round(carousel.scrollLeft / cardWidth);
-      }
-    });
 
     updateCarousel();
 
