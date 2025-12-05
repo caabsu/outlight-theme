@@ -112,11 +112,11 @@
       ],
       "name": "t:sections.featured_collection.name",
       "settings": {
-        "heading": "Table Lamps",
+        "heading": "Floor Lamps",
         "description": "Sculptural pieces for your desk, bedside, or side table.",
         "mobile_description": "Swipe to explore.",
         "view_all_text": "View all",
-        "view_all_link": "",
+        "view_all_link": "shopify://collections/floor-table-lamps",
         "heading_color": "#1c1917",
         "heading_size": 48,
         "heading_size_mobile": 32,
