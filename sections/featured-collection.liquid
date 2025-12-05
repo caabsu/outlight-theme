@@ -15,7 +15,6 @@
     --fc-card-radius: {{ section.settings.card_radius }}px;
     --fc-card-shadow: {{ section.settings.card_shadow_opacity | divided_by: 100.0 }};
     --fc-card-padding: {{ section.settings.card_padding }}px;
-    --fc-card-width: {{ section.settings.card_width }}px;
     --fc-title-color: {{ section.settings.product_title_color }};
     --fc-title-size: {{ section.settings.product_title_size }}px;
     --fc-title-size-mobile: {{ section.settings.product_title_size_mobile }}px;
@@ -304,13 +303,12 @@
     display: flex;
     gap: 1.5rem;
     transition: transform 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
-    padding-right: var(--page-margin);
   }
 
-  /* Product Card */
+  /* Product Card - 3 cards fit exactly within carousel */
   .featured-collection__card {
-    flex: 0 0 auto;
-    width: var(--fc-card-width);
+    flex: 0 0 calc((100% - 3rem) / 3);
+    min-width: 0;
     text-decoration: none;
     color: inherit;
     display: block;
@@ -473,7 +471,8 @@
     }
 
     .featured-collection__card {
-      width: 260px;
+      flex: 0 0 70vw;
+      max-width: 280px;
       scroll-snap-align: start;
     }
 
@@ -494,7 +493,7 @@
     }
   }
 
-  /* Desktop: Show 4 products, rest with lower opacity */
+  /* Desktop: Show 3 products, rest with lower opacity */
   @media screen and (min-width: 769px) {
     .featured-collection__card {
       opacity: 1;
@@ -508,7 +507,7 @@
 {% endstylesheet %}
 
 <script>
-  (function() {
+  document.addEventListener('DOMContentLoaded', function() {
     const section = document.getElementById('featured-collection-{{ section.id }}');
     if (!section) return;
 
@@ -519,11 +518,11 @@
     const mobilePrevBtn = section.querySelector('[data-fc-mobile-prev]');
     const mobileNextBtn = section.querySelector('[data-fc-mobile-next]');
 
-    if (!carousel || !track || !prevBtn || !nextBtn) return;
+    if (!carousel || !track) return;
 
     const cards = track.querySelectorAll('[data-fc-card]');
     const gap = 24;
-    const maxVisible = 4;
+    const maxVisible = 3;
     let currentIndex = 0;
 
     function getCardWidth() {
@@ -553,30 +552,35 @@
       const offset = currentIndex * cardWidth;
       track.style.transform = 'translateX(-' + offset + 'px)';
 
-      prevBtn.disabled = currentIndex === 0;
-      nextBtn.disabled = currentIndex >= getMaxIndex();
+      if (prevBtn) prevBtn.disabled = currentIndex === 0;
+      if (nextBtn) nextBtn.disabled = currentIndex >= getMaxIndex();
 
       updateCardOpacity();
     }
 
-    prevBtn.addEventListener('click', function() {
-      if (currentIndex > 0) {
-        currentIndex--;
-        updateCarousel();
-      }
-    });
+    if (prevBtn) {
+      prevBtn.addEventListener('click', function() {
+        if (currentIndex > 0) {
+          currentIndex--;
+          updateCarousel();
+        }
+      });
+    }
 
-    nextBtn.addEventListener('click', function() {
-      const maxIndex = getMaxIndex();
-      if (currentIndex < maxIndex) {
-        currentIndex++;
-        updateCarousel();
-      }
-    });
+    if (nextBtn) {
+      nextBtn.addEventListener('click', function() {
+        const maxIndex = getMaxIndex();
+        if (currentIndex < maxIndex) {
+          currentIndex++;
+          updateCarousel();
+        }
+      });
+    }
 
     // Mobile: scroll to prev/next card on arrow tap
     if (mobilePrevBtn) {
-      mobilePrevBtn.addEventListener('click', function() {
+      mobilePrevBtn.addEventListener('click', function(e) {
+        e.preventDefault();
         const cardWidth = cards[0] ? cards[0].offsetWidth + gap : 0;
         const currentScroll = carousel.scrollLeft;
         const prevScroll = Math.max(0, currentScroll - cardWidth);
@@ -585,7 +589,8 @@
     }
 
     if (mobileNextBtn) {
-      mobileNextBtn.addEventListener('click', function() {
+      mobileNextBtn.addEventListener('click', function(e) {
+        e.preventDefault();
         const cardWidth = cards[0] ? cards[0].offsetWidth + gap : 0;
         const currentScroll = carousel.scrollLeft;
         const nextScroll = currentScroll + cardWidth;
@@ -606,7 +611,7 @@
         updateCarousel();
       }, 150);
     });
-  })();
+  });
 </script>
 
 {% schema %}
@@ -733,16 +738,6 @@
     {
       "type": "header",
       "content": "t:sections.featured_collection.settings.card_style.header"
-    },
-    {
-      "type": "range",
-      "id": "card_width",
-      "label": "t:sections.featured_collection.settings.card_style.width",
-      "min": 240,
-      "max": 400,
-      "step": 10,
-      "unit": "px",
-      "default": 320
     },
     {
       "type": "color",
