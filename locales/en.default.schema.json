@@ -390,7 +390,9 @@
           "heading": "Heading",
           "description": "Description",
           "mobile_description": "Mobile description",
-          "mobile_description_info": "Shorter text shown on mobile. Leave blank to use main description."
+          "mobile_description_info": "Shorter text shown on mobile. Leave blank to use main description.",
+          "view_all_text": "View all text",
+          "view_all_link": "View all link"
         },
         "heading_style": {
           "header": "Heading style",

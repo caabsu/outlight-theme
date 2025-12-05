@@ -38,9 +38,16 @@
     {%- comment -%} Left side: Heading, description, arrows {%- endcomment -%}
     <div class="featured-collection__header">
       <div class="featured-collection__text">
-        {%- if section.settings.heading != blank -%}
-          <h2 class="featured-collection__heading">{{ section.settings.heading }}</h2>
-        {%- endif -%}
+        <div class="featured-collection__heading-row">
+          {%- if section.settings.heading != blank -%}
+            <h2 class="featured-collection__heading">{{ section.settings.heading }}</h2>
+          {%- endif -%}
+          {%- if section.settings.view_all_link != blank -%}
+            <a href="{{ section.settings.view_all_link }}" class="featured-collection__view-all featured-collection__view-all--mobile">
+              {{ section.settings.view_all_text | default: 'View all' }}
+            </a>
+          {%- endif -%}
+        </div>
         {%- if section.settings.description != blank -%}
           <p class="featured-collection__description featured-collection__description--desktop">{{ section.settings.description }}</p>
         {%- endif -%}
@@ -50,25 +57,39 @@
           {%- else -%}
             <p class="featured-collection__description featured-collection__description--mobile">{{ section.settings.description }}</p>
           {%- endif -%}
-          <button class="featured-collection__mobile-arrow" data-fc-mobile-next aria-label="Next product">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
-              <path d="M7 4l6 6-6 6"/>
-            </svg>
-          </button>
+          <div class="featured-collection__mobile-nav">
+            <button class="featured-collection__mobile-arrow" data-fc-mobile-prev aria-label="Previous product">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M13 4l-6 6 6 6"/>
+              </svg>
+            </button>
+            <button class="featured-collection__mobile-arrow" data-fc-mobile-next aria-label="Next product">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M7 4l6 6-6 6"/>
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
 
-      <div class="featured-collection__nav">
-        <button class="featured-collection__arrow featured-collection__arrow--prev" data-fc-prev aria-label="Previous">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M12 4l-6 6 6 6"/>
-          </svg>
-        </button>
-        <button class="featured-collection__arrow featured-collection__arrow--next" data-fc-next aria-label="Next">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M8 4l6 6-6 6"/>
-          </svg>
-        </button>
+      <div class="featured-collection__nav-wrapper">
+        <div class="featured-collection__nav">
+          <button class="featured-collection__arrow featured-collection__arrow--prev" data-fc-prev aria-label="Previous">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 4l-6 6 6 6"/>
+            </svg>
+          </button>
+          <button class="featured-collection__arrow featured-collection__arrow--next" data-fc-next aria-label="Next">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M8 4l6 6-6 6"/>
+            </svg>
+          </button>
+        </div>
+        {%- if section.settings.view_all_link != blank -%}
+          <a href="{{ section.settings.view_all_link }}" class="featured-collection__view-all featured-collection__view-all--desktop">
+            {{ section.settings.view_all_text | default: 'View all' }}
+          </a>
+        {%- endif -%}
       </div>
     </div>
 
@@ -171,6 +192,12 @@
     gap: 1rem;
   }
 
+  .featured-collection__heading-row {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+  }
+
   .featured-collection__heading {
     font-family: var(--font-heading-family);
     font-size: var(--fc-heading-size);
@@ -178,6 +205,27 @@
     color: var(--fc-heading-color);
     line-height: 1.1;
     margin: 0;
+  }
+
+  .featured-collection__view-all {
+    font-size: 14px;
+    color: var(--fc-description-color);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: opacity 0.2s ease;
+  }
+
+  .featured-collection__view-all:hover {
+    opacity: 0.7;
+  }
+
+  .featured-collection__view-all--mobile {
+    display: none;
+  }
+
+  .featured-collection__view-all--desktop {
+    display: inline-block;
+    margin-top: 1rem;
   }
 
   .featured-collection__description {
@@ -193,12 +241,28 @@
     display: none;
   }
 
+  .featured-collection__mobile-nav {
+    display: none;
+  }
+
   .featured-collection__mobile-arrow {
     display: none;
     background: none;
     border: none;
-    padding: 0;
+    padding: 8px;
     cursor: pointer;
+    color: var(--fc-description-color);
+    transition: opacity 0.2s ease;
+  }
+
+  .featured-collection__mobile-arrow:hover {
+    opacity: 0.7;
+  }
+
+  .featured-collection__nav-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .featured-collection__nav {
@@ -349,6 +413,18 @@
       font-size: var(--fc-heading-size-mobile);
     }
 
+    .featured-collection__view-all--mobile {
+      display: inline-block;
+    }
+
+    .featured-collection__view-all--desktop {
+      display: none;
+    }
+
+    .featured-collection__nav-wrapper {
+      display: none;
+    }
+
     .featured-collection__description--desktop {
       display: none;
     }
@@ -365,16 +441,17 @@
       font-size: var(--fc-description-size-mobile);
     }
 
+    .featured-collection__mobile-nav {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
     .featured-collection__mobile-arrow {
       display: flex;
       align-items: center;
       justify-content: center;
       color: var(--fc-description-color);
-      opacity: 0.6;
-    }
-
-    .featured-collection__nav {
-      display: none;
     }
 
     .featured-collection__carousel {
@@ -439,6 +516,7 @@
     const track = section.querySelector('[data-fc-track]');
     const prevBtn = section.querySelector('[data-fc-prev]');
     const nextBtn = section.querySelector('[data-fc-next]');
+    const mobilePrevBtn = section.querySelector('[data-fc-mobile-prev]');
     const mobileNextBtn = section.querySelector('[data-fc-mobile-next]');
 
     if (!carousel || !track || !prevBtn || !nextBtn) return;
@@ -496,7 +574,16 @@
       }
     });
 
-    // Mobile: scroll to next card on arrow tap
+    // Mobile: scroll to prev/next card on arrow tap
+    if (mobilePrevBtn) {
+      mobilePrevBtn.addEventListener('click', function() {
+        const cardWidth = cards[0] ? cards[0].offsetWidth + gap : 0;
+        const currentScroll = carousel.scrollLeft;
+        const prevScroll = Math.max(0, currentScroll - cardWidth);
+        carousel.scrollTo({ left: prevScroll, behavior: 'smooth' });
+      });
+    }
+
     if (mobileNextBtn) {
       mobileNextBtn.addEventListener('click', function() {
         const cardWidth = cards[0] ? cards[0].offsetWidth + gap : 0;
@@ -549,6 +636,17 @@
       "label": "t:sections.featured_collection.settings.content.mobile_description",
       "info": "t:sections.featured_collection.settings.content.mobile_description_info",
       "default": "Swipe to explore."
+    },
+    {
+      "type": "text",
+      "id": "view_all_text",
+      "label": "t:sections.featured_collection.settings.content.view_all_text",
+      "default": "View all"
+    },
+    {
+      "type": "url",
+      "id": "view_all_link",
+      "label": "t:sections.featured_collection.settings.content.view_all_link"
     },
     {
       "type": "header",
