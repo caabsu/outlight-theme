@@ -425,6 +425,16 @@
 
     .featured-collection__view-all--mobile {
       display: inline-block;
+      border: none;
+      padding: 0;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .featured-collection__view-all--mobile:hover {
+      background-color: transparent;
+      color: var(--fc-heading-color);
+      opacity: 0.7;
     }
 
     .featured-collection__view-all--desktop {
@@ -469,6 +479,9 @@
       border: 1px solid var(--fc-description-color);
       color: var(--fc-description-color);
       background: transparent;
+      cursor: pointer;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .featured-collection__carousel {
@@ -597,46 +610,58 @@
     }
 
     // Mobile: scroll to prev/next card on arrow tap
-    function smoothScrollTo(element, target) {
-      const start = element.scrollLeft;
-      const distance = target - start;
-      const duration = 300;
-      let startTime = null;
+    let mobileIndex = 0;
 
-      function animation(currentTime) {
-        if (!startTime) startTime = currentTime;
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        const ease = progress * (2 - progress);
-        element.scrollLeft = start + distance * ease;
-        if (elapsed < duration) {
-          requestAnimationFrame(animation);
-        }
-      }
-      requestAnimationFrame(animation);
+    function scrollToCard(index) {
+      if (!cards[index]) return;
+      const card = cards[index];
+      const scrollTarget = card.offsetLeft;
+      carousel.scrollTo({ left: scrollTarget, behavior: 'smooth' });
     }
 
     if (mobilePrevBtn) {
       mobilePrevBtn.addEventListener('click', function(e) {
         e.preventDefault();
-        e.stopPropagation();
-        const cardWidth = cards[0] ? cards[0].offsetWidth + gap : 0;
-        const currentScroll = carousel.scrollLeft;
-        const prevScroll = Math.max(0, currentScroll - cardWidth);
-        smoothScrollTo(carousel, prevScroll);
+        if (mobileIndex > 0) {
+          mobileIndex--;
+          scrollToCard(mobileIndex);
+        }
+      });
+
+      mobilePrevBtn.addEventListener('touchend', function(e) {
+        e.preventDefault();
+        if (mobileIndex > 0) {
+          mobileIndex--;
+          scrollToCard(mobileIndex);
+        }
       });
     }
 
     if (mobileNextBtn) {
       mobileNextBtn.addEventListener('click', function(e) {
         e.preventDefault();
-        e.stopPropagation();
-        const cardWidth = cards[0] ? cards[0].offsetWidth + gap : 0;
-        const currentScroll = carousel.scrollLeft;
-        const nextScroll = currentScroll + cardWidth;
-        smoothScrollTo(carousel, nextScroll);
+        if (mobileIndex < cards.length - 1) {
+          mobileIndex++;
+          scrollToCard(mobileIndex);
+        }
+      });
+
+      mobileNextBtn.addEventListener('touchend', function(e) {
+        e.preventDefault();
+        if (mobileIndex < cards.length - 1) {
+          mobileIndex++;
+          scrollToCard(mobileIndex);
+        }
       });
     }
+
+    // Update mobile index when user scrolls manually
+    carousel.addEventListener('scrollend', function() {
+      const cardWidth = cards[0] ? cards[0].offsetWidth + gap : 0;
+      if (cardWidth > 0) {
+        mobileIndex = Math.round(carousel.scrollLeft / cardWidth);
+      }
+    });
 
     updateCarousel();
 
