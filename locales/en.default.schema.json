@@ -193,10 +193,20 @@
           "title_color": "Title color",
           "title_size": "Title size",
           "title_weight": "Title weight",
-          "link_style": "View all link style",
+          "link_style": "Link style",
           "link_color": "Link color",
+          "link_hover_color": "Link color (hover)",
           "link_size": "Link size",
-          "link_weight": "Link weight"
+          "link_weight": "Link weight",
+          "promo_style": "Promo button style",
+          "promo_label_color": "Label color",
+          "promo_label_size": "Label size",
+          "promo_title_color": "Title color",
+          "promo_title_size": "Title size",
+          "column_header_style": "Column header style",
+          "column_header_color": "Header color",
+          "column_header_size": "Header size",
+          "column_header_weight": "Header weight"
         }
       },
       "blocks": {
@@ -211,19 +221,41 @@
           "name": "Mega menu",
           "settings": {
             "title": "Title",
-            "heading": "Dropdown heading",
-            "heading_info": "Optional heading shown above collection cards",
+            "column_1": {
+              "header": "Column 1",
+              "title": "Column header"
+            },
+            "column_2": {
+              "header": "Column 2",
+              "title": "Column header"
+            },
+            "link_1": "Link 1 title",
+            "link_1_url": "Link 1 URL",
+            "link_2": "Link 2 title",
+            "link_2_url": "Link 2 URL",
+            "link_3": "Link 3 title",
+            "link_3_url": "Link 3 URL",
+            "link_4": "Link 4 title",
+            "link_4_url": "Link 4 URL",
+            "link_5": "Link 5 title",
+            "link_5_url": "Link 5 URL",
+            "link_6": "Link 6 title",
+            "link_6_url": "Link 6 URL",
+            "promo_1": {
+              "header": "Promo button 1"
+            },
+            "promo_2": {
+              "header": "Promo button 2"
+            },
+            "promo_image": "Image",
+            "promo_label": "Label",
+            "promo_title": "Title",
+            "promo_link": "Link",
+            "mobile": {
+              "header": "Mobile settings"
+            },
             "mobile_heading": "Mobile heading",
-            "mobile_heading_info": "Override heading for mobile drawer",
-            "collection_1": "Collection 1",
-            "collection_2": "Collection 2",
-            "collection_3": "Collection 3",
-            "collection_4": "Collection 4",
-            "collection_5": "Collection 5",
-            "collection_6": "Collection 6",
-            "collection": "Collection",
-            "custom_image": "Custom image",
-            "custom_title": "Custom title"
+            "mobile_heading_info": "Override heading for mobile drawer"
           }
         }
       }

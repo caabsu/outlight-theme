@@ -9,12 +9,17 @@
     --logo-width: {{ settings.logo_width }}px;
     --logo-width-mobile: {{ settings.logo_width_mobile }}px;
     --mega-menu-bg: {{ section.settings.mega_menu_bg }};
-    --mega-menu-title-color: {{ section.settings.mega_menu_title_color }};
-    --mega-menu-title-size: {{ section.settings.mega_menu_title_size }}px;
-    --mega-menu-title-weight: {{ section.settings.mega_menu_title_weight }};
+    --mega-menu-header-color: {{ section.settings.mega_menu_header_color }};
+    --mega-menu-header-size: {{ section.settings.mega_menu_header_size }}px;
+    --mega-menu-header-weight: {{ section.settings.mega_menu_header_weight }};
     --mega-menu-link-color: {{ section.settings.mega_menu_link_color }};
+    --mega-menu-link-hover-color: {{ section.settings.mega_menu_link_hover_color }};
     --mega-menu-link-size: {{ section.settings.mega_menu_link_size }}px;
     --mega-menu-link-weight: {{ section.settings.mega_menu_link_weight }};
+    --mega-menu-promo-label-color: {{ section.settings.mega_menu_promo_label_color }};
+    --mega-menu-promo-label-size: {{ section.settings.mega_menu_promo_label_size }}px;
+    --mega-menu-promo-title-color: {{ section.settings.mega_menu_promo_title_color }};
+    --mega-menu-promo-title-size: {{ section.settings.mega_menu_promo_title_size }}px;
   "
   data-header-wrapper
 >
@@ -62,42 +67,84 @@
             </button>
             <div class="mega-menu" data-mega-panel>
               <div class="mega-menu__container">
-                {%- if block.settings.heading != blank -%}
-                  <p class="mega-menu__heading">{{ block.settings.heading }}</p>
-                {%- endif -%}
-                <div class="mega-menu__grid">
-                  {%- for i in (1..6) -%}
-                    {%- assign collection_key = 'collection_' | append: i -%}
-                    {%- assign image_key = 'image_' | append: i -%}
-                    {%- assign title_key = 'title_' | append: i -%}
-                    {%- assign collection = block.settings[collection_key] -%}
-                    {%- assign custom_image = block.settings[image_key] -%}
-                    {%- assign custom_title = block.settings[title_key] -%}
-
-                    {%- if collection != blank -%}
-                      <a href="{{ collection.url }}" class="mega-menu__card">
-                        <div class="mega-menu__card-image">
-                          {%- if custom_image != blank -%}
-                            {{ custom_image | image_url: width: 400, height: 300, crop: 'center' | image_tag }}
-                          {%- elsif collection.featured_image -%}
-                            {{ collection.featured_image | image_url: width: 400, height: 300, crop: 'center' | image_tag }}
-                          {%- else -%}
-                            {{ 'collection-1' | placeholder_svg_tag: 'mega-menu__placeholder' }}
+                <div class="mega-menu__layout">
+                  {%- comment -%} Left side: Two columns of links {%- endcomment -%}
+                  <div class="mega-menu__columns">
+                    {%- comment -%} Column 1: Indoor Lighting {%- endcomment -%}
+                    <div class="mega-menu__column">
+                      <p class="mega-menu__column-header">{{ block.settings.column_1_header | default: 'Indoor Lighting' }}</p>
+                      <ul class="mega-menu__links">
+                        {%- for i in (1..6) -%}
+                          {%- assign link_title_key = 'col1_link_' | append: i | append: '_title' -%}
+                          {%- assign link_url_key = 'col1_link_' | append: i | append: '_url' -%}
+                          {%- assign link_title = block.settings[link_title_key] -%}
+                          {%- assign link_url = block.settings[link_url_key] -%}
+                          {%- if link_title != blank -%}
+                            <li>
+                              <a href="{{ link_url }}" class="mega-menu__link">{{ link_title }}</a>
+                            </li>
                           {%- endif -%}
-                        </div>
-                        <div class="mega-menu__card-content">
-                          <h3 class="mega-menu__card-title">
-                            {%- if custom_title != blank -%}
-                              {{ custom_title }}
-                            {%- else -%}
-                              {{ collection.title }}
-                            {%- endif -%}
-                          </h3>
-                          <span class="mega-menu__card-link">View all</span>
+                        {%- endfor -%}
+                      </ul>
+                    </div>
+
+                    {%- comment -%} Column 2: Outdoor Lighting {%- endcomment -%}
+                    <div class="mega-menu__column">
+                      <p class="mega-menu__column-header">{{ block.settings.column_2_header | default: 'Outdoor Lighting' }}</p>
+                      <ul class="mega-menu__links">
+                        {%- for i in (1..6) -%}
+                          {%- assign link_title_key = 'col2_link_' | append: i | append: '_title' -%}
+                          {%- assign link_url_key = 'col2_link_' | append: i | append: '_url' -%}
+                          {%- assign link_title = block.settings[link_title_key] -%}
+                          {%- assign link_url = block.settings[link_url_key] -%}
+                          {%- if link_title != blank -%}
+                            <li>
+                              <a href="{{ link_url }}" class="mega-menu__link">{{ link_title }}</a>
+                            </li>
+                          {%- endif -%}
+                        {%- endfor -%}
+                      </ul>
+                    </div>
+                  </div>
+
+                  {%- comment -%} Right side: Two promo buttons {%- endcomment -%}
+                  <div class="mega-menu__promos">
+                    {%- if block.settings.promo_1_image != blank or block.settings.promo_1_title != blank -%}
+                      <a href="{{ block.settings.promo_1_link }}" class="mega-menu__promo">
+                        {%- if block.settings.promo_1_image != blank -%}
+                          <div class="mega-menu__promo-image">
+                            {{ block.settings.promo_1_image | image_url: width: 600, height: 400, crop: 'center' | image_tag }}
+                          </div>
+                        {%- endif -%}
+                        <div class="mega-menu__promo-content">
+                          {%- if block.settings.promo_1_label != blank -%}
+                            <span class="mega-menu__promo-label">{{ block.settings.promo_1_label }}</span>
+                          {%- endif -%}
+                          {%- if block.settings.promo_1_title != blank -%}
+                            <span class="mega-menu__promo-title">{{ block.settings.promo_1_title }}</span>
+                          {%- endif -%}
                         </div>
                       </a>
                     {%- endif -%}
-                  {%- endfor -%}
+
+                    {%- if block.settings.promo_2_image != blank or block.settings.promo_2_title != blank -%}
+                      <a href="{{ block.settings.promo_2_link }}" class="mega-menu__promo">
+                        {%- if block.settings.promo_2_image != blank -%}
+                          <div class="mega-menu__promo-image">
+                            {{ block.settings.promo_2_image | image_url: width: 600, height: 400, crop: 'center' | image_tag }}
+                          </div>
+                        {%- endif -%}
+                        <div class="mega-menu__promo-content">
+                          {%- if block.settings.promo_2_label != blank -%}
+                            <span class="mega-menu__promo-label">{{ block.settings.promo_2_label }}</span>
+                          {%- endif -%}
+                          {%- if block.settings.promo_2_title != blank -%}
+                            <span class="mega-menu__promo-title">{{ block.settings.promo_2_title }}</span>
+                          {%- endif -%}
+                        </div>
+                      </a>
+                    {%- endif -%}
+                  </div>
                 </div>
               </div>
             </div>
@@ -428,6 +475,112 @@
     margin: 0 auto;
   }
 
+  /* Two-column layout with promos on right */
+  .mega-menu__layout {
+    display: flex;
+    gap: 4rem;
+  }
+
+  .mega-menu__columns {
+    display: flex;
+    gap: 4rem;
+    flex: 1;
+  }
+
+  .mega-menu__column {
+    min-width: 160px;
+  }
+
+  .mega-menu__column-header {
+    font-size: var(--mega-menu-header-size);
+    font-weight: var(--mega-menu-header-weight);
+    color: var(--mega-menu-header-color);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 0 0 1.25rem;
+  }
+
+  .mega-menu__links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .mega-menu__link {
+    display: block;
+    font-size: var(--mega-menu-link-size);
+    font-weight: var(--mega-menu-link-weight);
+    color: var(--mega-menu-link-color);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .mega-menu__link:hover {
+    color: var(--mega-menu-link-hover-color);
+  }
+
+  /* Promo buttons */
+  .mega-menu__promos {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    min-width: 280px;
+  }
+
+  .mega-menu__promo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-decoration: none;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .mega-menu__promo:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .mega-menu__promo-image {
+    width: 100px;
+    height: 80px;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+
+  .mega-menu__promo-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .mega-menu__promo-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 1rem 1rem 1rem 0;
+  }
+
+  .mega-menu__promo-label {
+    font-size: var(--mega-menu-promo-label-size);
+    font-weight: 500;
+    color: var(--mega-menu-promo-label-color);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .mega-menu__promo-title {
+    font-size: var(--mega-menu-promo-title-size);
+    font-weight: 600;
+    color: var(--mega-menu-promo-title-color);
+  }
+
+  /* Legacy styles for backwards compatibility */
   .mega-menu__heading {
     font-size: 0.6875rem;
     font-weight: 500;
@@ -887,6 +1040,12 @@
       "default": "#78716C"
     },
     {
+      "type": "color",
+      "id": "mega_menu_link_hover_color",
+      "label": "t:sections.header.settings.mega_menu.link_hover_color",
+      "default": "#1C1917"
+    },
+    {
       "type": "range",
       "id": "mega_menu_link_size",
       "label": "t:sections.header.settings.mega_menu.link_size",
@@ -906,6 +1065,74 @@
         { "value": "600", "label": "t:options.font_weight.semibold" }
       ],
       "default": "500"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.header.settings.mega_menu.promo_style"
+    },
+    {
+      "type": "color",
+      "id": "mega_menu_promo_label_color",
+      "label": "t:sections.header.settings.mega_menu.promo_label_color",
+      "default": "#78716C"
+    },
+    {
+      "type": "range",
+      "id": "mega_menu_promo_label_size",
+      "label": "t:sections.header.settings.mega_menu.promo_label_size",
+      "min": 9,
+      "max": 14,
+      "step": 1,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "color",
+      "id": "mega_menu_promo_title_color",
+      "label": "t:sections.header.settings.mega_menu.promo_title_color",
+      "default": "#1C1917"
+    },
+    {
+      "type": "range",
+      "id": "mega_menu_promo_title_size",
+      "label": "t:sections.header.settings.mega_menu.promo_title_size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "header",
+      "content": "t:sections.header.settings.mega_menu.column_header_style"
+    },
+    {
+      "type": "color",
+      "id": "mega_menu_header_color",
+      "label": "t:sections.header.settings.mega_menu.column_header_color",
+      "default": "#1C1917"
+    },
+    {
+      "type": "range",
+      "id": "mega_menu_header_size",
+      "label": "t:sections.header.settings.mega_menu.column_header_size",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "select",
+      "id": "mega_menu_header_weight",
+      "label": "t:sections.header.settings.mega_menu.column_header_weight",
+      "options": [
+        { "value": "400", "label": "t:options.font_weight.regular" },
+        { "value": "500", "label": "t:options.font_weight.medium" },
+        { "value": "600", "label": "t:options.font_weight.semibold" },
+        { "value": "700", "label": "t:options.font_weight.bold" }
+      ],
+      "default": "600"
     }
   ],
   "blocks": [
@@ -937,130 +1164,206 @@
           "default": "Shop"
         },
         {
+          "type": "header",
+          "content": "t:sections.header.blocks.mega_menu.settings.column_1.header"
+        },
+        {
           "type": "text",
-          "id": "heading",
-          "label": "t:sections.header.blocks.mega_menu.settings.heading",
-          "info": "t:sections.header.blocks.mega_menu.settings.heading_info"
+          "id": "column_1_header",
+          "label": "t:sections.header.blocks.mega_menu.settings.column_1.title",
+          "default": "Indoor Lighting"
+        },
+        {
+          "type": "text",
+          "id": "col1_link_1_title",
+          "label": "t:sections.header.blocks.mega_menu.settings.link_1"
+        },
+        {
+          "type": "url",
+          "id": "col1_link_1_url",
+          "label": "t:sections.header.blocks.mega_menu.settings.link_1_url"
+        },
+        {
+          "type": "text",
+          "id": "col1_link_2_title",
+          "label": "t:sections.header.blocks.mega_menu.settings.link_2"
+        },
+        {
+          "type": "url",
+          "id": "col1_link_2_url",
+          "label": "t:sections.header.blocks.mega_menu.settings.link_2_url"
+        },
+        {
+          "type": "text",
+          "id": "col1_link_3_title",
+          "label": "t:sections.header.blocks.mega_menu.settings.link_3"
+        },
+        {
+          "type": "url",
+          "id": "col1_link_3_url",
+          "label": "t:sections.header.blocks.mega_menu.settings.link_3_url"
+        },
+        {
+          "type": "text",
+          "id": "col1_link_4_title",
+          "label": "t:sections.header.blocks.mega_menu.settings.link_4"
+        },
+        {
+          "type": "url",
+          "id": "col1_link_4_url",
+          "label": "t:sections.header.blocks.mega_menu.settings.link_4_url"
+        },
+        {
+          "type": "text",
+          "id": "col1_link_5_title",
+          "label": "t:sections.header.blocks.mega_menu.settings.link_5"
+        },
+        {
+          "type": "url",
+          "id": "col1_link_5_url",
+          "label": "t:sections.header.blocks.mega_menu.settings.link_5_url"
+        },
+        {
+          "type": "text",
+          "id": "col1_link_6_title",
+          "label": "t:sections.header.blocks.mega_menu.settings.link_6"
+        },
+        {
+          "type": "url",
+          "id": "col1_link_6_url",
+          "label": "t:sections.header.blocks.mega_menu.settings.link_6_url"
+        },
+        {
+          "type": "header",
+          "content": "t:sections.header.blocks.mega_menu.settings.column_2.header"
+        },
+        {
+          "type": "text",
+          "id": "column_2_header",
+          "label": "t:sections.header.blocks.mega_menu.settings.column_2.title",
+          "default": "Outdoor Lighting"
+        },
+        {
+          "type": "text",
+          "id": "col2_link_1_title",
+          "label": "t:sections.header.blocks.mega_menu.settings.link_1"
+        },
+        {
+          "type": "url",
+          "id": "col2_link_1_url",
+          "label": "t:sections.header.blocks.mega_menu.settings.link_1_url"
+        },
+        {
+          "type": "text",
+          "id": "col2_link_2_title",
+          "label": "t:sections.header.blocks.mega_menu.settings.link_2"
+        },
+        {
+          "type": "url",
+          "id": "col2_link_2_url",
+          "label": "t:sections.header.blocks.mega_menu.settings.link_2_url"
+        },
+        {
+          "type": "text",
+          "id": "col2_link_3_title",
+          "label": "t:sections.header.blocks.mega_menu.settings.link_3"
+        },
+        {
+          "type": "url",
+          "id": "col2_link_3_url",
+          "label": "t:sections.header.blocks.mega_menu.settings.link_3_url"
+        },
+        {
+          "type": "text",
+          "id": "col2_link_4_title",
+          "label": "t:sections.header.blocks.mega_menu.settings.link_4"
+        },
+        {
+          "type": "url",
+          "id": "col2_link_4_url",
+          "label": "t:sections.header.blocks.mega_menu.settings.link_4_url"
+        },
+        {
+          "type": "text",
+          "id": "col2_link_5_title",
+          "label": "t:sections.header.blocks.mega_menu.settings.link_5"
+        },
+        {
+          "type": "url",
+          "id": "col2_link_5_url",
+          "label": "t:sections.header.blocks.mega_menu.settings.link_5_url"
+        },
+        {
+          "type": "text",
+          "id": "col2_link_6_title",
+          "label": "t:sections.header.blocks.mega_menu.settings.link_6"
+        },
+        {
+          "type": "url",
+          "id": "col2_link_6_url",
+          "label": "t:sections.header.blocks.mega_menu.settings.link_6_url"
+        },
+        {
+          "type": "header",
+          "content": "t:sections.header.blocks.mega_menu.settings.promo_1.header"
+        },
+        {
+          "type": "image_picker",
+          "id": "promo_1_image",
+          "label": "t:sections.header.blocks.mega_menu.settings.promo_image"
+        },
+        {
+          "type": "text",
+          "id": "promo_1_label",
+          "label": "t:sections.header.blocks.mega_menu.settings.promo_label",
+          "default": "Shop now"
+        },
+        {
+          "type": "text",
+          "id": "promo_1_title",
+          "label": "t:sections.header.blocks.mega_menu.settings.promo_title",
+          "default": "Best Sellers"
+        },
+        {
+          "type": "url",
+          "id": "promo_1_link",
+          "label": "t:sections.header.blocks.mega_menu.settings.promo_link"
+        },
+        {
+          "type": "header",
+          "content": "t:sections.header.blocks.mega_menu.settings.promo_2.header"
+        },
+        {
+          "type": "image_picker",
+          "id": "promo_2_image",
+          "label": "t:sections.header.blocks.mega_menu.settings.promo_image"
+        },
+        {
+          "type": "text",
+          "id": "promo_2_label",
+          "label": "t:sections.header.blocks.mega_menu.settings.promo_label",
+          "default": "Shop now"
+        },
+        {
+          "type": "text",
+          "id": "promo_2_title",
+          "label": "t:sections.header.blocks.mega_menu.settings.promo_title",
+          "default": "New Arrivals"
+        },
+        {
+          "type": "url",
+          "id": "promo_2_link",
+          "label": "t:sections.header.blocks.mega_menu.settings.promo_link"
+        },
+        {
+          "type": "header",
+          "content": "t:sections.header.blocks.mega_menu.settings.mobile.header"
         },
         {
           "type": "text",
           "id": "mobile_heading",
           "label": "t:sections.header.blocks.mega_menu.settings.mobile_heading",
           "info": "t:sections.header.blocks.mega_menu.settings.mobile_heading_info"
-        },
-        {
-          "type": "header",
-          "content": "t:sections.header.blocks.mega_menu.settings.collection_1"
-        },
-        {
-          "type": "collection",
-          "id": "collection_1",
-          "label": "t:sections.header.blocks.mega_menu.settings.collection"
-        },
-        {
-          "type": "image_picker",
-          "id": "image_1",
-          "label": "t:sections.header.blocks.mega_menu.settings.custom_image"
-        },
-        {
-          "type": "text",
-          "id": "title_1",
-          "label": "t:sections.header.blocks.mega_menu.settings.custom_title"
-        },
-        {
-          "type": "header",
-          "content": "t:sections.header.blocks.mega_menu.settings.collection_2"
-        },
-        {
-          "type": "collection",
-          "id": "collection_2",
-          "label": "t:sections.header.blocks.mega_menu.settings.collection"
-        },
-        {
-          "type": "image_picker",
-          "id": "image_2",
-          "label": "t:sections.header.blocks.mega_menu.settings.custom_image"
-        },
-        {
-          "type": "text",
-          "id": "title_2",
-          "label": "t:sections.header.blocks.mega_menu.settings.custom_title"
-        },
-        {
-          "type": "header",
-          "content": "t:sections.header.blocks.mega_menu.settings.collection_3"
-        },
-        {
-          "type": "collection",
-          "id": "collection_3",
-          "label": "t:sections.header.blocks.mega_menu.settings.collection"
-        },
-        {
-          "type": "image_picker",
-          "id": "image_3",
-          "label": "t:sections.header.blocks.mega_menu.settings.custom_image"
-        },
-        {
-          "type": "text",
-          "id": "title_3",
-          "label": "t:sections.header.blocks.mega_menu.settings.custom_title"
-        },
-        {
-          "type": "header",
-          "content": "t:sections.header.blocks.mega_menu.settings.collection_4"
-        },
-        {
-          "type": "collection",
-          "id": "collection_4",
-          "label": "t:sections.header.blocks.mega_menu.settings.collection"
-        },
-        {
-          "type": "image_picker",
-          "id": "image_4",
-          "label": "t:sections.header.blocks.mega_menu.settings.custom_image"
-        },
-        {
-          "type": "text",
-          "id": "title_4",
-          "label": "t:sections.header.blocks.mega_menu.settings.custom_title"
-        },
-        {
-          "type": "header",
-          "content": "t:sections.header.blocks.mega_menu.settings.collection_5"
-        },
-        {
-          "type": "collection",
-          "id": "collection_5",
-          "label": "t:sections.header.blocks.mega_menu.settings.collection"
-        },
-        {
-          "type": "image_picker",
-          "id": "image_5",
-          "label": "t:sections.header.blocks.mega_menu.settings.custom_image"
-        },
-        {
-          "type": "text",
-          "id": "title_5",
-          "label": "t:sections.header.blocks.mega_menu.settings.custom_title"
-        },
-        {
-          "type": "header",
-          "content": "t:sections.header.blocks.mega_menu.settings.collection_6"
-        },
-        {
-          "type": "collection",
-          "id": "collection_6",
-          "label": "t:sections.header.blocks.mega_menu.settings.collection"
-        },
-        {
-          "type": "image_picker",
-          "id": "image_6",
-          "label": "t:sections.header.blocks.mega_menu.settings.custom_image"
-        },
-        {
-          "type": "text",
-          "id": "title_6",
-          "label": "t:sections.header.blocks.mega_menu.settings.custom_title"
         }
       ]
     }
