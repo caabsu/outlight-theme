@@ -259,6 +259,7 @@
               "header": "Promo button 2"
             },
             "promo_image": "Image",
+            "promo_mobile_image": "Image (mobile)",
             "promo_label": "Label",
             "promo_title": "Title",
             "promo_link": "Link",

@@ -212,45 +212,88 @@
             </a>
 
           {%- when 'mega_menu' -%}
-            <div class="mobile-drawer__section">
-              {%- if block.settings.mobile_heading != blank -%}
-                <p class="mobile-drawer__section-heading">{{ block.settings.mobile_heading }}</p>
-              {%- elsif block.settings.heading != blank -%}
-                <p class="mobile-drawer__section-heading">{{ block.settings.heading }}</p>
-              {%- else -%}
-                <p class="mobile-drawer__section-heading">{{ block.settings.title }}</p>
-              {%- endif -%}
+            <div class="mobile-drawer__mega-menu">
+              {%- comment -%} Column 1: Indoor Lighting {%- endcomment -%}
+              <div class="mobile-drawer__column">
+                <a href="{{ block.settings.column_1_url }}" class="mobile-drawer__column-header">
+                  {{ block.settings.column_1_header | default: 'Indoor Lighting' }}
+                </a>
+                <ul class="mobile-drawer__column-links">
+                  {%- for i in (1..6) -%}
+                    {%- assign link_title_key = 'col1_link_' | append: i | append: '_title' -%}
+                    {%- assign link_url_key = 'col1_link_' | append: i | append: '_url' -%}
+                    {%- assign link_title = block.settings[link_title_key] -%}
+                    {%- assign link_url = block.settings[link_url_key] -%}
+                    {%- if link_title != blank -%}
+                      <li>
+                        <a href="{{ link_url }}" class="mobile-drawer__column-link">{{ link_title }}</a>
+                      </li>
+                    {%- endif -%}
+                  {%- endfor -%}
+                </ul>
+              </div>
 
-              <div class="mobile-drawer__categories">
-                {%- for i in (1..6) -%}
-                  {%- assign collection_key = 'collection_' | append: i -%}
-                  {%- assign image_key = 'image_' | append: i -%}
-                  {%- assign title_key = 'title_' | append: i -%}
-                  {%- assign collection = block.settings[collection_key] -%}
-                  {%- assign custom_image = block.settings[image_key] -%}
-                  {%- assign custom_title = block.settings[title_key] -%}
+              {%- comment -%} Column 2: Outdoor Lighting {%- endcomment -%}
+              <div class="mobile-drawer__column">
+                <a href="{{ block.settings.column_2_url }}" class="mobile-drawer__column-header">
+                  {{ block.settings.column_2_header | default: 'Outdoor Lighting' }}
+                </a>
+                <ul class="mobile-drawer__column-links">
+                  {%- for i in (1..6) -%}
+                    {%- assign link_title_key = 'col2_link_' | append: i | append: '_title' -%}
+                    {%- assign link_url_key = 'col2_link_' | append: i | append: '_url' -%}
+                    {%- assign link_title = block.settings[link_title_key] -%}
+                    {%- assign link_url = block.settings[link_url_key] -%}
+                    {%- if link_title != blank -%}
+                      <li>
+                        <a href="{{ link_url }}" class="mobile-drawer__column-link">{{ link_title }}</a>
+                      </li>
+                    {%- endif -%}
+                  {%- endfor -%}
+                </ul>
+              </div>
 
-                  {%- if collection != blank -%}
-                    <a href="{{ collection.url }}" class="mobile-drawer__category">
-                      <div class="mobile-drawer__category-image">
-                        {%- if custom_image != blank -%}
-                          {{ custom_image | image_url: width: 100, height: 100, crop: 'center' | image_tag }}
-                        {%- elsif collection.featured_image -%}
-                          {{ collection.featured_image | image_url: width: 100, height: 100, crop: 'center' | image_tag }}
-                        {%- else -%}
-                          {{ 'collection-1' | placeholder_svg_tag: 'mobile-drawer__placeholder' }}
-                        {%- endif -%}
-                      </div>
-                      <span class="mobile-drawer__category-title">
-                        {%- if custom_title != blank -%}
-                          {{ custom_title }}
-                        {%- else -%}
-                          {{ collection.title }}
-                        {%- endif -%}
-                      </span>
-                    </a>
-                  {%- endif -%}
-                {%- endfor -%}
+              {%- comment -%} Promo buttons {%- endcomment -%}
+              <div class="mobile-drawer__promos">
+                {%- if block.settings.promo_1_mobile_image != blank or block.settings.promo_1_image != blank or block.settings.promo_1_title != blank -%}
+                  <a href="{{ block.settings.promo_1_link }}" class="mobile-drawer__promo">
+                    <div class="mobile-drawer__promo-image">
+                      {%- if block.settings.promo_1_mobile_image != blank -%}
+                        {{ block.settings.promo_1_mobile_image | image_url: width: 800, height: 300, crop: 'center' | image_tag }}
+                      {%- elsif block.settings.promo_1_image != blank -%}
+                        {{ block.settings.promo_1_image | image_url: width: 800, height: 300, crop: 'center' | image_tag }}
+                      {%- endif -%}
+                    </div>
+                    <div class="mobile-drawer__promo-content">
+                      {%- if block.settings.promo_1_label != blank -%}
+                        <span class="mobile-drawer__promo-label">{{ block.settings.promo_1_label }}</span>
+                      {%- endif -%}
+                      {%- if block.settings.promo_1_title != blank -%}
+                        <span class="mobile-drawer__promo-title">{{ block.settings.promo_1_title }}</span>
+                      {%- endif -%}
+                    </div>
+                  </a>
+                {%- endif -%}
+
+                {%- if block.settings.promo_2_mobile_image != blank or block.settings.promo_2_image != blank or block.settings.promo_2_title != blank -%}
+                  <a href="{{ block.settings.promo_2_link }}" class="mobile-drawer__promo">
+                    <div class="mobile-drawer__promo-image">
+                      {%- if block.settings.promo_2_mobile_image != blank -%}
+                        {{ block.settings.promo_2_mobile_image | image_url: width: 800, height: 300, crop: 'center' | image_tag }}
+                      {%- elsif block.settings.promo_2_image != blank -%}
+                        {{ block.settings.promo_2_image | image_url: width: 800, height: 300, crop: 'center' | image_tag }}
+                      {%- endif -%}
+                    </div>
+                    <div class="mobile-drawer__promo-content">
+                      {%- if block.settings.promo_2_label != blank -%}
+                        <span class="mobile-drawer__promo-label">{{ block.settings.promo_2_label }}</span>
+                      {%- endif -%}
+                      {%- if block.settings.promo_2_title != blank -%}
+                        <span class="mobile-drawer__promo-title">{{ block.settings.promo_2_title }}</span>
+                      {%- endif -%}
+                    </div>
+                  </a>
+                {%- endif -%}
               </div>
             </div>
         {%- endcase -%}
@@ -857,6 +900,108 @@
     background-color: #eee;
   }
 
+  /* Mobile Drawer Mega Menu */
+  .mobile-drawer__mega-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .mobile-drawer__column {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .mobile-drawer__column-header {
+    display: block;
+    font-family: var(--font-heading-family);
+    font-size: var(--mega-menu-header-size);
+    font-weight: var(--mega-menu-header-weight);
+    color: var(--mega-menu-header-color);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  }
+
+  .mobile-drawer__column-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+  }
+
+  .mobile-drawer__column-link {
+    display: block;
+    font-family: var(--font-heading-family);
+    font-size: var(--mega-menu-link-size);
+    font-weight: var(--mega-menu-link-weight);
+    color: var(--mega-menu-link-color);
+    text-decoration: none;
+  }
+
+  .mobile-drawer__promos {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 0.5rem;
+  }
+
+  .mobile-drawer__promo {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    text-decoration: none;
+    background-color: #1C1917;
+    overflow: hidden;
+    min-height: 120px;
+  }
+
+  .mobile-drawer__promo-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    opacity: var(--mega-menu-promo-image-opacity);
+  }
+
+  .mobile-drawer__promo-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .mobile-drawer__promo-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 1.25rem 1.5rem;
+    width: 100%;
+  }
+
+  .mobile-drawer__promo-label {
+    font-size: var(--mega-menu-promo-label-size);
+    font-weight: var(--mega-menu-promo-label-weight);
+    color: var(--mega-menu-promo-label-color);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .mobile-drawer__promo-title {
+    font-family: var(--font-heading-family);
+    font-size: var(--mega-menu-promo-title-size);
+    font-weight: var(--mega-menu-promo-title-weight);
+    color: var(--mega-menu-promo-title-color);
+  }
+
   /* Mobile Styles - menu toggle left, logo center, cart right */
   @media screen and (max-width: 768px) {
     .header {
@@ -1437,6 +1582,11 @@
           "label": "t:sections.header.blocks.mega_menu.settings.promo_image"
         },
         {
+          "type": "image_picker",
+          "id": "promo_1_mobile_image",
+          "label": "t:sections.header.blocks.mega_menu.settings.promo_mobile_image"
+        },
+        {
           "type": "text",
           "id": "promo_1_label",
           "label": "t:sections.header.blocks.mega_menu.settings.promo_label",
@@ -1461,6 +1611,11 @@
           "type": "image_picker",
           "id": "promo_2_image",
           "label": "t:sections.header.blocks.mega_menu.settings.promo_image"
+        },
+        {
+          "type": "image_picker",
+          "id": "promo_2_mobile_image",
+          "label": "t:sections.header.blocks.mega_menu.settings.promo_mobile_image"
         },
         {
           "type": "text",
