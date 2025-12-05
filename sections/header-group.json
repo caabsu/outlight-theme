@@ -56,18 +56,10 @@
             "promo_2_link": "shopify://collections/new-arrivals",
             "mobile_heading": ""
           }
-        },
-        "menu_item_9DzV4z": {
-          "type": "menu_item",
-          "settings": {
-            "title": "Link",
-            "link": ""
-          }
         }
       },
       "block_order": [
-        "mega_menu_y9M3ME",
-        "menu_item_9DzV4z"
+        "mega_menu_y9M3ME"
       ],
       "settings": {
         "enable_sticky": true,
