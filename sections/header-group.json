@@ -56,10 +56,26 @@
             "promo_2_link": "shopify://collections/new-arrivals",
             "mobile_heading": ""
           }
+        },
+        "menu_item_n84VLJ": {
+          "type": "menu_item",
+          "settings": {
+            "title": "ABOUT US",
+            "link": ""
+          }
+        },
+        "menu_item_HWqznU": {
+          "type": "menu_item",
+          "settings": {
+            "title": "SUPPORT",
+            "link": ""
+          }
         }
       },
       "block_order": [
-        "mega_menu_y9M3ME"
+        "mega_menu_y9M3ME",
+        "menu_item_n84VLJ",
+        "menu_item_HWqznU"
       ],
       "settings": {
         "enable_sticky": true,
@@ -71,7 +87,7 @@
         "text_color_transparent": "#ffffff",
         "text_color_hover": "#78716c",
         "nav_font_size": 15,
-        "nav_font_weight": "500",
+        "nav_font_weight": "400",
         "mega_menu_bg": "#f7f5f0",
         "mega_menu_title_color": "#1c1917",
         "mega_menu_title_size": 21,
