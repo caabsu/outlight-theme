@@ -182,7 +182,25 @@
 </div>
 
 {%- comment -%} Mobile Drawer {%- endcomment -%}
-<div class="mobile-drawer" data-mobile-drawer>
+<div
+  class="mobile-drawer"
+  data-mobile-drawer
+  style="
+    --mega-menu-header-color: {{ section.settings.mega_menu_header_color }};
+    --mega-menu-header-size: {{ section.settings.mega_menu_header_size }}px;
+    --mega-menu-header-weight: {{ section.settings.mega_menu_header_weight }};
+    --mega-menu-link-color: {{ section.settings.mega_menu_link_color }};
+    --mega-menu-link-size: {{ section.settings.mega_menu_link_size }}px;
+    --mega-menu-link-weight: {{ section.settings.mega_menu_link_weight }};
+    --mega-menu-promo-label-color: {{ section.settings.mega_menu_promo_label_color }};
+    --mega-menu-promo-label-size: {{ section.settings.mega_menu_promo_label_size }}px;
+    --mega-menu-promo-label-weight: {{ section.settings.mega_menu_promo_label_weight }};
+    --mega-menu-promo-title-color: {{ section.settings.mega_menu_promo_title_color }};
+    --mega-menu-promo-title-size: {{ section.settings.mega_menu_promo_title_size }}px;
+    --mega-menu-promo-title-weight: {{ section.settings.mega_menu_promo_title_weight }};
+    --mega-menu-promo-image-opacity: {{ section.settings.mega_menu_promo_image_opacity | divided_by: 100.0 }};
+  "
+>
   <div class="mobile-drawer__overlay" data-drawer-close></div>
   <div class="mobile-drawer__panel">
     <div class="mobile-drawer__header">
