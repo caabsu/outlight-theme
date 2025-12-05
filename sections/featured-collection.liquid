@@ -1,4 +1,5 @@
 <div
+  id="featured-collection-{{ section.id }}"
   class="featured-collection"
   style="
     --fc-bg: {{ section.settings.background_color }};
@@ -49,11 +50,11 @@
           {%- else -%}
             <p class="featured-collection__description featured-collection__description--mobile">{{ section.settings.description }}</p>
           {%- endif -%}
-          <span class="featured-collection__mobile-arrow">
+          <button class="featured-collection__mobile-arrow" data-fc-mobile-next aria-label="Next product">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
               <path d="M7 4l6 6-6 6"/>
             </svg>
-          </span>
+          </button>
         </div>
       </div>
 
@@ -194,6 +195,10 @@
 
   .featured-collection__mobile-arrow {
     display: none;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
   }
 
   .featured-collection__nav {
@@ -412,72 +417,85 @@
   }
 {% endstylesheet %}
 
-{% javascript %}
-  const section = document.currentScript.closest('.featured-collection');
-  if (section) {
+<script>
+  (function() {
+    const section = document.getElementById('featured-collection-{{ section.id }}');
+    if (!section) return;
+
     const carousel = section.querySelector('[data-fc-carousel]');
     const track = section.querySelector('[data-fc-track]');
     const prevBtn = section.querySelector('[data-fc-prev]');
     const nextBtn = section.querySelector('[data-fc-next]');
+    const mobileNextBtn = section.querySelector('[data-fc-mobile-next]');
 
-    if (carousel && track && prevBtn && nextBtn) {
-      const cards = track.querySelectorAll('.featured-collection__card');
-      const gap = 24;
-      let currentIndex = 0;
+    if (!carousel || !track || !prevBtn || !nextBtn) return;
 
-      function getCardWidth() {
-        const card = cards[0];
-        return card ? card.offsetWidth + gap : 0;
+    const cards = track.querySelectorAll('.featured-collection__card');
+    const gap = 24;
+    let currentIndex = 0;
+
+    function getCardWidth() {
+      const card = cards[0];
+      return card ? card.offsetWidth + gap : 0;
+    }
+
+    function getMaxIndex() {
+      const cardWidth = getCardWidth();
+      const visibleWidth = carousel.offsetWidth;
+      const totalCards = cards.length;
+      const visibleCards = Math.floor(visibleWidth / cardWidth);
+      return Math.max(0, totalCards - visibleCards);
+    }
+
+    function updateCarousel() {
+      const cardWidth = getCardWidth();
+      const offset = currentIndex * cardWidth;
+      track.style.transform = 'translateX(-' + offset + 'px)';
+
+      prevBtn.disabled = currentIndex === 0;
+      nextBtn.disabled = currentIndex >= getMaxIndex();
+    }
+
+    prevBtn.addEventListener('click', function() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        updateCarousel();
       }
+    });
 
-      function getMaxIndex() {
-        const cardWidth = getCardWidth();
-        const visibleWidth = carousel.offsetWidth;
-        const totalCards = cards.length;
-        const visibleCards = Math.floor(visibleWidth / cardWidth);
-        return Math.max(0, totalCards - visibleCards);
+    nextBtn.addEventListener('click', function() {
+      const maxIndex = getMaxIndex();
+      if (currentIndex < maxIndex) {
+        currentIndex++;
+        updateCarousel();
       }
+    });
 
-      function updateCarousel() {
-        const cardWidth = getCardWidth();
-        const offset = currentIndex * cardWidth;
-        track.style.transform = `translateX(-${offset}px)`;
-
-        prevBtn.disabled = currentIndex === 0;
-        nextBtn.disabled = currentIndex >= getMaxIndex();
-      }
-
-      prevBtn.addEventListener('click', () => {
-        if (currentIndex > 0) {
-          currentIndex--;
-          updateCarousel();
-        }
-      });
-
-      nextBtn.addEventListener('click', () => {
-        const maxIndex = getMaxIndex();
-        if (currentIndex < maxIndex) {
-          currentIndex++;
-          updateCarousel();
-        }
-      });
-
-      updateCarousel();
-
-      let resizeTimeout;
-      window.addEventListener('resize', () => {
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(() => {
-          const maxIndex = getMaxIndex();
-          if (currentIndex > maxIndex) {
-            currentIndex = maxIndex;
-          }
-          updateCarousel();
-        }, 150);
+    // Mobile: scroll to next card on arrow tap
+    if (mobileNextBtn) {
+      mobileNextBtn.addEventListener('click', function() {
+        const cardWidth = cards[0] ? cards[0].offsetWidth + gap : 0;
+        const currentScroll = carousel.scrollLeft;
+        const nextScroll = currentScroll + cardWidth;
+        carousel.scrollTo({ left: nextScroll, behavior: 'smooth' });
       });
     }
-  }
-{% endjavascript %}
+
+    updateCarousel();
+
+    let resizeTimeout;
+    window.addEventListener('resize', function() {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(function() {
+        const maxIndex = getMaxIndex();
+        if (currentIndex > maxIndex) {
+          currentIndex = maxIndex;
+        }
+        updateCarousel();
+      }, 150);
+    });
+  })();
+</script>
 
 {% schema %}
 {
