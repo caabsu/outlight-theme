@@ -161,8 +161,7 @@
   .product-media-gallery {
     position: relative;
     width: 100%;
-    height: 60vh;
-    min-height: 400px;
+    aspect-ratio: 1 / 1;
     overflow: hidden;
     background-color: #f5f5f5;
   }
@@ -418,9 +417,9 @@
     }
 
     .product-media-gallery {
-      flex: 1.2;
+      flex: 1;
+      aspect-ratio: auto;
       height: auto;
-      min-height: 600px;
       border-radius: 12px;
       overflow: hidden;
     }
@@ -435,7 +434,7 @@
     .product-media-item {
       flex: 0 0 auto;
       height: auto;
-      aspect-ratio: 4/5;
+      aspect-ratio: 1 / 1;
     }
 
     .product-media-dots {
@@ -537,15 +536,52 @@
         });
 
         if (response.ok) {
+          // Fetch updated cart drawer content
+          const sectionResponse = await fetch('/?sections=cart-drawer');
+          if (sectionResponse.ok) {
+            const sections = await sectionResponse.json();
+            const cartDrawerHtml = sections['cart-drawer'];
+
+            // Update cart drawer content
+            const cartDrawer = document.querySelector('[data-cart-drawer]');
+            if (cartDrawer && cartDrawerHtml) {
+              const temp = document.createElement('div');
+              temp.innerHTML = cartDrawerHtml;
+              const newDrawer = temp.querySelector('[data-cart-drawer]');
+              if (newDrawer) {
+                cartDrawer.innerHTML = newDrawer.innerHTML;
+              }
+            }
+
+            // Update cart count in header
+            const cartResponse = await fetch('/cart.js');
+            if (cartResponse.ok) {
+              const cart = await cartResponse.json();
+              const cartCount = document.querySelector('.header__cart-count');
+              if (cartCount) {
+                cartCount.textContent = cart.item_count;
+              } else if (cart.item_count > 0) {
+                const cartIcon = document.querySelector('.header__cart');
+                if (cartIcon) {
+                  const countSpan = document.createElement('span');
+                  countSpan.className = 'header__cart-count';
+                  countSpan.textContent = cart.item_count;
+                  cartIcon.appendChild(countSpan);
+                }
+              }
+            }
+          }
+
+          // Open cart drawer after content is updated
           if (typeof window.openCartDrawer === 'function') {
             window.openCartDrawer();
           } else {
             document.dispatchEvent(new CustomEvent('cart:open'));
           }
 
-          setTimeout(() => {
-            window.location.reload();
-          }, 300);
+          // Reset button
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
         } else {
           const error = await response.json();
           alert(error.description || 'Error adding to cart');
