@@ -220,17 +220,8 @@
 
     <div class="mobile-drawer__content">
       {%- for block in section.blocks -%}
-        {%- case block.type -%}
-          {%- when 'menu_item' -%}
-            <a href="{{ block.settings.link }}" class="mobile-drawer__link">
-              {{ block.settings.title }}
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-                <path d="M6 4l4 4-4 4"/>
-              </svg>
-            </a>
-
-          {%- when 'mega_menu' -%}
-            <div class="mobile-drawer__mega-menu">
+        {%- if block.type == 'mega_menu' -%}
+          <div class="mobile-drawer__mega-menu">
               {%- comment -%} Column 1: Indoor Lighting {%- endcomment -%}
               <div class="mobile-drawer__column">
                 <a href="{{ block.settings.column_1_url }}" class="mobile-drawer__column-header">
@@ -314,19 +305,34 @@
                 {%- endif -%}
               </div>
             </div>
-        {%- endcase -%}
+        {%- endif -%}
       {%- endfor -%}
 
-      {%- comment -%} Additional mobile links {%- endcomment -%}
-      <div class="mobile-drawer__links">
-        {%- if shop.customer_accounts_enabled -%}
-          <a href="{{ routes.account_url }}" class="mobile-drawer__link">
-            {{ 'general.account' | t }}
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-              <path d="M6 4l4 4-4 4"/>
-            </svg>
-          </a>
-        {%- endif -%}
+      {%- comment -%} Footer icons {%- endcomment -%}
+      <div class="mobile-drawer__footer">
+        <a href="/pages/support" class="mobile-drawer__footer-item">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+            <path d="M12 17h.01"/>
+          </svg>
+          <span>Support</span>
+        </a>
+        <a href="{{ routes.account_url }}" class="mobile-drawer__footer-item">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+          <span>Account</span>
+        </a>
+        <a href="/pages/about-us" class="mobile-drawer__footer-item">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 16v-4"/>
+            <path d="M12 8h.01"/>
+          </svg>
+          <span>About</span>
+        </a>
       </div>
     </div>
   </div>
@@ -843,6 +849,8 @@
     flex: 1;
     padding: 1.5rem;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
   }
 
   .mobile-drawer__section {
@@ -892,25 +900,39 @@
     font-weight: 400;
   }
 
-  .mobile-drawer__links {
-    border-top: 1px solid #eee;
-    padding-top: 1rem;
-    margin-top: 1rem;
-  }
-
-  .mobile-drawer__link {
+  .mobile-drawer__footer {
     display: flex;
+    justify-content: space-around;
     align-items: center;
-    justify-content: space-between;
-    text-decoration: none;
-    color: #1C1917;
-    font-size: 1rem;
-    padding: 0.75rem 0;
-    border-bottom: 1px solid #eee;
+    border-top: 1px solid #eee;
+    padding-top: 1.5rem;
+    margin-top: auto;
   }
 
-  .mobile-drawer__link svg {
-    opacity: 0.4;
+  .mobile-drawer__footer-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: #57534E;
+    transition: color 0.2s ease;
+  }
+
+  .mobile-drawer__footer-item:hover {
+    color: #1C1917;
+  }
+
+  .mobile-drawer__footer-item svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .mobile-drawer__footer-item span {
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
   .mobile-drawer__placeholder {
