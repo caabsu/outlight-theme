@@ -61,9 +61,9 @@
 
           {% when 'buy_buttons' %}
             <div class="product-form-container" {{ block.shopify_attributes }}>
-              {% form 'product', product %}
+              {% form 'product', product, data-product-form: true %}
                 <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
-                
+
                 <button
                   type="submit"
                   name="add"
@@ -83,6 +83,31 @@
             <p class="product-shipping-info" {{ block.shopify_attributes }}>
               {{ block.settings.text }}
             </p>
+
+          {% when 'specs' %}
+            <div class="product-specs" {{ block.shopify_attributes }}>
+              <h3 class="product-specs__title">{{ 'product.specs' | t }}</h3>
+              <div class="product-specs__tags">
+                {%- if block.settings.spec_1 != blank -%}
+                  <span class="product-specs__tag">{{ block.settings.spec_1 }}</span>
+                {%- endif -%}
+                {%- if block.settings.spec_2 != blank -%}
+                  <span class="product-specs__tag">{{ block.settings.spec_2 }}</span>
+                {%- endif -%}
+                {%- if block.settings.spec_3 != blank -%}
+                  <span class="product-specs__tag">{{ block.settings.spec_3 }}</span>
+                {%- endif -%}
+                {%- if block.settings.spec_4 != blank -%}
+                  <span class="product-specs__tag">{{ block.settings.spec_4 }}</span>
+                {%- endif -%}
+                {%- if block.settings.spec_5 != blank -%}
+                  <span class="product-specs__tag">{{ block.settings.spec_5 }}</span>
+                {%- endif -%}
+                {%- if block.settings.spec_6 != blank -%}
+                  <span class="product-specs__tag">{{ block.settings.spec_6 }}</span>
+                {%- endif -%}
+              </div>
+            </div>
 
         {% endcase %}
       {% endfor %}
@@ -215,6 +240,37 @@
     margin-top: 1rem;
   }
 
+  /* Specs Section */
+  .product-specs {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e5e5e5;
+  }
+
+  .product-specs__title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #78716C;
+    margin: 0 0 1rem;
+  }
+
+  .product-specs__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .product-specs__tag {
+    display: inline-block;
+    background-color: #f5f5f5;
+    color: #1C1917;
+    font-size: 0.8125rem;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+  }
+
   /* Desktop Layout */
   @media screen and (min-width: 768px) {
     .mobile-back-btn {
@@ -256,6 +312,56 @@
     }
   }
 </style>
+
+{% javascript %}
+  // Handle add to cart form submission
+  const productForms = document.querySelectorAll('[data-product-form]');
+
+  productForms.forEach(form => {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const submitBtn = form.querySelector('[type="submit"]');
+      const originalText = submitBtn.textContent;
+
+      // Show loading state
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'ADDING...';
+
+      try {
+        const formData = new FormData(form);
+
+        const response = await fetch('/cart/add.js', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (response.ok) {
+          // Trigger cart drawer open
+          if (typeof window.openCartDrawer === 'function') {
+            window.openCartDrawer();
+          } else {
+            document.dispatchEvent(new CustomEvent('cart:open'));
+          }
+
+          // Reload page to update cart drawer content
+          setTimeout(() => {
+            window.location.reload();
+          }, 300);
+        } else {
+          const error = await response.json();
+          alert(error.description || 'Error adding to cart');
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+      }
+    });
+  });
+{% endjavascript %}
 
 {% schema %}
 {
@@ -364,6 +470,46 @@
           "id": "text",
           "default": "Free shipping on orders over $200",
           "label": "Text"
+        }
+      ]
+    },
+    {
+      "type": "specs",
+      "name": "Specs",
+      "settings": [
+        {
+          "type": "text",
+          "id": "spec_1",
+          "label": "Spec 1",
+          "default": "Solid Brass"
+        },
+        {
+          "type": "text",
+          "id": "spec_2",
+          "label": "Spec 2",
+          "default": "2700K LED"
+        },
+        {
+          "type": "text",
+          "id": "spec_3",
+          "label": "Spec 3",
+          "default": "Dimmable"
+        },
+        {
+          "type": "text",
+          "id": "spec_4",
+          "label": "Spec 4",
+          "default": "5 Year Warranty"
+        },
+        {
+          "type": "text",
+          "id": "spec_5",
+          "label": "Spec 5"
+        },
+        {
+          "type": "text",
+          "id": "spec_6",
+          "label": "Spec 6"
         }
       ]
     }

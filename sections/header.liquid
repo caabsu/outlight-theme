@@ -170,12 +170,15 @@
         </svg>
       </a>
 
-      <a href="{{ routes.cart_url }}" class="header__icon header__cart" aria-label="{{ 'general.cart' | t }}">
+      <a href="{{ routes.cart_url }}" class="header__icon header__cart" aria-label="{{ 'general.cart' | t }}" data-cart-trigger>
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
           <path d="M4 4h2l2.5 10h7l2-7H7"/>
           <circle cx="9" cy="17" r="1.5" fill="currentColor"/>
           <circle cx="14" cy="17" r="1.5" fill="currentColor"/>
         </svg>
+        {%- if cart.item_count > 0 -%}
+          <span class="header__cart-count">{{ cart.item_count }}</span>
+        {%- endif -%}
       </a>
     </div>
   </header>
@@ -529,6 +532,27 @@
   .header__icon svg {
     width: 1.25rem;
     height: 1.25rem;
+  }
+
+  .header__cart {
+    position: relative;
+  }
+
+  .header__cart-count {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background-color: #D97706;
+    color: #ffffff;
+    font-size: 0.625rem;
+    font-weight: 600;
+    min-width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
   }
 
   /* Mega Menu */
