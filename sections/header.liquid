@@ -3,7 +3,10 @@
   style="
     --header-bg: {{ section.settings.background_color }};
     --header-text: {{ section.settings.text_color }};
+    --header-text-hover: {{ section.settings.text_color_hover }};
     --header-text-transparent: {{ section.settings.text_color_transparent }};
+    --header-nav-size: {{ section.settings.nav_font_size }}px;
+    --header-nav-weight: {{ section.settings.nav_font_weight }};
     --header-height: {{ section.settings.header_height }}px;
     --header-height-mobile: {{ section.settings.header_height_mobile }}px;
     --logo-width: {{ settings.logo_width }}px;
@@ -386,20 +389,28 @@
     align-items: center;
     text-decoration: none;
     color: var(--header-text);
-    font-size: 0.8125rem;
-    font-weight: 500;
+    font-size: var(--header-nav-size);
+    font-weight: var(--header-nav-weight);
     text-transform: uppercase;
     letter-spacing: 0.05em;
     padding: 0.5rem 0;
     background: none;
     border: none;
     cursor: pointer;
-    transition: color 0.3s ease;
+    transition: color 0.2s ease;
     position: relative;
+  }
+
+  .header__nav-link:hover {
+    color: var(--header-text-hover);
   }
 
   .header-wrapper--transparent:not(.is-scrolled) .header__nav-link {
     color: var(--header-text-transparent);
+  }
+
+  .header-wrapper--transparent:not(.is-scrolled) .header__nav-link:hover {
+    opacity: 0.7;
   }
 
   .header__nav-underline {
@@ -986,6 +997,38 @@
       "label": "t:sections.header.settings.colors.text_transparent",
       "info": "t:sections.header.settings.colors.text_transparent_info",
       "default": "#FFFFFF"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.header.settings.nav_style.header"
+    },
+    {
+      "type": "color",
+      "id": "text_color_hover",
+      "label": "t:sections.header.settings.nav_style.text_hover",
+      "default": "#78716C"
+    },
+    {
+      "type": "range",
+      "id": "nav_font_size",
+      "label": "t:sections.header.settings.nav_style.font_size",
+      "min": 10,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "select",
+      "id": "nav_font_weight",
+      "label": "t:sections.header.settings.nav_style.font_weight",
+      "options": [
+        { "value": "400", "label": "t:options.font_weight.regular" },
+        { "value": "500", "label": "t:options.font_weight.medium" },
+        { "value": "600", "label": "t:options.font_weight.semibold" },
+        { "value": "700", "label": "t:options.font_weight.bold" }
+      ],
+      "default": "500"
     },
     {
       "type": "header",

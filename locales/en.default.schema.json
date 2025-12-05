@@ -186,6 +186,12 @@
           "text_transparent": "Text color (transparent mode)",
           "text_transparent_info": "Used when header is transparent over dark backgrounds"
         },
+        "nav_style": {
+          "header": "Navigation style",
+          "text_hover": "Text color (hover)",
+          "font_size": "Font size",
+          "font_weight": "Font weight"
+        },
         "mega_menu": {
           "header": "Mega menu",
           "background": "Background color",
