@@ -11,6 +11,56 @@
   "sections": {
     "main": {
       "type": "product",
+      "blocks": {
+        "vendor": {
+          "type": "text",
+          "settings": {
+            "text": "NEW ARRIVAL",
+            "text_color": "#D97706",
+            "text_transform": "uppercase",
+            "font_size": 12,
+            "font_weight": 700,
+            "margin_bottom": 12
+          }
+        },
+        "title": {
+          "type": "title",
+          "settings": {}
+        },
+        "price": {
+          "type": "price",
+          "settings": {}
+        },
+        "description": {
+          "type": "description",
+          "settings": {}
+        },
+        "features": {
+          "type": "features",
+          "settings": {
+            "content": "<ul><li>Solid Brass Construction</li><li>Opaline Glass Diffuser</li><li>Adjustable Drop Height (20\" - 60\")</li><li>2700K LED Integrated</li></ul>"
+          }
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": {}
+        },
+        "shipping": {
+          "type": "shipping_info",
+          "settings": {
+            "text": "Free shipping on orders over $200"
+          }
+        }
+      },
+      "block_order": [
+        "vendor",
+        "title",
+        "price",
+        "description",
+        "features",
+        "buy_buttons",
+        "shipping"
+      ],
       "settings": {}
     }
   },
