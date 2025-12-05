@@ -426,8 +426,11 @@
         },
         "card_style": {
           "header": "Card style",
+          "width": "Card width",
           "background": "Background color",
-          "radius": "Border radius"
+          "radius": "Border radius",
+          "padding": "Card padding",
+          "shadow": "Shadow intensity"
         },
         "arrows": {
           "header": "Navigation arrows",
