@@ -403,13 +403,13 @@
       flex-direction: column;
       gap: 1.5rem;
       padding-left: var(--page-margin);
-      padding-right: 0;
+      padding-right: var(--page-margin);
     }
 
     .featured-collection__header {
       position: relative;
       top: auto;
-      padding-right: var(--page-margin);
+      padding-right: 0;
       width: 100%;
     }
 
@@ -435,8 +435,6 @@
       padding: 0;
       text-decoration: underline;
       text-underline-offset: 3px;
-      margin-left: auto;
-      flex-shrink: 0;
     }
 
     .featured-collection__view-all--mobile:hover {
@@ -477,7 +475,6 @@
       align-items: center;
       gap: 0.5rem;
       flex-shrink: 0;
-      margin-left: auto;
     }
 
     .featured-collection__mobile-arrow {
@@ -498,6 +495,9 @@
     .featured-collection__carousel {
       overflow: hidden;
       padding-bottom: 8px;
+      margin-left: calc(-1 * var(--page-margin));
+      margin-right: calc(-1 * var(--page-margin));
+      padding-left: var(--page-margin);
     }
 
     .featured-collection__track {
