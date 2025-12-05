@@ -18,15 +18,35 @@
   {{ settings.type_heading_font | font_face: font_display: 'swap' }}
   {{ settings.type_heading_font | font_modify: 'weight', 'bold' | font_face: font_display: 'swap' }}
 
+  /* Custom font: Playfair Display Italic (Variable) */
+  @font-face {
+    font-family: "Playfair Display";
+    src: url("https://cdn.shopify.com/s/files/1/0651/2915/2585/files/PlayfairDisplay-Italic-VariableFont_wght.woff?v=1764924006") format("woff");
+    font-weight: 100 900;
+    font-style: italic;
+    font-display: swap;
+  }
+
   :root {
     /* Typography */
     --font-primary-family: {{ settings.type_primary_font.family }}, {{ settings.type_primary_font.fallback_families }};
     --font-primary-style: {{ settings.type_primary_font.style }};
     --font-primary-weight: {{ settings.type_primary_font.weight }};
 
-    --font-heading-family: {{ settings.type_heading_font.family }}, {{ settings.type_heading_font.fallback_families }};
-    --font-heading-style: {{ settings.type_heading_font.style }};
-    --font-heading-weight: {{ settings.type_heading_font.weight }};
+    /* Custom font */
+    --font-custom-family: "Playfair Display", Georgia, serif;
+    --font-custom-style: italic;
+
+    /* Heading font - uses custom font if enabled */
+    {%- if settings.use_custom_heading_font -%}
+      --font-heading-family: var(--font-custom-family);
+      --font-heading-style: var(--font-custom-style);
+      --font-heading-weight: 400;
+    {%- else -%}
+      --font-heading-family: {{ settings.type_heading_font.family }}, {{ settings.type_heading_font.fallback_families }};
+      --font-heading-style: {{ settings.type_heading_font.style }};
+      --font-heading-weight: {{ settings.type_heading_font.weight }};
+    {%- endif -%}
 
     /* Layout */
     --page-width: {{ settings.max_page_width }};

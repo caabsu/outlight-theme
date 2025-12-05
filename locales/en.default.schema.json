@@ -103,10 +103,13 @@
     "typography": {
       "name": "Typography",
       "headings": {
-        "fonts": "Fonts"
+        "fonts": "Fonts",
+        "custom_font": "Custom font"
       },
       "primary_font": "Primary font",
-      "heading_font": "Heading font"
+      "heading_font": "Heading font",
+      "use_custom_heading_font": "Use Playfair Display for headings",
+      "use_custom_heading_font_info": "Overrides the heading font with Playfair Display Italic"
     },
     "layout": {
       "name": "Layout",
