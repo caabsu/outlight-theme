@@ -205,6 +205,7 @@
           "link_size": "Link size",
           "link_weight": "Link weight",
           "promo_style": "Promo button style",
+          "promo_image_opacity": "Image opacity",
           "promo_label_color": "Label color",
           "promo_label_size": "Label size",
           "promo_title_color": "Title color",
