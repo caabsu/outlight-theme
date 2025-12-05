@@ -1,65 +1,20 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
     "main": {
       "type": "product",
       "blocks": {
-        "vendor": {
-          "type": "text",
+        "specs": {
+          "type": "specs",
           "settings": {
-            "text": "NEW ARRIVAL",
-            "text_color": "#D97706",
-            "text_transform": "uppercase",
-            "font_size": 12,
-            "font_weight": 700,
-            "margin_bottom": 12
-          }
-        },
-        "title": {
-          "type": "title",
-          "settings": {}
-        },
-        "price": {
-          "type": "price",
-          "settings": {}
-        },
-        "description": {
-          "type": "description",
-          "settings": {}
-        },
-        "features": {
-          "type": "features",
-          "settings": {
-            "content": "<ul><li>Solid Brass Construction</li><li>Opaline Glass Diffuser</li><li>Adjustable Drop Height (20\" - 60\")</li><li>2700K LED Integrated</li></ul>"
-          }
-        },
-        "buy_buttons": {
-          "type": "buy_buttons",
-          "settings": {}
-        },
-        "shipping": {
-          "type": "shipping_info",
-          "settings": {
-            "text": "Free shipping on orders over $200"
+            "spec_1": "Solid Brass",
+            "spec_2": "2700K LED",
+            "spec_3": "Dimmable",
+            "spec_4": "5 Year Warranty"
           }
         }
       },
       "block_order": [
-        "vendor",
-        "title",
-        "price",
-        "description",
-        "features",
-        "buy_buttons",
-        "shipping"
+        "specs"
       ],
       "settings": {}
     }

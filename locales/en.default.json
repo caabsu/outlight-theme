@@ -88,6 +88,8 @@
     "youtube": "YouTube"
   },
   "product": {
-    "specs": "Specs"
+    "specs": "Specs",
+    "add_to_cart": "Add to cart",
+    "sold_out": "Sold out"
   }
 }
