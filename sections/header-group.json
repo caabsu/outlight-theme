@@ -65,6 +65,9 @@
         "background_color": "#f7f5f0",
         "text_color": "#1c1917",
         "text_color_transparent": "#ffffff",
+        "text_color_hover": "#78716c",
+        "nav_font_size": 13,
+        "nav_font_weight": "700",
         "mega_menu_bg": "#f7f5f0",
         "mega_menu_title_color": "#1c1917",
         "mega_menu_title_size": 21,
@@ -77,7 +80,7 @@
         "mega_menu_promo_label_size": 10,
         "mega_menu_promo_title_color": "#1c1917",
         "mega_menu_promo_title_size": 14,
-        "mega_menu_header_color": "#D97706",
+        "mega_menu_header_color": "#d97706",
         "mega_menu_header_size": 12,
         "mega_menu_header_weight": "700"
       }
