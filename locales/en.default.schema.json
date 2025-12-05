@@ -409,19 +409,22 @@
         "product_title_style": {
           "header": "Product title style",
           "color": "Color",
-          "size": "Size",
+          "size_desktop": "Size (desktop)",
+          "size_mobile": "Size (mobile)",
           "weight": "Weight"
         },
         "product_variant_style": {
           "header": "Product variant style",
           "color": "Color",
-          "size": "Size",
+          "size_desktop": "Size (desktop)",
+          "size_mobile": "Size (mobile)",
           "weight": "Weight"
         },
         "product_price_style": {
           "header": "Product price style",
           "color": "Color",
-          "size": "Size",
+          "size_desktop": "Size (desktop)",
+          "size_mobile": "Size (mobile)",
           "weight": "Weight"
         },
         "card_style": {
@@ -442,6 +445,14 @@
           "background": "Background color",
           "padding_top": "Padding top",
           "padding_bottom": "Padding bottom"
+        }
+      },
+      "blocks": {
+        "product": {
+          "name": "Product",
+          "settings": {
+            "product": "Product"
+          }
         }
       }
     }

@@ -14,20 +14,23 @@
     --fc-card-radius: {{ section.settings.card_radius }}px;
     --fc-card-shadow: {{ section.settings.card_shadow_opacity | divided_by: 100.0 }};
     --fc-card-padding: {{ section.settings.card_padding }}px;
+    --fc-card-width: {{ section.settings.card_width }}px;
     --fc-title-color: {{ section.settings.product_title_color }};
     --fc-title-size: {{ section.settings.product_title_size }}px;
+    --fc-title-size-mobile: {{ section.settings.product_title_size_mobile }}px;
     --fc-title-weight: {{ section.settings.product_title_weight }};
     --fc-variant-color: {{ section.settings.product_variant_color }};
     --fc-variant-size: {{ section.settings.product_variant_size }}px;
+    --fc-variant-size-mobile: {{ section.settings.product_variant_size_mobile }}px;
     --fc-variant-weight: {{ section.settings.product_variant_weight }};
     --fc-price-color: {{ section.settings.product_price_color }};
     --fc-price-size: {{ section.settings.product_price_size }}px;
+    --fc-price-size-mobile: {{ section.settings.product_price_size_mobile }}px;
     --fc-price-weight: {{ section.settings.product_price_weight }};
     --fc-arrow-color: {{ section.settings.arrow_color }};
     --fc-arrow-bg: {{ section.settings.arrow_background }};
     --fc-padding-top: {{ section.settings.padding_top }}px;
     --fc-padding-bottom: {{ section.settings.padding_bottom }}px;
-    --fc-card-width: {{ section.settings.card_width }}px;
   "
 >
   <div class="featured-collection__inner">
@@ -40,11 +43,18 @@
         {%- if section.settings.description != blank -%}
           <p class="featured-collection__description featured-collection__description--desktop">{{ section.settings.description }}</p>
         {%- endif -%}
-        {%- if section.settings.mobile_description != blank -%}
-          <p class="featured-collection__description featured-collection__description--mobile">{{ section.settings.mobile_description }}</p>
-        {%- else -%}
-          <p class="featured-collection__description featured-collection__description--mobile">{{ section.settings.description }}</p>
-        {%- endif -%}
+        <div class="featured-collection__mobile-row">
+          {%- if section.settings.mobile_description != blank -%}
+            <p class="featured-collection__description featured-collection__description--mobile">{{ section.settings.mobile_description }}</p>
+          {%- else -%}
+            <p class="featured-collection__description featured-collection__description--mobile">{{ section.settings.description }}</p>
+          {%- endif -%}
+          <span class="featured-collection__mobile-arrow">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M7 4l6 6-6 6"/>
+            </svg>
+          </span>
+        </div>
       </div>
 
       <div class="featured-collection__nav">
@@ -61,47 +71,66 @@
       </div>
     </div>
 
-    {%- comment -%} Right side: Product carousel - extends to viewport edge {%- endcomment -%}
+    {%- comment -%} Right side: Product carousel {%- endcomment -%}
     <div class="featured-collection__carousel" data-fc-carousel>
       <div class="featured-collection__track" data-fc-track>
-        {%- assign collection = section.settings.collection -%}
-        {%- assign product_limit = section.settings.products_to_show -%}
-
-        {%- if collection != blank -%}
-          {%- for product in collection.products limit: product_limit -%}
-            <a href="{{ product.url }}" class="featured-collection__card">
-              <div class="featured-collection__card-image-wrapper">
-                {%- if product.featured_image -%}
-                  {{ product.featured_image | image_url: width: 600, height: 750, crop: 'center' | image_tag: loading: 'lazy' }}
-                {%- else -%}
-                  {{ 'product-1' | placeholder_svg_tag: 'featured-collection__placeholder' }}
-                {%- endif -%}
-              </div>
-              <div class="featured-collection__card-info">
-                <div class="featured-collection__card-details">
-                  <h3 class="featured-collection__card-title">{{ product.title }}</h3>
-                  {%- if product.variants.first.title != 'Default Title' -%}
-                    <p class="featured-collection__card-variant">{{ product.variants.first.title }}</p>
-                  {%- elsif product.type != blank -%}
-                    <p class="featured-collection__card-variant">{{ product.type }}</p>
+        {%- for block in section.blocks -%}
+          {%- assign product = block.settings.product -%}
+          {%- if product != blank -%}
+            <a href="{{ product.url }}" class="featured-collection__card" {{ block.shopify_attributes }}>
+              <div class="featured-collection__card-inner">
+                <div class="featured-collection__card-image">
+                  {%- if product.featured_image -%}
+                    {{ product.featured_image | image_url: width: 600, height: 750, crop: 'center' | image_tag: loading: 'lazy' }}
+                  {%- else -%}
+                    {{ 'product-1' | placeholder_svg_tag: 'featured-collection__placeholder' }}
                   {%- endif -%}
                 </div>
-                <p class="featured-collection__card-price">{{ product.price | money }}</p>
+                <div class="featured-collection__card-info">
+                  <div class="featured-collection__card-details">
+                    <h3 class="featured-collection__card-title">{{ product.title }}</h3>
+                    {%- if product.variants.first.title != 'Default Title' -%}
+                      <p class="featured-collection__card-variant">{{ product.variants.first.title }}</p>
+                    {%- elsif product.type != blank -%}
+                      <p class="featured-collection__card-variant">{{ product.type }}</p>
+                    {%- endif -%}
+                  </div>
+                  <p class="featured-collection__card-price">{{ product.price | money }}</p>
+                </div>
               </div>
             </a>
-          {%- endfor -%}
-        {%- else -%}
-          {%- for i in (1..10) -%}
-            <div class="featured-collection__card">
-              <div class="featured-collection__card-image-wrapper">
-                {{ 'product-1' | placeholder_svg_tag: 'featured-collection__placeholder' }}
-              </div>
-              <div class="featured-collection__card-info">
-                <div class="featured-collection__card-details">
-                  <h3 class="featured-collection__card-title">Product Title</h3>
-                  <p class="featured-collection__card-variant">Variant</p>
+          {%- else -%}
+            <div class="featured-collection__card" {{ block.shopify_attributes }}>
+              <div class="featured-collection__card-inner">
+                <div class="featured-collection__card-image">
+                  {{ 'product-1' | placeholder_svg_tag: 'featured-collection__placeholder' }}
                 </div>
-                <p class="featured-collection__card-price">$0.00</p>
+                <div class="featured-collection__card-info">
+                  <div class="featured-collection__card-details">
+                    <h3 class="featured-collection__card-title">Select a product</h3>
+                    <p class="featured-collection__card-variant">Variant</p>
+                  </div>
+                  <p class="featured-collection__card-price">$0.00</p>
+                </div>
+              </div>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+
+        {%- if section.blocks.size == 0 -%}
+          {%- for i in (1..6) -%}
+            <div class="featured-collection__card">
+              <div class="featured-collection__card-inner">
+                <div class="featured-collection__card-image">
+                  {{ 'product-1' | placeholder_svg_tag: 'featured-collection__placeholder' }}
+                </div>
+                <div class="featured-collection__card-info">
+                  <div class="featured-collection__card-details">
+                    <h3 class="featured-collection__card-title">Product Title</h3>
+                    <p class="featured-collection__card-variant">Variant</p>
+                  </div>
+                  <p class="featured-collection__card-price">$0.00</p>
+                </div>
               </div>
             </div>
           {%- endfor -%}
@@ -158,7 +187,12 @@
     margin: 0;
   }
 
-  .featured-collection__description--mobile {
+  .featured-collection__description--mobile,
+  .featured-collection__mobile-row {
+    display: none;
+  }
+
+  .featured-collection__mobile-arrow {
     display: none;
   }
 
@@ -191,7 +225,7 @@
     cursor: not-allowed;
   }
 
-  /* Carousel - extends to viewport edge */
+  /* Carousel */
   .featured-collection__carousel {
     overflow: visible;
     position: relative;
@@ -204,43 +238,48 @@
     padding-right: var(--page-margin);
   }
 
-  /* Product Card - Modern elevated design */
+  /* Product Card */
   .featured-collection__card {
     flex: 0 0 auto;
     width: var(--fc-card-width);
     text-decoration: none;
     color: inherit;
-    display: flex;
-    flex-direction: column;
+    display: block;
+  }
+
+  .featured-collection__card-inner {
     background-color: var(--fc-card-bg);
     border-radius: var(--fc-card-radius);
     box-shadow: 0 2px 8px rgba(0, 0, 0, calc(var(--fc-card-shadow) * 0.5)),
                 0 8px 24px rgba(0, 0, 0, calc(var(--fc-card-shadow) * 0.3));
     overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: var(--fc-card-padding);
   }
 
-  .featured-collection__card:hover {
+  .featured-collection__card:hover .featured-collection__card-inner {
     transform: translateY(-4px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, calc(var(--fc-card-shadow) * 0.6)),
                 0 12px 32px rgba(0, 0, 0, calc(var(--fc-card-shadow) * 0.4));
   }
 
-  .featured-collection__card-image-wrapper {
+  .featured-collection__card-image {
     aspect-ratio: 4/5;
     overflow: hidden;
-    background-color: #f8f8f8;
+    background-color: #f5f5f5;
+    border-radius: calc(var(--fc-card-radius) * 0.5);
+    margin-bottom: 1rem;
   }
 
-  .featured-collection__card-image-wrapper img {
+  .featured-collection__card-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: transform 0.4s ease;
   }
 
-  .featured-collection__card:hover .featured-collection__card-image-wrapper img {
-    transform: scale(1.05);
+  .featured-collection__card:hover .featured-collection__card-image img {
+    transform: scale(1.03);
   }
 
   .featured-collection__placeholder {
@@ -254,7 +293,6 @@
     justify-content: space-between;
     align-items: flex-start;
     gap: 1rem;
-    padding: var(--fc-card-padding);
   }
 
   .featured-collection__card-details {
@@ -287,10 +325,6 @@
 
   /* Mobile Styles */
   @media screen and (max-width: 768px) {
-    .featured-collection {
-      padding: var(--fc-padding-top) 0 var(--fc-padding-bottom);
-    }
-
     .featured-collection__inner {
       display: flex;
       flex-direction: column;
@@ -313,8 +347,24 @@
       display: none;
     }
 
+    .featured-collection__mobile-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
     .featured-collection__description--mobile {
       display: block;
+      font-size: var(--fc-description-size-mobile);
+    }
+
+    .featured-collection__mobile-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--fc-description-color);
+      opacity: 0.6;
     }
 
     .featured-collection__nav {
@@ -344,8 +394,20 @@
       scroll-snap-align: start;
     }
 
-    .featured-collection__card:hover {
+    .featured-collection__card:hover .featured-collection__card-inner {
       transform: none;
+    }
+
+    .featured-collection__card-title {
+      font-size: var(--fc-title-size-mobile);
+    }
+
+    .featured-collection__card-variant {
+      font-size: var(--fc-variant-size-mobile);
+    }
+
+    .featured-collection__card-price {
+      font-size: var(--fc-price-size-mobile);
     }
   }
 {% endstylesheet %}
@@ -360,7 +422,7 @@
 
     if (carousel && track && prevBtn && nextBtn) {
       const cards = track.querySelectorAll('.featured-collection__card');
-      const gap = 24; // 1.5rem gap
+      const gap = 24;
       let currentIndex = 0;
 
       function getCardWidth() {
@@ -400,10 +462,8 @@
         }
       });
 
-      // Initial setup
       updateCarousel();
 
-      // Recalculate on resize
       let resizeTimeout;
       window.addEventListener('resize', () => {
         clearTimeout(resizeTimeout);
@@ -422,21 +482,8 @@
 {% schema %}
 {
   "name": "t:sections.featured_collection.name",
+  "max_blocks": 16,
   "settings": [
-    {
-      "type": "collection",
-      "id": "collection",
-      "label": "t:sections.featured_collection.settings.collection"
-    },
-    {
-      "type": "range",
-      "id": "products_to_show",
-      "label": "t:sections.featured_collection.settings.products_to_show",
-      "min": 4,
-      "max": 16,
-      "step": 1,
-      "default": 10
-    },
     {
       "type": "header",
       "content": "t:sections.featured_collection.settings.content.header"
@@ -576,11 +623,11 @@
       "type": "range",
       "id": "card_padding",
       "label": "t:sections.featured_collection.settings.card_style.padding",
-      "min": 12,
+      "min": 8,
       "max": 32,
       "step": 2,
       "unit": "px",
-      "default": 20
+      "default": 16
     },
     {
       "type": "range",
@@ -604,12 +651,22 @@
     {
       "type": "range",
       "id": "product_title_size",
-      "label": "t:sections.featured_collection.settings.product_title_style.size",
+      "label": "t:sections.featured_collection.settings.product_title_style.size_desktop",
       "min": 14,
       "max": 28,
       "step": 1,
       "unit": "px",
       "default": 18
+    },
+    {
+      "type": "range",
+      "id": "product_title_size_mobile",
+      "label": "t:sections.featured_collection.settings.product_title_style.size_mobile",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
     },
     {
       "type": "select",
@@ -636,12 +693,22 @@
     {
       "type": "range",
       "id": "product_variant_size",
-      "label": "t:sections.featured_collection.settings.product_variant_style.size",
+      "label": "t:sections.featured_collection.settings.product_variant_style.size_desktop",
       "min": 10,
       "max": 18,
       "step": 1,
       "unit": "px",
       "default": 14
+    },
+    {
+      "type": "range",
+      "id": "product_variant_size_mobile",
+      "label": "t:sections.featured_collection.settings.product_variant_style.size_mobile",
+      "min": 10,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "default": 12
     },
     {
       "type": "select",
@@ -666,12 +733,22 @@
     {
       "type": "range",
       "id": "product_price_size",
-      "label": "t:sections.featured_collection.settings.product_price_style.size",
+      "label": "t:sections.featured_collection.settings.product_price_style.size_desktop",
       "min": 14,
       "max": 24,
       "step": 1,
       "unit": "px",
       "default": 16
+    },
+    {
+      "type": "range",
+      "id": "product_price_size_mobile",
+      "label": "t:sections.featured_collection.settings.product_price_style.size_mobile",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
     },
     {
       "type": "select",
@@ -731,9 +808,30 @@
       "default": 80
     }
   ],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "t:sections.featured_collection.blocks.product.name",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "t:sections.featured_collection.blocks.product.settings.product"
+        }
+      ]
+    }
+  ],
   "presets": [
     {
-      "name": "t:sections.featured_collection.name"
+      "name": "t:sections.featured_collection.name",
+      "blocks": [
+        { "type": "product" },
+        { "type": "product" },
+        { "type": "product" },
+        { "type": "product" },
+        { "type": "product" },
+        { "type": "product" }
+      ]
     }
   ]
 }
