@@ -19,6 +19,7 @@
           "settings": {
             "title": "Shop",
             "column_1_header": "Indoor Lighting",
+            "column_1_url": "shopify://collections/indoor-lighting",
             "col1_link_1_title": "Floor Lamp",
             "col1_link_1_url": "shopify://collections/floor-table-lamps",
             "col1_link_2_title": "Desk Lamp",
@@ -32,6 +33,7 @@
             "col1_link_6_title": "",
             "col1_link_6_url": "",
             "column_2_header": "Outdoor Lighting",
+            "column_2_url": "shopify://collections/outdoor-lighting",
             "col2_link_1_title": "Wall Light",
             "col2_link_1_url": "shopify://collections/wall-lights",
             "col2_link_2_title": "Path Light",
