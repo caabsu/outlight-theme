@@ -314,6 +314,25 @@
                 {%- endif -%}
               </div>
 
+              {%- comment -%} Guarantee Badges {%- endcomment -%}
+              <div class="product-details__badges">
+                <div class="product-details__badge">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2">
+                    <path d="M1.5 4L8 1l6.5 3v4.5c0 4-3 6-6.5 7.5-3.5-1.5-6.5-3.5-6.5-7.5V4z"/>
+                    <path d="M5.5 8l2 2 3.5-4"/>
+                  </svg>
+                  <span>2 Year Warranty</span>
+                </div>
+                <div class="product-details__badge">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2">
+                    <path d="M1 5h10v8H1zM11 7h2.5l2 2v4H11V7z"/>
+                    <circle cx="3.5" cy="13" r="1.5"/>
+                    <circle cx="13" cy="13" r="1.5"/>
+                  </svg>
+                  <span>Free Shipping</span>
+                </div>
+              </div>
+
               {%- comment -%} View Full Specs Link {%- endcomment -%}
               <button type="button" class="product-details__view-specs" data-open-specs-modal>
                 <span>View full specs</span>
@@ -337,7 +356,7 @@
                 </div>
                 <div class="specs-modal__content">
                   {%- if product.metafields.custom.collapsible_measurement != blank -%}
-                    <div class="specs-modal__data" data-specs-content>{{ product.metafields.custom.collapsible_measurement }}</div>
+                    <div class="specs-modal__data" data-specs-content>{{ product.metafields.custom.collapsible_measurement | json }}</div>
                   {%- else -%}
                     <p class="specs-modal__empty">No specifications available.</p>
                   {%- endif -%}
@@ -981,11 +1000,35 @@
     color: var(--pd-value-color, #1C1917);
   }
 
+  /* Guarantee Badges */
+  .product-details__badges {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .product-details__badge {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-family: var(--font-primary-family), sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: #57534E;
+  }
+
+  .product-details__badge svg {
+    color: #78716C;
+  }
+
   /* View Full Specs Link */
   .product-details__view-specs {
-    display: inline-flex;
+    display: flex;
     align-items: center;
+    justify-content: center;
     gap: 0.25rem;
+    width: 100%;
     background: none;
     border: none;
     padding: 0;
@@ -1147,6 +1190,11 @@
     font-weight: 500;
     color: #1C1917;
     text-align: right;
+  }
+
+  .specs-modal__value--full {
+    text-align: left;
+    width: 100%;
   }
 
   .specs-modal__empty {
@@ -1428,16 +1476,42 @@
     });
   }
 
+  // Helper to format money (Shopify prices are in cents)
+  function formatMoney(cents) {
+    return '$' + (cents / 100).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+  }
+
   // Quantity selector
   const quantityInput = document.querySelector('[data-quantity-input]');
   const quantityMinus = document.querySelector('[data-quantity-minus]');
   const quantityPlus = document.querySelector('[data-quantity-plus]');
+
+  // Store base price for quantity calculations
+  const addBtn = document.querySelector('.product-add-to-cart-btn');
+  let basePrice = addBtn ? parseInt(addBtn.dataset.price) : 0;
+
+  function updateButtonPrice() {
+    if (!quantityInput || !addBtn) return;
+    const qty = parseInt(quantityInput.value) || 1;
+    const totalPrice = basePrice * qty;
+    const btnPriceEl = addBtn.querySelector('[data-btn-price]');
+    if (btnPriceEl) {
+      btnPriceEl.textContent = formatMoney(totalPrice);
+    }
+  }
+
+  // Update base price when variant changes
+  window.updateBasePrice = function(newPrice) {
+    basePrice = newPrice;
+    updateButtonPrice();
+  };
 
   if (quantityInput && quantityMinus && quantityPlus) {
     quantityMinus.addEventListener('click', () => {
       const currentVal = parseInt(quantityInput.value) || 1;
       if (currentVal > 1) {
         quantityInput.value = currentVal - 1;
+        updateButtonPrice();
       }
     });
 
@@ -1445,6 +1519,7 @@
       const currentVal = parseInt(quantityInput.value) || 1;
       if (currentVal < 99) {
         quantityInput.value = currentVal + 1;
+        updateButtonPrice();
       }
     });
 
@@ -1453,6 +1528,7 @@
       if (val < 1) val = 1;
       if (val > 99) val = 99;
       quantityInput.value = val;
+      updateButtonPrice();
     });
   }
 
@@ -1466,11 +1542,6 @@
     } catch (e) {
       console.error('Error parsing variants:', e);
     }
-  }
-
-  // Helper to format money (Shopify prices are in cents)
-  function formatMoney(cents) {
-    return '$' + (cents / 100).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
   }
 
   // Get initial variant ID from the hidden input and store globally
@@ -1524,10 +1595,9 @@
         priceEl.innerHTML = formatMoney(matchingVariant.price);
       }
 
-      // Update price in button
-      const btnPriceEl = document.querySelector('[data-btn-price]');
-      if (btnPriceEl && matchingVariant.price !== undefined) {
-        btnPriceEl.textContent = formatMoney(matchingVariant.price);
+      // Update base price and recalculate with quantity
+      if (typeof window.updateBasePrice === 'function' && matchingVariant.price !== undefined) {
+        window.updateBasePrice(matchingVariant.price);
       }
 
       // Update subtitle with variant title
@@ -1564,16 +1634,20 @@
       });
 
       // Update button state
-      const addBtn = document.querySelector('.product-add-to-cart-btn');
-      if (addBtn) {
-        const addText = addBtn.dataset.addText || 'Add to Cart';
-        const soldOutText = addBtn.dataset.soldOutText || 'Sold out';
+      const addBtnVariant = document.querySelector('.product-add-to-cart-btn');
+      if (addBtnVariant) {
+        const addText = addBtnVariant.dataset.addText || 'Add to Cart';
+        const soldOutText = addBtnVariant.dataset.soldOutText || 'Sold out';
         if (matchingVariant.available) {
-          addBtn.disabled = false;
-          addBtn.innerHTML = '<span data-btn-text>' + addText + '</span> — <span data-btn-price>' + formatMoney(matchingVariant.price) + '</span>';
+          addBtnVariant.disabled = false;
+          // Get current quantity for price calculation
+          const qtyInput = document.querySelector('[data-quantity-input]');
+          const qty = qtyInput ? parseInt(qtyInput.value) || 1 : 1;
+          const totalPrice = matchingVariant.price * qty;
+          addBtnVariant.innerHTML = '<span data-btn-text>' + addText + '</span> — <span data-btn-price>' + formatMoney(totalPrice) + '</span>';
         } else {
-          addBtn.disabled = true;
-          addBtn.innerHTML = soldOutText;
+          addBtnVariant.disabled = true;
+          addBtnVariant.innerHTML = soldOutText;
         }
       }
     }
@@ -1591,6 +1665,10 @@
     // Use the global variant ID
     const variantId = window.currentProductVariantId;
 
+    // Get quantity from input
+    const qtyInput = form.querySelector('[data-quantity-input]');
+    const quantity = qtyInput ? parseInt(qtyInput.value) || 1 : 1;
+
     if (!variantId) {
       alert('Please select a variant');
       return;
@@ -1601,7 +1679,7 @@
     submitBtn.textContent = 'Adding...';
 
     try {
-      // Use JSON body with the tracked variant ID
+      // Use JSON body with the tracked variant ID and quantity
       const response = await fetch('/cart/add.js', {
         method: 'POST',
         headers: {
@@ -1609,7 +1687,7 @@
         },
         body: JSON.stringify({
           id: parseInt(variantId),
-          quantity: 1
+          quantity: quantity
         })
       });
 
@@ -1679,111 +1757,99 @@
   const closeSpecsBtns = document.querySelectorAll('[data-close-specs-modal]');
   const specsContent = document.querySelector('[data-specs-content]');
 
-  function parseSpecsData(rawData) {
-    if (!rawData) return [];
+  function parseRichTextJson(data) {
+    // Handle Shopify rich text metafield JSON format
+    let parsed;
+    try {
+      parsed = typeof data === 'string' ? JSON.parse(data) : data;
+    } catch (e) {
+      // If it's not valid JSON, return as plain text
+      return { sections: [], plainText: data };
+    }
+
+    if (!parsed || !parsed.children) {
+      return { sections: [], plainText: data };
+    }
 
     const sections = [];
-    let currentSection = { title: 'Dimensions', items: [] };
+    let currentSection = { title: '', items: [] };
 
-    // Split by common separators and clean up
-    const lines = rawData.split(/[\n\r]+/).filter(line => line.trim());
-
-    lines.forEach(line => {
-      line = line.trim();
-
-      // Check if this is a section header (ends with colon and no value after)
-      if (line.endsWith(':') && !line.includes(': ')) {
-        // Skip empty section headers that are just labels
-        return;
-      }
-
-      // Check for "Specifications:" or similar section headers
-      if (line.toLowerCase() === 'specifications:' || line.toLowerCase() === 'dimensions:') {
-        if (currentSection.items.length > 0) {
-          sections.push(currentSection);
-        }
-        currentSection = { title: line.replace(':', ''), items: [] };
-        return;
-      }
-
-      // Parse key: value pairs
-      const colonIndex = line.indexOf(':');
-      if (colonIndex > 0) {
-        const label = line.substring(0, colonIndex).trim();
-        const value = line.substring(colonIndex + 1).trim();
-
-        if (label && value) {
-          // Check if this starts a new section (like "Specifications:")
-          if (label.toLowerCase() === 'specifications') {
-            if (currentSection.items.length > 0) {
+    parsed.children.forEach(child => {
+      if (child.type === 'paragraph' && child.children) {
+        // Check if it's a section header (italic text ending with colon)
+        const textNode = child.children[0];
+        if (textNode && textNode.value) {
+          const text = textNode.value.trim();
+          if (textNode.italic && text.endsWith(':')) {
+            // Start a new section
+            if (currentSection.items.length > 0 || currentSection.title) {
               sections.push(currentSection);
             }
-            currentSection = { title: 'Specifications', items: [] };
-          } else {
-            currentSection.items.push({ label, value });
+            currentSection = { title: text.replace(':', ''), items: [] };
           }
         }
+      } else if (child.type === 'list' && child.children) {
+        // Process list items
+        child.children.forEach(listItem => {
+          if (listItem.type === 'list-item' && listItem.children) {
+            const textNode = listItem.children[0];
+            if (textNode && textNode.value) {
+              const text = textNode.value.trim();
+              // Try to split by colon for label: value format
+              const colonIndex = text.indexOf(':');
+              if (colonIndex > 0) {
+                const label = text.substring(0, colonIndex).trim();
+                const value = text.substring(colonIndex + 1).trim();
+                currentSection.items.push({ label, value });
+              } else {
+                // Just a plain item
+                currentSection.items.push({ label: '', value: text });
+              }
+            }
+          }
+        });
       }
     });
 
     // Add the last section
-    if (currentSection.items.length > 0) {
+    if (currentSection.items.length > 0 || currentSection.title) {
       sections.push(currentSection);
     }
 
-    // If we only have one section with no title, check if items should be split
-    if (sections.length === 1 && sections[0].title === 'Dimensions') {
-      const dimensionItems = [];
-      const specItems = [];
-      let foundSpecsHeader = false;
-
-      sections[0].items.forEach(item => {
-        const labelLower = item.label.toLowerCase();
-        if (labelLower === 'height' || labelLower === 'width' || labelLower === 'depth' || labelLower === 'length' || labelLower === 'diameter') {
-          dimensionItems.push(item);
-        } else {
-          specItems.push(item);
-        }
-      });
-
-      const newSections = [];
-      if (dimensionItems.length > 0) {
-        newSections.push({ title: 'Dimensions', items: dimensionItems });
-      }
-      if (specItems.length > 0) {
-        newSections.push({ title: 'Specifications', items: specItems });
-      }
-
-      if (newSections.length > 0) {
-        return newSections;
-      }
-    }
-
-    return sections;
+    return { sections, plainText: null };
   }
 
   function renderSpecsModal() {
     if (!specsContent) return;
 
-    const rawData = specsContent.textContent;
-    const sections = parseSpecsData(rawData);
+    const rawData = specsContent.textContent.trim();
+    const { sections, plainText } = parseRichTextJson(rawData);
 
-    if (sections.length === 0) return;
+    if (sections.length === 0 && !plainText) return;
 
     let html = '';
-    sections.forEach(section => {
-      html += '<div class="specs-modal__section">';
-      html += '<h4 class="specs-modal__section-title">' + section.title + '</h4>';
-      html += '<ul class="specs-modal__list">';
-      section.items.forEach(item => {
-        html += '<li class="specs-modal__item">';
-        html += '<span class="specs-modal__label">' + item.label + '</span>';
-        html += '<span class="specs-modal__value">' + item.value + '</span>';
-        html += '</li>';
+
+    if (sections.length > 0) {
+      sections.forEach(section => {
+        html += '<div class="specs-modal__section">';
+        if (section.title) {
+          html += '<h4 class="specs-modal__section-title">' + section.title + '</h4>';
+        }
+        html += '<ul class="specs-modal__list">';
+        section.items.forEach(item => {
+          html += '<li class="specs-modal__item">';
+          if (item.label) {
+            html += '<span class="specs-modal__label">' + item.label + '</span>';
+            html += '<span class="specs-modal__value">' + item.value + '</span>';
+          } else {
+            html += '<span class="specs-modal__value specs-modal__value--full">' + item.value + '</span>';
+          }
+          html += '</li>';
+        });
+        html += '</ul>';
+        html += '</div>';
       });
-      html += '</ul>';
-      html += '</div>';
-    });
+    }
 
     // Insert after the hidden data element
     const container = specsContent.parentElement;
