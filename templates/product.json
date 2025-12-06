@@ -28,6 +28,7 @@
         "specs"
       ],
       "settings": {
+        "product_info_bg": "#F7F5F0",
         "eyebrow_text": "modern floor lamp",
         "eyebrow_size": 13,
         "eyebrow_color": "#d97706",
@@ -55,12 +56,15 @@
         "config_title_color": "#1c1917",
         "config_title_italic": false,
         "variant_focus_color": "#d97706",
+        "variant_label_size": 11,
+        "variant_label_weight": "700",
+        "variant_label_color": "#57534E",
         "button_size": 15,
         "button_size_desktop": 16,
         "button_weight": "700",
-        "button_text_color": "#ffffff",
-        "button_bg_color": "#1c1917",
-        "button_radius": 0,
+        "button_text_color": "#F7F5F0",
+        "button_bg_color": "#1C1917",
+        "button_radius": 9,
         "gallery_dot_color": "#fbfaf9",
         "gallery_arrow_color": "#f7f5f0"
       }
