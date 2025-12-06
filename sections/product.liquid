@@ -213,65 +213,83 @@
         {% endform %}
       </div>
 
-      {%- comment -%} Product Details Section {%- endcomment -%}
-      <div class="product-details">
-        {%- comment -%} Description Header {%- endcomment -%}
-        <h4 class="product-details__header">{{ section.settings.description_header }}</h4>
-
-        {%- comment -%} Description Text {%- endcomment -%}
-        {%- if product.metafields.custom.description != blank -%}
-          <p class="product-details__description">{{ product.metafields.custom.description }}</p>
-        {%- elsif section.settings.description_text != blank -%}
-          <p class="product-details__description">{{ section.settings.description_text }}</p>
-        {%- endif -%}
-
-        {%- comment -%} Specs Cards Grid {%- endcomment -%}
-        <div class="product-details__specs-grid">
-          {%- if section.settings.spec_label_1 != blank -%}
-            <div class="product-details__spec-card">
-              <span class="product-details__spec-label">{{ section.settings.spec_label_1 }}</span>
-              <span class="product-details__spec-value">{{ section.settings.spec_value_1 }}</span>
-            </div>
-          {%- endif -%}
-          {%- if section.settings.spec_label_2 != blank -%}
-            <div class="product-details__spec-card">
-              <span class="product-details__spec-label">{{ section.settings.spec_label_2 }}</span>
-              <span class="product-details__spec-value">{{ section.settings.spec_value_2 }}</span>
-            </div>
-          {%- endif -%}
-          {%- if section.settings.spec_label_3 != blank -%}
-            <div class="product-details__spec-card">
-              <span class="product-details__spec-label">{{ section.settings.spec_label_3 }}</span>
-              <span class="product-details__spec-value">{{ section.settings.spec_value_3 }}</span>
-            </div>
-          {%- endif -%}
-          {%- if section.settings.spec_label_4 != blank -%}
-            <div class="product-details__spec-card">
-              <span class="product-details__spec-label">{{ section.settings.spec_label_4 }}</span>
-              <span class="product-details__spec-value">{{ section.settings.spec_value_4 }}</span>
-            </div>
-          {%- endif -%}
-        </div>
-
-        {%- comment -%} Free Shipping Banner {%- endcomment -%}
-        {%- if section.settings.show_shipping_banner -%}
-          <div class="product-details__shipping-banner">
-            <svg class="product-details__shipping-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <path d="M1 3h15v13H1zM16 8h4l3 3v5h-7V8zM5.5 21a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM18.5 21a2.5 2.5 0 100-5 2.5 2.5 0 000 5z"/>
-            </svg>
-            <div class="product-details__shipping-text">
-              <span class="product-details__shipping-title">{{ section.settings.shipping_title }}</span>
-              <span class="product-details__shipping-subtitle">{{ section.settings.shipping_subtitle }}</span>
-            </div>
-          </div>
-        {%- endif -%}
-      </div>
-
       {%- comment -%} Blocks (Specs, Features, etc) {%- endcomment -%}
       {%- for block in section.blocks -%}
         {%- case block.type -%}
           {%- when '@app' -%}
             {% render block %}
+
+          {%- when 'product_details' -%}
+            <div class="product-details" {{ block.shopify_attributes }} style="
+              --pd-header-color: {{ block.settings.header_color }};
+              --pd-header-size: {{ block.settings.header_size }}px;
+              --pd-header-weight: {{ block.settings.header_weight }};
+              --pd-desc-color: {{ block.settings.description_color }};
+              --pd-desc-size: {{ block.settings.description_size }}px;
+              --pd-card-bg: {{ block.settings.card_bg_color }};
+              --pd-card-radius: {{ block.settings.card_radius }}px;
+              --pd-label-color: {{ block.settings.label_color }};
+              --pd-label-size: {{ block.settings.label_size }}px;
+              --pd-value-color: {{ block.settings.value_color }};
+              --pd-value-size: {{ block.settings.value_size }}px;
+              --pd-value-weight: {{ block.settings.value_weight }};
+              --pd-banner-bg: {{ block.settings.banner_bg_color }};
+              --pd-banner-title-color: {{ block.settings.banner_title_color }};
+              --pd-banner-subtitle-color: {{ block.settings.banner_subtitle_color }};
+            ">
+              {%- comment -%} Description Header {%- endcomment -%}
+              {%- if block.settings.description_header != blank -%}
+                <h4 class="product-details__header">{{ block.settings.description_header }}</h4>
+              {%- endif -%}
+
+              {%- comment -%} Description Text {%- endcomment -%}
+              {%- if product.metafields.custom.description != blank -%}
+                <p class="product-details__description">{{ product.metafields.custom.description }}</p>
+              {%- elsif block.settings.description_text != blank -%}
+                <p class="product-details__description">{{ block.settings.description_text }}</p>
+              {%- endif -%}
+
+              {%- comment -%} Specs Cards Grid {%- endcomment -%}
+              <div class="product-details__specs-grid">
+                {%- if block.settings.spec_label_1 != blank -%}
+                  <div class="product-details__spec-card">
+                    <span class="product-details__spec-label">{{ block.settings.spec_label_1 }}</span>
+                    <span class="product-details__spec-value">{{ block.settings.spec_value_1 }}</span>
+                  </div>
+                {%- endif -%}
+                {%- if block.settings.spec_label_2 != blank -%}
+                  <div class="product-details__spec-card">
+                    <span class="product-details__spec-label">{{ block.settings.spec_label_2 }}</span>
+                    <span class="product-details__spec-value">{{ block.settings.spec_value_2 }}</span>
+                  </div>
+                {%- endif -%}
+                {%- if block.settings.spec_label_3 != blank -%}
+                  <div class="product-details__spec-card">
+                    <span class="product-details__spec-label">{{ block.settings.spec_label_3 }}</span>
+                    <span class="product-details__spec-value">{{ block.settings.spec_value_3 }}</span>
+                  </div>
+                {%- endif -%}
+                {%- if block.settings.spec_label_4 != blank -%}
+                  <div class="product-details__spec-card">
+                    <span class="product-details__spec-label">{{ block.settings.spec_label_4 }}</span>
+                    <span class="product-details__spec-value">{{ block.settings.spec_value_4 }}</span>
+                  </div>
+                {%- endif -%}
+              </div>
+
+              {%- comment -%} Free Shipping Banner {%- endcomment -%}
+              {%- if block.settings.show_shipping_banner -%}
+                <div class="product-details__shipping-banner">
+                  <svg class="product-details__shipping-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M1 3h15v13H1zM16 8h4l3 3v5h-7V8zM5.5 21a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM18.5 21a2.5 2.5 0 100-5 2.5 2.5 0 000 5z"/>
+                  </svg>
+                  <div class="product-details__shipping-text">
+                    <span class="product-details__shipping-title">{{ block.settings.shipping_title }}</span>
+                    <span class="product-details__shipping-subtitle">{{ block.settings.shipping_subtitle }}</span>
+                  </div>
+                </div>
+              {%- endif -%}
+            </div>
 
           {%- when 'specs' -%}
             <div class="product-specs" {{ block.shopify_attributes }}>
@@ -755,19 +773,19 @@
 
   .product-details__header {
     font-family: var(--font-primary-family), sans-serif;
-    font-size: 0.6875rem;
-    font-weight: 600;
+    font-size: var(--pd-header-size, 11px);
+    font-weight: var(--pd-header-weight, 600);
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    color: #78716C;
+    color: var(--pd-header-color, #78716C);
     margin: 0 0 0.75rem;
   }
 
   .product-details__description {
     font-family: var(--font-primary-family), sans-serif;
-    font-size: 0.9375rem;
+    font-size: var(--pd-desc-size, 15px);
     line-height: 1.7;
-    color: #57534E;
+    color: var(--pd-desc-color, #57534E);
     margin: 0 0 1.25rem;
   }
 
@@ -780,8 +798,8 @@
   }
 
   .product-details__spec-card {
-    background: #F5F5F4;
-    border-radius: 8px;
+    background: var(--pd-card-bg, #F5F5F4);
+    border-radius: var(--pd-card-radius, 8px);
     padding: 0.875rem 1rem;
     display: flex;
     flex-direction: column;
@@ -790,15 +808,15 @@
 
   .product-details__spec-label {
     font-family: var(--font-primary-family), sans-serif;
-    font-size: 0.6875rem;
-    color: #9CA3AF;
+    font-size: var(--pd-label-size, 11px);
+    color: var(--pd-label-color, #9CA3AF);
   }
 
   .product-details__spec-value {
     font-family: var(--font-primary-family), sans-serif;
-    font-size: 0.9375rem;
-    font-weight: 500;
-    color: #1C1917;
+    font-size: var(--pd-value-size, 15px);
+    font-weight: var(--pd-value-weight, 500);
+    color: var(--pd-value-color, #1C1917);
   }
 
   /* Free Shipping Banner */
@@ -806,14 +824,14 @@
     display: flex;
     align-items: center;
     gap: 0.875rem;
-    background: #1C1917;
+    background: var(--pd-banner-bg, #1C1917);
     border-radius: 12px;
     padding: 1rem 1.25rem;
     margin-top: 0.5rem;
   }
 
   .product-details__shipping-icon {
-    color: #ffffff;
+    color: var(--pd-banner-title-color, #ffffff);
     flex-shrink: 0;
   }
 
@@ -827,13 +845,13 @@
     font-family: var(--font-primary-family), sans-serif;
     font-size: 0.875rem;
     font-weight: 600;
-    color: #ffffff;
+    color: var(--pd-banner-title-color, #ffffff);
   }
 
   .product-details__shipping-subtitle {
     font-family: var(--font-primary-family), sans-serif;
     font-size: 0.75rem;
-    color: #9CA3AF;
+    color: var(--pd-banner-subtitle-color, #9CA3AF);
   }
 
   /* Specs */
@@ -1403,6 +1421,241 @@
           "id": "text",
           "label": "Text",
           "default": "Free shipping on orders over $200"
+        }
+      ]
+    },
+    {
+      "type": "product_details",
+      "name": "Product details",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Description"
+        },
+        {
+          "type": "text",
+          "id": "description_header",
+          "label": "Header text",
+          "default": "DESCRIPTION"
+        },
+        {
+          "type": "color",
+          "id": "header_color",
+          "label": "Header color",
+          "default": "#78716C"
+        },
+        {
+          "type": "range",
+          "id": "header_size",
+          "min": 9,
+          "max": 14,
+          "step": 1,
+          "unit": "px",
+          "label": "Header size",
+          "default": 11
+        },
+        {
+          "type": "select",
+          "id": "header_weight",
+          "label": "Header weight",
+          "options": [
+            { "value": "400", "label": "Regular" },
+            { "value": "500", "label": "Medium" },
+            { "value": "600", "label": "Semibold" },
+            { "value": "700", "label": "Bold" }
+          ],
+          "default": "600"
+        },
+        {
+          "type": "textarea",
+          "id": "description_text",
+          "label": "Description text",
+          "info": "Leave blank to use metafield custom.description",
+          "default": "Minimalist in form, maximalist in texture. The Dune Sconce features a curved sandstone face that acts as a natural diffuser."
+        },
+        {
+          "type": "color",
+          "id": "description_color",
+          "label": "Description color",
+          "default": "#57534E"
+        },
+        {
+          "type": "range",
+          "id": "description_size",
+          "min": 12,
+          "max": 18,
+          "step": 1,
+          "unit": "px",
+          "label": "Description size",
+          "default": 15
+        },
+        {
+          "type": "header",
+          "content": "Spec cards"
+        },
+        {
+          "type": "color",
+          "id": "card_bg_color",
+          "label": "Card background",
+          "default": "#F5F5F4"
+        },
+        {
+          "type": "range",
+          "id": "card_radius",
+          "min": 0,
+          "max": 20,
+          "step": 1,
+          "unit": "px",
+          "label": "Card corner radius",
+          "default": 8
+        },
+        {
+          "type": "color",
+          "id": "label_color",
+          "label": "Label color",
+          "default": "#9CA3AF"
+        },
+        {
+          "type": "range",
+          "id": "label_size",
+          "min": 9,
+          "max": 14,
+          "step": 1,
+          "unit": "px",
+          "label": "Label size",
+          "default": 11
+        },
+        {
+          "type": "color",
+          "id": "value_color",
+          "label": "Value color",
+          "default": "#1C1917"
+        },
+        {
+          "type": "range",
+          "id": "value_size",
+          "min": 12,
+          "max": 18,
+          "step": 1,
+          "unit": "px",
+          "label": "Value size",
+          "default": 15
+        },
+        {
+          "type": "select",
+          "id": "value_weight",
+          "label": "Value weight",
+          "options": [
+            { "value": "400", "label": "Regular" },
+            { "value": "500", "label": "Medium" },
+            { "value": "600", "label": "Semibold" },
+            { "value": "700", "label": "Bold" }
+          ],
+          "default": "500"
+        },
+        {
+          "type": "header",
+          "content": "Spec 1"
+        },
+        {
+          "type": "text",
+          "id": "spec_label_1",
+          "label": "Label",
+          "default": "Dimensions"
+        },
+        {
+          "type": "text",
+          "id": "spec_value_1",
+          "label": "Value",
+          "default": "12\" x 6\""
+        },
+        {
+          "type": "header",
+          "content": "Spec 2"
+        },
+        {
+          "type": "text",
+          "id": "spec_label_2",
+          "label": "Label",
+          "default": "Weight"
+        },
+        {
+          "type": "text",
+          "id": "spec_value_2",
+          "label": "Value",
+          "default": "4.2 lbs"
+        },
+        {
+          "type": "header",
+          "content": "Spec 3"
+        },
+        {
+          "type": "text",
+          "id": "spec_label_3",
+          "label": "Label",
+          "default": "Bulb"
+        },
+        {
+          "type": "text",
+          "id": "spec_value_3",
+          "label": "Value",
+          "default": "LED 8.5W"
+        },
+        {
+          "type": "header",
+          "content": "Spec 4"
+        },
+        {
+          "type": "text",
+          "id": "spec_label_4",
+          "label": "Label",
+          "default": "Finish"
+        },
+        {
+          "type": "text",
+          "id": "spec_value_4",
+          "label": "Value",
+          "default": "Honed"
+        },
+        {
+          "type": "header",
+          "content": "Shipping banner"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_shipping_banner",
+          "label": "Show shipping banner",
+          "default": true
+        },
+        {
+          "type": "color",
+          "id": "banner_bg_color",
+          "label": "Banner background",
+          "default": "#1C1917"
+        },
+        {
+          "type": "text",
+          "id": "shipping_title",
+          "label": "Title",
+          "default": "Free Shipping"
+        },
+        {
+          "type": "color",
+          "id": "banner_title_color",
+          "label": "Title color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "text",
+          "id": "shipping_subtitle",
+          "label": "Subtitle",
+          "default": "Arrives in 5-7 business days."
+        },
+        {
+          "type": "color",
+          "id": "banner_subtitle_color",
+          "label": "Subtitle color",
+          "default": "#9CA3AF"
         }
       ]
     }
