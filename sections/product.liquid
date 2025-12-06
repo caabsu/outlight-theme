@@ -240,15 +240,30 @@
               --pd-banner-title-color: {{ block.settings.banner_title_color }};
               --pd-banner-subtitle-color: {{ block.settings.banner_subtitle_color }};
             ">
-              {%- comment -%} Description Header Row with Variant Indicator {%- endcomment -%}
+              {%- comment -%} Description Header Row with Variant Indicators {%- endcomment -%}
               <div class="product-details__header-row">
                 {%- if block.settings.description_header != blank -%}
                   <h4 class="product-details__header">{{ block.settings.description_header }}</h4>
                 {%- endif -%}
                 {%- if product.has_only_default_variant == false -%}
-                  <span class="product-details__variant-indicator" data-variant-indicator>
-                    {{ product.selected_or_first_available_variant.title }}
-                  </span>
+                  <div class="product-details__variant-pills" data-variant-pills>
+                    {%- for option in product.options_with_values -%}
+                      {%- assign selected_value = product.selected_or_first_available_variant.options[forloop.index0] -%}
+                      {%- assign option_name_lower = option.name | downcase -%}
+                      <span class="product-details__variant-pill" data-variant-pill data-option-index="{{ forloop.index0 }}" data-option-name="{{ option_name_lower }}">
+                        <span class="variant-pill__icon" data-pill-icon>
+                          {%- if option_name_lower contains 'color' or option_name_lower contains 'colour' -%}
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" fill="currentColor" stroke="currentColor" stroke-width="1"/></svg>
+                          {%- elsif option_name_lower contains 'size' or selected_value contains '"' or selected_value contains 'x' or selected_value contains 'inch' -%}
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="1.5" y="1.5" width="11" height="11" rx="1.5"/><path d="M1.5 4.5h11M4.5 1.5v11"/></svg>
+                          {%- else -%}
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="7" cy="7" r="5.5"/></svg>
+                          {%- endif -%}
+                        </span>
+                        <span class="variant-pill__text" data-pill-text>{{ selected_value }}</span>
+                      </span>
+                    {%- endfor -%}
+                  </div>
                 {%- endif -%}
               </div>
 
@@ -806,16 +821,42 @@
     margin: 0;
   }
 
-  .product-details__variant-indicator {
+  .product-details__variant-pills {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .product-details__variant-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
     font-family: var(--font-primary-family), sans-serif;
-    font-size: 10px;
-    font-weight: 500;
-    color: #57534E;
-    background: #F5F5F4;
-    padding: 0.25rem 0.625rem;
+    font-size: 12px;
+    font-weight: 400;
+    color: #44403C;
+    background: #ffffff;
+    padding: 0.375rem 0.75rem;
     border-radius: 100px;
-    letter-spacing: 0.02em;
+    border: 1px solid #E7E5E4;
     white-space: nowrap;
+  }
+
+  .variant-pill__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #A8A29E;
+  }
+
+  .variant-pill__icon svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .variant-pill__text {
+    line-height: 1;
   }
 
   .product-details__description {
@@ -1242,11 +1283,32 @@
         subtitleEl.textContent = matchingVariant.title;
       }
 
-      // Update variant indicator in product details
-      const variantIndicator = document.querySelector('[data-variant-indicator]');
-      if (variantIndicator && matchingVariant.title && matchingVariant.title !== 'Default Title') {
-        variantIndicator.textContent = matchingVariant.title;
-      }
+      // Update variant pills in product details
+      const variantPills = document.querySelectorAll('[data-variant-pill]');
+      variantPills.forEach(pill => {
+        const optionIndex = parseInt(pill.dataset.optionIndex);
+        const optionName = pill.dataset.optionName;
+        const newValue = selectedOptions[optionIndex];
+        if (newValue) {
+          const textEl = pill.querySelector('[data-pill-text]');
+          if (textEl) {
+            textEl.textContent = newValue;
+          }
+          // Update icon based on value content
+          const iconEl = pill.querySelector('[data-pill-icon]');
+          if (iconEl) {
+            const isColor = optionName.includes('color') || optionName.includes('colour');
+            const isSize = optionName.includes('size') || newValue.includes('"') || newValue.includes('x') || newValue.includes('inch');
+            if (isColor) {
+              iconEl.innerHTML = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" fill="currentColor" stroke="currentColor" stroke-width="1"/></svg>';
+            } else if (isSize) {
+              iconEl.innerHTML = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="1.5" y="1.5" width="11" height="11" rx="1.5"/><path d="M1.5 4.5h11M4.5 1.5v11"/></svg>';
+            } else {
+              iconEl.innerHTML = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="7" cy="7" r="5.5"/></svg>';
+            }
+          }
+        }
+      });
 
       // Update button state
       const addBtn = document.querySelector('.product-add-to-cart-btn');
