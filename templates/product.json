@@ -16,9 +16,9 @@
           "type": "product_details",
           "settings": {
             "description_header": "DESCRIPTION",
-            "header_color": "#78716c",
-            "header_size": 11,
-            "header_weight": "600",
+            "header_color": "#D97706",
+            "header_size": 10,
+            "header_weight": "700",
             "description_text": "Minimalist in form, maximalist in texture. The Dune Sconce features a curved sandstone face that acts as a natural diffuser.",
             "description_color": "#57534e",
             "description_size": 15,
