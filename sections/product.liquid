@@ -45,6 +45,8 @@
     --delivery-date-weight: {{ section.settings.delivery_date_weight }};
     --delivery-date-color: {{ section.settings.delivery_date_color }};
     --delivery-bg-color: {{ section.settings.delivery_bg_color }};
+    --delivery-border-color: {{ section.settings.delivery_border_color }};
+    --delivery-border-width: {{ section.settings.delivery_border_width }}px;
   "
 >
   {%- comment -%} Image Gallery {%- endcomment -%}
@@ -720,6 +722,7 @@
     padding: 0.875rem 1rem;
     border-radius: 10px;
     margin-bottom: 1rem;
+    border: var(--delivery-border-width, 1px) solid var(--delivery-border-color, #E5E5E5);
   }
 
   .product-delivery-estimate__label {
@@ -1665,6 +1668,22 @@
       "id": "delivery_bg_color",
       "label": "Background color",
       "default": "#F5F5F4"
+    },
+    {
+      "type": "color",
+      "id": "delivery_border_color",
+      "label": "Border color",
+      "default": "#E5E5E5"
+    },
+    {
+      "type": "range",
+      "id": "delivery_border_width",
+      "min": 0,
+      "max": 5,
+      "step": 1,
+      "unit": "px",
+      "label": "Border width",
+      "default": 1
     },
     {
       "type": "range",
