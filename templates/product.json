@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "main": {
@@ -9,7 +18,9 @@
             "spec_1": "Solid Brass",
             "spec_2": "2700K LED",
             "spec_3": "Dimmable",
-            "spec_4": "5 Year Warranty"
+            "spec_4": "5 Year Warranty",
+            "spec_5": "",
+            "spec_6": ""
           }
         }
       },
