@@ -356,7 +356,7 @@
                 </div>
                 <div class="specs-modal__content">
                   {%- if product.metafields.custom.collapsible_measurement != blank -%}
-                    <div class="specs-modal__data" data-specs-content>{{ product.metafields.custom.collapsible_measurement | json }}</div>
+                    <div class="specs-modal__data" data-specs-content>{{ product.metafields.custom.collapsible_measurement }}</div>
                   {%- else -%}
                     <p class="specs-modal__empty">No specifications available.</p>
                   {%- endif -%}
@@ -1003,7 +1003,8 @@
   /* Guarantee Badges */
   .product-details__badges {
     display: flex;
-    gap: 1rem;
+    justify-content: center;
+    gap: 1.5rem;
     margin-top: 1rem;
     margin-bottom: 0.75rem;
   }
@@ -1757,17 +1758,70 @@
   const closeSpecsBtns = document.querySelectorAll('[data-close-specs-modal]');
   const specsContent = document.querySelector('[data-specs-content]');
 
+  // Parse HTML rendered specs (when metafield outputs as HTML)
+  function parseHtmlSpecs(html) {
+    const sections = [];
+    let currentSection = { title: '', items: [] };
+
+    // Create temp element to parse HTML
+    const temp = document.createElement('div');
+    temp.innerHTML = html;
+
+    // Find all paragraphs (might be section headers) and list items
+    const elements = temp.querySelectorAll('p, li');
+    elements.forEach(el => {
+      const text = el.textContent.trim();
+      if (!text) return;
+
+      // Check if it's a header (usually in <em> or <i> and ends with colon)
+      const isHeader = (el.tagName === 'P' && (el.querySelector('em, i') || text.endsWith(':')));
+
+      if (isHeader && text.endsWith(':')) {
+        if (currentSection.items.length > 0 || currentSection.title) {
+          sections.push(currentSection);
+        }
+        currentSection = { title: text.replace(':', ''), items: [] };
+      } else if (el.tagName === 'LI') {
+        const colonIndex = text.indexOf(':');
+        if (colonIndex > 0) {
+          currentSection.items.push({
+            label: text.substring(0, colonIndex).trim(),
+            value: text.substring(colonIndex + 1).trim()
+          });
+        } else {
+          currentSection.items.push({ label: '', value: text });
+        }
+      }
+    });
+
+    if (currentSection.items.length > 0 || currentSection.title) {
+      sections.push(currentSection);
+    }
+
+    return { sections, plainText: null };
+  }
+
   function parseRichTextJson(data) {
     // Handle Shopify rich text metafield JSON format
     let parsed;
     try {
+      // Try to parse as JSON (might be double-encoded)
       parsed = typeof data === 'string' ? JSON.parse(data) : data;
+      // Check if it was double-encoded
+      if (typeof parsed === 'string') {
+        parsed = JSON.parse(parsed);
+      }
     } catch (e) {
-      // If it's not valid JSON, return as plain text
+      // If it's not valid JSON, try to extract from HTML or return as plain text
+      // Check if it looks like HTML
+      if (data.includes('<') && data.includes('>')) {
+        return parseHtmlSpecs(data);
+      }
       return { sections: [], plainText: data };
     }
 
     if (!parsed || !parsed.children) {
+      // Might be plain text or different format
       return { sections: [], plainText: data };
     }
 
