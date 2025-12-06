@@ -623,6 +623,16 @@
     try {
       productVariants = JSON.parse(variantsDataEl.textContent);
       console.log('Loaded variants:', productVariants);
+      // Log first variant structure for debugging
+      if (productVariants[0]) {
+        console.log('First variant structure:', {
+          id: productVariants[0].id,
+          title: productVariants[0].title,
+          option1: productVariants[0].option1,
+          option2: productVariants[0].option2,
+          options: productVariants[0].options
+        });
+      }
     } catch (e) {
       console.error('Error parsing variants:', e);
     }
@@ -665,8 +675,13 @@
     });
     console.log('Selected options:', selectedOptions);
 
-    // Find matching variant by comparing options
+    // Find matching variant by comparing options array
     const matchingVariant = productVariants.find(variant => {
+      // Try matching with options array first
+      if (variant.options && Array.isArray(variant.options)) {
+        return variant.options.every((opt, index) => opt === selectedOptions[index]);
+      }
+      // Fallback to option1, option2, option3 properties
       for (let i = 0; i < selectedOptions.length; i++) {
         const optionKey = 'option' + (i + 1);
         if (variant[optionKey] !== selectedOptions[i]) {
@@ -676,6 +691,7 @@
       return true;
     });
     console.log('Matching variant:', matchingVariant);
+    console.log('Variant options array:', productVariants[0]?.options);
 
     if (matchingVariant) {
       // Store the variant ID globally on window
