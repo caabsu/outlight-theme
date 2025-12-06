@@ -329,7 +329,10 @@
                       {{ block.settings.shipping_box_image | image_url: width: 400 | image_tag }}
                     </div>
                   {%- endif -%}
-                  <span class="product-details__info-box-text">{{ block.settings.shipping_box_text_content }}</span>
+                  <div class="product-details__info-box-content">
+                    <span class="product-details__info-box-subheader">{{ block.settings.shipping_box_subheader }}</span>
+                    <span class="product-details__info-box-header">{{ block.settings.shipping_box_header }}</span>
+                  </div>
                 </a>
                 <button type="button" class="product-details__info-box product-details__info-box--specs" data-open-specs-modal>
                   {%- if block.settings.specs_box_image != blank -%}
@@ -337,7 +340,10 @@
                       {{ block.settings.specs_box_image | image_url: width: 400 | image_tag }}
                     </div>
                   {%- endif -%}
-                  <span class="product-details__info-box-text">{{ block.settings.specs_box_text_content }}</span>
+                  <div class="product-details__info-box-content">
+                    <span class="product-details__info-box-subheader">{{ block.settings.specs_box_subheader }}</span>
+                    <span class="product-details__info-box-header">{{ block.settings.specs_box_header }}</span>
+                  </div>
                 </button>
               </div>
             </div>
@@ -1054,19 +1060,34 @@
     object-fit: cover;
   }
 
-  .product-details__info-box-text {
+  .product-details__info-box-content {
     position: relative;
     z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.125rem;
+  }
+
+  .product-details__info-box-subheader {
     font-family: var(--font-primary-family), sans-serif;
-    font-size: 13px;
+    font-size: 10px;
     font-weight: 500;
   }
 
-  .product-details__info-box--shipping .product-details__info-box-text {
+  .product-details__info-box-header {
+    font-family: var(--font-primary-family), sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .product-details__info-box--shipping .product-details__info-box-subheader,
+  .product-details__info-box--shipping .product-details__info-box-header {
     color: var(--shipping-text, #ffffff);
   }
 
-  .product-details__info-box--specs .product-details__info-box-text {
+  .product-details__info-box--specs .product-details__info-box-subheader,
+  .product-details__info-box--specs .product-details__info-box-header {
     color: var(--specs-text, #1C1917);
   }
 
@@ -2268,8 +2289,14 @@
         },
         {
           "type": "text",
-          "id": "shipping_box_text_content",
-          "label": "Text",
+          "id": "shipping_box_subheader",
+          "label": "Subheader",
+          "default": "On all orders"
+        },
+        {
+          "type": "text",
+          "id": "shipping_box_header",
+          "label": "Header",
           "default": "Free shipping & returns"
         },
         {
@@ -2310,8 +2337,14 @@
         },
         {
           "type": "text",
-          "id": "specs_box_text_content",
-          "label": "Text",
+          "id": "specs_box_subheader",
+          "label": "Subheader",
+          "default": "Learn more"
+        },
+        {
+          "type": "text",
+          "id": "specs_box_header",
+          "label": "Header",
           "default": "View Full Specs"
         },
         {
