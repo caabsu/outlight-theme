@@ -340,7 +340,7 @@
                     <span class="product-details__info-box-header">{{ block.settings.shipping_box_header }}</span>
                   </div>
                 </a>
-                <button type="button" class="product-details__info-box product-details__info-box--specs" data-open-specs-modal>
+                <a href="{{ block.settings.specs_box_link }}" class="product-details__info-box product-details__info-box--specs">
                   {%- if block.settings.specs_box_image != blank -%}
                     <div class="product-details__info-box-bg">
                       {{ block.settings.specs_box_image | image_url: width: 400 | image_tag }}
@@ -350,7 +350,7 @@
                     <span class="product-details__info-box-subheader">{{ block.settings.specs_box_subheader }}</span>
                     <span class="product-details__info-box-header">{{ block.settings.specs_box_header }}</span>
                   </div>
-                </button>
+                </a>
               </div>
             </div>
 
@@ -2426,6 +2426,11 @@
           "id": "specs_box_header_color",
           "label": "Header color",
           "default": "#1C1917"
+        },
+        {
+          "type": "url",
+          "id": "specs_box_link",
+          "label": "Link"
         },
         {
           "type": "color",
