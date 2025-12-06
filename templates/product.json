@@ -39,19 +39,19 @@
             "spec_value_4": "Honed",
             "shipping_box_subheader": "On all orders",
             "shipping_box_subheader_size": 10,
-            "shipping_box_subheader_color": "#57534E",
+            "shipping_box_subheader_color": "#57534e",
             "shipping_box_header": "2 Year Warranty",
             "shipping_box_header_size": 14,
-            "shipping_box_header_color": "#1C1917",
+            "shipping_box_header_color": "#1c1917",
             "shipping_box_link": "",
             "shipping_box_bg": "#ebe8e0",
             "shipping_box_img_opacity": 30,
             "specs_box_subheader": "Learn more",
             "specs_box_subheader_size": 10,
-            "specs_box_subheader_color": "#DBD6CC",
+            "specs_box_subheader_color": "#dbd6cc",
             "specs_box_header": "View Full Specs",
             "specs_box_header_size": 14,
-            "specs_box_header_color": "#F7F5F0",
+            "specs_box_header_color": "#f7f5f0",
             "specs_box_bg": "#1c1917",
             "specs_box_img_opacity": 30
           }
@@ -114,7 +114,7 @@
         "delivery_date_size": 13,
         "delivery_date_weight": "600",
         "delivery_date_color": "#57534e",
-        "gallery_arrow_color": "#f7f5f0"
+        "gallery_arrow_color": "#1C1917"
       }
     }
   },
