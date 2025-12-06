@@ -615,8 +615,7 @@
     galleryTrack.addEventListener('scroll', updateActiveDot, { passive: true });
   }
 
-  // Variant selection handling
-  const productForm = document.querySelector('[data-product-form]');
+  // Variant selection and cart handling
   const variantsDataEl = document.querySelector('[data-product-variants]');
   let productVariants = [];
 
@@ -633,163 +632,178 @@
     return '$' + (cents / 100).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
   }
 
-  // Store current variant ID
-  let currentVariantId = productForm ? productForm.querySelector('input[name="id"]')?.value : null;
+  // Get initial variant ID from the hidden input
+  const initialInput = document.querySelector('input[name="id"]');
+  let currentVariantId = initialInput ? initialInput.value : null;
 
-  if (productForm && productVariants.length > 0) {
-    // Use event delegation for variant buttons
-    productForm.addEventListener('click', (e) => {
-      const btn = e.target.closest('.product-variant-btn');
-      if (!btn) return;
+  // Variant button click handler - use document-level delegation
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.product-variant-btn');
+    if (!btn) return;
 
-      e.preventDefault();
+    e.preventDefault();
 
-      // Update selected state for this option group
-      const selector = btn.closest('.product-variant-selector');
+    // Update selected state for this option group
+    const selector = btn.closest('.product-variant-selector');
+    if (selector) {
       selector.querySelectorAll('.product-variant-btn').forEach(b => {
         b.classList.remove('is-selected');
       });
       btn.classList.add('is-selected');
+    }
 
-      // Collect all selected options in order
-      const selectedOptions = [];
-      productForm.querySelectorAll('.product-variant-option').forEach(optionGroup => {
-        const selectedBtn = optionGroup.querySelector('.product-variant-btn.is-selected');
-        if (selectedBtn) {
-          selectedOptions.push(selectedBtn.dataset.optionValue);
-        }
-      });
-
-      // Find matching variant by comparing options
-      const matchingVariant = productVariants.find(variant => {
-        for (let i = 0; i < selectedOptions.length; i++) {
-          const optionKey = 'option' + (i + 1);
-          if (variant[optionKey] !== selectedOptions[i]) {
-            return false;
-          }
-        }
-        return true;
-      });
-
-      if (matchingVariant) {
-        // Update the hidden input directly within the form
-        const variantInput = productForm.querySelector('input[name="id"]');
-        if (variantInput) {
-          variantInput.value = matchingVariant.id;
-          currentVariantId = matchingVariant.id;
-        }
-
-        // Update URL without reload
-        const newUrl = window.location.pathname + '?variant=' + matchingVariant.id;
-        history.replaceState(null, null, newUrl);
-
-        // Update price display
-        const priceEl = document.querySelector('.product-price');
-        if (priceEl && matchingVariant.price !== undefined) {
-          priceEl.innerHTML = formatMoney(matchingVariant.price);
-        }
-
-        // Update subtitle with variant title
-        const subtitleEl = document.querySelector('.product-subtitle');
-        if (subtitleEl && matchingVariant.title && matchingVariant.title !== 'Default Title') {
-          subtitleEl.textContent = matchingVariant.title;
-        }
-
-        // Update button state
-        const addBtn = productForm.querySelector('.product-add-to-cart-btn');
-        if (addBtn) {
-          if (matchingVariant.available) {
-            addBtn.disabled = false;
-            addBtn.textContent = 'ADD TO CART';
-          } else {
-            addBtn.disabled = true;
-            addBtn.textContent = 'SOLD OUT';
-          }
-        }
+    // Collect all selected options in order
+    const selectedOptions = [];
+    document.querySelectorAll('.product-variant-option').forEach(optionGroup => {
+      const selectedBtn = optionGroup.querySelector('.product-variant-btn.is-selected');
+      if (selectedBtn) {
+        selectedOptions.push(selectedBtn.dataset.optionValue);
       }
     });
-  }
+
+    // Find matching variant by comparing options
+    const matchingVariant = productVariants.find(variant => {
+      for (let i = 0; i < selectedOptions.length; i++) {
+        const optionKey = 'option' + (i + 1);
+        if (variant[optionKey] !== selectedOptions[i]) {
+          return false;
+        }
+      }
+      return true;
+    });
+
+    if (matchingVariant) {
+      // Store the variant ID in our variable
+      currentVariantId = matchingVariant.id;
+
+      // Also update the hidden input
+      const variantInput = document.querySelector('input[name="id"]');
+      if (variantInput) {
+        variantInput.value = matchingVariant.id;
+      }
+
+      // Update URL without reload
+      const newUrl = window.location.pathname + '?variant=' + matchingVariant.id;
+      history.replaceState(null, null, newUrl);
+
+      // Update price display
+      const priceEl = document.querySelector('.product-price');
+      if (priceEl && matchingVariant.price !== undefined) {
+        priceEl.innerHTML = formatMoney(matchingVariant.price);
+      }
+
+      // Update subtitle with variant title
+      const subtitleEl = document.querySelector('.product-subtitle');
+      if (subtitleEl && matchingVariant.title && matchingVariant.title !== 'Default Title') {
+        subtitleEl.textContent = matchingVariant.title;
+      }
+
+      // Update button state
+      const addBtn = document.querySelector('.product-add-to-cart-btn');
+      if (addBtn) {
+        if (matchingVariant.available) {
+          addBtn.disabled = false;
+          addBtn.textContent = 'ADD TO CART';
+        } else {
+          addBtn.disabled = true;
+          addBtn.textContent = 'SOLD OUT';
+        }
+      }
+    }
+  });
 
   // Handle add to cart form submission
-  const productForms = document.querySelectorAll('[data-product-form]');
+  document.addEventListener('submit', async (e) => {
+    const form = e.target.closest('[data-product-form]');
+    if (!form) return;
 
-  productForms.forEach(form => {
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
+    e.preventDefault();
 
-      const submitBtn = form.querySelector('[type="submit"]');
-      const originalText = submitBtn.textContent;
+    const submitBtn = form.querySelector('[type="submit"]');
+    const originalText = submitBtn.textContent;
 
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'ADDING...';
+    // Use the currentVariantId variable which is updated by variant selection
+    const variantId = currentVariantId;
 
-      try {
-        const formData = new FormData(form);
+    if (!variantId) {
+      alert('Please select a variant');
+      return;
+    }
 
-        const response = await fetch('/cart/add.js', {
-          method: 'POST',
-          body: formData
-        });
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'ADDING...';
 
-        if (response.ok) {
-          // Fetch updated cart drawer content
-          const sectionResponse = await fetch('/?sections=cart-drawer');
-          if (sectionResponse.ok) {
-            const sections = await sectionResponse.json();
-            const cartDrawerHtml = sections['cart-drawer'];
+    try {
+      // Use JSON body with the tracked variant ID
+      const response = await fetch('/cart/add.js', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: parseInt(variantId),
+          quantity: 1
+        })
+      });
 
-            // Update cart drawer content
-            const cartDrawer = document.querySelector('[data-cart-drawer]');
-            if (cartDrawer && cartDrawerHtml) {
-              const temp = document.createElement('div');
-              temp.innerHTML = cartDrawerHtml;
-              const newDrawer = temp.querySelector('[data-cart-drawer]');
-              if (newDrawer) {
-                cartDrawer.innerHTML = newDrawer.innerHTML;
-              }
-            }
+      if (response.ok) {
+        // Fetch updated cart drawer content
+        const sectionResponse = await fetch('/?sections=cart-drawer');
+        if (sectionResponse.ok) {
+          const sections = await sectionResponse.json();
+          const cartDrawerHtml = sections['cart-drawer'];
 
-            // Update cart count in header
-            const cartResponse = await fetch('/cart.js');
-            if (cartResponse.ok) {
-              const cart = await cartResponse.json();
-              const cartCount = document.querySelector('.header__cart-count');
-              if (cartCount) {
-                cartCount.textContent = cart.item_count;
-              } else if (cart.item_count > 0) {
-                const cartIcon = document.querySelector('.header__cart');
-                if (cartIcon) {
-                  const countSpan = document.createElement('span');
-                  countSpan.className = 'header__cart-count';
-                  countSpan.textContent = cart.item_count;
-                  cartIcon.appendChild(countSpan);
-                }
-              }
+          // Update cart drawer content
+          const cartDrawer = document.querySelector('[data-cart-drawer]');
+          if (cartDrawer && cartDrawerHtml) {
+            const temp = document.createElement('div');
+            temp.innerHTML = cartDrawerHtml;
+            const newDrawer = temp.querySelector('[data-cart-drawer]');
+            if (newDrawer) {
+              cartDrawer.innerHTML = newDrawer.innerHTML;
             }
           }
 
-          // Open cart drawer after content is updated
-          if (typeof window.openCartDrawer === 'function') {
-            window.openCartDrawer();
-          } else {
-            document.dispatchEvent(new CustomEvent('cart:open'));
+          // Update cart count in header
+          const cartResponse = await fetch('/cart.js');
+          if (cartResponse.ok) {
+            const cart = await cartResponse.json();
+            const cartCount = document.querySelector('.header__cart-count');
+            if (cartCount) {
+              cartCount.textContent = cart.item_count;
+            } else if (cart.item_count > 0) {
+              const cartIcon = document.querySelector('.header__cart');
+              if (cartIcon) {
+                const countSpan = document.createElement('span');
+                countSpan.className = 'header__cart-count';
+                countSpan.textContent = cart.item_count;
+                cartIcon.appendChild(countSpan);
+              }
+            }
           }
-
-          // Reset button
-          submitBtn.disabled = false;
-          submitBtn.textContent = originalText;
-        } else {
-          const error = await response.json();
-          alert(error.description || 'Error adding to cart');
-          submitBtn.disabled = false;
-          submitBtn.textContent = originalText;
         }
-      } catch (error) {
-        console.error('Error:', error);
+
+        // Open cart drawer after content is updated
+        if (typeof window.openCartDrawer === 'function') {
+          window.openCartDrawer();
+        } else {
+          document.dispatchEvent(new CustomEvent('cart:open'));
+        }
+
+        // Reset button
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+      } else {
+        const error = await response.json();
+        alert(error.description || 'Error adding to cart');
         submitBtn.disabled = false;
         submitBtn.textContent = originalText;
       }
-    });
+    } catch (error) {
+      console.error('Error:', error);
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalText;
+    }
   });
 {% endjavascript %}
 
