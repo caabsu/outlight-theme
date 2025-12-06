@@ -11,6 +11,44 @@
   "sections": {
     "main": {
       "type": "product",
+      "blocks": {
+        "product_details_aFigg4": {
+          "type": "product_details",
+          "settings": {
+            "description_header": "DESCRIPTION",
+            "header_color": "#78716c",
+            "header_size": 11,
+            "header_weight": "600",
+            "description_text": "Minimalist in form, maximalist in texture. The Dune Sconce features a curved sandstone face that acts as a natural diffuser.",
+            "description_color": "#57534e",
+            "description_size": 15,
+            "card_bg_color": "#ebe8e0",
+            "card_radius": 8,
+            "label_color": "#78716c",
+            "label_size": 11,
+            "value_color": "#1c1917",
+            "value_size": 15,
+            "value_weight": "700",
+            "spec_label_1": "Dimensions",
+            "spec_value_1": "12\" x 6\"",
+            "spec_label_2": "Weight",
+            "spec_value_2": "4.2 lbs",
+            "spec_label_3": "Bulb",
+            "spec_value_3": "LED 8.5W",
+            "spec_label_4": "Finish",
+            "spec_value_4": "Honed",
+            "show_shipping_banner": true,
+            "banner_bg_color": "#1c1917",
+            "shipping_title": "Free Shipping",
+            "banner_title_color": "#ffffff",
+            "shipping_subtitle": "Arrives in 5-7 business days.",
+            "banner_subtitle_color": "#9ca3af"
+          }
+        }
+      },
+      "block_order": [
+        "product_details_aFigg4"
+      ],
       "settings": {
         "product_info_bg": "#f7f5f0",
         "eyebrow_text": "modern floor lamp",
@@ -32,6 +70,19 @@
         "price_weight": "500",
         "add_to_cart_text": "ADD",
         "sold_out_text": "Sold out",
+        "description_header": "DESCRIPTION",
+        "description_text": "Minimalist in form, maximalist in texture. The Dune Sconce features a curved sandstone face that acts as a natural diffuser.",
+        "spec_label_1": "Dimensions",
+        "spec_value_1": "12\" x 6\"",
+        "spec_label_2": "Weight",
+        "spec_value_2": "4.2 lbs",
+        "spec_label_3": "Bulb",
+        "spec_value_3": "LED 8.5W",
+        "spec_label_4": "Finish",
+        "spec_value_4": "Honed",
+        "show_shipping_banner": true,
+        "shipping_title": "Free Shipping",
+        "shipping_subtitle": "Arrives in 5-7 business days.",
         "specs_title": "Specifications",
         "variant_focus_color": "#d97706",
         "variant_label_size": 11,
@@ -55,7 +106,6 @@
         "delivery_date_size": 13,
         "delivery_date_weight": "600",
         "delivery_date_color": "#57534e",
-        "gallery_dot_color": "#fbfaf9",
         "gallery_arrow_color": "#f7f5f0"
       }
     }
