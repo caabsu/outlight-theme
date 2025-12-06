@@ -2,7 +2,26 @@
   Support Center section - Help page with search and category cards
 {% endcomment %}
 
-<div class="support-center">
+<div class="support-center" style="
+  --sc-bg: {{ section.settings.page_bg_color }};
+  --sc-bg-mobile: {{ section.settings.page_bg_color_mobile }};
+  --sc-heading-size: {{ section.settings.heading_size }}px;
+  --sc-heading-size-mobile: {{ section.settings.heading_size_mobile }}px;
+  --sc-heading-color: {{ section.settings.heading_color }};
+  --sc-heading-weight: {{ section.settings.heading_weight }};
+  --sc-subtitle-size: {{ section.settings.subtitle_size }}px;
+  --sc-subtitle-color: {{ section.settings.subtitle_color }};
+  --sc-card-bg: {{ section.settings.card_bg_color }};
+  --sc-card-radius: {{ section.settings.card_border_radius }}px;
+  --sc-icon-bg: {{ section.settings.icon_bg_color }};
+  --sc-icon-color: {{ section.settings.icon_color }};
+  --sc-card-title-size: {{ section.settings.card_title_size }}px;
+  --sc-card-title-weight: {{ section.settings.card_title_weight }};
+  --sc-card-title-color: {{ section.settings.card_title_color }};
+  --sc-card-desc-size: {{ section.settings.card_desc_size }}px;
+  --sc-card-desc-color: {{ section.settings.card_desc_color }};
+  --sc-contact-color: {{ section.settings.contact_link_color }};
+">
   <div class="support-center__container">
     {%- comment -%} Header {%- endcomment -%}
     <div class="support-center__header">
@@ -124,7 +143,7 @@
 {% stylesheet %}
   .support-center {
     min-height: 100vh;
-    background-color: #f5f5f5;
+    background-color: var(--sc-bg, #f5f5f5);
     padding: 3rem 1.5rem 4rem;
   }
 
@@ -142,9 +161,9 @@
   .support-center__title {
     font-family: var(--font-heading-family), serif;
     font-style: italic;
-    font-weight: 400;
-    font-size: 2.5rem;
-    color: #1C1917;
+    font-weight: var(--sc-heading-weight, 400);
+    font-size: var(--sc-heading-size, 40px);
+    color: var(--sc-heading-color, #1C1917);
     margin: 0 0 0.75rem;
   }
 
@@ -154,8 +173,8 @@
   }
 
   .support-center__subtitle {
-    font-size: 1rem;
-    color: #78716C;
+    font-size: var(--sc-subtitle-size, 16px);
+    color: var(--sc-subtitle-color, #78716C);
     margin: 0;
   }
 
@@ -209,8 +228,8 @@
   }
 
   .support-center__card {
-    background: #ffffff;
-    border-radius: 12px;
+    background: var(--sc-card-bg, #ffffff);
+    border-radius: var(--sc-card-radius, 12px);
     padding: 1.5rem;
     text-decoration: none;
     color: inherit;
@@ -226,26 +245,26 @@
   .support-center__card-icon {
     width: 48px;
     height: 48px;
-    background: #f5f5f5;
+    background: var(--sc-icon-bg, #f5f5f5);
     border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
     margin-bottom: 1.25rem;
-    color: #1C1917;
+    color: var(--sc-icon-color, #1C1917);
   }
 
   .support-center__card-title {
     font-family: var(--font-heading-family), serif;
-    font-size: 1.125rem;
-    font-weight: 500;
-    color: #1C1917;
+    font-size: var(--sc-card-title-size, 18px);
+    font-weight: var(--sc-card-title-weight, 500);
+    color: var(--sc-card-title-color, #1C1917);
     margin: 0 0 0.5rem;
   }
 
   .support-center__card-description {
-    font-size: 0.875rem;
-    color: #78716C;
+    font-size: var(--sc-card-desc-size, 14px);
+    color: var(--sc-card-desc-color, #78716C);
     margin: 0;
     line-height: 1.5;
   }
@@ -273,21 +292,21 @@
     display: inline-block;
     font-size: 0.875rem;
     font-weight: 600;
-    color: #D97706;
+    color: var(--sc-contact-color, #D97706);
     text-decoration: underline;
     text-underline-offset: 3px;
     transition: color 0.2s ease;
   }
 
   .support-center__contact-btn:hover {
-    color: #B45309;
+    opacity: 0.8;
   }
 
   /* Mobile Styles */
   @media screen and (max-width: 768px) {
     .support-center {
       padding: 2rem 1rem 3rem;
-      background-color: #ffffff;
+      background-color: var(--sc-bg-mobile, #ffffff);
     }
 
     .support-center__title--desktop {
@@ -296,7 +315,7 @@
 
     .support-center__title--mobile {
       display: block;
-      font-size: 1.75rem;
+      font-size: var(--sc-heading-size-mobile, 28px);
       text-align: left;
     }
 
@@ -335,9 +354,9 @@
       display: flex;
       flex-direction: column;
       gap: 0;
-      background: #ffffff;
+      background: var(--sc-card-bg, #ffffff);
       border: 1px solid #E5E5E5;
-      border-radius: 12px;
+      border-radius: var(--sc-card-radius, 12px);
       overflow: hidden;
     }
 
@@ -363,13 +382,13 @@
     .support-center__list-icon {
       width: 40px;
       height: 40px;
-      background: #f5f5f5;
+      background: var(--sc-icon-bg, #f5f5f5);
       border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      color: #1C1917;
+      color: var(--sc-icon-color, #1C1917);
     }
 
     .support-center__list-content {
@@ -380,14 +399,14 @@
     }
 
     .support-center__list-title {
-      font-weight: 500;
-      font-size: 0.9375rem;
-      color: #1C1917;
+      font-weight: var(--sc-card-title-weight, 500);
+      font-size: var(--sc-card-title-size, 15px);
+      color: var(--sc-card-title-color, #1C1917);
     }
 
     .support-center__list-description {
-      font-size: 0.8125rem;
-      color: #9CA3AF;
+      font-size: var(--sc-card-desc-size, 13px);
+      color: var(--sc-card-desc-color, #9CA3AF);
     }
 
     .support-center__list-chevron {
@@ -416,7 +435,23 @@
   "settings": [
     {
       "type": "header",
-      "content": "Header"
+      "content": "Page background"
+    },
+    {
+      "type": "color",
+      "id": "page_bg_color",
+      "label": "Background color (desktop)",
+      "default": "#f5f5f5"
+    },
+    {
+      "type": "color",
+      "id": "page_bg_color_mobile",
+      "label": "Background color (mobile)",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Page heading"
     },
     {
       "type": "text",
@@ -431,10 +466,69 @@
       "default": "Support Center"
     },
     {
+      "type": "range",
+      "id": "heading_size",
+      "min": 24,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading size (desktop)",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "heading_size_mobile",
+      "min": 18,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading size (mobile)",
+      "default": 28
+    },
+    {
+      "type": "select",
+      "id": "heading_weight",
+      "label": "Heading weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#1C1917"
+    },
+    {
+      "type": "header",
+      "content": "Subtitle"
+    },
+    {
       "type": "text",
       "id": "subtitle",
       "label": "Subtitle",
       "default": "Advice, answers, and support for your fixtures."
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle size",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle color",
+      "default": "#78716C"
     },
     {
       "type": "header",
@@ -445,6 +539,82 @@
       "id": "search_placeholder",
       "label": "Search placeholder",
       "default": "Search for 'installation', 'returns', 'shipping'..."
+    },
+    {
+      "type": "header",
+      "content": "Category cards"
+    },
+    {
+      "type": "color",
+      "id": "card_bg_color",
+      "label": "Card background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "card_border_radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "label": "Card border radius",
+      "default": 12
+    },
+    {
+      "type": "color",
+      "id": "icon_bg_color",
+      "label": "Icon background",
+      "default": "#f5f5f5"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon color",
+      "default": "#1C1917"
+    },
+    {
+      "type": "range",
+      "id": "card_title_size",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Card title size",
+      "default": 18
+    },
+    {
+      "type": "select",
+      "id": "card_title_weight",
+      "label": "Card title weight",
+      "options": [
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "color",
+      "id": "card_title_color",
+      "label": "Card title color",
+      "default": "#1C1917"
+    },
+    {
+      "type": "range",
+      "id": "card_desc_size",
+      "min": 12,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "label": "Card description size",
+      "default": 14
+    },
+    {
+      "type": "color",
+      "id": "card_desc_color",
+      "label": "Card description color",
+      "default": "#78716C"
     },
     {
       "type": "header",
@@ -472,6 +642,12 @@
       "type": "url",
       "id": "contact_link",
       "label": "Contact link"
+    },
+    {
+      "type": "color",
+      "id": "contact_link_color",
+      "label": "Contact link color",
+      "default": "#D97706"
     }
   ],
   "blocks": [
