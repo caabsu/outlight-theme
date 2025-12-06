@@ -84,7 +84,7 @@
         "show_contact": true,
         "contact_text": "Can't find what you need?",
         "contact_button_text": "CONTACT SUPPORT",
-        "contact_link": "",
+        "contact_link": "shopify://pages/contact",
         "contact_link_color": "#d97706"
       }
     }
