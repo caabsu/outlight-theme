@@ -38,6 +38,13 @@
     --variant-label-size: {{ section.settings.variant_label_size }}px;
     --variant-label-weight: {{ section.settings.variant_label_weight }};
     --variant-label-color: {{ section.settings.variant_label_color }};
+    --delivery-label-size: {{ section.settings.delivery_label_size }}px;
+    --delivery-label-weight: {{ section.settings.delivery_label_weight }};
+    --delivery-label-color: {{ section.settings.delivery_label_color }};
+    --delivery-date-size: {{ section.settings.delivery_date_size }}px;
+    --delivery-date-weight: {{ section.settings.delivery_date_weight }};
+    --delivery-date-color: {{ section.settings.delivery_date_color }};
+    --delivery-bg-color: {{ section.settings.delivery_bg_color }};
   "
 >
   {%- comment -%} Image Gallery {%- endcomment -%}
@@ -185,6 +192,13 @@
           {%- endunless -%}
 
           <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}" data-variant-id>
+
+          {%- if section.settings.show_delivery_estimate -%}
+            <div class="product-delivery-estimate">
+              <span class="product-delivery-estimate__label">{{ section.settings.delivery_label }}</span>
+              <span class="product-delivery-estimate__date" data-delivery-days="{{ section.settings.delivery_days }}"></span>
+            </div>
+          {%- endif -%}
 
           <button
             type="submit"
@@ -697,6 +711,31 @@
     opacity: 1;
   }
 
+  /* Delivery Estimate */
+  .product-delivery-estimate {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--delivery-bg-color, #F5F5F4);
+    padding: 0.875rem 1rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+  }
+
+  .product-delivery-estimate__label {
+    font-family: var(--font-primary-family), sans-serif;
+    font-size: var(--delivery-label-size, 13px);
+    font-weight: var(--delivery-label-weight, 400);
+    color: var(--delivery-label-color, #57534E);
+  }
+
+  .product-delivery-estimate__date {
+    font-family: var(--font-primary-family), sans-serif;
+    font-size: var(--delivery-date-size, 13px);
+    font-weight: var(--delivery-date-weight, 600);
+    color: var(--delivery-date-color, #1C1917);
+  }
+
   /* Description */
   .product-description {
     font-size: 0.9375rem;
@@ -837,6 +876,17 @@
 {% endstylesheet %}
 
 {% javascript %}
+  // Delivery date calculation
+  const deliveryDateEl = document.querySelector('[data-delivery-days]');
+  if (deliveryDateEl) {
+    const daysToAdd = parseInt(deliveryDateEl.dataset.deliveryDays) || 5;
+    const deliveryDate = new Date();
+    deliveryDate.setDate(deliveryDate.getDate() + daysToAdd);
+
+    const options = { weekday: 'long', month: 'short', day: 'numeric' };
+    deliveryDateEl.textContent = deliveryDate.toLocaleDateString('en-US', options);
+  }
+
   // Gallery navigation
   const galleryTrack = document.querySelector('[data-gallery-track]');
   const galleryDots = document.querySelectorAll('[data-gallery-dot]');
@@ -1584,6 +1634,92 @@
       "unit": "px",
       "label": "Corner radius",
       "default": 50
+    },
+    {
+      "type": "header",
+      "content": "Delivery estimate"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_delivery_estimate",
+      "label": "Show delivery estimate",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "delivery_label",
+      "label": "Label text",
+      "default": "Estimated Delivery By"
+    },
+    {
+      "type": "range",
+      "id": "delivery_days",
+      "min": 1,
+      "max": 30,
+      "step": 1,
+      "label": "Days from today",
+      "default": 5
+    },
+    {
+      "type": "color",
+      "id": "delivery_bg_color",
+      "label": "Background color",
+      "default": "#F5F5F4"
+    },
+    {
+      "type": "range",
+      "id": "delivery_label_size",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "label": "Label font size",
+      "default": 13
+    },
+    {
+      "type": "select",
+      "id": "delivery_label_weight",
+      "label": "Label font weight",
+      "options": [
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "color",
+      "id": "delivery_label_color",
+      "label": "Label color",
+      "default": "#57534E"
+    },
+    {
+      "type": "range",
+      "id": "delivery_date_size",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "label": "Date font size",
+      "default": 13
+    },
+    {
+      "type": "select",
+      "id": "delivery_date_weight",
+      "label": "Date font weight",
+      "options": [
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "color",
+      "id": "delivery_date_color",
+      "label": "Date color",
+      "default": "#1C1917"
     },
     {
       "type": "header",
