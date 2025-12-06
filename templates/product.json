@@ -59,6 +59,18 @@
         "button_text_color": "#f7f5f0",
         "button_bg_color": "#1c1917",
         "button_radius": 9,
+        "show_delivery_estimate": true,
+        "delivery_label": "Estimated Delivery By",
+        "delivery_days": 5,
+        "delivery_bg_color": "#EBE8E0",
+        "delivery_border_color": "#c6bbb4",
+        "delivery_border_width": 1,
+        "delivery_label_size": 13,
+        "delivery_label_weight": "400",
+        "delivery_label_color": "#57534e",
+        "delivery_date_size": 13,
+        "delivery_date_weight": "600",
+        "delivery_date_color": "#1c1917",
         "gallery_dot_color": "#fbfaf9",
         "gallery_arrow_color": "#f7f5f0"
       }
