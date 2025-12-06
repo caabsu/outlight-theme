@@ -23,7 +23,7 @@
             "description_color": "#57534e",
             "description_size": 15,
             "card_bg_color": "#ebe8e0",
-            "card_radius": 8,
+            "card_radius": 0,
             "label_color": "#78716c",
             "label_size": 11,
             "value_color": "#1c1917",
