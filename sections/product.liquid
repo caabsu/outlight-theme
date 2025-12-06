@@ -236,9 +236,6 @@
               --pd-value-color: {{ block.settings.value_color }};
               --pd-value-size: {{ block.settings.value_size }}px;
               --pd-value-weight: {{ block.settings.value_weight }};
-              --pd-banner-bg: {{ block.settings.banner_bg_color }};
-              --pd-banner-title-color: {{ block.settings.banner_title_color }};
-              --pd-banner-subtitle-color: {{ block.settings.banner_subtitle_color }};
             ">
               {%- comment -%} Description Header Row with Variant Indicators {%- endcomment -%}
               <div class="product-details__header-row">
@@ -302,18 +299,35 @@
                 {%- endif -%}
               </div>
 
-              {%- comment -%} Free Shipping Banner {%- endcomment -%}
-              {%- if block.settings.show_shipping_banner -%}
-                <div class="product-details__shipping-banner">
-                  <svg class="product-details__shipping-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                    <path d="M1 3h15v13H1zM16 8h4l3 3v5h-7V8zM5.5 21a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM18.5 21a2.5 2.5 0 100-5 2.5 2.5 0 000 5z"/>
-                  </svg>
-                  <div class="product-details__shipping-text">
-                    <span class="product-details__shipping-title">{{ block.settings.shipping_title }}</span>
-                    <span class="product-details__shipping-subtitle">{{ block.settings.shipping_subtitle }}</span>
-                  </div>
+              {%- comment -%} View Full Specs Link {%- endcomment -%}
+              <button type="button" class="product-details__view-specs" data-open-specs-modal>
+                <span>View full specs</span>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M6 12l4-4-4-4"/>
+                </svg>
+              </button>
+            </div>
+
+            {%- comment -%} Specs Modal {%- endcomment -%}
+            <div class="specs-modal" data-specs-modal aria-hidden="true">
+              <div class="specs-modal__backdrop" data-close-specs-modal></div>
+              <div class="specs-modal__container">
+                <div class="specs-modal__header">
+                  <h3 class="specs-modal__title">Specifications</h3>
+                  <button type="button" class="specs-modal__close" data-close-specs-modal aria-label="Close">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <path d="M15 5L5 15M5 5l10 10"/>
+                    </svg>
+                  </button>
                 </div>
-              {%- endif -%}
+                <div class="specs-modal__content">
+                  {%- if product.metafields.custom.collapsible_measurement != blank -%}
+                    <div class="specs-modal__data" data-specs-content>{{ product.metafields.custom.collapsible_measurement }}</div>
+                  {%- else -%}
+                    <p class="specs-modal__empty">No specifications available.</p>
+                  {%- endif -%}
+                </div>
+              </div>
             </div>
 
           {%- when 'specs' -%}
@@ -897,39 +911,180 @@
     color: var(--pd-value-color, #1C1917);
   }
 
-  /* Free Shipping Banner */
-  .product-details__shipping-banner {
-    display: flex;
+  /* View Full Specs Link */
+  .product-details__view-specs {
+    display: inline-flex;
     align-items: center;
-    gap: 0.875rem;
-    background: var(--pd-banner-bg, #1C1917);
-    border-radius: 0;
-    padding: 1rem 1.25rem;
-    margin-top: 0.5rem;
+    gap: 0.25rem;
+    background: none;
+    border: none;
+    padding: 0;
+    margin-top: 1rem;
+    font-family: var(--font-primary-family), sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: #57534E;
+    cursor: pointer;
+    transition: color 0.15s ease;
   }
 
-  .product-details__shipping-icon {
-    color: var(--pd-banner-title-color, #ffffff);
+  .product-details__view-specs:hover {
+    color: #1C1917;
+  }
+
+  .product-details__view-specs svg {
+    transition: transform 0.15s ease;
+  }
+
+  .product-details__view-specs:hover svg {
+    transform: translateX(2px);
+  }
+
+  /* Specs Modal */
+  .specs-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+  }
+
+  .specs-modal[aria-hidden="false"] {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .specs-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+  }
+
+  .specs-modal__container {
+    position: relative;
+    width: 90%;
+    max-width: 480px;
+    max-height: 85vh;
+    background: #ffffff;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(20px);
+    transition: transform 0.25s ease;
+  }
+
+  .specs-modal[aria-hidden="false"] .specs-modal__container {
+    transform: translateY(0);
+  }
+
+  .specs-modal__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #E7E5E4;
+  }
+
+  .specs-modal__title {
+    font-family: var(--font-primary-family), sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1C1917;
+    margin: 0;
+  }
+
+  .specs-modal__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: none;
+    border: none;
+    color: #78716C;
+    cursor: pointer;
+    transition: color 0.15s ease;
+  }
+
+  .specs-modal__close:hover {
+    color: #1C1917;
+  }
+
+  .specs-modal__content {
+    padding: 1.5rem;
+    overflow-y: auto;
+    flex: 1;
+  }
+
+  .specs-modal__data {
+    display: none;
+  }
+
+  .specs-modal__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .specs-modal__section {
+    margin-bottom: 1.5rem;
+  }
+
+  .specs-modal__section:last-child {
+    margin-bottom: 0;
+  }
+
+  .specs-modal__section-title {
+    font-family: var(--font-primary-family), sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #A8A29E;
+    margin: 0 0 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #F5F5F4;
+  }
+
+  .specs-modal__item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 0.625rem 0;
+    border-bottom: 1px solid #F5F5F4;
+    gap: 1rem;
+  }
+
+  .specs-modal__item:last-child {
+    border-bottom: none;
+  }
+
+  .specs-modal__label {
+    font-family: var(--font-primary-family), sans-serif;
+    font-size: 13px;
+    color: #78716C;
     flex-shrink: 0;
   }
 
-  .product-details__shipping-text {
-    display: flex;
-    flex-direction: column;
-    gap: 0.125rem;
+  .specs-modal__value {
+    font-family: var(--font-primary-family), sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: #1C1917;
+    text-align: right;
   }
 
-  .product-details__shipping-title {
+  .specs-modal__empty {
     font-family: var(--font-primary-family), sans-serif;
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: var(--pd-banner-title-color, #ffffff);
-  }
-
-  .product-details__shipping-subtitle {
-    font-family: var(--font-primary-family), sans-serif;
-    font-size: 0.75rem;
-    color: var(--pd-banner-subtitle-color, #9CA3AF);
+    font-size: 14px;
+    color: #78716C;
+    text-align: center;
+    margin: 0;
   }
 
   /* Specs */
@@ -1419,6 +1574,157 @@
       submitBtn.innerHTML = originalHTML;
     }
   });
+
+  // Specs Modal functionality
+  const specsModal = document.querySelector('[data-specs-modal]');
+  const openSpecsBtn = document.querySelector('[data-open-specs-modal]');
+  const closeSpecsBtns = document.querySelectorAll('[data-close-specs-modal]');
+  const specsContent = document.querySelector('[data-specs-content]');
+
+  function parseSpecsData(rawData) {
+    if (!rawData) return [];
+
+    const sections = [];
+    let currentSection = { title: 'Dimensions', items: [] };
+
+    // Split by common separators and clean up
+    const lines = rawData.split(/[\n\r]+/).filter(line => line.trim());
+
+    lines.forEach(line => {
+      line = line.trim();
+
+      // Check if this is a section header (ends with colon and no value after)
+      if (line.endsWith(':') && !line.includes(': ')) {
+        // Skip empty section headers that are just labels
+        return;
+      }
+
+      // Check for "Specifications:" or similar section headers
+      if (line.toLowerCase() === 'specifications:' || line.toLowerCase() === 'dimensions:') {
+        if (currentSection.items.length > 0) {
+          sections.push(currentSection);
+        }
+        currentSection = { title: line.replace(':', ''), items: [] };
+        return;
+      }
+
+      // Parse key: value pairs
+      const colonIndex = line.indexOf(':');
+      if (colonIndex > 0) {
+        const label = line.substring(0, colonIndex).trim();
+        const value = line.substring(colonIndex + 1).trim();
+
+        if (label && value) {
+          // Check if this starts a new section (like "Specifications:")
+          if (label.toLowerCase() === 'specifications') {
+            if (currentSection.items.length > 0) {
+              sections.push(currentSection);
+            }
+            currentSection = { title: 'Specifications', items: [] };
+          } else {
+            currentSection.items.push({ label, value });
+          }
+        }
+      }
+    });
+
+    // Add the last section
+    if (currentSection.items.length > 0) {
+      sections.push(currentSection);
+    }
+
+    // If we only have one section with no title, check if items should be split
+    if (sections.length === 1 && sections[0].title === 'Dimensions') {
+      const dimensionItems = [];
+      const specItems = [];
+      let foundSpecsHeader = false;
+
+      sections[0].items.forEach(item => {
+        const labelLower = item.label.toLowerCase();
+        if (labelLower === 'height' || labelLower === 'width' || labelLower === 'depth' || labelLower === 'length' || labelLower === 'diameter') {
+          dimensionItems.push(item);
+        } else {
+          specItems.push(item);
+        }
+      });
+
+      const newSections = [];
+      if (dimensionItems.length > 0) {
+        newSections.push({ title: 'Dimensions', items: dimensionItems });
+      }
+      if (specItems.length > 0) {
+        newSections.push({ title: 'Specifications', items: specItems });
+      }
+
+      if (newSections.length > 0) {
+        return newSections;
+      }
+    }
+
+    return sections;
+  }
+
+  function renderSpecsModal() {
+    if (!specsContent) return;
+
+    const rawData = specsContent.textContent;
+    const sections = parseSpecsData(rawData);
+
+    if (sections.length === 0) return;
+
+    let html = '';
+    sections.forEach(section => {
+      html += '<div class="specs-modal__section">';
+      html += '<h4 class="specs-modal__section-title">' + section.title + '</h4>';
+      html += '<ul class="specs-modal__list">';
+      section.items.forEach(item => {
+        html += '<li class="specs-modal__item">';
+        html += '<span class="specs-modal__label">' + item.label + '</span>';
+        html += '<span class="specs-modal__value">' + item.value + '</span>';
+        html += '</li>';
+      });
+      html += '</ul>';
+      html += '</div>';
+    });
+
+    // Insert after the hidden data element
+    const container = specsContent.parentElement;
+    const renderedContent = document.createElement('div');
+    renderedContent.className = 'specs-modal__rendered';
+    renderedContent.innerHTML = html;
+    container.appendChild(renderedContent);
+  }
+
+  function openSpecsModal() {
+    if (!specsModal) return;
+    specsModal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeSpecsModal() {
+    if (!specsModal) return;
+    specsModal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  // Initialize
+  renderSpecsModal();
+
+  // Event listeners
+  if (openSpecsBtn) {
+    openSpecsBtn.addEventListener('click', openSpecsModal);
+  }
+
+  closeSpecsBtns.forEach(btn => {
+    btn.addEventListener('click', closeSpecsModal);
+  });
+
+  // Close on escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && specsModal && specsModal.getAttribute('aria-hidden') === 'false') {
+      closeSpecsModal();
+    }
+  });
 {% endjavascript %}
 
 {% schema %}
@@ -1721,46 +2027,6 @@
           "id": "spec_value_4",
           "label": "Value",
           "default": "Honed"
-        },
-        {
-          "type": "header",
-          "content": "Shipping banner"
-        },
-        {
-          "type": "checkbox",
-          "id": "show_shipping_banner",
-          "label": "Show shipping banner",
-          "default": true
-        },
-        {
-          "type": "color",
-          "id": "banner_bg_color",
-          "label": "Banner background",
-          "default": "#1C1917"
-        },
-        {
-          "type": "text",
-          "id": "shipping_title",
-          "label": "Title",
-          "default": "Free Shipping"
-        },
-        {
-          "type": "color",
-          "id": "banner_title_color",
-          "label": "Title color",
-          "default": "#ffffff"
-        },
-        {
-          "type": "text",
-          "id": "shipping_subtitle",
-          "label": "Subtitle",
-          "default": "Arrives in 5-7 business days."
-        },
-        {
-          "type": "color",
-          "id": "banner_subtitle_color",
-          "label": "Subtitle color",
-          "default": "#9CA3AF"
         }
       ]
     }
@@ -2023,28 +2289,6 @@
       "id": "spec_value_4",
       "label": "Spec 4 value",
       "default": "Honed"
-    },
-    {
-      "type": "header",
-      "content": "Shipping banner"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_shipping_banner",
-      "label": "Show shipping banner",
-      "default": true
-    },
-    {
-      "type": "text",
-      "id": "shipping_title",
-      "label": "Title",
-      "default": "Free Shipping"
-    },
-    {
-      "type": "text",
-      "id": "shipping_subtitle",
-      "label": "Subtitle",
-      "default": "Arrives in 5-7 business days."
     },
     {
       "type": "header",
