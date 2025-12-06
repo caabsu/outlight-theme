@@ -57,6 +57,17 @@
           ></button>
         {%- endfor -%}
       </div>
+
+      <button class="product-media-nav product-media-nav--prev" data-gallery-prev aria-label="Previous image">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <button class="product-media-nav product-media-nav--next" data-gallery-next aria-label="Next image">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
     {%- endif -%}
   </div>
 
@@ -219,7 +230,7 @@
   .product-media-gallery {
     position: relative;
     width: 100%;
-    aspect-ratio: 10 / 12;
+    aspect-ratio: 1 / 1;
     overflow: hidden;
     background-color: #f5f5f5;
   }
@@ -243,6 +254,9 @@
     width: 100%;
     height: 100%;
     scroll-snap-align: start;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .product-media-image,
@@ -250,7 +264,7 @@
   .product-media-item video {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
   }
 
   .product-media-placeholder {
@@ -266,31 +280,80 @@
     opacity: 0.5;
   }
 
-  /* Gallery Dots */
+  /* Gallery Dots - Top position, modern style */
   .product-media-dots {
     position: absolute;
-    bottom: 40px;
+    top: 16px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: 8px;
+    gap: 6px;
     z-index: 10;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 6px 10px;
+    border-radius: 20px;
   }
 
   .product-media-dot {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.5);
+    background-color: rgba(0, 0, 0, 0.2);
     border: none;
     padding: 0;
     cursor: pointer;
-    transition: background-color 0.2s ease, transform 0.2s ease;
+    transition: all 0.2s ease;
+  }
+
+  .product-media-dot:hover {
+    background-color: rgba(0, 0, 0, 0.4);
   }
 
   .product-media-dot.is-active {
-    background-color: #ffffff;
-    transform: scale(1.2);
+    background-color: #1C1917;
+    width: 18px;
+    border-radius: 10px;
+  }
+
+  /* Gallery Navigation Arrows */
+  .product-media-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #1C1917;
+    z-index: 10;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .product-media-nav:hover {
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .product-media-nav:active {
+    transform: translateY(-50%) scale(0.95);
+  }
+
+  .product-media-nav--prev {
+    left: 12px;
+  }
+
+  .product-media-nav--next {
+    right: 12px;
   }
 
   /* Product Info - Overlapping card */
@@ -540,7 +603,8 @@
       aspect-ratio: 1 / 1;
     }
 
-    .product-media-dots {
+    .product-media-dots,
+    .product-media-nav {
       display: none;
     }
 
@@ -587,19 +651,34 @@
 {% endstylesheet %}
 
 {% javascript %}
-  // Gallery dot navigation
+  // Gallery navigation
   const galleryTrack = document.querySelector('[data-gallery-track]');
   const galleryDots = document.querySelectorAll('[data-gallery-dot]');
+  const prevBtn = document.querySelector('[data-gallery-prev]');
+  const nextBtn = document.querySelector('[data-gallery-next]');
+
+  let currentIndex = 0;
+  const items = galleryTrack ? galleryTrack.querySelectorAll('.product-media-item') : [];
+  const totalItems = items.length;
+
+  // Navigate to specific index
+  function goToSlide(index) {
+    if (!galleryTrack || totalItems === 0) return;
+
+    // Wrap around
+    if (index < 0) index = totalItems - 1;
+    if (index >= totalItems) index = 0;
+
+    currentIndex = index;
+    items[currentIndex].scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+  }
 
   if (galleryTrack && galleryDots.length > 0) {
     // Handle dot clicks
     galleryDots.forEach(dot => {
       dot.addEventListener('click', () => {
         const index = parseInt(dot.dataset.galleryDot);
-        const items = galleryTrack.querySelectorAll('.product-media-item');
-        if (items[index]) {
-          items[index].scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
-        }
+        goToSlide(index);
       });
     });
 
@@ -607,14 +686,22 @@
     const updateActiveDot = () => {
       const scrollLeft = galleryTrack.scrollLeft;
       const itemWidth = galleryTrack.offsetWidth;
-      const activeIndex = Math.round(scrollLeft / itemWidth);
+      currentIndex = Math.round(scrollLeft / itemWidth);
 
       galleryDots.forEach((dot, index) => {
-        dot.classList.toggle('is-active', index === activeIndex);
+        dot.classList.toggle('is-active', index === currentIndex);
       });
     };
 
     galleryTrack.addEventListener('scroll', updateActiveDot, { passive: true });
+  }
+
+  // Arrow navigation
+  if (prevBtn) {
+    prevBtn.addEventListener('click', () => goToSlide(currentIndex - 1));
+  }
+  if (nextBtn) {
+    nextBtn.addEventListener('click', () => goToSlide(currentIndex + 1));
   }
 
   // Variant selection and cart handling
