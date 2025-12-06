@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "main": {
@@ -9,7 +18,8 @@
             "icon": "truck",
             "title": "Track Order",
             "description": "Check the status of your shipment.",
-            "description_mobile": "Expected delivery dates"
+            "description_mobile": "Expected delivery dates",
+            "link": ""
           }
         },
         "returns": {
@@ -18,7 +28,8 @@
             "icon": "return",
             "title": "Start Return",
             "description": "Start a return or exchange.",
-            "description_mobile": "30-day window"
+            "description_mobile": "30-day window",
+            "link": ""
           }
         },
         "assembly": {
@@ -27,7 +38,8 @@
             "icon": "wrench",
             "title": "Assembly",
             "description": "Guides for installing your light.",
-            "description_mobile": "Installation guides"
+            "description_mobile": "Installation guides",
+            "link": ""
           }
         },
         "care_guides": {
@@ -36,7 +48,8 @@
             "icon": "document",
             "title": "Care Guides",
             "description": "Maintenance and cleaning tips.",
-            "description_mobile": "Maintenance tips"
+            "description_mobile": "Maintenance tips",
+            "link": ""
           }
         }
       },
@@ -47,13 +60,32 @@
         "care_guides"
       ],
       "settings": {
+        "page_bg_color": "#F7F5F0",
+        "page_bg_color_mobile": "#F7F5F0",
         "heading": "How can we help?",
         "heading_mobile": "Support Center",
+        "heading_size": 40,
+        "heading_size_mobile": 28,
+        "heading_weight": "400",
+        "heading_color": "#1c1917",
         "subtitle": "Advice, answers, and support for your fixtures.",
+        "subtitle_size": 16,
+        "subtitle_color": "#78716c",
         "search_placeholder": "Search for 'installation', 'returns', 'shipping'...",
+        "card_bg_color": "#ffffff",
+        "card_border_radius": 12,
+        "icon_bg_color": "#f5f5f5",
+        "icon_color": "#1c1917",
+        "card_title_size": 18,
+        "card_title_weight": "500",
+        "card_title_color": "#1c1917",
+        "card_desc_size": 14,
+        "card_desc_color": "#78716c",
         "show_contact": true,
         "contact_text": "Can't find what you need?",
-        "contact_button_text": "CONTACT SUPPORT"
+        "contact_button_text": "CONTACT SUPPORT",
+        "contact_link": "",
+        "contact_link_color": "#d97706"
       }
     }
   },
