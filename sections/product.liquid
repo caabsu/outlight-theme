@@ -739,7 +739,7 @@
     position: absolute;
     top: -8px;
     left: 12px;
-    background: #fff;
+    background: transparent;
     padding: 0 6px;
     font-family: var(--font-primary-family), sans-serif;
     font-size: var(--variant-label-size, 11px);
@@ -748,6 +748,17 @@
     letter-spacing: 0.05em;
     color: var(--variant-label-color, #78716C);
     z-index: 1;
+  }
+
+  .product-variant-label::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--product-info-bg, #ffffff);
+    z-index: -1;
   }
 
   .product-variant-select-wrapper {
