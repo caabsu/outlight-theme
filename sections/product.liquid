@@ -210,15 +210,73 @@
               {{ section.settings.sold_out_text }}
             {%- endif -%}
           </button>
+
+          {%- comment -%} Free Shipping Text {%- endcomment -%}
+          {%- if section.settings.free_shipping_text != blank -%}
+            <p class="product-free-shipping">{{ section.settings.free_shipping_text }}</p>
+          {%- endif -%}
         {% endform %}
       </div>
 
-      {%- comment -%} Description {%- endcomment -%}
-      {%- if product.description != blank -%}
-        <div class="product-description">
-          {{ product.description }}
+      {%- comment -%} Divider Line {%- endcomment -%}
+      <div class="product-divider"></div>
+
+      {%- comment -%} Product Details Section {%- endcomment -%}
+      <div class="product-details">
+        {%- comment -%} Description - from metafield or setting {%- endcomment -%}
+        {%- if product.metafields.custom.description != blank -%}
+          <p class="product-details__description">{{ product.metafields.custom.description }}</p>
+        {%- elsif section.settings.description_text != blank -%}
+          <p class="product-details__description">{{ section.settings.description_text }}</p>
+        {%- endif -%}
+
+        {%- comment -%} Features/Specs List {%- endcomment -%}
+        <ul class="product-details__features">
+          {%- if section.settings.feature_1 != blank -%}
+            <li>{{ section.settings.feature_1 }}</li>
+          {%- endif -%}
+          {%- if section.settings.feature_2 != blank -%}
+            <li>{{ section.settings.feature_2 }}</li>
+          {%- endif -%}
+          {%- if section.settings.feature_3 != blank -%}
+            <li>{{ section.settings.feature_3 }}</li>
+          {%- endif -%}
+          {%- if section.settings.feature_4 != blank -%}
+            <li>{{ section.settings.feature_4 }}</li>
+          {%- endif -%}
+          {%- if section.settings.feature_5 != blank -%}
+            <li>{{ section.settings.feature_5 }}</li>
+          {%- endif -%}
+          {%- if section.settings.feature_6 != blank -%}
+            <li>{{ section.settings.feature_6 }}</li>
+          {%- endif -%}
+        </ul>
+
+        {%- comment -%} Mobile Specs Grid {%- endcomment -%}
+        <div class="product-details__specs-mobile">
+          <h4 class="product-details__specs-title">{{ section.settings.specs_title }}</h4>
+          <div class="product-details__specs-grid">
+            {%- if section.settings.feature_1 != blank -%}
+              <span>{{ section.settings.feature_1 }}</span>
+            {%- endif -%}
+            {%- if section.settings.feature_2 != blank -%}
+              <span>{{ section.settings.feature_2 }}</span>
+            {%- endif -%}
+            {%- if section.settings.feature_3 != blank -%}
+              <span>{{ section.settings.feature_3 }}</span>
+            {%- endif -%}
+            {%- if section.settings.feature_4 != blank -%}
+              <span>{{ section.settings.feature_4 }}</span>
+            {%- endif -%}
+            {%- if section.settings.feature_5 != blank -%}
+              <span>{{ section.settings.feature_5 }}</span>
+            {%- endif -%}
+            {%- if section.settings.feature_6 != blank -%}
+              <span>{{ section.settings.feature_6 }}</span>
+            {%- endif -%}
+          </div>
         </div>
-      {%- endif -%}
+      </div>
 
       {%- comment -%} Blocks (Specs, Features, etc) {%- endcomment -%}
       {%- for block in section.blocks -%}
@@ -701,16 +759,77 @@
     color: var(--delivery-date-color, #1C1917);
   }
 
-  /* Description */
-  .product-description {
-    font-size: 0.9375rem;
-    line-height: 1.6;
-    color: #57534E;
+  /* Free Shipping Text */
+  .product-free-shipping {
+    text-align: center;
+    font-size: 0.8125rem;
+    color: #9CA3AF;
+    margin: 1rem 0 0;
+  }
+
+  /* Divider Line */
+  .product-divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, #E5E7EB, transparent);
+    margin: 1.5rem 0;
+  }
+
+  /* Product Details Section */
+  .product-details {
     margin-bottom: 1.5rem;
   }
 
-  .product-description p {
+  .product-details__description {
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    color: #57534E;
+    margin: 0 0 1.25rem;
+  }
+
+  .product-details__features {
+    list-style: disc;
+    padding-left: 1.25rem;
     margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .product-details__features li {
+    font-size: 0.875rem;
+    color: #57534E;
+    line-height: 1.5;
+  }
+
+  .product-details__features li::marker {
+    color: #D4D4D4;
+  }
+
+  /* Mobile Specs Grid - hidden on desktop */
+  .product-details__specs-mobile {
+    display: none;
+  }
+
+  .product-details__specs-title {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #9CA3AF;
+    margin: 0 0 0.75rem;
+  }
+
+  .product-details__specs-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem 1rem;
+  }
+
+  .product-details__specs-grid span {
+    font-size: 0.8125rem;
+    color: #57534E;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #F0F0F0;
   }
 
   /* Specs */
@@ -756,6 +875,17 @@
     font-size: 0.8125rem;
     color: #9CA3AF;
     margin: 1rem 0 0;
+  }
+
+  /* Mobile: Hide bullet list, show specs grid */
+  @media screen and (max-width: 767px) {
+    .product-details__features {
+      display: none;
+    }
+
+    .product-details__specs-mobile {
+      display: block;
+    }
   }
 
   /* Desktop Layout */
@@ -1479,6 +1609,57 @@
       "default": "Sold out"
     },
     {
+      "type": "text",
+      "id": "free_shipping_text",
+      "label": "Free shipping text",
+      "default": "Free shipping on orders over $200"
+    },
+    {
+      "type": "header",
+      "content": "Product details"
+    },
+    {
+      "type": "textarea",
+      "id": "description_text",
+      "label": "Description text",
+      "info": "Leave blank to use metafield custom.description",
+      "default": "A suspended sculpture of light. The Orbital Pendant features a hand-blown glass sphere balanced within a raw brass ring."
+    },
+    {
+      "type": "text",
+      "id": "feature_1",
+      "label": "Feature 1",
+      "default": "Solid Brass Construction"
+    },
+    {
+      "type": "text",
+      "id": "feature_2",
+      "label": "Feature 2",
+      "default": "Opaline Glass Diffuser"
+    },
+    {
+      "type": "text",
+      "id": "feature_3",
+      "label": "Feature 3",
+      "default": "Adjustable Drop Height (20\" - 60\")"
+    },
+    {
+      "type": "text",
+      "id": "feature_4",
+      "label": "Feature 4",
+      "default": "2700K LED Integrated"
+    },
+    {
+      "type": "text",
+      "id": "feature_5",
+      "label": "Feature 5"
+    },
+    {
+      "type": "text",
+      "id": "feature_6",
+      "label": "Feature 6"
+    },
+    {
       "type": "header",
       "content": "Specs section"
     },
@@ -1486,7 +1667,7 @@
       "type": "text",
       "id": "specs_title",
       "label": "Specs title",
-      "default": "Specifications"
+      "default": "SPECS"
     },
     {
       "type": "color",
