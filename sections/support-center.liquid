@@ -191,7 +191,7 @@
 
   .support-center__search-icon {
     position: absolute;
-    left: 1.25rem;
+    left: 1rem;
     top: 50%;
     transform: translateY(-50%);
     color: #9CA3AF;
@@ -200,15 +200,15 @@
 
   .support-center__search-input {
     width: 100%;
-    padding: 1rem 1.25rem 1rem 3.25rem;
-    font-size: 1rem;
+    padding: 0.75rem 1rem 0.75rem 2.75rem;
+    font-size: 0.9375rem;
     font-family: inherit;
     color: #1C1917;
-    background: #ffffff;
+    background: #fafafa;
     border: 1px solid #E5E5E5;
-    border-radius: 9999px;
+    border-radius: 0;
     outline: none;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
   }
 
   .support-center__search-input::placeholder {
@@ -216,8 +216,8 @@
   }
 
   .support-center__search-input:focus {
-    border-color: #D97706;
-    box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.1);
+    border-color: #1C1917;
+    background: #ffffff;
   }
 
   /* Cards - Desktop */
@@ -316,7 +316,7 @@
     .support-center__title--mobile {
       display: block;
       font-size: var(--sc-heading-size-mobile, 28px);
-      text-align: left;
+      text-align: center;
     }
 
     .support-center__subtitle {
@@ -324,7 +324,7 @@
     }
 
     .support-center__header {
-      text-align: left;
+      text-align: center;
       margin-bottom: 1.5rem;
     }
 
@@ -333,9 +333,10 @@
     }
 
     .support-center__search-input {
-      padding: 0.875rem 1rem 0.875rem 2.75rem;
+      padding: 0.75rem 1rem 0.75rem 2.75rem;
       font-size: 0.9375rem;
-      border-radius: 8px;
+      border-radius: 0;
+      background: #fafafa;
     }
 
     .support-center__search-icon {
