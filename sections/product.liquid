@@ -317,10 +317,16 @@
               {%- comment -%} Info Boxes {%- endcomment -%}
               <div class="product-details__info-boxes" style="
                 --shipping-bg: {{ block.settings.shipping_box_bg }};
-                --shipping-text: {{ block.settings.shipping_box_text }};
+                --shipping-subheader-color: {{ block.settings.shipping_box_subheader_color }};
+                --shipping-subheader-size: {{ block.settings.shipping_box_subheader_size }}px;
+                --shipping-header-color: {{ block.settings.shipping_box_header_color }};
+                --shipping-header-size: {{ block.settings.shipping_box_header_size }}px;
                 --shipping-img-opacity: {{ block.settings.shipping_box_img_opacity | divided_by: 100.0 }};
                 --specs-bg: {{ block.settings.specs_box_bg }};
-                --specs-text: {{ block.settings.specs_box_text }};
+                --specs-subheader-color: {{ block.settings.specs_box_subheader_color }};
+                --specs-subheader-size: {{ block.settings.specs_box_subheader_size }}px;
+                --specs-header-color: {{ block.settings.specs_box_header_color }};
+                --specs-header-size: {{ block.settings.specs_box_header_size }}px;
                 --specs-img-opacity: {{ block.settings.specs_box_img_opacity | divided_by: 100.0 }};
               ">
                 <a href="{{ block.settings.shipping_box_link }}" class="product-details__info-box product-details__info-box--shipping">
@@ -1071,24 +1077,32 @@
 
   .product-details__info-box-subheader {
     font-family: var(--font-primary-family), sans-serif;
-    font-size: 10px;
     font-weight: 500;
   }
 
   .product-details__info-box-header {
     font-family: var(--font-primary-family), sans-serif;
-    font-size: 14px;
     font-weight: 600;
   }
 
-  .product-details__info-box--shipping .product-details__info-box-subheader,
-  .product-details__info-box--shipping .product-details__info-box-header {
-    color: var(--shipping-text, #ffffff);
+  .product-details__info-box--shipping .product-details__info-box-subheader {
+    font-size: var(--shipping-subheader-size, 10px);
+    color: var(--shipping-subheader-color, #d1d5db);
   }
 
-  .product-details__info-box--specs .product-details__info-box-subheader,
+  .product-details__info-box--shipping .product-details__info-box-header {
+    font-size: var(--shipping-header-size, 14px);
+    color: var(--shipping-header-color, #ffffff);
+  }
+
+  .product-details__info-box--specs .product-details__info-box-subheader {
+    font-size: var(--specs-subheader-size, 10px);
+    color: var(--specs-subheader-color, #78716c);
+  }
+
   .product-details__info-box--specs .product-details__info-box-header {
-    color: var(--specs-text, #1C1917);
+    font-size: var(--specs-header-size, 14px);
+    color: var(--specs-header-color, #1C1917);
   }
 
   /* Specs Modal */
@@ -2290,14 +2304,46 @@
         {
           "type": "text",
           "id": "shipping_box_subheader",
-          "label": "Subheader",
+          "label": "Subheader text",
           "default": "On all orders"
+        },
+        {
+          "type": "range",
+          "id": "shipping_box_subheader_size",
+          "min": 8,
+          "max": 16,
+          "step": 1,
+          "unit": "px",
+          "label": "Subheader size",
+          "default": 10
+        },
+        {
+          "type": "color",
+          "id": "shipping_box_subheader_color",
+          "label": "Subheader color",
+          "default": "#d1d5db"
         },
         {
           "type": "text",
           "id": "shipping_box_header",
-          "label": "Header",
+          "label": "Header text",
           "default": "Free shipping & returns"
+        },
+        {
+          "type": "range",
+          "id": "shipping_box_header_size",
+          "min": 12,
+          "max": 24,
+          "step": 1,
+          "unit": "px",
+          "label": "Header size",
+          "default": 14
+        },
+        {
+          "type": "color",
+          "id": "shipping_box_header_color",
+          "label": "Header color",
+          "default": "#ffffff"
         },
         {
           "type": "url",
@@ -2309,12 +2355,6 @@
           "id": "shipping_box_bg",
           "label": "Background color",
           "default": "#1C1917"
-        },
-        {
-          "type": "color",
-          "id": "shipping_box_text",
-          "label": "Text color",
-          "default": "#ffffff"
         },
         {
           "type": "image_picker",
@@ -2338,26 +2378,52 @@
         {
           "type": "text",
           "id": "specs_box_subheader",
-          "label": "Subheader",
+          "label": "Subheader text",
           "default": "Learn more"
+        },
+        {
+          "type": "range",
+          "id": "specs_box_subheader_size",
+          "min": 8,
+          "max": 16,
+          "step": 1,
+          "unit": "px",
+          "label": "Subheader size",
+          "default": 10
+        },
+        {
+          "type": "color",
+          "id": "specs_box_subheader_color",
+          "label": "Subheader color",
+          "default": "#78716c"
         },
         {
           "type": "text",
           "id": "specs_box_header",
-          "label": "Header",
+          "label": "Header text",
           "default": "View Full Specs"
+        },
+        {
+          "type": "range",
+          "id": "specs_box_header_size",
+          "min": 12,
+          "max": 24,
+          "step": 1,
+          "unit": "px",
+          "label": "Header size",
+          "default": 14
+        },
+        {
+          "type": "color",
+          "id": "specs_box_header_color",
+          "label": "Header color",
+          "default": "#1C1917"
         },
         {
           "type": "color",
           "id": "specs_box_bg",
           "label": "Background color",
           "default": "#F5F5F4"
-        },
-        {
-          "type": "color",
-          "id": "specs_box_text",
-          "label": "Text color",
-          "default": "#1C1917"
         },
         {
           "type": "image_picker",
