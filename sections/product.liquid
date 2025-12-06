@@ -25,6 +25,9 @@
     --price-size-desktop: {{ section.settings.price_size_desktop }}px;
     --price-color: {{ section.settings.price_color }};
     --price-weight: {{ section.settings.price_weight }};
+    --variant-focus-color: {{ section.settings.variant_focus_color }};
+    --gallery-dot-color: {{ section.settings.gallery_dot_color }};
+    --gallery-arrow-color: {{ section.settings.gallery_arrow_color }};
   "
 >
   {%- comment -%} Image Gallery {%- endcomment -%}
@@ -140,27 +143,32 @@
           {%- comment -%} Variant Selectors {%- endcomment -%}
           {%- unless product.has_only_default_variant -%}
             <div class="product-variants">
+              <h3 class="product-variants__title">{{ section.settings.config_title | default: 'Configuration' }}</h3>
               {%- for option in product.options_with_values -%}
                 <div class="product-variant-option">
-                  <label class="product-variant-label" for="option-{{ option.name | handleize }}">
+                  <label class="product-variant-label" for="option-{{ option.name | handleize }}-{{ section.id }}">
                     {{ option.name }}
                   </label>
-                  <div class="product-variant-selector">
-                    {%- for value in option.values -%}
-                      {%- assign option_index = 'option' | append: option.position -%}
-                      {%- assign is_selected = false -%}
-                      {%- if product.selected_or_first_available_variant[option_index] == value -%}
-                        {%- assign is_selected = true -%}
-                      {%- endif -%}
-                      <button
-                        type="button"
-                        class="product-variant-btn {% if is_selected %}is-selected{% endif %}"
-                        data-option-position="{{ option.position }}"
-                        data-option-value="{{ value | escape }}"
-                      >
-                        {{ value }}
-                      </button>
-                    {%- endfor -%}
+                  <div class="product-variant-select-wrapper">
+                    <select
+                      id="option-{{ option.name | handleize }}-{{ section.id }}"
+                      class="product-variant-select"
+                      data-option-position="{{ option.position }}"
+                    >
+                      {%- for value in option.values -%}
+                        {%- assign option_index = 'option' | append: option.position -%}
+                        {%- assign is_selected = false -%}
+                        {%- if product.selected_or_first_available_variant[option_index] == value -%}
+                          {%- assign is_selected = true -%}
+                        {%- endif -%}
+                        <option value="{{ value | escape }}" {% if is_selected %}selected{% endif %}>
+                          {{ value }}
+                        </option>
+                      {%- endfor -%}
+                    </select>
+                    <svg class="product-variant-select-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
                   </div>
                 </div>
               {%- endfor -%}
@@ -175,10 +183,11 @@
             class="product-add-to-cart-btn"
             data-add-text="{{ section.settings.add_to_cart_text }}"
             data-sold-out-text="{{ section.settings.sold_out_text }}"
+            data-price="{{ product.selected_or_first_available_variant.price }}"
             {% unless product.selected_or_first_available_variant.available %}disabled{% endunless %}
           >
             {%- if product.selected_or_first_available_variant.available -%}
-              {{ section.settings.add_to_cart_text }}
+              <span data-btn-text>{{ section.settings.add_to_cart_text }}</span> — <span data-btn-price>{{ product.selected_or_first_available_variant.price | money }}</span>
             {%- else -%}
               {{ section.settings.sold_out_text }}
             {%- endif -%}
@@ -329,7 +338,7 @@
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background-color: rgba(0, 0, 0, 0.15);
+    background-color: color-mix(in srgb, var(--gallery-dot-color, #000) 15%, transparent);
     border: none;
     padding: 0;
     cursor: pointer;
@@ -337,11 +346,11 @@
   }
 
   .product-media-dot:hover {
-    background-color: rgba(0, 0, 0, 0.3);
+    background-color: color-mix(in srgb, var(--gallery-dot-color, #000) 30%, transparent);
   }
 
   .product-media-dot.is-active {
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: color-mix(in srgb, var(--gallery-dot-color, #000) 50%, transparent);
   }
 
   /* Gallery Navigation Arrows - Minimal */
@@ -357,13 +366,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: rgba(0, 0, 0, 0.3);
+    color: color-mix(in srgb, var(--gallery-arrow-color, #000) 30%, transparent);
     z-index: 10;
     transition: color 0.2s ease;
   }
 
   .product-media-nav:hover {
-    color: rgba(0, 0, 0, 0.6);
+    color: color-mix(in srgb, var(--gallery-arrow-color, #000) 60%, transparent);
   }
 
   .product-media-nav:active {
@@ -580,61 +589,82 @@
     margin: 0 0 1rem;
   }
 
-  /* Variant Selectors - Modern compact style */
+  /* Variant Selectors - Dropdown style with floating labels */
   .product-variants {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
-    margin-bottom: 1rem;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .product-variants__title {
+    font-family: var(--font-heading-family, serif);
+    font-size: 1.5rem;
+    font-weight: 400;
+    font-style: italic;
+    color: #1C1917;
+    margin: 0 0 0.75rem;
   }
 
   .product-variant-option {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 0.75rem;
+    position: relative;
   }
 
   .product-variant-label {
+    position: absolute;
+    top: -8px;
+    left: 12px;
+    background: #fff;
+    padding: 0 6px;
     font-size: 0.6875rem;
     font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.05em;
     color: #78716C;
-    min-width: 50px;
+    z-index: 1;
   }
 
-  .product-variant-selector {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.375rem;
+  .product-variant-select-wrapper {
+    position: relative;
+    width: 100%;
   }
 
-  .product-variant-btn {
-    background: #F5F5F4;
-    border: none;
-    padding: 0.5rem 0.875rem;
-    font-size: 0.75rem;
-    font-weight: 500;
-    color: #57534E;
-    cursor: pointer;
-    transition: all 0.15s ease;
-    border-radius: 2px;
-  }
-
-  .product-variant-btn:hover {
-    background: #E7E5E4;
+  .product-variant-select {
+    width: 100%;
+    padding: 1rem 2.5rem 1rem 1rem;
+    font-size: 1rem;
+    font-family: inherit;
     color: #1C1917;
+    background: #fff;
+    border: 1px solid #E5E5E5;
+    border-radius: 8px;
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
   }
 
-  .product-variant-btn.is-selected {
-    background-color: #1C1917;
-    color: #ffffff;
+  .product-variant-select:hover {
+    border-color: #D4D4D4;
   }
 
-  /* Add to Cart Button - Compact */
+  .product-variant-select:focus {
+    outline: none;
+    border-color: var(--variant-focus-color, #D97706);
+  }
+
+  .product-variant-select-icon {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #78716C;
+  }
+
+  /* Add to Cart Button */
   .product-form-container {
-    margin: 1rem 0;
+    margin: 1.25rem 0;
   }
 
   .product-add-to-cart-btn {
@@ -642,12 +672,11 @@
     background-color: #1C1917;
     color: #ffffff;
     border: none;
-    border-radius: 0;
-    padding: 0.875rem 1.25rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    border-radius: 50px;
+    padding: 1rem 1.5rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
     cursor: pointer;
     transition: background-color 0.15s ease;
   }
@@ -970,29 +999,15 @@
   const initialInput = document.querySelector('input[name="id"]');
   window.currentProductVariantId = initialInput ? initialInput.value : null;
 
-  // Variant button click handler - use document-level delegation
-  document.addEventListener('click', (e) => {
-    const btn = e.target.closest('.product-variant-btn');
-    if (!btn) return;
-
-    e.preventDefault();
-
-    // Update selected state for this option group
-    const selector = btn.closest('.product-variant-selector');
-    if (selector) {
-      selector.querySelectorAll('.product-variant-btn').forEach(b => {
-        b.classList.remove('is-selected');
-      });
-      btn.classList.add('is-selected');
-    }
+  // Variant select change handler
+  document.addEventListener('change', (e) => {
+    const select = e.target.closest('.product-variant-select');
+    if (!select) return;
 
     // Collect all selected options in order
     const selectedOptions = [];
-    document.querySelectorAll('.product-variant-option').forEach(optionGroup => {
-      const selectedBtn = optionGroup.querySelector('.product-variant-btn.is-selected');
-      if (selectedBtn) {
-        selectedOptions.push(selectedBtn.dataset.optionValue);
-      }
+    document.querySelectorAll('.product-variant-select').forEach(sel => {
+      selectedOptions.push(sel.value);
     });
 
     // Find matching variant by comparing options array
@@ -1025,10 +1040,16 @@
       const newUrl = window.location.pathname + '?variant=' + matchingVariant.id;
       history.replaceState(null, null, newUrl);
 
-      // Update price display
+      // Update price display in header
       const priceEl = document.querySelector('.product-price');
       if (priceEl && matchingVariant.price !== undefined) {
         priceEl.innerHTML = formatMoney(matchingVariant.price);
+      }
+
+      // Update price in button
+      const btnPriceEl = document.querySelector('[data-btn-price]');
+      if (btnPriceEl && matchingVariant.price !== undefined) {
+        btnPriceEl.textContent = formatMoney(matchingVariant.price);
       }
 
       // Update subtitle with variant title
@@ -1040,14 +1061,14 @@
       // Update button state
       const addBtn = document.querySelector('.product-add-to-cart-btn');
       if (addBtn) {
-        const addText = addBtn.dataset.addText || 'Add to cart';
+        const addText = addBtn.dataset.addText || 'Add to Cart';
         const soldOutText = addBtn.dataset.soldOutText || 'Sold out';
         if (matchingVariant.available) {
           addBtn.disabled = false;
-          addBtn.textContent = addText;
+          addBtn.innerHTML = '<span data-btn-text>' + addText + '</span> — <span data-btn-price>' + formatMoney(matchingVariant.price) + '</span>';
         } else {
           addBtn.disabled = true;
-          addBtn.textContent = soldOutText;
+          addBtn.innerHTML = soldOutText;
         }
       }
     }
@@ -1061,7 +1082,6 @@
     e.preventDefault();
 
     const submitBtn = form.querySelector('[type="submit"]');
-    const originalText = submitBtn.textContent;
 
     // Use the global variant ID
     const variantId = window.currentProductVariantId;
@@ -1072,7 +1092,8 @@
     }
 
     submitBtn.disabled = true;
-    submitBtn.textContent = 'ADDING...';
+    const originalHTML = submitBtn.innerHTML;
+    submitBtn.textContent = 'Adding...';
 
     try {
       // Use JSON body with the tracked variant ID
@@ -1133,17 +1154,17 @@
 
         // Reset button
         submitBtn.disabled = false;
-        submitBtn.textContent = originalText;
+        submitBtn.innerHTML = originalHTML;
       } else {
         const error = await response.json();
         alert(error.description || 'Error adding to cart');
         submitBtn.disabled = false;
-        submitBtn.textContent = originalText;
+        submitBtn.innerHTML = originalHTML;
       }
     } catch (error) {
       console.error('Error:', error);
       submitBtn.disabled = false;
-      submitBtn.textContent = originalText;
+      submitBtn.innerHTML = originalHTML;
     }
   });
 {% endjavascript %}
@@ -1450,6 +1471,38 @@
       "id": "specs_title",
       "label": "Specs title",
       "default": "Specifications"
+    },
+    {
+      "type": "header",
+      "content": "Configuration section"
+    },
+    {
+      "type": "text",
+      "id": "config_title",
+      "label": "Configuration title",
+      "default": "Configuration"
+    },
+    {
+      "type": "color",
+      "id": "variant_focus_color",
+      "label": "Dropdown focus border color",
+      "default": "#D97706"
+    },
+    {
+      "type": "header",
+      "content": "Gallery navigation"
+    },
+    {
+      "type": "color",
+      "id": "gallery_dot_color",
+      "label": "Dot indicator color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "gallery_arrow_color",
+      "label": "Arrow color",
+      "default": "#000000"
     }
   ],
   "presets": [
