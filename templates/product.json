@@ -45,7 +45,7 @@
         "price_size_desktop": 24,
         "price_color": "#1c1917",
         "price_weight": "400",
-        "add_to_cart_text": "Add to cart",
+        "add_to_cart_text": "ADD",
         "sold_out_text": "Sold out",
         "specs_title": "Specifications",
         "config_title": "Configuration",
