@@ -195,21 +195,36 @@
             </div>
           {%- endif -%}
 
-          <button
-            type="submit"
-            name="add"
-            class="product-add-to-cart-btn"
-            data-add-text="{{ section.settings.add_to_cart_text }}"
-            data-sold-out-text="{{ section.settings.sold_out_text }}"
-            data-price="{{ product.selected_or_first_available_variant.price }}"
-            {% unless product.selected_or_first_available_variant.available %}disabled{% endunless %}
-          >
-            {%- if product.selected_or_first_available_variant.available -%}
-              <span data-btn-text>{{ section.settings.add_to_cart_text }}</span> — <span data-btn-price>{{ product.selected_or_first_available_variant.price | money }}</span>
-            {%- else -%}
-              {{ section.settings.sold_out_text }}
-            {%- endif -%}
-          </button>
+          <div class="product-add-row">
+            <div class="product-quantity-selector">
+              <button type="button" class="product-quantity-btn" data-quantity-minus aria-label="Decrease quantity">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M2.5 6h7"/>
+                </svg>
+              </button>
+              <input type="number" name="quantity" value="1" min="1" max="99" class="product-quantity-input" data-quantity-input aria-label="Quantity">
+              <button type="button" class="product-quantity-btn" data-quantity-plus aria-label="Increase quantity">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M6 2.5v7M2.5 6h7"/>
+                </svg>
+              </button>
+            </div>
+            <button
+              type="submit"
+              name="add"
+              class="product-add-to-cart-btn"
+              data-add-text="{{ section.settings.add_to_cart_text }}"
+              data-sold-out-text="{{ section.settings.sold_out_text }}"
+              data-price="{{ product.selected_or_first_available_variant.price }}"
+              {% unless product.selected_or_first_available_variant.available %}disabled{% endunless %}
+            >
+              {%- if product.selected_or_first_available_variant.available -%}
+                <span data-btn-text>{{ section.settings.add_to_cart_text }}</span> — <span data-btn-price>{{ product.selected_or_first_available_variant.price | money }}</span>
+              {%- else -%}
+                {{ section.settings.sold_out_text }}
+              {%- endif -%}
+            </button>
+          </div>
         {% endform %}
       </div>
 
@@ -748,6 +763,61 @@
   /* Add to Cart Button */
   .product-form-container {
     margin: 1.25rem 0;
+  }
+
+  .product-add-row {
+    display: flex;
+    gap: 0.625rem;
+    align-items: stretch;
+  }
+
+  .product-quantity-selector {
+    display: flex;
+    align-items: center;
+    border: 1px solid #E7E5E4;
+    background: #ffffff;
+    flex-shrink: 0;
+  }
+
+  .product-quantity-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 100%;
+    background: none;
+    border: none;
+    color: #57534E;
+    cursor: pointer;
+    transition: color 0.15s ease, background-color 0.15s ease;
+  }
+
+  .product-quantity-btn:hover {
+    color: #1C1917;
+    background: #F5F5F4;
+  }
+
+  .product-quantity-input {
+    width: 32px;
+    height: 100%;
+    border: none;
+    background: none;
+    text-align: center;
+    font-family: var(--font-primary-family), sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: #1C1917;
+    -moz-appearance: textfield;
+  }
+
+  .product-quantity-input::-webkit-outer-spin-button,
+  .product-quantity-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .product-quantity-input:focus {
+    outline: none;
   }
 
   .product-add-to-cart-btn {
@@ -1355,6 +1425,34 @@
       if (e.target === lightbox || e.target.classList.contains('product-lightbox__slide')) {
         closeLightbox();
       }
+    });
+  }
+
+  // Quantity selector
+  const quantityInput = document.querySelector('[data-quantity-input]');
+  const quantityMinus = document.querySelector('[data-quantity-minus]');
+  const quantityPlus = document.querySelector('[data-quantity-plus]');
+
+  if (quantityInput && quantityMinus && quantityPlus) {
+    quantityMinus.addEventListener('click', () => {
+      const currentVal = parseInt(quantityInput.value) || 1;
+      if (currentVal > 1) {
+        quantityInput.value = currentVal - 1;
+      }
+    });
+
+    quantityPlus.addEventListener('click', () => {
+      const currentVal = parseInt(quantityInput.value) || 1;
+      if (currentVal < 99) {
+        quantityInput.value = currentVal + 1;
+      }
+    });
+
+    quantityInput.addEventListener('change', () => {
+      let val = parseInt(quantityInput.value) || 1;
+      if (val < 1) val = 1;
+      if (val > 99) val = 99;
+      quantityInput.value = val;
     });
   }
 
