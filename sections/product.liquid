@@ -7,6 +7,7 @@
   {{ product.variants | json }}
 </script>
 
+<div class="product-wrapper full-width">
 <div
   class="product-container"
   style="
@@ -197,6 +198,7 @@
     </div>
   </div>
 </div>
+</div>
 
 {% stylesheet %}
   /* Ensure product section works correctly */
@@ -215,7 +217,7 @@
   .product-media-gallery {
     position: relative;
     width: 100%;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 10 / 12;
     overflow: hidden;
     background-color: #f5f5f5;
   }
@@ -614,8 +616,7 @@
   }
 
   // Variant selection handling
-  const variantButtons = document.querySelectorAll('.product-variant-btn');
-  const variantIdInput = document.querySelector('[data-variant-id]');
+  const productForm = document.querySelector('[data-product-form]');
   const variantsDataEl = document.querySelector('[data-product-variants]');
   let productVariants = [];
 
@@ -632,70 +633,80 @@
     return '$' + (cents / 100).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
   }
 
-  if (variantButtons.length > 0 && variantIdInput && productVariants.length > 0) {
-    variantButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        // Update selected state for this option group
-        const selector = btn.closest('.product-variant-selector');
-        selector.querySelectorAll('.product-variant-btn').forEach(b => {
-          b.classList.remove('is-selected');
-        });
-        btn.classList.add('is-selected');
+  // Store current variant ID
+  let currentVariantId = productForm ? productForm.querySelector('input[name="id"]')?.value : null;
 
-        // Collect all selected options in order
-        const selectedOptions = [];
-        document.querySelectorAll('.product-variant-option').forEach(optionGroup => {
-          const selectedBtn = optionGroup.querySelector('.product-variant-btn.is-selected');
-          if (selectedBtn) {
-            selectedOptions.push(selectedBtn.dataset.optionValue);
-          }
-        });
+  if (productForm && productVariants.length > 0) {
+    // Use event delegation for variant buttons
+    productForm.addEventListener('click', (e) => {
+      const btn = e.target.closest('.product-variant-btn');
+      if (!btn) return;
 
-        // Find matching variant by comparing options
-        const matchingVariant = productVariants.find(variant => {
-          // Check each option position
-          for (let i = 0; i < selectedOptions.length; i++) {
-            const optionKey = 'option' + (i + 1);
-            if (variant[optionKey] !== selectedOptions[i]) {
-              return false;
-            }
-          }
-          return true;
-        });
+      e.preventDefault();
 
-        if (matchingVariant) {
-          // Update hidden input value
-          variantIdInput.value = matchingVariant.id;
+      // Update selected state for this option group
+      const selector = btn.closest('.product-variant-selector');
+      selector.querySelectorAll('.product-variant-btn').forEach(b => {
+        b.classList.remove('is-selected');
+      });
+      btn.classList.add('is-selected');
 
-          // Update URL without reload
-          const newUrl = window.location.pathname + '?variant=' + matchingVariant.id;
-          history.replaceState(null, null, newUrl);
-
-          // Update price display
-          const priceEl = document.querySelector('.product-price');
-          if (priceEl && matchingVariant.price !== undefined) {
-            priceEl.innerHTML = formatMoney(matchingVariant.price);
-          }
-
-          // Update subtitle with variant title
-          const subtitleEl = document.querySelector('.product-subtitle');
-          if (subtitleEl && matchingVariant.title && matchingVariant.title !== 'Default Title') {
-            subtitleEl.textContent = matchingVariant.title;
-          }
-
-          // Update button state
-          const addBtn = document.querySelector('.product-add-to-cart-btn');
-          if (addBtn) {
-            if (matchingVariant.available) {
-              addBtn.disabled = false;
-              addBtn.textContent = 'ADD TO CART';
-            } else {
-              addBtn.disabled = true;
-              addBtn.textContent = 'SOLD OUT';
-            }
-          }
+      // Collect all selected options in order
+      const selectedOptions = [];
+      productForm.querySelectorAll('.product-variant-option').forEach(optionGroup => {
+        const selectedBtn = optionGroup.querySelector('.product-variant-btn.is-selected');
+        if (selectedBtn) {
+          selectedOptions.push(selectedBtn.dataset.optionValue);
         }
       });
+
+      // Find matching variant by comparing options
+      const matchingVariant = productVariants.find(variant => {
+        for (let i = 0; i < selectedOptions.length; i++) {
+          const optionKey = 'option' + (i + 1);
+          if (variant[optionKey] !== selectedOptions[i]) {
+            return false;
+          }
+        }
+        return true;
+      });
+
+      if (matchingVariant) {
+        // Update the hidden input directly within the form
+        const variantInput = productForm.querySelector('input[name="id"]');
+        if (variantInput) {
+          variantInput.value = matchingVariant.id;
+          currentVariantId = matchingVariant.id;
+        }
+
+        // Update URL without reload
+        const newUrl = window.location.pathname + '?variant=' + matchingVariant.id;
+        history.replaceState(null, null, newUrl);
+
+        // Update price display
+        const priceEl = document.querySelector('.product-price');
+        if (priceEl && matchingVariant.price !== undefined) {
+          priceEl.innerHTML = formatMoney(matchingVariant.price);
+        }
+
+        // Update subtitle with variant title
+        const subtitleEl = document.querySelector('.product-subtitle');
+        if (subtitleEl && matchingVariant.title && matchingVariant.title !== 'Default Title') {
+          subtitleEl.textContent = matchingVariant.title;
+        }
+
+        // Update button state
+        const addBtn = productForm.querySelector('.product-add-to-cart-btn');
+        if (addBtn) {
+          if (matchingVariant.available) {
+            addBtn.disabled = false;
+            addBtn.textContent = 'ADD TO CART';
+          } else {
+            addBtn.disabled = true;
+            addBtn.textContent = 'SOLD OUT';
+          }
+        }
+      }
     });
   }
 
