@@ -26,7 +26,6 @@
     --price-color: {{ section.settings.price_color }};
     --price-weight: {{ section.settings.price_weight }};
     --variant-focus-color: {{ section.settings.variant_focus_color }};
-    --gallery-dot-color: {{ section.settings.gallery_dot_color }};
     --gallery-arrow-color: {{ section.settings.gallery_arrow_color }};
     --button-size: {{ section.settings.button_size }}px;
     --button-size-desktop: {{ section.settings.button_size_desktop }}px;
@@ -70,16 +69,6 @@
     </div>
 
     {%- if product.media.size > 1 -%}
-      <div class="product-media-dots">
-        {%- for media in product.media -%}
-          <button
-            class="product-media-dot{% if forloop.first %} is-active{% endif %}"
-            data-gallery-dot="{{ forloop.index0 }}"
-            aria-label="View image {{ forloop.index }}"
-          ></button>
-        {%- endfor -%}
-      </div>
-
       <button class="product-media-nav product-media-nav--prev" data-gallery-prev aria-label="Previous image">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -346,36 +335,6 @@
     width: 50%;
     height: auto;
     opacity: 0.5;
-  }
-
-  /* Gallery Dots - Minimal transparent style */
-  .product-media-dots {
-    position: absolute;
-    top: 16px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 6px;
-    z-index: 10;
-  }
-
-  .product-media-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background-color: color-mix(in srgb, var(--gallery-dot-color, #000) 15%, transparent);
-    border: none;
-    padding: 0;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .product-media-dot:hover {
-    background-color: color-mix(in srgb, var(--gallery-dot-color, #000) 30%, transparent);
-  }
-
-  .product-media-dot.is-active {
-    background-color: color-mix(in srgb, var(--gallery-dot-color, #000) 50%, transparent);
   }
 
   /* Gallery Navigation Arrows - Minimal */
@@ -827,7 +786,6 @@
       aspect-ratio: 1 / 1;
     }
 
-    .product-media-dots,
     .product-media-nav {
       display: none;
     }
@@ -892,7 +850,6 @@
 
   // Gallery navigation
   const galleryTrack = document.querySelector('[data-gallery-track]');
-  const galleryDots = document.querySelectorAll('[data-gallery-dot]');
   const prevBtn = document.querySelector('[data-gallery-prev]');
   const nextBtn = document.querySelector('[data-gallery-next]');
 
@@ -912,27 +869,13 @@
     items[currentIndex].scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
   }
 
-  if (galleryTrack && galleryDots.length > 0) {
-    // Handle dot clicks
-    galleryDots.forEach(dot => {
-      dot.addEventListener('click', () => {
-        const index = parseInt(dot.dataset.galleryDot);
-        goToSlide(index);
-      });
-    });
-
-    // Update active dot on scroll
-    const updateActiveDot = () => {
+  // Track current index on scroll
+  if (galleryTrack) {
+    galleryTrack.addEventListener('scroll', () => {
       const scrollLeft = galleryTrack.scrollLeft;
       const itemWidth = galleryTrack.offsetWidth;
       currentIndex = Math.round(scrollLeft / itemWidth);
-
-      galleryDots.forEach((dot, index) => {
-        dot.classList.toggle('is-active', index === currentIndex);
-      });
-    };
-
-    galleryTrack.addEventListener('scroll', updateActiveDot, { passive: true });
+    }, { passive: true });
   }
 
   // Arrow navigation
@@ -1743,12 +1686,6 @@
     {
       "type": "header",
       "content": "Gallery navigation"
-    },
-    {
-      "type": "color",
-      "id": "gallery_dot_color",
-      "label": "Dot indicator color",
-      "default": "#000000"
     },
     {
       "type": "color",
