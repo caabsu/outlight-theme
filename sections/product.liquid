@@ -125,9 +125,20 @@
         <p class="product-eyebrow">{{ section.settings.eyebrow_text }}</p>
       {%- endif -%}
 
-      {%- comment -%} Title & Price Row {%- endcomment -%}
-      <div class="product-header">
-        <h1 class="product-title {% if section.settings.title_italic %}product-title--italic{% endif %}">{{ product.title }}</h1>
+      {%- comment -%} Title {%- endcomment -%}
+      <h1 class="product-title {% if section.settings.title_italic %}product-title--italic{% endif %}">{{ product.title }}</h1>
+
+      {%- comment -%} Subtitle & Price Row {%- endcomment -%}
+      <div class="product-subtitle-row">
+        {%- if section.settings.subtitle_text != blank -%}
+          <p class="product-subtitle">{{ section.settings.subtitle_text }}</p>
+        {%- elsif product.has_only_default_variant == false -%}
+          <p class="product-subtitle">{{ product.selected_or_first_available_variant.title }}</p>
+        {%- elsif product.metafields.custom.subtitle -%}
+          <p class="product-subtitle">{{ product.metafields.custom.subtitle }}</p>
+        {%- else -%}
+          <p class="product-subtitle"></p>
+        {%- endif -%}
         <div class="product-price">
           {%- if product.compare_at_price > product.price -%}
             <span class="product-price-sale">{{ product.price | money }}</span>
@@ -137,15 +148,6 @@
           {%- endif -%}
         </div>
       </div>
-
-      {%- comment -%} Subtitle / Variant Info {%- endcomment -%}
-      {%- if section.settings.subtitle_text != blank -%}
-        <p class="product-subtitle">{{ section.settings.subtitle_text }}</p>
-      {%- elsif product.has_only_default_variant == false -%}
-        <p class="product-subtitle">{{ product.selected_or_first_available_variant.title }}</p>
-      {%- elsif product.metafields.custom.subtitle -%}
-        <p class="product-subtitle">{{ product.metafields.custom.subtitle }}</p>
-      {%- endif -%}
 
       {%- comment -%} Add to Cart Form {%- endcomment -%}
       <div class="product-form-container">
@@ -527,27 +529,34 @@
     margin: 0 0 0.5rem;
   }
 
-  /* Header Row - Title & Price */
-  .product-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 1rem;
-    margin-bottom: 0.25rem;
-  }
-
+  /* Title */
   .product-title {
     font-family: var(--font-heading-family, serif);
     font-size: var(--title-size, 28px);
     font-weight: var(--title-weight, 400);
     color: var(--title-color, #1C1917);
-    margin: 0;
+    margin: 0 0 0.25rem;
     line-height: 1.2;
-    flex: 1;
   }
 
   .product-title--italic {
     font-style: italic;
+  }
+
+  /* Subtitle & Price Row */
+  .product-subtitle-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .product-subtitle {
+    font-size: var(--subtitle-size, 15px);
+    font-weight: var(--subtitle-weight, 400);
+    color: var(--subtitle-color, #78716C);
+    margin: 0;
   }
 
   .product-price {
@@ -565,14 +574,6 @@
     font-size: calc(var(--price-size, 20px) * 0.8);
     color: #9CA3AF;
     margin-left: 0.5rem;
-  }
-
-  /* Subtitle */
-  .product-subtitle {
-    font-size: var(--subtitle-size, 15px);
-    font-weight: var(--subtitle-weight, 400);
-    color: var(--subtitle-color, #78716C);
-    margin: 0 0 1rem;
   }
 
   /* Variant Selectors - Dropdown style with floating labels */
