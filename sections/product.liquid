@@ -118,8 +118,10 @@
   {%- comment -%} Product Info {%- endcomment -%}
   <div class="product-info-wrapper">
     <div class="product-info">
-      {%- comment -%} Eyebrow Text {%- endcomment -%}
-      {%- if section.settings.eyebrow_text != blank -%}
+      {%- comment -%} Eyebrow Text - from metafield or section setting {%- endcomment -%}
+      {%- if product.metafields.descriptors.subtitle != blank -%}
+        <p class="product-eyebrow">{{ product.metafields.descriptors.subtitle }}</p>
+      {%- elsif section.settings.eyebrow_text != blank -%}
         <p class="product-eyebrow">{{ section.settings.eyebrow_text }}</p>
       {%- endif -%}
 
