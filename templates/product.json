@@ -43,11 +43,15 @@
         "subtitle_weight": "400",
         "price_size": 20,
         "price_size_desktop": 24,
-        "price_color": "#1C1917",
+        "price_color": "#1c1917",
         "price_weight": "400",
         "add_to_cart_text": "Add to cart",
         "sold_out_text": "Sold out",
-        "specs_title": "Specifications"
+        "specs_title": "Specifications",
+        "config_title": "Configuration",
+        "variant_focus_color": "#d97706",
+        "gallery_dot_color": "#FBFAF9",
+        "gallery_arrow_color": "#F7F5F0"
       }
     }
   },
