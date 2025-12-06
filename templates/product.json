@@ -61,7 +61,7 @@
         "button_radius": 9,
         "show_delivery_estimate": true,
         "delivery_label": "Estimated Delivery By",
-        "delivery_days": 5,
+        "delivery_days": 8,
         "delivery_bg_color": "#EBE8E0",
         "delivery_border_color": "#c6bbb4",
         "delivery_border_width": 1,
