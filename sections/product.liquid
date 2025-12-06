@@ -240,10 +240,17 @@
               --pd-banner-title-color: {{ block.settings.banner_title_color }};
               --pd-banner-subtitle-color: {{ block.settings.banner_subtitle_color }};
             ">
-              {%- comment -%} Description Header {%- endcomment -%}
-              {%- if block.settings.description_header != blank -%}
-                <h4 class="product-details__header">{{ block.settings.description_header }}</h4>
-              {%- endif -%}
+              {%- comment -%} Description Header Row with Variant Indicator {%- endcomment -%}
+              <div class="product-details__header-row">
+                {%- if block.settings.description_header != blank -%}
+                  <h4 class="product-details__header">{{ block.settings.description_header }}</h4>
+                {%- endif -%}
+                {%- if product.has_only_default_variant == false -%}
+                  <span class="product-details__variant-indicator" data-variant-indicator>
+                    {{ product.selected_or_first_available_variant.title }}
+                  </span>
+                {%- endif -%}
+              </div>
 
               {%- comment -%} Description Text {%- endcomment -%}
               {%- if product.metafields.custom.description != blank -%}
@@ -782,6 +789,13 @@
     margin-top: 1.5rem;
   }
 
+  .product-details__header-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
   .product-details__header {
     font-family: var(--font-primary-family), sans-serif;
     font-size: var(--pd-header-size, 11px);
@@ -789,7 +803,19 @@
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: var(--pd-header-color, #78716C);
-    margin: 0 0 0.75rem;
+    margin: 0;
+  }
+
+  .product-details__variant-indicator {
+    font-family: var(--font-primary-family), sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    color: #57534E;
+    background: #F5F5F4;
+    padding: 0.25rem 0.625rem;
+    border-radius: 100px;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
   }
 
   .product-details__description {
@@ -1214,6 +1240,12 @@
       const subtitleEl = document.querySelector('.product-subtitle');
       if (subtitleEl && matchingVariant.title && matchingVariant.title !== 'Default Title') {
         subtitleEl.textContent = matchingVariant.title;
+      }
+
+      // Update variant indicator in product details
+      const variantIndicator = document.querySelector('[data-variant-indicator]');
+      if (variantIndicator && matchingVariant.title && matchingVariant.title !== 'Default Title') {
+        variantIndicator.textContent = matchingVariant.title;
       }
 
       // Update button state
