@@ -16,7 +16,7 @@
           "type": "product_details",
           "settings": {
             "description_header": "DESCRIPTION",
-            "header_color": "#D97706",
+            "header_color": "#d97706",
             "header_size": 10,
             "header_weight": "700",
             "description_text": "Minimalist in form, maximalist in texture. The Dune Sconce features a curved sandstone face that acts as a natural diffuser.",
@@ -37,12 +37,15 @@
             "spec_value_3": "LED 8.5W",
             "spec_label_4": "Finish",
             "spec_value_4": "Honed",
-            "show_shipping_banner": true,
-            "banner_bg_color": "#1c1917",
-            "shipping_title": "Free Shipping",
-            "banner_title_color": "#ffffff",
-            "shipping_subtitle": "Arrives in 5-7 business days.",
-            "banner_subtitle_color": "#9ca3af"
+            "shipping_box_text_content": "Free shipping & returns",
+            "shipping_box_link": "",
+            "shipping_box_bg": "#DBD6CC",
+            "shipping_box_text": "#1C1917",
+            "shipping_box_img_opacity": 30,
+            "specs_box_text_content": "View Full Specs",
+            "specs_box_bg": "#1C1917",
+            "specs_box_text": "#F7F5F0",
+            "specs_box_img_opacity": 30
           }
         }
       },
@@ -80,9 +83,6 @@
         "spec_value_3": "LED 8.5W",
         "spec_label_4": "Finish",
         "spec_value_4": "Honed",
-        "show_shipping_banner": true,
-        "shipping_title": "Free Shipping",
-        "shipping_subtitle": "Arrives in 5-7 business days.",
         "specs_title": "Specifications",
         "variant_focus_color": "#d97706",
         "variant_label_size": 11,
