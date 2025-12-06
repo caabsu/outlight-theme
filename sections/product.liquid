@@ -329,7 +329,7 @@
                 --specs-header-size: {{ block.settings.specs_box_header_size }}px;
                 --specs-img-opacity: {{ block.settings.specs_box_img_opacity | divided_by: 100.0 }};
               ">
-                <a href="{{ block.settings.shipping_box_link }}" class="product-details__info-box product-details__info-box--shipping">
+                <div class="product-details__info-box product-details__info-box--shipping">
                   {%- if block.settings.shipping_box_image != blank -%}
                     <div class="product-details__info-box-bg">
                       {{ block.settings.shipping_box_image | image_url: width: 400 | image_tag }}
@@ -339,8 +339,8 @@
                     <span class="product-details__info-box-subheader">{{ block.settings.shipping_box_subheader }}</span>
                     <span class="product-details__info-box-header">{{ block.settings.shipping_box_header }}</span>
                   </div>
-                </a>
-                <a href="{{ block.settings.specs_box_link }}" class="product-details__info-box product-details__info-box--specs">
+                </div>
+                <button type="button" class="product-details__info-box product-details__info-box--specs" data-open-specs-modal>
                   {%- if block.settings.specs_box_image != blank -%}
                     <div class="product-details__info-box-bg">
                       {{ block.settings.specs_box_image | image_url: width: 400 | image_tag }}
@@ -350,7 +350,7 @@
                     <span class="product-details__info-box-subheader">{{ block.settings.specs_box_subheader }}</span>
                     <span class="product-details__info-box-header">{{ block.settings.specs_box_header }}</span>
                   </div>
-                </a>
+                </button>
               </div>
             </div>
 
@@ -1036,13 +1036,7 @@
     min-height: 52px;
     text-decoration: none;
     border: none;
-    cursor: pointer;
     overflow: hidden;
-    transition: opacity 0.15s ease;
-  }
-
-  .product-details__info-box:hover {
-    opacity: 0.9;
   }
 
   .product-details__info-box--shipping {
@@ -1051,6 +1045,12 @@
 
   .product-details__info-box--specs {
     background: var(--specs-bg, #F5F5F4);
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+  }
+
+  .product-details__info-box--specs:hover {
+    opacity: 0.9;
   }
 
   .product-details__info-box-bg {
