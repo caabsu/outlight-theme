@@ -622,6 +622,7 @@
   if (variantsDataEl) {
     try {
       productVariants = JSON.parse(variantsDataEl.textContent);
+      console.log('Loaded variants:', productVariants);
     } catch (e) {
       console.error('Error parsing variants:', e);
     }
@@ -632,9 +633,10 @@
     return '$' + (cents / 100).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
   }
 
-  // Get initial variant ID from the hidden input
+  // Get initial variant ID from the hidden input and store globally
   const initialInput = document.querySelector('input[name="id"]');
-  let currentVariantId = initialInput ? initialInput.value : null;
+  window.currentProductVariantId = initialInput ? initialInput.value : null;
+  console.log('Initial variant ID:', window.currentProductVariantId);
 
   // Variant button click handler - use document-level delegation
   document.addEventListener('click', (e) => {
@@ -642,6 +644,7 @@
     if (!btn) return;
 
     e.preventDefault();
+    console.log('Variant button clicked:', btn.dataset.optionValue);
 
     // Update selected state for this option group
     const selector = btn.closest('.product-variant-selector');
@@ -660,6 +663,7 @@
         selectedOptions.push(selectedBtn.dataset.optionValue);
       }
     });
+    console.log('Selected options:', selectedOptions);
 
     // Find matching variant by comparing options
     const matchingVariant = productVariants.find(variant => {
@@ -671,10 +675,12 @@
       }
       return true;
     });
+    console.log('Matching variant:', matchingVariant);
 
     if (matchingVariant) {
-      // Store the variant ID in our variable
-      currentVariantId = matchingVariant.id;
+      // Store the variant ID globally on window
+      window.currentProductVariantId = matchingVariant.id;
+      console.log('Updated variant ID to:', window.currentProductVariantId);
 
       // Also update the hidden input
       const variantInput = document.querySelector('input[name="id"]');
@@ -722,8 +728,9 @@
     const submitBtn = form.querySelector('[type="submit"]');
     const originalText = submitBtn.textContent;
 
-    // Use the currentVariantId variable which is updated by variant selection
-    const variantId = currentVariantId;
+    // Use the global variant ID
+    const variantId = window.currentProductVariantId;
+    console.log('Submitting with variant ID:', variantId);
 
     if (!variantId) {
       alert('Please select a variant');
@@ -745,6 +752,7 @@
           quantity: 1
         })
       });
+      console.log('Cart response:', response.status);
 
       if (response.ok) {
         // Fetch updated cart drawer content
