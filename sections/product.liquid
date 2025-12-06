@@ -28,10 +28,6 @@
     --variant-focus-color: {{ section.settings.variant_focus_color }};
     --gallery-dot-color: {{ section.settings.gallery_dot_color }};
     --gallery-arrow-color: {{ section.settings.gallery_arrow_color }};
-    --config-title-size: {{ section.settings.config_title_size }}px;
-    --config-title-size-desktop: {{ section.settings.config_title_size_desktop }}px;
-    --config-title-weight: {{ section.settings.config_title_weight }};
-    --config-title-color: {{ section.settings.config_title_color }};
     --button-size: {{ section.settings.button_size }}px;
     --button-size-desktop: {{ section.settings.button_size_desktop }}px;
     --button-weight: {{ section.settings.button_weight }};
@@ -157,7 +153,6 @@
           {%- comment -%} Variant Selectors {%- endcomment -%}
           {%- unless product.has_only_default_variant -%}
             <div class="product-variants">
-              <h3 class="product-variants__title {% if section.settings.config_title_italic %}product-variants__title--italic{% endif %}">{{ section.settings.config_title | default: 'Configuration' }}</h3>
               {%- for option in product.options_with_values -%}
                 <div class="product-variant-option">
                   <label class="product-variant-label" for="option-{{ option.name | handleize }}-{{ section.id }}">
@@ -611,20 +606,6 @@
     margin-bottom: 1.25rem;
   }
 
-  .product-variants__title {
-    font-family: var(--font-primary-family), sans-serif;
-    font-size: var(--config-title-size, 11px);
-    font-weight: var(--config-title-weight, 500);
-    color: var(--config-title-color, #78716C);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin: 0 0 0.75rem;
-  }
-
-  .product-variants__title--italic {
-    font-style: italic;
-  }
-
   .product-variant-option {
     position: relative;
   }
@@ -836,10 +817,6 @@
 
     .product-specs__tags {
       grid-template-columns: repeat(2, 1fr);
-    }
-
-    .product-variants__title {
-      font-size: var(--config-title-size-desktop, 24px);
     }
 
     .product-add-to-cart-btn {
@@ -1511,60 +1488,6 @@
       "id": "specs_title",
       "label": "Specs title",
       "default": "Specifications"
-    },
-    {
-      "type": "header",
-      "content": "Configuration title"
-    },
-    {
-      "type": "text",
-      "id": "config_title",
-      "label": "Title text",
-      "default": "Configuration"
-    },
-    {
-      "type": "range",
-      "id": "config_title_size",
-      "min": 9,
-      "max": 16,
-      "step": 1,
-      "unit": "px",
-      "label": "Font size (mobile)",
-      "default": 11
-    },
-    {
-      "type": "range",
-      "id": "config_title_size_desktop",
-      "min": 10,
-      "max": 18,
-      "step": 1,
-      "unit": "px",
-      "label": "Font size (desktop)",
-      "default": 11
-    },
-    {
-      "type": "select",
-      "id": "config_title_weight",
-      "label": "Font weight",
-      "options": [
-        { "value": "400", "label": "Regular" },
-        { "value": "500", "label": "Medium" },
-        { "value": "600", "label": "Semibold" },
-        { "value": "700", "label": "Bold" }
-      ],
-      "default": "500"
-    },
-    {
-      "type": "color",
-      "id": "config_title_color",
-      "label": "Color",
-      "default": "#78716C"
-    },
-    {
-      "type": "checkbox",
-      "id": "config_title_italic",
-      "label": "Italic",
-      "default": false
     },
     {
       "type": "color",
