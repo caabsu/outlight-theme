@@ -11,22 +11,6 @@
   "sections": {
     "main": {
       "type": "product",
-      "blocks": {
-        "specs": {
-          "type": "specs",
-          "settings": {
-            "spec_1": "Solid Brass",
-            "spec_2": "2700K LED",
-            "spec_3": "Dimmable",
-            "spec_4": "5 Year Warranty",
-            "spec_5": "",
-            "spec_6": ""
-          }
-        }
-      },
-      "block_order": [
-        "specs"
-      ],
       "settings": {
         "product_info_bg": "#f7f5f0",
         "eyebrow_text": "modern floor lamp",
