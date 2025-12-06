@@ -29,10 +29,10 @@
       ],
       "settings": {
         "eyebrow_text": "modern floor lamp",
-        "eyebrow_size": 12,
+        "eyebrow_size": 13,
         "eyebrow_color": "#d97706",
-        "eyebrow_weight": "500",
-        "title_size": 31,
+        "eyebrow_weight": "700",
+        "title_size": 34,
         "title_size_desktop": 40,
         "title_color": "#1c1917",
         "title_weight": "400",
@@ -43,8 +43,11 @@
         "subtitle_weight": "400",
         "price_size": 20,
         "price_size_desktop": 24,
-        "price_color": "#1c1917",
-        "price_weight": "500"
+        "price_color": "#1C1917",
+        "price_weight": "400",
+        "add_to_cart_text": "Add to cart",
+        "sold_out_text": "Sold out",
+        "specs_title": "Specifications"
       }
     }
   },
