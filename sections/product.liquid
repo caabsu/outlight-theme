@@ -609,9 +609,11 @@
 
   .product-variants__title {
     font-family: var(--font-primary-family), sans-serif;
-    font-size: var(--config-title-size, 20px);
-    font-weight: var(--config-title-weight, 400);
-    color: var(--config-title-color, #1C1917);
+    font-size: var(--config-title-size, 11px);
+    font-weight: var(--config-title-weight, 500);
+    color: var(--config-title-color, #78716C);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
     margin: 0 0 0.75rem;
   }
 
@@ -1508,47 +1510,46 @@
     {
       "type": "range",
       "id": "config_title_size",
-      "min": 14,
-      "max": 32,
+      "min": 9,
+      "max": 16,
       "step": 1,
       "unit": "px",
       "label": "Font size (mobile)",
-      "default": 20
+      "default": 11
     },
     {
       "type": "range",
       "id": "config_title_size_desktop",
-      "min": 16,
-      "max": 40,
+      "min": 10,
+      "max": 18,
       "step": 1,
       "unit": "px",
       "label": "Font size (desktop)",
-      "default": 24
+      "default": 11
     },
     {
       "type": "select",
       "id": "config_title_weight",
       "label": "Font weight",
       "options": [
-        { "value": "300", "label": "Light" },
         { "value": "400", "label": "Regular" },
         { "value": "500", "label": "Medium" },
         { "value": "600", "label": "Semibold" },
         { "value": "700", "label": "Bold" }
       ],
-      "default": "400"
+      "default": "500"
     },
     {
       "type": "color",
       "id": "config_title_color",
       "label": "Color",
-      "default": "#1C1917"
+      "default": "#78716C"
     },
     {
       "type": "checkbox",
       "id": "config_title_italic",
       "label": "Italic",
-      "default": true
+      "default": false
     },
     {
       "type": "color",
