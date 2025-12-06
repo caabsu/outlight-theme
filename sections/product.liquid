@@ -38,6 +38,10 @@
     --button-text-color: {{ section.settings.button_text_color }};
     --button-bg-color: {{ section.settings.button_bg_color }};
     --button-radius: {{ section.settings.button_radius }}px;
+    --product-info-bg: {{ section.settings.product_info_bg }};
+    --variant-label-size: {{ section.settings.variant_label_size }}px;
+    --variant-label-weight: {{ section.settings.variant_label_weight }};
+    --variant-label-color: {{ section.settings.variant_label_color }};
   "
 >
   {%- comment -%} Image Gallery {%- endcomment -%}
@@ -534,7 +538,7 @@
   }
 
   .product-info {
-    background: #ffffff;
+    background: var(--product-info-bg, #ffffff);
     border-radius: 24px 24px 0 0;
     padding: 1.5rem 1.25rem 2rem;
     box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
@@ -629,13 +633,14 @@
     position: absolute;
     top: -8px;
     left: 12px;
-    background: #fff;
+    background: var(--product-info-bg, #ffffff);
     padding: 0 6px;
-    font-size: 0.6875rem;
-    font-weight: 500;
+    font-family: var(--font-primary-family), sans-serif;
+    font-size: var(--variant-label-size, 11px);
+    font-weight: var(--variant-label-weight, 500);
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: #78716C;
+    color: var(--variant-label-color, #78716C);
     z-index: 1;
   }
 
@@ -813,7 +818,7 @@
     }
 
     .product-info {
-      background: transparent;
+      background: var(--product-info-bg, #ffffff);
       border-radius: 0;
       box-shadow: none;
       padding: 0;
@@ -1306,6 +1311,16 @@
   "settings": [
     {
       "type": "header",
+      "content": "Product info background"
+    },
+    {
+      "type": "color",
+      "id": "product_info_bg",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
       "content": "Eyebrow text"
     },
     {
@@ -1556,6 +1571,38 @@
       "id": "variant_focus_color",
       "label": "Dropdown focus border color",
       "default": "#D97706"
+    },
+    {
+      "type": "header",
+      "content": "Variant label (SIZE, COLOR, etc.)"
+    },
+    {
+      "type": "range",
+      "id": "variant_label_size",
+      "min": 9,
+      "max": 14,
+      "step": 1,
+      "unit": "px",
+      "label": "Font size",
+      "default": 11
+    },
+    {
+      "type": "select",
+      "id": "variant_label_weight",
+      "label": "Font weight",
+      "options": [
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "color",
+      "id": "variant_label_color",
+      "label": "Color",
+      "default": "#78716C"
     },
     {
       "type": "header",
