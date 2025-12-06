@@ -1,0 +1,557 @@
+{% comment %}
+  Support Center section - Help page with search and category cards
+{% endcomment %}
+
+<div class="support-center">
+  <div class="support-center__container">
+    {%- comment -%} Header {%- endcomment -%}
+    <div class="support-center__header">
+      <h1 class="support-center__title support-center__title--desktop">{{ section.settings.heading }}</h1>
+      <h1 class="support-center__title support-center__title--mobile">{{ section.settings.heading_mobile | default: 'Support Center' }}</h1>
+      <p class="support-center__subtitle">{{ section.settings.subtitle }}</p>
+    </div>
+
+    {%- comment -%} Search Bar {%- endcomment -%}
+    <div class="support-center__search">
+      <form action="{{ routes.search_url }}" method="get" class="support-center__search-form">
+        <svg class="support-center__search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/>
+          <path d="M21 21l-4.35-4.35"/>
+        </svg>
+        <input
+          type="search"
+          name="q"
+          class="support-center__search-input"
+          placeholder="{{ section.settings.search_placeholder }}"
+          aria-label="{{ 'general.search' | t }}"
+        >
+      </form>
+    </div>
+
+    {%- comment -%} Category Cards - Desktop {%- endcomment -%}
+    <div class="support-center__cards">
+      {%- for block in section.blocks -%}
+        <a href="{{ block.settings.link }}" class="support-center__card" {{ block.shopify_attributes }}>
+          <div class="support-center__card-icon">
+            {%- case block.settings.icon -%}
+              {%- when 'truck' -%}
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+                </svg>
+              {%- when 'box' -%}
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-7-2h2v-4h4v-2h-4V7h-2v4H8v2h4z"/>
+                </svg>
+              {%- when 'wrench' -%}
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/>
+                </svg>
+              {%- when 'return' -%}
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
+                </svg>
+              {%- when 'document' -%}
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                </svg>
+              {%- else -%}
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
+                </svg>
+              {%- endcase -%}
+          </div>
+          <h3 class="support-center__card-title">{{ block.settings.title }}</h3>
+          <p class="support-center__card-description">{{ block.settings.description }}</p>
+        </a>
+      {%- endfor -%}
+    </div>
+
+    {%- comment -%} Category List - Mobile {%- endcomment -%}
+    <div class="support-center__list">
+      {%- for block in section.blocks -%}
+        <a href="{{ block.settings.link }}" class="support-center__list-item" {{ block.shopify_attributes }}>
+          <div class="support-center__list-icon">
+            {%- case block.settings.icon -%}
+              {%- when 'truck' -%}
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+                </svg>
+              {%- when 'box' -%}
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-7-2h2v-4h4v-2h-4V7h-2v4H8v2h4z"/>
+                </svg>
+              {%- when 'wrench' -%}
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/>
+                </svg>
+              {%- when 'return' -%}
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
+                </svg>
+              {%- when 'document' -%}
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                </svg>
+              {%- else -%}
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
+                </svg>
+              {%- endcase -%}
+          </div>
+          <div class="support-center__list-content">
+            <span class="support-center__list-title">{{ block.settings.title }}</span>
+            <span class="support-center__list-description">{{ block.settings.description_mobile | default: block.settings.description }}</span>
+          </div>
+          <svg class="support-center__list-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 18l6-6-6-6"/>
+          </svg>
+        </a>
+      {%- endfor -%}
+    </div>
+
+    {%- comment -%} Contact Support {%- endcomment -%}
+    {%- if section.settings.show_contact -%}
+      <div class="support-center__contact">
+        <p class="support-center__contact-text">{{ section.settings.contact_text }}</p>
+        <a href="{{ section.settings.contact_link }}" class="support-center__contact-btn">
+          {{ section.settings.contact_button_text }}
+        </a>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% stylesheet %}
+  .support-center {
+    min-height: 100vh;
+    background-color: #f5f5f5;
+    padding: 3rem 1.5rem 4rem;
+  }
+
+  .support-center__container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  /* Header */
+  .support-center__header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .support-center__title {
+    font-family: var(--font-heading-family), serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 2.5rem;
+    color: #1C1917;
+    margin: 0 0 0.75rem;
+  }
+
+  .support-center__title--mobile {
+    display: none;
+    font-style: normal;
+  }
+
+  .support-center__subtitle {
+    font-size: 1rem;
+    color: #78716C;
+    margin: 0;
+  }
+
+  /* Search */
+  .support-center__search {
+    margin-bottom: 2.5rem;
+  }
+
+  .support-center__search-form {
+    position: relative;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .support-center__search-icon {
+    position: absolute;
+    left: 1.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9CA3AF;
+    pointer-events: none;
+  }
+
+  .support-center__search-input {
+    width: 100%;
+    padding: 1rem 1.25rem 1rem 3.25rem;
+    font-size: 1rem;
+    font-family: inherit;
+    color: #1C1917;
+    background: #ffffff;
+    border: 1px solid #E5E5E5;
+    border-radius: 9999px;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .support-center__search-input::placeholder {
+    color: #9CA3AF;
+  }
+
+  .support-center__search-input:focus {
+    border-color: #D97706;
+    box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.1);
+  }
+
+  /* Cards - Desktop */
+  .support-center__cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+
+  .support-center__card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-decoration: none;
+    color: inherit;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+
+  .support-center__card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+  }
+
+  .support-center__card-icon {
+    width: 48px;
+    height: 48px;
+    background: #f5f5f5;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.25rem;
+    color: #1C1917;
+  }
+
+  .support-center__card-title {
+    font-family: var(--font-heading-family), serif;
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: #1C1917;
+    margin: 0 0 0.5rem;
+  }
+
+  .support-center__card-description {
+    font-size: 0.875rem;
+    color: #78716C;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  /* List - Mobile (hidden on desktop) */
+  .support-center__list {
+    display: none;
+  }
+
+  /* Contact */
+  .support-center__contact {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid #E5E5E5;
+  }
+
+  .support-center__contact-text {
+    font-size: 0.875rem;
+    color: #78716C;
+    margin: 0 0 0.75rem;
+  }
+
+  .support-center__contact-btn {
+    display: inline-block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #D97706;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.2s ease;
+  }
+
+  .support-center__contact-btn:hover {
+    color: #B45309;
+  }
+
+  /* Mobile Styles */
+  @media screen and (max-width: 768px) {
+    .support-center {
+      padding: 2rem 1rem 3rem;
+      background-color: #ffffff;
+    }
+
+    .support-center__title--desktop {
+      display: none;
+    }
+
+    .support-center__title--mobile {
+      display: block;
+      font-size: 1.75rem;
+      text-align: left;
+    }
+
+    .support-center__subtitle {
+      display: none;
+    }
+
+    .support-center__header {
+      text-align: left;
+      margin-bottom: 1.5rem;
+    }
+
+    .support-center__search {
+      margin-bottom: 1.5rem;
+    }
+
+    .support-center__search-input {
+      padding: 0.875rem 1rem 0.875rem 2.75rem;
+      font-size: 0.9375rem;
+      border-radius: 8px;
+    }
+
+    .support-center__search-icon {
+      left: 1rem;
+      width: 18px;
+      height: 18px;
+    }
+
+    /* Hide cards on mobile */
+    .support-center__cards {
+      display: none;
+    }
+
+    /* Show list on mobile */
+    .support-center__list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      background: #ffffff;
+      border: 1px solid #E5E5E5;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .support-center__list-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      text-decoration: none;
+      color: inherit;
+      border-bottom: 1px solid #F0F0F0;
+      transition: background-color 0.15s ease;
+    }
+
+    .support-center__list-item:last-child {
+      border-bottom: none;
+    }
+
+    .support-center__list-item:active {
+      background-color: #F9FAFB;
+    }
+
+    .support-center__list-icon {
+      width: 40px;
+      height: 40px;
+      background: #f5f5f5;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: #1C1917;
+    }
+
+    .support-center__list-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.125rem;
+    }
+
+    .support-center__list-title {
+      font-weight: 500;
+      font-size: 0.9375rem;
+      color: #1C1917;
+    }
+
+    .support-center__list-description {
+      font-size: 0.8125rem;
+      color: #9CA3AF;
+    }
+
+    .support-center__list-chevron {
+      color: #D1D5DB;
+      flex-shrink: 0;
+    }
+
+    .support-center__contact {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: none;
+    }
+  }
+
+  /* Tablet adjustments */
+  @media screen and (min-width: 769px) and (max-width: 1024px) {
+    .support-center__cards {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Support center",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Header"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading (desktop)",
+      "default": "How can we help?"
+    },
+    {
+      "type": "text",
+      "id": "heading_mobile",
+      "label": "Heading (mobile)",
+      "default": "Support Center"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Advice, answers, and support for your fixtures."
+    },
+    {
+      "type": "header",
+      "content": "Search"
+    },
+    {
+      "type": "text",
+      "id": "search_placeholder",
+      "label": "Search placeholder",
+      "default": "Search for 'installation', 'returns', 'shipping'..."
+    },
+    {
+      "type": "header",
+      "content": "Contact support"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_contact",
+      "label": "Show contact section",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "contact_text",
+      "label": "Contact text",
+      "default": "Can't find what you need?"
+    },
+    {
+      "type": "text",
+      "id": "contact_button_text",
+      "label": "Button text",
+      "default": "CONTACT SUPPORT"
+    },
+    {
+      "type": "url",
+      "id": "contact_link",
+      "label": "Contact link"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Support category",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "truck", "label": "Truck (shipping)" },
+            { "value": "box", "label": "Box (returns)" },
+            { "value": "wrench", "label": "Wrench (assembly)" },
+            { "value": "return", "label": "Return arrow" },
+            { "value": "document", "label": "Document (guides)" },
+            { "value": "help", "label": "Help circle" }
+          ],
+          "default": "truck"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Track Order"
+        },
+        {
+          "type": "text",
+          "id": "description",
+          "label": "Description (desktop)",
+          "default": "Check the status of your shipment."
+        },
+        {
+          "type": "text",
+          "id": "description_mobile",
+          "label": "Description (mobile)",
+          "info": "Leave blank to use desktop description"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Support center",
+      "blocks": [
+        {
+          "type": "category",
+          "settings": {
+            "icon": "truck",
+            "title": "Track Order",
+            "description": "Check the status of your shipment.",
+            "description_mobile": "Expected delivery dates"
+          }
+        },
+        {
+          "type": "category",
+          "settings": {
+            "icon": "return",
+            "title": "Returns",
+            "description": "Start a return or exchange.",
+            "description_mobile": "30-day window"
+          }
+        },
+        {
+          "type": "category",
+          "settings": {
+            "icon": "wrench",
+            "title": "Assembly",
+            "description": "Guides for installing your light.",
+            "description_mobile": "Installation guides"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

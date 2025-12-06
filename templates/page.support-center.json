@@ -1,0 +1,63 @@
+{
+  "sections": {
+    "main": {
+      "type": "support-center",
+      "blocks": {
+        "track_order": {
+          "type": "category",
+          "settings": {
+            "icon": "truck",
+            "title": "Track Order",
+            "description": "Check the status of your shipment.",
+            "description_mobile": "Expected delivery dates"
+          }
+        },
+        "returns": {
+          "type": "category",
+          "settings": {
+            "icon": "return",
+            "title": "Start Return",
+            "description": "Start a return or exchange.",
+            "description_mobile": "30-day window"
+          }
+        },
+        "assembly": {
+          "type": "category",
+          "settings": {
+            "icon": "wrench",
+            "title": "Assembly",
+            "description": "Guides for installing your light.",
+            "description_mobile": "Installation guides"
+          }
+        },
+        "care_guides": {
+          "type": "category",
+          "settings": {
+            "icon": "document",
+            "title": "Care Guides",
+            "description": "Maintenance and cleaning tips.",
+            "description_mobile": "Maintenance tips"
+          }
+        }
+      },
+      "block_order": [
+        "track_order",
+        "returns",
+        "assembly",
+        "care_guides"
+      ],
+      "settings": {
+        "heading": "How can we help?",
+        "heading_mobile": "Support Center",
+        "subtitle": "Advice, answers, and support for your fixtures.",
+        "search_placeholder": "Search for 'installation', 'returns', 'shipping'...",
+        "show_contact": true,
+        "contact_text": "Can't find what you need?",
+        "contact_button_text": "CONTACT SUPPORT"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}
