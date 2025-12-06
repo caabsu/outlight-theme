@@ -38,8 +38,8 @@
                     <p class="cart-drawer__item-variant">{{ item.variant.title }}</p>
                   {%- endif -%}
 
-                  {%- comment -%} Desktop: Quantity selector {%- endcomment -%}
-                  <div class="cart-drawer__item-quantity cart-drawer__item-quantity--desktop">
+                  {%- comment -%} Quantity selector {%- endcomment -%}
+                  <div class="cart-drawer__item-quantity">
                     <button
                       class="cart-drawer__quantity-btn"
                       data-quantity-minus
@@ -54,13 +54,22 @@
                       aria-label="{{ 'cart.increase_quantity' | t }}"
                     >+</button>
                   </div>
-
-                  {%- comment -%} Mobile: Quantity badge {%- endcomment -%}
-                  <span class="cart-drawer__item-qty-badge cart-drawer__item-qty-badge--mobile">{{ 'cart.qty' | t }}: {{ item.quantity }}</span>
                 </div>
 
-                <div class="cart-drawer__item-price">
-                  {{ item.final_line_price | money }}
+                <div class="cart-drawer__item-right">
+                  <div class="cart-drawer__item-price">
+                    {{ item.final_line_price | money }}
+                  </div>
+                  <button
+                    class="cart-drawer__remove-btn"
+                    data-remove-item
+                    data-line="{{ forloop.index }}"
+                    aria-label="{{ 'cart.remove' | t }}"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <path d="M2 4h12M5.333 4V2.667a1.333 1.333 0 011.334-1.334h2.666a1.333 1.333 0 011.334 1.334V4m2 0v9.333a1.333 1.333 0 01-1.334 1.334H4.667a1.333 1.333 0 01-1.334-1.334V4h9.334z"/>
+                    </svg>
+                  </button>
                 </div>
               </div>
             </div>
@@ -262,6 +271,13 @@
     margin: 0;
   }
 
+  .cart-drawer__item-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+  }
+
   .cart-drawer__item-price {
     font-size: 1rem;
     font-weight: 500;
@@ -269,8 +285,21 @@
     white-space: nowrap;
   }
 
-  /* Desktop Quantity Selector */
-  .cart-drawer__item-quantity--desktop {
+  .cart-drawer__remove-btn {
+    background: none;
+    border: none;
+    padding: 0.25rem;
+    cursor: pointer;
+    color: #9CA3AF;
+    transition: color 0.2s ease;
+  }
+
+  .cart-drawer__remove-btn:hover {
+    color: #DC2626;
+  }
+
+  /* Quantity Selector */
+  .cart-drawer__item-quantity {
     display: inline-flex;
     align-items: center;
     gap: 0;
@@ -303,18 +332,6 @@
     text-align: center;
     font-size: 0.875rem;
     color: #1C1917;
-  }
-
-  /* Mobile Quantity Badge */
-  .cart-drawer__item-qty-badge--mobile {
-    display: none;
-    font-size: 0.75rem;
-    color: #1C1917;
-    border: 1px solid #e5e5e5;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    width: fit-content;
-    margin-top: 0.5rem;
   }
 
   /* Empty Cart */
@@ -443,14 +460,6 @@
       display: block;
     }
 
-    .cart-drawer__item-quantity--desktop {
-      display: none;
-    }
-
-    .cart-drawer__item-qty-badge--mobile {
-      display: inline-block;
-    }
-
     .cart-drawer__footer--desktop {
       display: none;
     }
@@ -531,6 +540,14 @@
         await handleQuantityChange(plusBtn, 1);
         return;
       }
+
+      // Remove item handler
+      const removeBtn = e.target.closest('[data-remove-item]');
+      if (removeBtn) {
+        e.preventDefault();
+        await handleRemoveItem(removeBtn);
+        return;
+      }
     });
   }
 
@@ -587,6 +604,56 @@
       } catch (error) {
         console.error('Error updating cart:', error);
       }
+    }
+  }
+
+  // Remove item handler
+  async function handleRemoveItem(btn) {
+    const line = parseInt(btn.dataset.line);
+
+    try {
+      const response = await fetch('/cart/change.js', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          line: line,
+          quantity: 0
+        })
+      });
+
+      if (response.ok) {
+        // Refresh cart drawer content
+        const sectionResponse = await fetch('/?sections=cart-drawer');
+        if (sectionResponse.ok) {
+          const sections = await sectionResponse.json();
+          const cartDrawerHtml = sections['cart-drawer'];
+          if (cartDrawer && cartDrawerHtml) {
+            const temp = document.createElement('div');
+            temp.innerHTML = cartDrawerHtml;
+            const newContent = temp.querySelector('[data-cart-drawer]');
+            if (newContent) {
+              cartDrawer.innerHTML = newContent.innerHTML;
+            }
+          }
+        }
+        // Update header cart count
+        const cartResponse = await fetch('/cart.js');
+        if (cartResponse.ok) {
+          const cart = await cartResponse.json();
+          const cartCount = document.querySelector('.header__cart-count');
+          if (cartCount) {
+            if (cart.item_count > 0) {
+              cartCount.textContent = cart.item_count;
+            } else {
+              cartCount.remove();
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error removing item:', error);
     }
   }
 
