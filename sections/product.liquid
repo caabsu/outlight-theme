@@ -28,6 +28,16 @@
     --variant-focus-color: {{ section.settings.variant_focus_color }};
     --gallery-dot-color: {{ section.settings.gallery_dot_color }};
     --gallery-arrow-color: {{ section.settings.gallery_arrow_color }};
+    --config-title-size: {{ section.settings.config_title_size }}px;
+    --config-title-size-desktop: {{ section.settings.config_title_size_desktop }}px;
+    --config-title-weight: {{ section.settings.config_title_weight }};
+    --config-title-color: {{ section.settings.config_title_color }};
+    --button-size: {{ section.settings.button_size }}px;
+    --button-size-desktop: {{ section.settings.button_size_desktop }}px;
+    --button-weight: {{ section.settings.button_weight }};
+    --button-text-color: {{ section.settings.button_text_color }};
+    --button-bg-color: {{ section.settings.button_bg_color }};
+    --button-radius: {{ section.settings.button_radius }}px;
   "
 >
   {%- comment -%} Image Gallery {%- endcomment -%}
@@ -143,7 +153,7 @@
           {%- comment -%} Variant Selectors {%- endcomment -%}
           {%- unless product.has_only_default_variant -%}
             <div class="product-variants">
-              <h3 class="product-variants__title">{{ section.settings.config_title | default: 'Configuration' }}</h3>
+              <h3 class="product-variants__title {% if section.settings.config_title_italic %}product-variants__title--italic{% endif %}">{{ section.settings.config_title | default: 'Configuration' }}</h3>
               {%- for option in product.options_with_values -%}
                 <div class="product-variant-option">
                   <label class="product-variant-label" for="option-{{ option.name | handleize }}-{{ section.id }}">
@@ -598,12 +608,15 @@
   }
 
   .product-variants__title {
-    font-family: var(--font-heading-family, serif);
-    font-size: 1.5rem;
-    font-weight: 400;
-    font-style: italic;
-    color: #1C1917;
+    font-family: var(--font-body-family, sans-serif);
+    font-size: var(--config-title-size, 20px);
+    font-weight: var(--config-title-weight, 400);
+    color: var(--config-title-color, #1C1917);
     margin: 0 0 0.75rem;
+  }
+
+  .product-variants__title--italic {
+    font-style: italic;
   }
 
   .product-variant-option {
@@ -669,29 +682,31 @@
 
   .product-add-to-cart-btn {
     width: 100%;
-    background-color: #1C1917;
-    color: #ffffff;
+    background-color: var(--button-bg-color, #1C1917);
+    color: var(--button-text-color, #ffffff);
     border: none;
-    border-radius: 50px;
+    border-radius: var(--button-radius, 50px);
     padding: 1rem 1.5rem;
-    font-size: 0.9375rem;
-    font-weight: 500;
+    font-family: var(--font-body-family, sans-serif);
+    font-size: var(--button-size, 15px);
+    font-weight: var(--button-weight, 500);
     letter-spacing: 0.02em;
     cursor: pointer;
-    transition: background-color 0.15s ease;
+    transition: background-color 0.15s ease, opacity 0.15s ease;
   }
 
   .product-add-to-cart-btn:hover {
-    background-color: #292524;
+    opacity: 0.9;
   }
 
   .product-add-to-cart-btn:active {
-    background-color: #0c0a09;
+    opacity: 0.8;
   }
 
   .product-add-to-cart-btn:disabled {
     background-color: #D1D5DB;
     cursor: not-allowed;
+    opacity: 1;
   }
 
   /* Description */
@@ -814,6 +829,14 @@
 
     .product-specs__tags {
       grid-template-columns: repeat(2, 1fr);
+    }
+
+    .product-variants__title {
+      font-size: var(--config-title-size-desktop, 24px);
+    }
+
+    .product-add-to-cart-btn {
+      font-size: var(--button-size-desktop, 16px);
     }
   }
 
@@ -1474,19 +1497,122 @@
     },
     {
       "type": "header",
-      "content": "Configuration section"
+      "content": "Configuration title"
     },
     {
       "type": "text",
       "id": "config_title",
-      "label": "Configuration title",
+      "label": "Title text",
       "default": "Configuration"
+    },
+    {
+      "type": "range",
+      "id": "config_title_size",
+      "min": 14,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Font size (mobile)",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "config_title_size_desktop",
+      "min": 16,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Font size (desktop)",
+      "default": 24
+    },
+    {
+      "type": "select",
+      "id": "config_title_weight",
+      "label": "Font weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "color",
+      "id": "config_title_color",
+      "label": "Color",
+      "default": "#1C1917"
+    },
+    {
+      "type": "checkbox",
+      "id": "config_title_italic",
+      "label": "Italic",
+      "default": true
     },
     {
       "type": "color",
       "id": "variant_focus_color",
       "label": "Dropdown focus border color",
       "default": "#D97706"
+    },
+    {
+      "type": "header",
+      "content": "Add to cart button"
+    },
+    {
+      "type": "range",
+      "id": "button_size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Font size (mobile)",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "button_size_desktop",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Font size (desktop)",
+      "default": 16
+    },
+    {
+      "type": "select",
+      "id": "button_weight",
+      "label": "Font weight",
+      "options": [
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Background color",
+      "default": "#1C1917"
+    },
+    {
+      "type": "range",
+      "id": "button_radius",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "label": "Corner radius",
+      "default": 50
     },
     {
       "type": "header",
