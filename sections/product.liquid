@@ -112,7 +112,7 @@
                         type="button"
                         class="product-variant-btn {% if is_selected %}is-selected{% endif %}"
                         data-option-position="{{ option.position }}"
-                        data-option-value="{{ value }}"
+                        data-option-value="{{ value | escape }}"
                       >
                         {{ value }}
                       </button>
@@ -129,12 +129,14 @@
             type="submit"
             name="add"
             class="product-add-to-cart-btn"
+            data-add-text="{{ section.settings.add_to_cart_text }}"
+            data-sold-out-text="{{ section.settings.sold_out_text }}"
             {% unless product.selected_or_first_available_variant.available %}disabled{% endunless %}
           >
             {%- if product.selected_or_first_available_variant.available -%}
-              {{ 'product.add_to_cart' | t }}
+              {{ section.settings.add_to_cart_text }}
             {%- else -%}
-              {{ 'product.sold_out' | t }}
+              {{ section.settings.sold_out_text }}
             {%- endif -%}
           </button>
         {% endform %}
@@ -155,7 +157,7 @@
 
           {%- when 'specs' -%}
             <div class="product-specs" {{ block.shopify_attributes }}>
-              <h3 class="product-specs__title">{{ 'product.specs' | t }}</h3>
+              <h3 class="product-specs__title">{{ section.settings.specs_title }}</h3>
               <div class="product-specs__tags">
                 {%- if block.settings.spec_1 != blank -%}
                   <span class="product-specs__tag">{{ block.settings.spec_1 }}</span>
@@ -622,17 +624,6 @@
   if (variantsDataEl) {
     try {
       productVariants = JSON.parse(variantsDataEl.textContent);
-      console.log('Loaded variants:', productVariants);
-      // Log first variant structure for debugging
-      if (productVariants[0]) {
-        console.log('First variant structure:', {
-          id: productVariants[0].id,
-          title: productVariants[0].title,
-          option1: productVariants[0].option1,
-          option2: productVariants[0].option2,
-          options: productVariants[0].options
-        });
-      }
     } catch (e) {
       console.error('Error parsing variants:', e);
     }
@@ -646,7 +637,6 @@
   // Get initial variant ID from the hidden input and store globally
   const initialInput = document.querySelector('input[name="id"]');
   window.currentProductVariantId = initialInput ? initialInput.value : null;
-  console.log('Initial variant ID:', window.currentProductVariantId);
 
   // Variant button click handler - use document-level delegation
   document.addEventListener('click', (e) => {
@@ -654,7 +644,6 @@
     if (!btn) return;
 
     e.preventDefault();
-    console.log('Variant button clicked:', btn.dataset.optionValue);
 
     // Update selected state for this option group
     const selector = btn.closest('.product-variant-selector');
@@ -673,7 +662,6 @@
         selectedOptions.push(selectedBtn.dataset.optionValue);
       }
     });
-    console.log('Selected options:', selectedOptions);
 
     // Find matching variant by comparing options array
     const matchingVariant = productVariants.find(variant => {
@@ -690,13 +678,10 @@
       }
       return true;
     });
-    console.log('Matching variant:', matchingVariant);
-    console.log('Variant options array:', productVariants[0]?.options);
 
     if (matchingVariant) {
       // Store the variant ID globally on window
       window.currentProductVariantId = matchingVariant.id;
-      console.log('Updated variant ID to:', window.currentProductVariantId);
 
       // Also update the hidden input
       const variantInput = document.querySelector('input[name="id"]');
@@ -723,12 +708,14 @@
       // Update button state
       const addBtn = document.querySelector('.product-add-to-cart-btn');
       if (addBtn) {
+        const addText = addBtn.dataset.addText || 'Add to cart';
+        const soldOutText = addBtn.dataset.soldOutText || 'Sold out';
         if (matchingVariant.available) {
           addBtn.disabled = false;
-          addBtn.textContent = 'ADD TO CART';
+          addBtn.textContent = addText;
         } else {
           addBtn.disabled = true;
-          addBtn.textContent = 'SOLD OUT';
+          addBtn.textContent = soldOutText;
         }
       }
     }
@@ -746,7 +733,6 @@
 
     // Use the global variant ID
     const variantId = window.currentProductVariantId;
-    console.log('Submitting with variant ID:', variantId);
 
     if (!variantId) {
       alert('Please select a variant');
@@ -768,7 +754,6 @@
           quantity: 1
         })
       });
-      console.log('Cart response:', response.status);
 
       if (response.ok) {
         // Fetch updated cart drawer content
@@ -1107,6 +1092,32 @@
         { "value": "700", "label": "Bold" }
       ],
       "default": "500"
+    },
+    {
+      "type": "header",
+      "content": "Button text"
+    },
+    {
+      "type": "text",
+      "id": "add_to_cart_text",
+      "label": "Add to cart text",
+      "default": "Add to cart"
+    },
+    {
+      "type": "text",
+      "id": "sold_out_text",
+      "label": "Sold out text",
+      "default": "Sold out"
+    },
+    {
+      "type": "header",
+      "content": "Specs section"
+    },
+    {
+      "type": "text",
+      "id": "specs_title",
+      "label": "Specs title",
+      "default": "Specifications"
     }
   ],
   "presets": [
