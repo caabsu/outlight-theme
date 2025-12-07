@@ -125,8 +125,11 @@
         <p class="product-eyebrow">{{ section.settings.eyebrow_text }}</p>
       {%- endif -%}
 
-      {%- comment -%} Title {%- endcomment -%}
-      <h1 class="product-title {% if section.settings.title_italic %}product-title--italic{% endif %}">{{ product.title }}</h1>
+      {%- comment -%} Title Row (with Loox rating widget) {%- endcomment -%}
+      <div class="product-title-row">
+        <h1 class="product-title {% if section.settings.title_italic %}product-title--italic{% endif %}">{{ product.title }}</h1>
+        <div class="product-title-rating" data-loox-product-id="{{ product.id }}"></div>
+      </div>
 
       {%- comment -%} Subtitle & Price Row {%- endcomment -%}
       <div class="product-subtitle-row">
@@ -674,6 +677,29 @@
     text-transform: uppercase;
     letter-spacing: 0.1em;
     margin: 0 0 0.5rem;
+  }
+
+  /* Title Row */
+  .product-title-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .product-title-rating {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  /* Loox widget positioning */
+  .product-title-rating .loox-rating,
+  .product-title-rating [data-loox-aggregate-rating],
+  .product-title-rating .loox-rating-wrapper {
+    display: flex;
+    align-items: center;
   }
 
   /* Title */
