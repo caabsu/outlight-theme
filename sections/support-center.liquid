@@ -217,6 +217,8 @@
   .help-center {
     min-height: 100vh;
     background-color: var(--hc-page-bg, #E8E4DD);
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
   }
 
   /* Header - Full Width */
@@ -251,8 +253,9 @@
     position: relative;
     z-index: 2;
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: center;
+    gap: 1.25rem;
   }
 
   .help-center__title {
@@ -261,6 +264,7 @@
     font-weight: var(--hc-title-weight, 500);
     color: var(--hc-title-color, #ffffff);
     margin: 0;
+    text-align: center;
   }
 
   .help-center__actions {
@@ -318,6 +322,7 @@
   /* Tabs */
   .help-center__tabs {
     display: flex;
+    justify-content: center;
     border-bottom: 1px solid #E5E5E5;
     padding: 0 2rem;
   }
@@ -479,21 +484,23 @@
     }
 
     .help-center__header-content {
-      flex-direction: column;
-      align-items: flex-start;
+      align-items: center;
       gap: 1rem;
     }
 
     .help-center__title {
       font-size: var(--hc-title-size-mobile, 28px);
+      text-align: center;
     }
 
     .help-center__actions {
       width: 100%;
+      justify-content: center;
     }
 
     .help-center__btn {
       flex: 1;
+      max-width: 140px;
       text-align: center;
       padding: 0.625rem 1rem;
     }
@@ -502,6 +509,7 @@
       padding: 0 1rem;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
+      justify-content: center;
     }
 
     .help-center__tab {
