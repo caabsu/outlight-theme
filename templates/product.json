@@ -53,6 +53,7 @@
             "specs_box_header": "View Full Specs",
             "specs_box_header_size": 14,
             "specs_box_header_color": "#f7f5f0",
+            "specs_box_link": "",
             "specs_box_bg": "#1c1917",
             "specs_box_image": "shopify://shop_images/Rivor_closeup.jpg",
             "specs_box_img_opacity": 30
@@ -118,9 +119,30 @@
         "delivery_date_color": "#57534e",
         "gallery_arrow_color": "#1c1917"
       }
+    },
+    "1765072596b5ddad21": {
+      "type": "apps",
+      "blocks": {
+        "loox_reviews_loox_dynamic_section_jiw8MR": {
+          "type": "shopify://apps/loox-reviews/blocks/loox-dynamic-section/5c3b337f-fd14-4df5-b1d6-80ec13e6e28e",
+          "settings": {
+            "only_photos": false,
+            "aggregated": false,
+            "limit": 20,
+            "hide_thumbnails": false,
+            "maxwidth": 1080,
+            "is_sample": false
+          }
+        }
+      },
+      "block_order": [
+        "loox_reviews_loox_dynamic_section_jiw8MR"
+      ],
+      "settings": {}
     }
   },
   "order": [
-    "main"
+    "main",
+    "1765072596b5ddad21"
   ]
 }
