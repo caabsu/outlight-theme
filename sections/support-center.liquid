@@ -8,18 +8,29 @@
   --sc-heading-size: {{ section.settings.heading_size }}px;
   --sc-heading-size-mobile: {{ section.settings.heading_size_mobile }}px;
   --sc-heading-color: {{ section.settings.heading_color }};
+  --sc-heading-color-mobile: {{ section.settings.heading_color_mobile }};
   --sc-heading-weight: {{ section.settings.heading_weight }};
+  --sc-heading-weight-mobile: {{ section.settings.heading_weight_mobile }};
   --sc-subtitle-size: {{ section.settings.subtitle_size }}px;
+  --sc-subtitle-size-mobile: {{ section.settings.subtitle_size_mobile }}px;
   --sc-subtitle-color: {{ section.settings.subtitle_color }};
+  --sc-subtitle-color-mobile: {{ section.settings.subtitle_color_mobile }};
+  --sc-subtitle-weight: {{ section.settings.subtitle_weight }};
+  --sc-subtitle-weight-mobile: {{ section.settings.subtitle_weight_mobile }};
   --sc-card-bg: {{ section.settings.card_bg_color }};
   --sc-card-radius: {{ section.settings.card_border_radius }}px;
   --sc-icon-bg: {{ section.settings.icon_bg_color }};
   --sc-icon-color: {{ section.settings.icon_color }};
   --sc-card-title-size: {{ section.settings.card_title_size }}px;
+  --sc-card-title-size-mobile: {{ section.settings.card_title_size_mobile }}px;
   --sc-card-title-weight: {{ section.settings.card_title_weight }};
+  --sc-card-title-weight-mobile: {{ section.settings.card_title_weight_mobile }};
   --sc-card-title-color: {{ section.settings.card_title_color }};
+  --sc-card-title-color-mobile: {{ section.settings.card_title_color_mobile }};
   --sc-card-desc-size: {{ section.settings.card_desc_size }}px;
+  --sc-card-desc-size-mobile: {{ section.settings.card_desc_size_mobile }}px;
   --sc-card-desc-color: {{ section.settings.card_desc_color }};
+  --sc-card-desc-color-mobile: {{ section.settings.card_desc_color_mobile }};
   --sc-contact-color: {{ section.settings.contact_link_color }};
 ">
   <div class="support-center__container">
@@ -174,6 +185,7 @@
 
   .support-center__subtitle {
     font-size: var(--sc-subtitle-size, 16px);
+    font-weight: var(--sc-subtitle-weight, 400);
     color: var(--sc-subtitle-color, #78716C);
     margin: 0;
   }
@@ -316,11 +328,15 @@
     .support-center__title--mobile {
       display: block;
       font-size: var(--sc-heading-size-mobile, 28px);
+      font-weight: var(--sc-heading-weight-mobile, 400);
+      color: var(--sc-heading-color-mobile, #1C1917);
       text-align: center;
     }
 
     .support-center__subtitle {
-      display: none;
+      font-size: var(--sc-subtitle-size-mobile, 14px);
+      font-weight: var(--sc-subtitle-weight-mobile, 400);
+      color: var(--sc-subtitle-color-mobile, #78716C);
     }
 
     .support-center__header {
@@ -400,14 +416,14 @@
     }
 
     .support-center__list-title {
-      font-weight: var(--sc-card-title-weight, 500);
-      font-size: var(--sc-card-title-size, 15px);
-      color: var(--sc-card-title-color, #1C1917);
+      font-weight: var(--sc-card-title-weight-mobile, 500);
+      font-size: var(--sc-card-title-size-mobile, 15px);
+      color: var(--sc-card-title-color-mobile, #1C1917);
     }
 
     .support-center__list-description {
-      font-size: var(--sc-card-desc-size, 13px);
-      color: var(--sc-card-desc-color, #9CA3AF);
+      font-size: var(--sc-card-desc-size-mobile, 13px);
+      color: var(--sc-card-desc-color-mobile, #9CA3AF);
     }
 
     .support-center__list-chevron {
@@ -489,7 +505,20 @@
     {
       "type": "select",
       "id": "heading_weight",
-      "label": "Heading weight",
+      "label": "Heading weight (desktop)",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "select",
+      "id": "heading_weight_mobile",
+      "label": "Heading weight (mobile)",
       "options": [
         { "value": "300", "label": "Light" },
         { "value": "400", "label": "Regular" },
@@ -502,7 +531,13 @@
     {
       "type": "color",
       "id": "heading_color",
-      "label": "Heading color",
+      "label": "Heading color (desktop)",
+      "default": "#1C1917"
+    },
+    {
+      "type": "color",
+      "id": "heading_color_mobile",
+      "label": "Heading color (mobile)",
       "default": "#1C1917"
     },
     {
@@ -522,13 +557,55 @@
       "max": 24,
       "step": 1,
       "unit": "px",
-      "label": "Subtitle size",
+      "label": "Subtitle size (desktop)",
       "default": 16
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size_mobile",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle size (mobile)",
+      "default": 14
+    },
+    {
+      "type": "select",
+      "id": "subtitle_weight",
+      "label": "Subtitle weight (desktop)",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "select",
+      "id": "subtitle_weight_mobile",
+      "label": "Subtitle weight (mobile)",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "400"
     },
     {
       "type": "color",
       "id": "subtitle_color",
-      "label": "Subtitle color",
+      "label": "Subtitle color (desktop)",
+      "default": "#78716C"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color_mobile",
+      "label": "Subtitle color (mobile)",
       "default": "#78716C"
     },
     {
@@ -574,19 +651,23 @@
       "default": "#1C1917"
     },
     {
+      "type": "header",
+      "content": "Card title (desktop)"
+    },
+    {
       "type": "range",
       "id": "card_title_size",
       "min": 14,
       "max": 24,
       "step": 1,
       "unit": "px",
-      "label": "Card title size",
+      "label": "Size",
       "default": 18
     },
     {
       "type": "select",
       "id": "card_title_weight",
-      "label": "Card title weight",
+      "label": "Weight",
       "options": [
         { "value": "400", "label": "Regular" },
         { "value": "500", "label": "Medium" },
@@ -598,8 +679,44 @@
     {
       "type": "color",
       "id": "card_title_color",
-      "label": "Card title color",
+      "label": "Color",
       "default": "#1C1917"
+    },
+    {
+      "type": "header",
+      "content": "Card title (mobile)"
+    },
+    {
+      "type": "range",
+      "id": "card_title_size_mobile",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Size",
+      "default": 15
+    },
+    {
+      "type": "select",
+      "id": "card_title_weight_mobile",
+      "label": "Weight",
+      "options": [
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "color",
+      "id": "card_title_color_mobile",
+      "label": "Color",
+      "default": "#1C1917"
+    },
+    {
+      "type": "header",
+      "content": "Card description (desktop)"
     },
     {
       "type": "range",
@@ -608,14 +725,34 @@
       "max": 18,
       "step": 1,
       "unit": "px",
-      "label": "Card description size",
+      "label": "Size",
       "default": 14
     },
     {
       "type": "color",
       "id": "card_desc_color",
-      "label": "Card description color",
+      "label": "Color",
       "default": "#78716C"
+    },
+    {
+      "type": "header",
+      "content": "Card description (mobile)"
+    },
+    {
+      "type": "range",
+      "id": "card_desc_size_mobile",
+      "min": 10,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "label": "Size",
+      "default": 13
+    },
+    {
+      "type": "color",
+      "id": "card_desc_color_mobile",
+      "label": "Color",
+      "default": "#9CA3AF"
     },
     {
       "type": "header",
