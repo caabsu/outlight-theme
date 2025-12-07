@@ -128,7 +128,13 @@
       {%- comment -%} Title Row (with Loox rating widget) {%- endcomment -%}
       <div class="product-title-row">
         <h1 class="product-title {% if section.settings.title_italic %}product-title--italic{% endif %}">{{ product.title }}</h1>
-        <div class="product-title-rating" data-loox-product-id="{{ product.id }}"></div>
+        <div class="product-title-rating">
+          {%- for block in section.blocks -%}
+            {%- if block.type == '@app' -%}
+              {% render block %}
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
       </div>
 
       {%- comment -%} Subtitle & Price Row {%- endcomment -%}
@@ -238,7 +244,7 @@
       {%- for block in section.blocks -%}
         {%- case block.type -%}
           {%- when '@app' -%}
-            {% render block %}
+            {%- comment -%} App blocks (Loox rating) rendered in title row above {%- endcomment -%}
 
           {%- when 'product_details' -%}
             <div class="product-details" {{ block.shopify_attributes }} style="
