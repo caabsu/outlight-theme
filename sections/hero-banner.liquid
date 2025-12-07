@@ -8,34 +8,24 @@
     --hero-padding-mobile: {{ section.settings.padding_mobile }}px;
     --hero-content-width: {{ section.settings.content_width }}%;
 
-    --hero-bg-blur: {{ section.settings.bg_blur }}px;
-    --hero-bg-brightness: {{ section.settings.bg_brightness }}%;
-
     --hero-eyebrow-color: {{ section.settings.eyebrow_color }};
-    --hero-eyebrow-color-mobile: {{ section.settings.eyebrow_color_mobile | default: section.settings.eyebrow_color }};
     --hero-eyebrow-size-desktop: {{ section.settings.eyebrow_size_desktop }}px;
     --hero-eyebrow-size-mobile: {{ section.settings.eyebrow_size_mobile }}px;
     --hero-eyebrow-weight: {{ section.settings.eyebrow_weight }};
-    --hero-eyebrow-weight-mobile: {{ section.settings.eyebrow_weight_mobile | default: section.settings.eyebrow_weight }};
     --hero-eyebrow-spacing: {{ section.settings.eyebrow_letter_spacing }}em;
 
     --hero-heading-color: {{ section.settings.heading_color }};
-    --hero-heading-color-mobile: {{ section.settings.heading_color_mobile | default: section.settings.heading_color }};
     --hero-heading-size-desktop: {{ section.settings.heading_size_desktop }}px;
     --hero-heading-size-mobile: {{ section.settings.heading_size_mobile }}px;
     --hero-heading-weight: {{ section.settings.heading_weight }};
-    --hero-heading-weight-mobile: {{ section.settings.heading_weight_mobile | default: section.settings.heading_weight }};
 
     --hero-subheading-color: {{ section.settings.subheading_color }};
-    --hero-subheading-color-mobile: {{ section.settings.subheading_color_mobile | default: section.settings.subheading_color }};
     --hero-subheading-size-desktop: {{ section.settings.subheading_size_desktop }}px;
     --hero-subheading-size-mobile: {{ section.settings.subheading_size_mobile }}px;
     --hero-subheading-weight: {{ section.settings.subheading_weight }};
-    --hero-subheading-weight-mobile: {{ section.settings.subheading_weight_mobile | default: section.settings.subheading_weight }};
 
     --hero-button-bg: {{ section.settings.button_bg_color }};
     --hero-button-text: {{ section.settings.button_text_color }};
-    --hero-button-border: {{ section.settings.button_border_color | default: section.settings.button_bg_color }};
     --hero-button-size-desktop: {{ section.settings.button_size_desktop }}px;
     --hero-button-size-mobile: {{ section.settings.button_size_mobile }}px;
     --hero-button-weight: {{ section.settings.button_weight }};
@@ -143,8 +133,6 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    filter: blur(var(--hero-bg-blur, 0px)) brightness(var(--hero-bg-brightness, 100%));
-    transform: scale(1.1); /* Prevent blur edge artifacts */
   }
 
   .hero-banner__overlay {
@@ -218,7 +206,6 @@
     display: inline-block;
     background-color: var(--hero-button-bg);
     color: var(--hero-button-text);
-    border: 1px solid var(--hero-button-border);
     font-family: var(--font-primary-family);
     font-size: var(--hero-button-size-desktop);
     font-weight: var(--hero-button-weight);
@@ -228,12 +215,11 @@
     padding: var(--hero-button-padding-y) var(--hero-button-padding-x);
     border-radius: var(--hero-button-radius);
     margin-top: 12px;
-    transition: all 0.2s ease;
+    transition: opacity 0.2s ease;
   }
 
   .hero-banner__button:hover {
-    background-color: var(--hero-button-text);
-    color: var(--hero-button-bg);
+    opacity: 0.9;
   }
 
   .hero-banner__button--mobile {
@@ -272,8 +258,6 @@
     .hero-banner__eyebrow--mobile {
       display: block;
       font-size: var(--hero-eyebrow-size-mobile);
-      color: var(--hero-eyebrow-color-mobile);
-      font-weight: var(--hero-eyebrow-weight-mobile);
     }
 
     .hero-banner__heading--desktop {
@@ -283,8 +267,6 @@
     .hero-banner__heading--mobile {
       display: block;
       font-size: var(--hero-heading-size-mobile);
-      color: var(--hero-heading-color-mobile);
-      font-weight: var(--hero-heading-weight-mobile);
     }
 
     .hero-banner__subheading--desktop {
@@ -294,8 +276,6 @@
     .hero-banner__subheading--mobile {
       display: block;
       font-size: var(--hero-subheading-size-mobile);
-      color: var(--hero-subheading-color-mobile);
-      font-weight: var(--hero-subheading-weight-mobile);
     }
 
     .hero-banner__button--desktop {
@@ -340,26 +320,6 @@
       "type": "image_picker",
       "id": "image_mobile",
       "label": "t:sections.hero_banner.settings.images.mobile"
-    },
-    {
-      "type": "range",
-      "id": "bg_blur",
-      "min": 0,
-      "max": 30,
-      "step": 1,
-      "unit": "px",
-      "label": "Background blur",
-      "default": 0
-    },
-    {
-      "type": "range",
-      "id": "bg_brightness",
-      "min": 20,
-      "max": 150,
-      "step": 5,
-      "unit": "%",
-      "label": "Background brightness",
-      "default": 100
     },
     {
       "type": "header",
@@ -537,23 +497,6 @@
       "default": "500"
     },
     {
-      "type": "select",
-      "id": "eyebrow_weight_mobile",
-      "label": "Eyebrow weight (mobile)",
-      "options": [
-        { "value": "400", "label": "t:options.font_weight.regular" },
-        { "value": "500", "label": "t:options.font_weight.medium" },
-        { "value": "600", "label": "t:options.font_weight.semibold" }
-      ],
-      "default": "500"
-    },
-    {
-      "type": "color",
-      "id": "eyebrow_color_mobile",
-      "label": "Eyebrow color (mobile)",
-      "default": "#D97706"
-    },
-    {
       "type": "range",
       "id": "eyebrow_letter_spacing",
       "label": "t:sections.hero_banner.settings.eyebrow_style.letter_spacing",
@@ -606,24 +549,6 @@
       "default": "400"
     },
     {
-      "type": "select",
-      "id": "heading_weight_mobile",
-      "label": "Heading weight (mobile)",
-      "options": [
-        { "value": "400", "label": "t:options.font_weight.regular" },
-        { "value": "500", "label": "t:options.font_weight.medium" },
-        { "value": "600", "label": "t:options.font_weight.semibold" },
-        { "value": "700", "label": "t:options.font_weight.bold" }
-      ],
-      "default": "400"
-    },
-    {
-      "type": "color",
-      "id": "heading_color_mobile",
-      "label": "Heading color (mobile)",
-      "default": "#FFFFFF"
-    },
-    {
       "type": "header",
       "content": "t:sections.hero_banner.settings.subheading_style.header"
     },
@@ -664,22 +589,6 @@
       "default": "400"
     },
     {
-      "type": "select",
-      "id": "subheading_weight_mobile",
-      "label": "Subheading weight (mobile)",
-      "options": [
-        { "value": "400", "label": "t:options.font_weight.regular" },
-        { "value": "500", "label": "t:options.font_weight.medium" }
-      ],
-      "default": "400"
-    },
-    {
-      "type": "color",
-      "id": "subheading_color_mobile",
-      "label": "Subheading color (mobile)",
-      "default": "#A8A29E"
-    },
-    {
       "type": "header",
       "content": "t:sections.hero_banner.settings.button_style.header"
     },
@@ -694,12 +603,6 @@
       "id": "button_text_color",
       "label": "t:sections.hero_banner.settings.button_style.text_color",
       "default": "#1C1917"
-    },
-    {
-      "type": "color",
-      "id": "button_border_color",
-      "label": "Button border color",
-      "default": "#FFFFFF"
     },
     {
       "type": "range",
