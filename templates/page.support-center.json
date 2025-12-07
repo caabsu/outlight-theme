@@ -36,19 +36,19 @@
           "type": "category",
           "settings": {
             "icon": "wrench",
-            "title": "Assembly",
+            "title": "Our Policy",
             "description": "Guides for installing your light.",
-            "description_mobile": "Installation guides",
+            "description_mobile": "Returns & Delivery",
             "link": ""
           }
         },
         "care_guides": {
           "type": "category",
           "settings": {
-            "icon": "document",
-            "title": "Care Guides",
+            "icon": "help",
+            "title": "Contact Us",
             "description": "Maintenance and cleaning tips.",
-            "description_mobile": "Maintenance tips",
+            "description_mobile": "Answer within 24 hours",
             "link": ""
           }
         }
