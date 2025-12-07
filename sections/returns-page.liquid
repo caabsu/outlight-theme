@@ -1,0 +1,298 @@
+{% comment %}
+  Returns page section - 17TRACK returns iframe
+{% endcomment %}
+
+<div class="returns-page" style="
+  --rp-bg: {{ section.settings.page_bg_color }};
+  --rp-bg-mobile: {{ section.settings.page_bg_color_mobile }};
+  --rp-heading-size: {{ section.settings.heading_size }}px;
+  --rp-heading-size-mobile: {{ section.settings.heading_size_mobile }}px;
+  --rp-heading-color: {{ section.settings.heading_color }};
+  --rp-heading-weight: {{ section.settings.heading_weight }};
+  --rp-subtitle-size: {{ section.settings.subtitle_size }}px;
+  --rp-subtitle-color: {{ section.settings.subtitle_color }};
+  --rp-back-color: {{ section.settings.back_link_color }};
+">
+  <div class="returns-page__container">
+    {%- comment -%} Back Navigation {%- endcomment -%}
+    <a href="{{ section.settings.back_link }}" class="returns-page__back">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M15 18l-6-6 6-6"/>
+      </svg>
+      <span>{{ section.settings.back_text }}</span>
+    </a>
+
+    {%- comment -%} Header {%- endcomment -%}
+    <div class="returns-page__header">
+      <h1 class="returns-page__title">{{ section.settings.heading }}</h1>
+      {%- if section.settings.subtitle != blank -%}
+        <p class="returns-page__subtitle">{{ section.settings.subtitle }}</p>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} 17TRACK Returns Iframe {%- endcomment -%}
+    <div class="returns-page__iframe-wrapper">
+      <iframe
+        title="returnpage"
+        class="returns-page__iframe"
+        id="yq-return-page"
+        src="https://shopify-proxy.17track.net/returnpage/iframe?shop=put1rp-iq{% if section.settings.language != blank %}&lang={{ section.settings.language }}{% endif %}"
+        scrolling="yes"
+        frameborder="0"
+      ></iframe>
+    </div>
+  </div>
+</div>
+
+{% javascript %}
+  (function() {
+    const iframe = document.querySelector("#yq-return-page");
+    if (iframe) {
+      window.addEventListener("message", function(event) {
+        if (
+          event.data &&
+          event.data.type === "resize" &&
+          typeof event.data.scrollHeight === "number"
+        ) {
+          iframe.style.height = event.data.scrollHeight + "px";
+        }
+      });
+    }
+  })();
+{% endjavascript %}
+
+{% stylesheet %}
+  .returns-page {
+    min-height: 100vh;
+    background-color: var(--rp-bg, #f5f5f5);
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  .returns-page__container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  /* Back Navigation */
+  .returns-page__back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--rp-back-color, #78716C);
+    text-decoration: none;
+    margin-bottom: 1.5rem;
+    transition: color 0.2s ease;
+  }
+
+  .returns-page__back:hover {
+    color: var(--rp-heading-color, #1C1917);
+  }
+
+  .returns-page__back svg {
+    flex-shrink: 0;
+  }
+
+  /* Header */
+  .returns-page__header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .returns-page__title {
+    font-family: var(--font-heading-family), serif;
+    font-weight: var(--rp-heading-weight, 400);
+    font-size: var(--rp-heading-size, 32px);
+    color: var(--rp-heading-color, #1C1917);
+    margin: 0 0 0.5rem;
+  }
+
+  .returns-page__subtitle {
+    font-size: var(--rp-subtitle-size, 16px);
+    color: var(--rp-subtitle-color, #78716C);
+    margin: 0;
+  }
+
+  /* Iframe */
+  .returns-page__iframe-wrapper {
+    background: #ffffff;
+    border: 1px solid #E5E5E5;
+    overflow: hidden;
+  }
+
+  .returns-page__iframe {
+    width: 100%;
+    min-height: 600px;
+    border: none;
+  }
+
+  /* Mobile Styles */
+  @media screen and (max-width: 768px) {
+    .returns-page {
+      padding: 1.5rem 1rem 3rem;
+      background-color: var(--rp-bg-mobile, #ffffff);
+    }
+
+    .returns-page__back {
+      margin-bottom: 1rem;
+    }
+
+    .returns-page__header {
+      margin-bottom: 1.5rem;
+    }
+
+    .returns-page__title {
+      font-size: var(--rp-heading-size-mobile, 24px);
+    }
+
+    .returns-page__subtitle {
+      font-size: 14px;
+    }
+
+    .returns-page__iframe-wrapper {
+      margin: 0 -1rem;
+      border-left: none;
+      border-right: none;
+    }
+
+    .returns-page__iframe {
+      min-height: 500px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Returns page",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Page background"
+    },
+    {
+      "type": "color",
+      "id": "page_bg_color",
+      "label": "Background color (desktop)",
+      "default": "#f5f5f5"
+    },
+    {
+      "type": "color",
+      "id": "page_bg_color_mobile",
+      "label": "Background color (mobile)",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Back navigation"
+    },
+    {
+      "type": "text",
+      "id": "back_text",
+      "label": "Back link text",
+      "default": "Back to Support Center"
+    },
+    {
+      "type": "url",
+      "id": "back_link",
+      "label": "Back link URL"
+    },
+    {
+      "type": "color",
+      "id": "back_link_color",
+      "label": "Back link color",
+      "default": "#78716C"
+    },
+    {
+      "type": "header",
+      "content": "Page heading"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Returns"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 24,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading size (desktop)",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "heading_size_mobile",
+      "min": 18,
+      "max": 36,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading size (mobile)",
+      "default": 24
+    },
+    {
+      "type": "select",
+      "id": "heading_weight",
+      "label": "Heading weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#1C1917"
+    },
+    {
+      "type": "header",
+      "content": "Subtitle"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Start a return or exchange request."
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle size",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle color",
+      "default": "#78716C"
+    },
+    {
+      "type": "header",
+      "content": "17TRACK settings"
+    },
+    {
+      "type": "text",
+      "id": "language",
+      "label": "Language code",
+      "info": "Optional. Use ISO 639-1 codes like 'en', 'es', 'fr', 'de', etc."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Returns page"
+    }
+  ]
+}
+{% endschema %}

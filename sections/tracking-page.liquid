@@ -1,0 +1,298 @@
+{% comment %}
+  Tracking page section - 17TRACK order tracking iframe
+{% endcomment %}
+
+<div class="tracking-page" style="
+  --tp-bg: {{ section.settings.page_bg_color }};
+  --tp-bg-mobile: {{ section.settings.page_bg_color_mobile }};
+  --tp-heading-size: {{ section.settings.heading_size }}px;
+  --tp-heading-size-mobile: {{ section.settings.heading_size_mobile }}px;
+  --tp-heading-color: {{ section.settings.heading_color }};
+  --tp-heading-weight: {{ section.settings.heading_weight }};
+  --tp-subtitle-size: {{ section.settings.subtitle_size }}px;
+  --tp-subtitle-color: {{ section.settings.subtitle_color }};
+  --tp-back-color: {{ section.settings.back_link_color }};
+">
+  <div class="tracking-page__container">
+    {%- comment -%} Back Navigation {%- endcomment -%}
+    <a href="{{ section.settings.back_link }}" class="tracking-page__back">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M15 18l-6-6 6-6"/>
+      </svg>
+      <span>{{ section.settings.back_text }}</span>
+    </a>
+
+    {%- comment -%} Header {%- endcomment -%}
+    <div class="tracking-page__header">
+      <h1 class="tracking-page__title">{{ section.settings.heading }}</h1>
+      {%- if section.settings.subtitle != blank -%}
+        <p class="tracking-page__subtitle">{{ section.settings.subtitle }}</p>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} 17TRACK Tracking Iframe {%- endcomment -%}
+    <div class="tracking-page__iframe-wrapper">
+      <iframe
+        title="trackpage"
+        class="tracking-page__iframe"
+        id="yq-tracking-page"
+        src="https://shopify-proxy.17track.net/iframe?shop=put1rp-iq{% if section.settings.language != blank %}&lang={{ section.settings.language }}{% endif %}"
+        scrolling="no"
+        frameborder="0"
+      ></iframe>
+    </div>
+  </div>
+</div>
+
+{% javascript %}
+  (function() {
+    const iframe = document.querySelector("#yq-tracking-page");
+    if (iframe) {
+      window.addEventListener("message", function(event) {
+        if (
+          event.data &&
+          event.data.type === "resize" &&
+          typeof event.data.scrollHeight === "number"
+        ) {
+          iframe.style.height = event.data.scrollHeight + "px";
+        }
+      });
+    }
+  })();
+{% endjavascript %}
+
+{% stylesheet %}
+  .tracking-page {
+    min-height: 100vh;
+    background-color: var(--tp-bg, #f5f5f5);
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  .tracking-page__container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  /* Back Navigation */
+  .tracking-page__back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--tp-back-color, #78716C);
+    text-decoration: none;
+    margin-bottom: 1.5rem;
+    transition: color 0.2s ease;
+  }
+
+  .tracking-page__back:hover {
+    color: var(--tp-heading-color, #1C1917);
+  }
+
+  .tracking-page__back svg {
+    flex-shrink: 0;
+  }
+
+  /* Header */
+  .tracking-page__header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .tracking-page__title {
+    font-family: var(--font-heading-family), serif;
+    font-weight: var(--tp-heading-weight, 400);
+    font-size: var(--tp-heading-size, 32px);
+    color: var(--tp-heading-color, #1C1917);
+    margin: 0 0 0.5rem;
+  }
+
+  .tracking-page__subtitle {
+    font-size: var(--tp-subtitle-size, 16px);
+    color: var(--tp-subtitle-color, #78716C);
+    margin: 0;
+  }
+
+  /* Iframe */
+  .tracking-page__iframe-wrapper {
+    background: #ffffff;
+    border: 1px solid #E5E5E5;
+    overflow: hidden;
+  }
+
+  .tracking-page__iframe {
+    width: 100%;
+    min-height: 600px;
+    border: none;
+  }
+
+  /* Mobile Styles */
+  @media screen and (max-width: 768px) {
+    .tracking-page {
+      padding: 1.5rem 1rem 3rem;
+      background-color: var(--tp-bg-mobile, #ffffff);
+    }
+
+    .tracking-page__back {
+      margin-bottom: 1rem;
+    }
+
+    .tracking-page__header {
+      margin-bottom: 1.5rem;
+    }
+
+    .tracking-page__title {
+      font-size: var(--tp-heading-size-mobile, 24px);
+    }
+
+    .tracking-page__subtitle {
+      font-size: 14px;
+    }
+
+    .tracking-page__iframe-wrapper {
+      margin: 0 -1rem;
+      border-left: none;
+      border-right: none;
+    }
+
+    .tracking-page__iframe {
+      min-height: 500px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Tracking page",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Page background"
+    },
+    {
+      "type": "color",
+      "id": "page_bg_color",
+      "label": "Background color (desktop)",
+      "default": "#f5f5f5"
+    },
+    {
+      "type": "color",
+      "id": "page_bg_color_mobile",
+      "label": "Background color (mobile)",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Back navigation"
+    },
+    {
+      "type": "text",
+      "id": "back_text",
+      "label": "Back link text",
+      "default": "Back to Support Center"
+    },
+    {
+      "type": "url",
+      "id": "back_link",
+      "label": "Back link URL"
+    },
+    {
+      "type": "color",
+      "id": "back_link_color",
+      "label": "Back link color",
+      "default": "#78716C"
+    },
+    {
+      "type": "header",
+      "content": "Page heading"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Track your order"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 24,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading size (desktop)",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "heading_size_mobile",
+      "min": 18,
+      "max": 36,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading size (mobile)",
+      "default": 24
+    },
+    {
+      "type": "select",
+      "id": "heading_weight",
+      "label": "Heading weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#1C1917"
+    },
+    {
+      "type": "header",
+      "content": "Subtitle"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Enter your tracking number to check delivery status."
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle size",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle color",
+      "default": "#78716C"
+    },
+    {
+      "type": "header",
+      "content": "17TRACK settings"
+    },
+    {
+      "type": "text",
+      "id": "language",
+      "label": "Language code",
+      "info": "Optional. Use ISO 639-1 codes like 'en', 'es', 'fr', 'de', etc."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Tracking page"
+    }
+  ]
+}
+{% endschema %}
