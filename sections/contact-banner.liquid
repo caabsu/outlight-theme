@@ -1,0 +1,562 @@
+{% comment %}
+  Contact Banner - CTA section with blurred background and glassmorphism card
+{% endcomment %}
+
+<section class="contact-banner" style="
+  --cb-bg-blur: {{ section.settings.bg_blur }}px;
+  --cb-bg-brightness: {{ section.settings.bg_brightness }}%;
+  --cb-overlay-color: {{ section.settings.overlay_color }};
+  --cb-overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
+  --cb-card-bg: {{ section.settings.card_bg_color }};
+  --cb-card-opacity: {{ section.settings.card_opacity | divided_by: 100.0 }};
+  --cb-card-blur: {{ section.settings.card_blur }}px;
+  --cb-card-radius: {{ section.settings.card_radius }}px;
+  --cb-card-border-color: {{ section.settings.card_border_color }};
+  --cb-padding-desktop: {{ section.settings.padding_desktop }}px;
+  --cb-padding-mobile: {{ section.settings.padding_mobile }}px;
+  --cb-heading-size: {{ section.settings.heading_size }}px;
+  --cb-heading-size-mobile: {{ section.settings.heading_size_mobile }}px;
+  --cb-heading-weight: {{ section.settings.heading_weight }};
+  --cb-heading-color: {{ section.settings.heading_color }};
+  --cb-heading-color-mobile: {{ section.settings.heading_color_mobile | default: section.settings.heading_color }};
+  --cb-subtitle-size: {{ section.settings.subtitle_size }}px;
+  --cb-subtitle-size-mobile: {{ section.settings.subtitle_size_mobile }}px;
+  --cb-subtitle-weight: {{ section.settings.subtitle_weight }};
+  --cb-subtitle-color: {{ section.settings.subtitle_color }};
+  --cb-subtitle-color-mobile: {{ section.settings.subtitle_color_mobile | default: section.settings.subtitle_color }};
+  --cb-btn-bg: {{ section.settings.button_bg }};
+  --cb-btn-text: {{ section.settings.button_text_color }};
+  --cb-btn-border: {{ section.settings.button_border_color }};
+  --cb-btn-radius: {{ section.settings.button_radius }}px;
+  --cb-btn-size: {{ section.settings.button_size }}px;
+  --cb-btn-size-mobile: {{ section.settings.button_size_mobile }}px;
+  --cb-btn-weight: {{ section.settings.button_weight }};
+  --cb-note-size: {{ section.settings.note_size }}px;
+  --cb-note-color: {{ section.settings.note_color }};
+">
+  {%- comment -%} Background Image {%- endcomment -%}
+  {%- if section.settings.bg_image != blank -%}
+    <div class="contact-banner__bg">
+      {{ section.settings.bg_image | image_url: width: 1920 | image_tag: class: 'contact-banner__bg-img', loading: 'lazy' }}
+    </div>
+  {%- endif -%}
+  <div class="contact-banner__overlay"></div>
+
+  {%- comment -%} Content Card {%- endcomment -%}
+  <div class="contact-banner__container">
+    <div class="contact-banner__card">
+      <div class="contact-banner__content">
+        {%- if section.settings.heading != blank -%}
+          <h2 class="contact-banner__heading">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+        {%- if section.settings.subtitle != blank -%}
+          <p class="contact-banner__subtitle">{{ section.settings.subtitle }}</p>
+        {%- endif -%}
+      </div>
+      <div class="contact-banner__action">
+        {%- if section.settings.button_text != blank -%}
+          <a href="{{ section.settings.button_link }}" class="contact-banner__btn">
+            {{ section.settings.button_text }}
+          </a>
+        {%- endif -%}
+        {%- if section.settings.note_text != blank -%}
+          <span class="contact-banner__note">{{ section.settings.note_text }}</span>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .contact-banner {
+    position: relative;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    padding: var(--cb-padding-desktop, 60px) 2rem;
+    overflow: hidden;
+  }
+
+  .contact-banner__bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .contact-banner__bg-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: blur(var(--cb-bg-blur, 8px)) brightness(var(--cb-bg-brightness, 100%));
+    transform: scale(1.1);
+  }
+
+  .contact-banner__overlay {
+    position: absolute;
+    inset: 0;
+    background-color: var(--cb-overlay-color, #000000);
+    opacity: var(--cb-overlay-opacity, 0.2);
+    z-index: 1;
+  }
+
+  .contact-banner__container {
+    position: relative;
+    z-index: 2;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .contact-banner__card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: 2.5rem 3rem;
+    background: rgba(255, 255, 255, var(--cb-card-opacity, 0.15));
+    backdrop-filter: blur(var(--cb-card-blur, 12px));
+    -webkit-backdrop-filter: blur(var(--cb-card-blur, 12px));
+    border-radius: var(--cb-card-radius, 12px);
+    border: 1px solid var(--cb-card-border-color, rgba(255, 255, 255, 0.2));
+  }
+
+  .contact-banner__content {
+    flex: 1;
+  }
+
+  .contact-banner__heading {
+    font-family: var(--font-heading-family), serif;
+    font-size: var(--cb-heading-size, 28px);
+    font-weight: var(--cb-heading-weight, 400);
+    font-style: italic;
+    color: var(--cb-heading-color, #ffffff);
+    margin: 0 0 0.5rem;
+    line-height: 1.2;
+  }
+
+  .contact-banner__subtitle {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: var(--cb-subtitle-size, 15px);
+    font-weight: var(--cb-subtitle-weight, 400);
+    color: var(--cb-subtitle-color, rgba(255, 255, 255, 0.85));
+    margin: 0;
+    line-height: 1.5;
+    max-width: 400px;
+  }
+
+  .contact-banner__action {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  .contact-banner__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 160px;
+    padding: 0.875rem 2rem;
+    font-family: var(--font-body-family), sans-serif;
+    font-size: var(--cb-btn-size, 14px);
+    font-weight: var(--cb-btn-weight, 500);
+    text-decoration: none;
+    color: var(--cb-btn-text, #ffffff);
+    background-color: var(--cb-btn-bg, #D97706);
+    border: 1px solid var(--cb-btn-border, #D97706);
+    border-radius: var(--cb-btn-radius, 4px);
+    transition: all 0.2s ease;
+  }
+
+  .contact-banner__btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+
+  .contact-banner__note {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: var(--cb-note-size, 12px);
+    color: var(--cb-note-color, rgba(255, 255, 255, 0.7));
+  }
+
+  /* Mobile Styles */
+  @media screen and (max-width: 768px) {
+    .contact-banner {
+      padding: var(--cb-padding-mobile, 40px) 1rem;
+    }
+
+    .contact-banner__card {
+      flex-direction: column;
+      text-align: center;
+      padding: 1.5rem 1.25rem;
+      gap: 1.25rem;
+    }
+
+    .contact-banner__content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .contact-banner__heading {
+      font-size: var(--cb-heading-size-mobile, 22px);
+      color: var(--cb-heading-color-mobile);
+    }
+
+    .contact-banner__subtitle {
+      font-size: var(--cb-subtitle-size-mobile, 13px);
+      color: var(--cb-subtitle-color-mobile);
+    }
+
+    .contact-banner__action {
+      width: 100%;
+    }
+
+    .contact-banner__btn {
+      width: 100%;
+      font-size: var(--cb-btn-size-mobile, 13px);
+      padding: 0.75rem 1.5rem;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Contact banner",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Background"
+    },
+    {
+      "type": "image_picker",
+      "id": "bg_image",
+      "label": "Background image"
+    },
+    {
+      "type": "range",
+      "id": "bg_blur",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "label": "Background blur",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "bg_brightness",
+      "min": 20,
+      "max": 150,
+      "step": 5,
+      "unit": "%",
+      "label": "Background brightness",
+      "default": 100
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Overlay color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "label": "Overlay opacity",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Card style"
+    },
+    {
+      "type": "color",
+      "id": "card_bg_color",
+      "label": "Card background color",
+      "default": "#ffffff",
+      "info": "Opacity controlled below"
+    },
+    {
+      "type": "range",
+      "id": "card_opacity",
+      "min": 5,
+      "max": 50,
+      "step": 5,
+      "unit": "%",
+      "label": "Card background opacity",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "card_blur",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "label": "Card blur (glassmorphism)",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "card_radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "label": "Card border radius",
+      "default": 12
+    },
+    {
+      "type": "color",
+      "id": "card_border_color",
+      "label": "Card border color",
+      "default": "rgba(255, 255, 255, 0.2)"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "padding_desktop",
+      "min": 20,
+      "max": 120,
+      "step": 10,
+      "unit": "px",
+      "label": "Section padding (desktop)",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_mobile",
+      "min": 16,
+      "max": 80,
+      "step": 8,
+      "unit": "px",
+      "label": "Section padding (mobile)",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "We're here for you."
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 20,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading size (desktop)",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "heading_size_mobile",
+      "min": 18,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading size (mobile)",
+      "default": 22
+    },
+    {
+      "type": "select",
+      "id": "heading_weight",
+      "label": "Heading weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color (desktop)",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "heading_color_mobile",
+      "label": "Heading color (mobile)",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Subtitle"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Whether it's tracking an order or choosing the right finish, our team is ready to help you layer your light."
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle size (desktop)",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size_mobile",
+      "min": 11,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle size (mobile)",
+      "default": 13
+    },
+    {
+      "type": "select",
+      "id": "subtitle_weight",
+      "label": "Subtitle weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle color (desktop)",
+      "default": "rgba(255, 255, 255, 0.85)"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color_mobile",
+      "label": "Subtitle color (mobile)",
+      "default": "rgba(255, 255, 255, 0.85)"
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Contact Us"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "color",
+      "id": "button_bg",
+      "label": "Button background",
+      "default": "#D97706"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_border_color",
+      "label": "Button border color",
+      "default": "#D97706"
+    },
+    {
+      "type": "range",
+      "id": "button_radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "label": "Button border radius",
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "button_size",
+      "min": 11,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "label": "Button text size (desktop)",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "button_size_mobile",
+      "min": 11,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "label": "Button text size (mobile)",
+      "default": 13
+    },
+    {
+      "type": "select",
+      "id": "button_weight",
+      "label": "Button text weight",
+      "options": [
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "header",
+      "content": "Note text"
+    },
+    {
+      "type": "text",
+      "id": "note_text",
+      "label": "Note text",
+      "default": "Average wait: 2 mins"
+    },
+    {
+      "type": "range",
+      "id": "note_size",
+      "min": 10,
+      "max": 14,
+      "step": 1,
+      "unit": "px",
+      "label": "Note text size",
+      "default": 12
+    },
+    {
+      "type": "color",
+      "id": "note_color",
+      "label": "Note text color",
+      "default": "rgba(255, 255, 255, 0.7)"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contact banner",
+      "settings": {
+        "heading": "We're here for you.",
+        "subtitle": "Whether it's tracking an order or choosing the right finish, our team is ready to help you layer your light.",
+        "button_text": "Contact Us",
+        "note_text": "Average wait: 2 mins"
+      }
+    }
+  ]
+}
+{% endschema %}
