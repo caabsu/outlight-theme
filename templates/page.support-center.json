@@ -35,7 +35,7 @@
         "assembly": {
           "type": "category",
           "settings": {
-            "icon": "wrench",
+            "icon": "document",
             "title": "Our Policy",
             "description": "Guides for installing your light.",
             "description_mobile": "Returns & Delivery",
