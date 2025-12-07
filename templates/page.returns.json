@@ -1,0 +1,26 @@
+{
+  "sections": {
+    "main": {
+      "type": "returns-page",
+      "settings": {
+        "page_bg_color": "#F7F5F0",
+        "page_bg_color_mobile": "#ffffff",
+        "back_text": "Back to Support Center",
+        "back_link": "shopify://pages/support-center",
+        "back_link_color": "#78716C",
+        "heading": "Returns",
+        "heading_size": 32,
+        "heading_size_mobile": 24,
+        "heading_weight": "400",
+        "heading_color": "#1C1917",
+        "subtitle": "Start a return or exchange request.",
+        "subtitle_size": 16,
+        "subtitle_color": "#78716C",
+        "language": ""
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}
