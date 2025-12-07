@@ -1,626 +1,579 @@
 {% comment %}
-  Support Center section - Help page with search and category cards
+  Support Center / Help Center section with dark header, tabs, and FAQ
 {% endcomment %}
 
-<div class="support-center" style="
-  --sc-bg: {{ section.settings.page_bg_color }};
-  --sc-bg-mobile: {{ section.settings.page_bg_color_mobile }};
-  --sc-heading-size: {{ section.settings.heading_size }}px;
-  --sc-heading-size-mobile: {{ section.settings.heading_size_mobile }}px;
-  --sc-heading-color: {{ section.settings.heading_color }};
-  --sc-heading-color-mobile: {{ section.settings.heading_color_mobile }};
-  --sc-heading-weight: {{ section.settings.heading_weight }};
-  --sc-heading-weight-mobile: {{ section.settings.heading_weight_mobile }};
-  --sc-subtitle-size: {{ section.settings.subtitle_size }}px;
-  --sc-subtitle-size-mobile: {{ section.settings.subtitle_size_mobile }}px;
-  --sc-subtitle-color: {{ section.settings.subtitle_color }};
-  --sc-subtitle-color-mobile: {{ section.settings.subtitle_color_mobile }};
-  --sc-subtitle-weight: {{ section.settings.subtitle_weight }};
-  --sc-subtitle-weight-mobile: {{ section.settings.subtitle_weight_mobile }};
-  --sc-card-bg: {{ section.settings.card_bg_color }};
-  --sc-card-radius: {{ section.settings.card_border_radius }}px;
-  --sc-icon-bg: {{ section.settings.icon_bg_color }};
-  --sc-icon-color: {{ section.settings.icon_color }};
-  --sc-card-title-size: {{ section.settings.card_title_size }}px;
-  --sc-card-title-size-mobile: {{ section.settings.card_title_size_mobile }}px;
-  --sc-card-title-weight: {{ section.settings.card_title_weight }};
-  --sc-card-title-weight-mobile: {{ section.settings.card_title_weight_mobile }};
-  --sc-card-title-color: {{ section.settings.card_title_color }};
-  --sc-card-title-color-mobile: {{ section.settings.card_title_color_mobile }};
-  --sc-card-desc-size: {{ section.settings.card_desc_size }}px;
-  --sc-card-desc-size-mobile: {{ section.settings.card_desc_size_mobile }}px;
-  --sc-card-desc-color: {{ section.settings.card_desc_color }};
-  --sc-card-desc-color-mobile: {{ section.settings.card_desc_color_mobile }};
-  --sc-contact-color: {{ section.settings.contact_link_color }};
+<div class="help-center" style="
+  --hc-page-bg: {{ section.settings.page_bg_color }};
+  --hc-header-bg: {{ section.settings.header_bg_color }};
+  --hc-header-overlay-opacity: {{ section.settings.header_overlay_opacity | divided_by: 100.0 }};
+  --hc-title-size: {{ section.settings.title_size }}px;
+  --hc-title-size-mobile: {{ section.settings.title_size_mobile }}px;
+  --hc-title-color: {{ section.settings.title_color }};
+  --hc-title-weight: {{ section.settings.title_weight }};
+  --hc-btn-bg: {{ section.settings.button_bg_color }};
+  --hc-btn-text: {{ section.settings.button_text_color }};
+  --hc-btn-border: {{ section.settings.button_border_color }};
+  --hc-card-bg: {{ section.settings.card_bg_color }};
+  --hc-card-radius: {{ section.settings.card_border_radius }}px;
+  --hc-tab-color: {{ section.settings.tab_color }};
+  --hc-tab-active-color: {{ section.settings.tab_active_color }};
+  --hc-question-size: {{ section.settings.question_size }}px;
+  --hc-question-size-mobile: {{ section.settings.question_size_mobile }}px;
+  --hc-question-color: {{ section.settings.question_color }};
+  --hc-question-weight: {{ section.settings.question_weight }};
+  --hc-answer-size: {{ section.settings.answer_size }}px;
+  --hc-answer-size-mobile: {{ section.settings.answer_size_mobile }}px;
+  --hc-answer-color: {{ section.settings.answer_color }};
 ">
-  <div class="support-center__container">
-    {%- comment -%} Header {%- endcomment -%}
-    <div class="support-center__header">
-      <h1 class="support-center__title support-center__title--desktop">{{ section.settings.heading }}</h1>
-      <h1 class="support-center__title support-center__title--mobile">{{ section.settings.heading_mobile | default: 'Support Center' }}</h1>
-      <p class="support-center__subtitle">{{ section.settings.subtitle }}</p>
-    </div>
-
-    {%- comment -%} Search Bar {%- endcomment -%}
-    <div class="support-center__search">
-      <form action="{{ routes.search_url }}" method="get" class="support-center__search-form">
-        <svg class="support-center__search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="11" cy="11" r="8"/>
-          <path d="M21 21l-4.35-4.35"/>
-        </svg>
-        <input
-          type="search"
-          name="q"
-          class="support-center__search-input"
-          placeholder="{{ section.settings.search_placeholder }}"
-          aria-label="{{ 'general.search' | t }}"
-        >
-      </form>
-    </div>
-
-    {%- comment -%} Category Cards - Desktop {%- endcomment -%}
-    <div class="support-center__cards">
-      {%- for block in section.blocks -%}
-        <a href="{{ block.settings.link }}" class="support-center__card" {{ block.shopify_attributes }}>
-          <div class="support-center__card-icon">
-            {%- case block.settings.icon -%}
-              {%- when 'truck' -%}
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
-                </svg>
-              {%- when 'box' -%}
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-7-2h2v-4h4v-2h-4V7h-2v4H8v2h4z"/>
-                </svg>
-              {%- when 'wrench' -%}
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/>
-                </svg>
-              {%- when 'return' -%}
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
-                </svg>
-              {%- when 'document' -%}
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
-                </svg>
-              {%- else -%}
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
-                </svg>
-              {%- endcase -%}
-          </div>
-          <h3 class="support-center__card-title">{{ block.settings.title }}</h3>
-          <p class="support-center__card-description">{{ block.settings.description }}</p>
-        </a>
-      {%- endfor -%}
-    </div>
-
-    {%- comment -%} Category List - Mobile {%- endcomment -%}
-    <div class="support-center__list">
-      {%- for block in section.blocks -%}
-        <a href="{{ block.settings.link }}" class="support-center__list-item" {{ block.shopify_attributes }}>
-          <div class="support-center__list-icon">
-            {%- case block.settings.icon -%}
-              {%- when 'truck' -%}
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
-                </svg>
-              {%- when 'box' -%}
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-7-2h2v-4h4v-2h-4V7h-2v4H8v2h4z"/>
-                </svg>
-              {%- when 'wrench' -%}
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/>
-                </svg>
-              {%- when 'return' -%}
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
-                </svg>
-              {%- when 'document' -%}
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
-                </svg>
-              {%- else -%}
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
-                </svg>
-              {%- endcase -%}
-          </div>
-          <div class="support-center__list-content">
-            <span class="support-center__list-title">{{ block.settings.title }}</span>
-            <span class="support-center__list-description">{{ block.settings.description_mobile | default: block.settings.description }}</span>
-          </div>
-          <svg class="support-center__list-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M9 18l6-6-6-6"/>
-          </svg>
-        </a>
-      {%- endfor -%}
-    </div>
-
-    {%- comment -%} Contact Support {%- endcomment -%}
-    {%- if section.settings.show_contact -%}
-      <div class="support-center__contact">
-        <p class="support-center__contact-text">{{ section.settings.contact_text }}</p>
-        <a href="{{ section.settings.contact_link }}" class="support-center__contact-btn">
-          {{ section.settings.contact_button_text }}
-        </a>
+  {%- comment -%} Dark Header {%- endcomment -%}
+  <div class="help-center__header">
+    {%- if section.settings.header_bg_image != blank -%}
+      <div class="help-center__header-bg">
+        {{ section.settings.header_bg_image | image_url: width: 1920 | image_tag: class: 'help-center__header-img' }}
       </div>
     {%- endif -%}
+    <div class="help-center__header-overlay"></div>
+    <div class="help-center__header-content">
+      <h1 class="help-center__title">{{ section.settings.heading }}</h1>
+      <div class="help-center__actions">
+        {%- if section.settings.track_button_text != blank -%}
+          <a href="{{ section.settings.track_button_link }}" class="help-center__btn">
+            {{ section.settings.track_button_text }}
+          </a>
+        {%- endif -%}
+        {%- if section.settings.return_button_text != blank -%}
+          <a href="{{ section.settings.return_button_link }}" class="help-center__btn">
+            {{ section.settings.return_button_text }}
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} Main Content Card {%- endcomment -%}
+  <div class="help-center__body">
+    <div class="help-center__card">
+      {%- comment -%} Tabs {%- endcomment -%}
+      {%- assign tabs = section.blocks | where: "type", "tab" -%}
+      {%- if tabs.size > 0 -%}
+        <div class="help-center__tabs" role="tablist">
+          {%- for block in tabs -%}
+            <button
+              class="help-center__tab{% if forloop.first %} help-center__tab--active{% endif %}"
+              role="tab"
+              aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+              aria-controls="tab-panel-{{ block.id }}"
+              data-tab-index="{{ forloop.index0 }}"
+              {{ block.shopify_attributes }}
+            >
+              {{ block.settings.tab_title }}
+            </button>
+          {%- endfor -%}
+        </div>
+
+        {%- comment -%} Tab Panels {%- endcomment -%}
+        <div class="help-center__panels">
+          {%- for block in tabs -%}
+            <div
+              class="help-center__panel{% if forloop.first %} help-center__panel--active{% endif %}"
+              role="tabpanel"
+              id="tab-panel-{{ block.id }}"
+              data-panel-index="{{ forloop.index0 }}"
+            >
+              {%- comment -%} Desktop FAQ Layout {%- endcomment -%}
+              <div class="help-center__faq help-center__faq--desktop">
+                {%- if block.settings.question_1 != blank -%}
+                  <div class="help-center__faq-item">
+                    <h3 class="help-center__question">{{ block.settings.question_1 }}</h3>
+                    <p class="help-center__answer">{{ block.settings.answer_1 }}</p>
+                  </div>
+                {%- endif -%}
+                {%- if block.settings.question_2 != blank -%}
+                  <div class="help-center__faq-item">
+                    <h3 class="help-center__question">{{ block.settings.question_2 }}</h3>
+                    <p class="help-center__answer">{{ block.settings.answer_2 }}</p>
+                  </div>
+                {%- endif -%}
+                {%- if block.settings.question_3 != blank -%}
+                  <div class="help-center__faq-item">
+                    <h3 class="help-center__question">{{ block.settings.question_3 }}</h3>
+                    <p class="help-center__answer">{{ block.settings.answer_3 }}</p>
+                  </div>
+                {%- endif -%}
+                {%- if block.settings.question_4 != blank -%}
+                  <div class="help-center__faq-item">
+                    <h3 class="help-center__question">{{ block.settings.question_4 }}</h3>
+                    <p class="help-center__answer">{{ block.settings.answer_4 }}</p>
+                  </div>
+                {%- endif -%}
+                {%- if block.settings.question_5 != blank -%}
+                  <div class="help-center__faq-item">
+                    <h3 class="help-center__question">{{ block.settings.question_5 }}</h3>
+                    <p class="help-center__answer">{{ block.settings.answer_5 }}</p>
+                  </div>
+                {%- endif -%}
+              </div>
+
+              {%- comment -%} Mobile FAQ Layout {%- endcomment -%}
+              <div class="help-center__faq help-center__faq--mobile">
+                {%- if block.settings.question_1 != blank -%}
+                  <div class="help-center__faq-row">
+                    <span class="help-center__faq-label">{{ block.settings.mobile_label_1 | default: block.settings.question_1 }}</span>
+                    <span class="help-center__faq-value">{{ block.settings.mobile_value_1 | default: block.settings.answer_1 | truncate: 50 }}</span>
+                  </div>
+                {%- endif -%}
+                {%- if block.settings.question_2 != blank -%}
+                  <div class="help-center__faq-row">
+                    <span class="help-center__faq-label">{{ block.settings.mobile_label_2 | default: block.settings.question_2 }}</span>
+                    <span class="help-center__faq-value">{{ block.settings.mobile_value_2 | default: block.settings.answer_2 | truncate: 50 }}</span>
+                  </div>
+                {%- endif -%}
+                {%- if block.settings.question_3 != blank -%}
+                  <div class="help-center__faq-row">
+                    <span class="help-center__faq-label">{{ block.settings.mobile_label_3 | default: block.settings.question_3 }}</span>
+                    <span class="help-center__faq-value">{{ block.settings.mobile_value_3 | default: block.settings.answer_3 | truncate: 50 }}</span>
+                  </div>
+                {%- endif -%}
+                {%- if block.settings.question_4 != blank -%}
+                  <div class="help-center__faq-row">
+                    <span class="help-center__faq-label">{{ block.settings.mobile_label_4 | default: block.settings.question_4 }}</span>
+                    <span class="help-center__faq-value">{{ block.settings.mobile_value_4 | default: block.settings.answer_4 | truncate: 50 }}</span>
+                  </div>
+                {%- endif -%}
+                {%- if block.settings.question_5 != blank -%}
+                  <div class="help-center__faq-row">
+                    <span class="help-center__faq-label">{{ block.settings.mobile_label_5 | default: block.settings.question_5 }}</span>
+                    <span class="help-center__faq-value">{{ block.settings.mobile_value_5 | default: block.settings.answer_5 | truncate: 50 }}</span>
+                  </div>
+                {%- endif -%}
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
   </div>
 </div>
 
-{% stylesheet %}
-  .support-center {
-    min-height: 100vh;
-    background-color: var(--sc-bg, #f5f5f5);
-    padding: 3rem 1.5rem 4rem;
-  }
+{% javascript %}
+  (function() {
+    const tabs = document.querySelectorAll('.help-center__tab');
+    const panels = document.querySelectorAll('.help-center__panel');
 
-  .support-center__container {
-    max-width: 900px;
-    margin: 0 auto;
+    tabs.forEach(tab => {
+      tab.addEventListener('click', function() {
+        const index = this.getAttribute('data-tab-index');
+
+        // Update tabs
+        tabs.forEach(t => {
+          t.classList.remove('help-center__tab--active');
+          t.setAttribute('aria-selected', 'false');
+        });
+        this.classList.add('help-center__tab--active');
+        this.setAttribute('aria-selected', 'true');
+
+        // Update panels
+        panels.forEach(p => {
+          p.classList.remove('help-center__panel--active');
+        });
+        document.querySelector(`[data-panel-index="${index}"]`).classList.add('help-center__panel--active');
+      });
+    });
+  })();
+{% endjavascript %}
+
+{% stylesheet %}
+  .help-center {
+    min-height: 100vh;
+    background-color: var(--hc-page-bg, #E8E4DD);
   }
 
   /* Header */
-  .support-center__header {
-    text-align: center;
-    margin-bottom: 2rem;
+  .help-center__header {
+    position: relative;
+    background-color: var(--hc-header-bg, #1C1917);
+    padding: 2.5rem 1.5rem;
+    overflow: hidden;
   }
 
-  .support-center__title {
+  .help-center__header-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .help-center__header-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .help-center__header-overlay {
+    position: absolute;
+    inset: 0;
+    background-color: var(--hc-header-bg, #1C1917);
+    opacity: var(--hc-header-overlay-opacity, 0.85);
+    z-index: 1;
+  }
+
+  .help-center__header-content {
+    position: relative;
+    z-index: 2;
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .help-center__title {
     font-family: var(--font-heading-family), serif;
-    font-style: italic;
-    font-weight: var(--sc-heading-weight, 400);
-    font-size: var(--sc-heading-size, 40px);
-    color: var(--sc-heading-color, #1C1917);
-    margin: 0 0 0.75rem;
-  }
-
-  .support-center__title--mobile {
-    display: none;
-    font-style: normal;
-  }
-
-  .support-center__subtitle {
-    font-size: var(--sc-subtitle-size, 16px);
-    font-weight: var(--sc-subtitle-weight, 400);
-    color: var(--sc-subtitle-color, #78716C);
+    font-size: var(--hc-title-size, 32px);
+    font-weight: var(--hc-title-weight, 500);
+    color: var(--hc-title-color, #ffffff);
     margin: 0;
   }
 
-  /* Search */
-  .support-center__search {
-    margin-bottom: 2.5rem;
-  }
-
-  .support-center__search-form {
-    position: relative;
-    max-width: 600px;
-    margin: 0 auto;
-  }
-
-  .support-center__search-icon {
-    position: absolute;
-    left: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #9CA3AF;
-    pointer-events: none;
-  }
-
-  .support-center__search-input {
-    width: 100%;
-    padding: 0.75rem 1rem 0.75rem 2.75rem;
-    font-size: 0.9375rem;
-    font-family: inherit;
-    color: #1C1917;
-    background: #fafafa;
-    border: 1px solid #E5E5E5;
-    border-radius: 0;
-    outline: none;
-    transition: border-color 0.2s ease, background-color 0.2s ease;
-  }
-
-  .support-center__search-input::placeholder {
-    color: #9CA3AF;
-  }
-
-  .support-center__search-input:focus {
-    border-color: #1C1917;
-    background: #ffffff;
-  }
-
-  /* Cards - Desktop */
-  .support-center__cards {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
-  }
-
-  .support-center__card {
-    background: var(--sc-card-bg, #ffffff);
-    border-radius: var(--sc-card-radius, 12px);
-    padding: 1.5rem;
-    text-decoration: none;
-    color: inherit;
-    transition: box-shadow 0.2s ease, transform 0.2s ease;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  }
-
-  .support-center__card:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    transform: translateY(-2px);
-  }
-
-  .support-center__card-icon {
-    width: 48px;
-    height: 48px;
-    background: var(--sc-icon-bg, #f5f5f5);
-    border-radius: 12px;
+  .help-center__actions {
     display: flex;
+    gap: 0.75rem;
+  }
+
+  .help-center__btn {
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 1.25rem;
-    color: var(--sc-icon-color, #1C1917);
+    padding: 0.625rem 1.25rem;
+    font-family: var(--font-primary-family), sans-serif;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--hc-btn-text, #ffffff);
+    background-color: var(--hc-btn-bg, #1C1917);
+    border: 1px solid var(--hc-btn-border, #ffffff);
+    transition: all 0.2s ease;
   }
 
-  .support-center__card-title {
-    font-family: var(--font-heading-family), serif;
-    font-size: var(--sc-card-title-size, 18px);
-    font-weight: var(--sc-card-title-weight, 500);
-    color: var(--sc-card-title-color, #1C1917);
+  .help-center__btn:hover {
+    background-color: var(--hc-btn-text, #ffffff);
+    color: var(--hc-btn-bg, #1C1917);
+  }
+
+  /* Body */
+  .help-center__body {
+    padding: 0 1.5rem 3rem;
+    max-width: 932px;
+    margin: 0 auto;
+    margin-top: -1px;
+  }
+
+  .help-center__card {
+    background: var(--hc-card-bg, #ffffff);
+    border-radius: var(--hc-card-radius, 12px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+  }
+
+  /* Tabs */
+  .help-center__tabs {
+    display: flex;
+    border-bottom: 1px solid #E5E5E5;
+  }
+
+  .help-center__tab {
+    flex: 1;
+    padding: 1.25rem 1rem;
+    font-family: var(--font-primary-family), sans-serif;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--hc-tab-color, #78716C);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .help-center__tab:hover {
+    color: var(--hc-tab-active-color, #D97706);
+  }
+
+  .help-center__tab--active {
+    color: var(--hc-tab-active-color, #D97706);
+    border-bottom-color: var(--hc-tab-active-color, #D97706);
+  }
+
+  /* Panels */
+  .help-center__panels {
+    padding: 2rem;
+  }
+
+  .help-center__panel {
+    display: none;
+  }
+
+  .help-center__panel--active {
+    display: block;
+  }
+
+  /* FAQ - Desktop */
+  .help-center__faq--desktop {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+  }
+
+  .help-center__faq--mobile {
+    display: none;
+  }
+
+  .help-center__faq-item {
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #F0F0F0;
+  }
+
+  .help-center__faq-item:last-child {
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+
+  .help-center__question {
+    font-family: var(--font-primary-family), sans-serif;
+    font-size: var(--hc-question-size, 15px);
+    font-weight: var(--hc-question-weight, 600);
+    color: var(--hc-question-color, #1C1917);
     margin: 0 0 0.5rem;
   }
 
-  .support-center__card-description {
-    font-size: var(--sc-card-desc-size, 14px);
-    color: var(--sc-card-desc-color, #78716C);
+  .help-center__answer {
+    font-family: var(--font-primary-family), sans-serif;
+    font-size: var(--hc-answer-size, 14px);
+    line-height: 1.6;
+    color: var(--hc-answer-color, #57534E);
     margin: 0;
-    line-height: 1.5;
   }
 
-  /* List - Mobile (hidden on desktop) */
-  .support-center__list {
-    display: none;
+  /* FAQ - Mobile rows */
+  .help-center__faq-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid #F0F0F0;
   }
 
-  /* Contact */
-  .support-center__contact {
-    text-align: center;
-    margin-top: 3rem;
-    padding-top: 2rem;
-    border-top: 1px solid #E5E5E5;
+  .help-center__faq-row:last-child {
+    border-bottom: none;
   }
 
-  .support-center__contact-text {
-    font-size: 0.875rem;
-    color: #78716C;
-    margin: 0 0 0.75rem;
+  .help-center__faq-label {
+    font-family: var(--font-primary-family), sans-serif;
+    font-size: var(--hc-question-size-mobile, 14px);
+    font-weight: var(--hc-question-weight, 600);
+    color: var(--hc-question-color, #1C1917);
   }
 
-  .support-center__contact-btn {
-    display: inline-block;
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: var(--sc-contact-color, #D97706);
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    transition: color 0.2s ease;
-  }
-
-  .support-center__contact-btn:hover {
-    opacity: 0.8;
+  .help-center__faq-value {
+    font-family: var(--font-primary-family), sans-serif;
+    font-size: var(--hc-answer-size-mobile, 13px);
+    color: var(--hc-answer-color, #57534E);
   }
 
   /* Mobile Styles */
   @media screen and (max-width: 768px) {
-    .support-center {
-      padding: 2rem 1rem 3rem;
-      background-color: var(--sc-bg-mobile, #ffffff);
+    .help-center__header {
+      padding: 2rem 1rem;
     }
 
-    .support-center__title--desktop {
-      display: none;
-    }
-
-    .support-center__title--mobile {
-      display: block;
-      font-size: var(--sc-heading-size-mobile, 28px);
-      font-weight: var(--sc-heading-weight-mobile, 400);
-      color: var(--sc-heading-color-mobile, #1C1917);
-      text-align: center;
-    }
-
-    .support-center__subtitle {
-      font-size: var(--sc-subtitle-size-mobile, 14px);
-      font-weight: var(--sc-subtitle-weight-mobile, 400);
-      color: var(--sc-subtitle-color-mobile, #78716C);
-    }
-
-    .support-center__header {
-      text-align: center;
-      margin-bottom: 1.5rem;
-    }
-
-    .support-center__search {
-      margin-bottom: 1.5rem;
-    }
-
-    .support-center__search-input {
-      padding: 0.75rem 1rem 0.75rem 2.75rem;
-      font-size: 0.9375rem;
-      border-radius: 0;
-      background: #fafafa;
-    }
-
-    .support-center__search-icon {
-      left: 1rem;
-      width: 18px;
-      height: 18px;
-    }
-
-    /* Hide cards on mobile */
-    .support-center__cards {
-      display: none;
-    }
-
-    /* Show list on mobile */
-    .support-center__list {
-      display: flex;
+    .help-center__header-content {
       flex-direction: column;
-      gap: 0;
-      background: var(--sc-card-bg, #ffffff);
-      border: 1px solid #E5E5E5;
-      border-radius: var(--sc-card-radius, 12px);
-      overflow: hidden;
+      align-items: flex-start;
+      gap: 1.25rem;
     }
 
-    .support-center__list-item {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      padding: 1rem 1.25rem;
-      text-decoration: none;
-      color: inherit;
-      border-bottom: 1px solid #F0F0F0;
-      transition: background-color 0.15s ease;
+    .help-center__title {
+      font-size: var(--hc-title-size-mobile, 28px);
     }
 
-    .support-center__list-item:last-child {
-      border-bottom: none;
+    .help-center__actions {
+      width: 100%;
     }
 
-    .support-center__list-item:active {
-      background-color: #F9FAFB;
-    }
-
-    .support-center__list-icon {
-      width: 40px;
-      height: 40px;
-      background: var(--sc-icon-bg, #f5f5f5);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      color: var(--sc-icon-color, #1C1917);
-    }
-
-    .support-center__list-content {
+    .help-center__btn {
       flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 0.125rem;
+      text-align: center;
     }
 
-    .support-center__list-title {
-      font-weight: var(--sc-card-title-weight-mobile, 500);
-      font-size: var(--sc-card-title-size-mobile, 15px);
-      color: var(--sc-card-title-color-mobile, #1C1917);
+    .help-center__body {
+      padding: 0 1rem 2rem;
     }
 
-    .support-center__list-description {
-      font-size: var(--sc-card-desc-size-mobile, 13px);
-      color: var(--sc-card-desc-color-mobile, #9CA3AF);
+    .help-center__card {
+      border-radius: 0;
+      margin: 0 -1rem;
+      box-shadow: none;
     }
 
-    .support-center__list-chevron {
-      color: #D1D5DB;
-      flex-shrink: 0;
+    .help-center__tabs {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
-    .support-center__contact {
-      margin-top: 2rem;
-      padding-top: 1.5rem;
-      border-top: none;
+    .help-center__tab {
+      padding: 1rem 0.75rem;
+      font-size: 0.75rem;
+      white-space: nowrap;
     }
-  }
 
-  /* Tablet adjustments */
-  @media screen and (min-width: 769px) and (max-width: 1024px) {
-    .support-center__cards {
-      grid-template-columns: repeat(2, 1fr);
+    .help-center__panels {
+      padding: 1rem;
+    }
+
+    .help-center__faq--desktop {
+      display: none;
+    }
+
+    .help-center__faq--mobile {
+      display: block;
     }
   }
 {% endstylesheet %}
 
 {% schema %}
 {
-  "name": "Support center",
+  "name": "Help center",
   "settings": [
     {
       "type": "header",
-      "content": "Page background"
+      "content": "Page"
     },
     {
       "type": "color",
       "id": "page_bg_color",
-      "label": "Background color (desktop)",
-      "default": "#f5f5f5"
-    },
-    {
-      "type": "color",
-      "id": "page_bg_color_mobile",
-      "label": "Background color (mobile)",
-      "default": "#ffffff"
+      "label": "Page background",
+      "default": "#E8E4DD"
     },
     {
       "type": "header",
-      "content": "Page heading"
+      "content": "Header"
+    },
+    {
+      "type": "image_picker",
+      "id": "header_bg_image",
+      "label": "Background image"
+    },
+    {
+      "type": "color",
+      "id": "header_bg_color",
+      "label": "Header background / overlay color",
+      "default": "#1C1917"
+    },
+    {
+      "type": "range",
+      "id": "header_overlay_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Overlay opacity",
+      "default": 85,
+      "info": "Controls how much the background image shows through"
     },
     {
       "type": "text",
       "id": "heading",
-      "label": "Heading (desktop)",
-      "default": "How can we help?"
-    },
-    {
-      "type": "text",
-      "id": "heading_mobile",
-      "label": "Heading (mobile)",
-      "default": "Support Center"
+      "label": "Title",
+      "default": "Help Center"
     },
     {
       "type": "range",
-      "id": "heading_size",
+      "id": "title_size",
       "min": 24,
-      "max": 60,
+      "max": 48,
       "step": 2,
       "unit": "px",
-      "label": "Heading size (desktop)",
-      "default": 40
+      "label": "Title size (desktop)",
+      "default": 32
     },
     {
       "type": "range",
-      "id": "heading_size_mobile",
-      "min": 18,
-      "max": 40,
+      "id": "title_size_mobile",
+      "min": 20,
+      "max": 36,
       "step": 2,
       "unit": "px",
-      "label": "Heading size (mobile)",
+      "label": "Title size (mobile)",
       "default": 28
     },
     {
       "type": "select",
-      "id": "heading_weight",
-      "label": "Heading weight (desktop)",
+      "id": "title_weight",
+      "label": "Title weight",
       "options": [
-        { "value": "300", "label": "Light" },
         { "value": "400", "label": "Regular" },
         { "value": "500", "label": "Medium" },
         { "value": "600", "label": "Semibold" },
         { "value": "700", "label": "Bold" }
       ],
-      "default": "400"
-    },
-    {
-      "type": "select",
-      "id": "heading_weight_mobile",
-      "label": "Heading weight (mobile)",
-      "options": [
-        { "value": "300", "label": "Light" },
-        { "value": "400", "label": "Regular" },
-        { "value": "500", "label": "Medium" },
-        { "value": "600", "label": "Semibold" },
-        { "value": "700", "label": "Bold" }
-      ],
-      "default": "400"
+      "default": "500"
     },
     {
       "type": "color",
-      "id": "heading_color",
-      "label": "Heading color (desktop)",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Header buttons"
+    },
+    {
+      "type": "text",
+      "id": "track_button_text",
+      "label": "Track button text",
+      "default": "TRACK"
+    },
+    {
+      "type": "url",
+      "id": "track_button_link",
+      "label": "Track button link"
+    },
+    {
+      "type": "text",
+      "id": "return_button_text",
+      "label": "Return button text",
+      "default": "RETURN"
+    },
+    {
+      "type": "url",
+      "id": "return_button_link",
+      "label": "Return button link"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Button background",
       "default": "#1C1917"
     },
     {
       "type": "color",
-      "id": "heading_color_mobile",
-      "label": "Heading color (mobile)",
-      "default": "#1C1917"
-    },
-    {
-      "type": "header",
-      "content": "Subtitle"
-    },
-    {
-      "type": "text",
-      "id": "subtitle",
-      "label": "Subtitle",
-      "default": "Advice, answers, and support for your fixtures."
-    },
-    {
-      "type": "range",
-      "id": "subtitle_size",
-      "min": 12,
-      "max": 24,
-      "step": 1,
-      "unit": "px",
-      "label": "Subtitle size (desktop)",
-      "default": 16
-    },
-    {
-      "type": "range",
-      "id": "subtitle_size_mobile",
-      "min": 12,
-      "max": 24,
-      "step": 1,
-      "unit": "px",
-      "label": "Subtitle size (mobile)",
-      "default": 14
-    },
-    {
-      "type": "select",
-      "id": "subtitle_weight",
-      "label": "Subtitle weight (desktop)",
-      "options": [
-        { "value": "300", "label": "Light" },
-        { "value": "400", "label": "Regular" },
-        { "value": "500", "label": "Medium" },
-        { "value": "600", "label": "Semibold" },
-        { "value": "700", "label": "Bold" }
-      ],
-      "default": "400"
-    },
-    {
-      "type": "select",
-      "id": "subtitle_weight_mobile",
-      "label": "Subtitle weight (mobile)",
-      "options": [
-        { "value": "300", "label": "Light" },
-        { "value": "400", "label": "Regular" },
-        { "value": "500", "label": "Medium" },
-        { "value": "600", "label": "Semibold" },
-        { "value": "700", "label": "Bold" }
-      ],
-      "default": "400"
+      "id": "button_text_color",
+      "label": "Button text color",
+      "default": "#ffffff"
     },
     {
       "type": "color",
-      "id": "subtitle_color",
-      "label": "Subtitle color (desktop)",
-      "default": "#78716C"
-    },
-    {
-      "type": "color",
-      "id": "subtitle_color_mobile",
-      "label": "Subtitle color (mobile)",
-      "default": "#78716C"
+      "id": "button_border_color",
+      "label": "Button border color",
+      "default": "#ffffff"
     },
     {
       "type": "header",
-      "content": "Search"
-    },
-    {
-      "type": "text",
-      "id": "search_placeholder",
-      "label": "Search placeholder",
-      "default": "Search for 'installation', 'returns', 'shipping'..."
-    },
-    {
-      "type": "header",
-      "content": "Category cards"
+      "content": "Content card"
     },
     {
       "type": "color",
@@ -639,229 +592,271 @@
       "default": 12
     },
     {
-      "type": "color",
-      "id": "icon_bg_color",
-      "label": "Icon background",
-      "default": "#f5f5f5"
+      "type": "header",
+      "content": "Tabs"
     },
     {
       "type": "color",
-      "id": "icon_color",
-      "label": "Icon color",
-      "default": "#1C1917"
+      "id": "tab_color",
+      "label": "Tab text color",
+      "default": "#78716C"
+    },
+    {
+      "type": "color",
+      "id": "tab_active_color",
+      "label": "Active tab color",
+      "default": "#D97706"
     },
     {
       "type": "header",
-      "content": "Card title (desktop)"
+      "content": "FAQ questions"
     },
     {
       "type": "range",
-      "id": "card_title_size",
-      "min": 14,
-      "max": 24,
-      "step": 1,
-      "unit": "px",
-      "label": "Size",
-      "default": 18
-    },
-    {
-      "type": "select",
-      "id": "card_title_weight",
-      "label": "Weight",
-      "options": [
-        { "value": "400", "label": "Regular" },
-        { "value": "500", "label": "Medium" },
-        { "value": "600", "label": "Semibold" },
-        { "value": "700", "label": "Bold" }
-      ],
-      "default": "500"
-    },
-    {
-      "type": "color",
-      "id": "card_title_color",
-      "label": "Color",
-      "default": "#1C1917"
-    },
-    {
-      "type": "header",
-      "content": "Card title (mobile)"
-    },
-    {
-      "type": "range",
-      "id": "card_title_size_mobile",
-      "min": 12,
+      "id": "question_size",
+      "min": 13,
       "max": 20,
       "step": 1,
       "unit": "px",
-      "label": "Size",
+      "label": "Question size (desktop)",
       "default": 15
     },
     {
-      "type": "select",
-      "id": "card_title_weight_mobile",
-      "label": "Weight",
-      "options": [
-        { "value": "400", "label": "Regular" },
-        { "value": "500", "label": "Medium" },
-        { "value": "600", "label": "Semibold" },
-        { "value": "700", "label": "Bold" }
-      ],
-      "default": "500"
-    },
-    {
-      "type": "color",
-      "id": "card_title_color_mobile",
-      "label": "Color",
-      "default": "#1C1917"
-    },
-    {
-      "type": "header",
-      "content": "Card description (desktop)"
-    },
-    {
       "type": "range",
-      "id": "card_desc_size",
+      "id": "question_size_mobile",
       "min": 12,
       "max": 18,
       "step": 1,
       "unit": "px",
-      "label": "Size",
+      "label": "Question size (mobile)",
       "default": 14
     },
     {
+      "type": "select",
+      "id": "question_weight",
+      "label": "Question weight",
+      "options": [
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "600"
+    },
+    {
       "type": "color",
-      "id": "card_desc_color",
-      "label": "Color",
-      "default": "#78716C"
+      "id": "question_color",
+      "label": "Question color",
+      "default": "#1C1917"
     },
     {
       "type": "header",
-      "content": "Card description (mobile)"
+      "content": "FAQ answers"
     },
     {
       "type": "range",
-      "id": "card_desc_size_mobile",
-      "min": 10,
+      "id": "answer_size",
+      "min": 12,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "label": "Answer size (desktop)",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "answer_size_mobile",
+      "min": 11,
       "max": 16,
       "step": 1,
       "unit": "px",
-      "label": "Size",
+      "label": "Answer size (mobile)",
       "default": 13
     },
     {
       "type": "color",
-      "id": "card_desc_color_mobile",
-      "label": "Color",
-      "default": "#9CA3AF"
-    },
-    {
-      "type": "header",
-      "content": "Contact support"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_contact",
-      "label": "Show contact section",
-      "default": true
-    },
-    {
-      "type": "text",
-      "id": "contact_text",
-      "label": "Contact text",
-      "default": "Can't find what you need?"
-    },
-    {
-      "type": "text",
-      "id": "contact_button_text",
-      "label": "Button text",
-      "default": "CONTACT SUPPORT"
-    },
-    {
-      "type": "url",
-      "id": "contact_link",
-      "label": "Contact link"
-    },
-    {
-      "type": "color",
-      "id": "contact_link_color",
-      "label": "Contact link color",
-      "default": "#D97706"
+      "id": "answer_color",
+      "label": "Answer color",
+      "default": "#57534E"
     }
   ],
   "blocks": [
     {
-      "type": "category",
-      "name": "Support category",
+      "type": "tab",
+      "name": "FAQ Tab",
       "settings": [
         {
-          "type": "select",
-          "id": "icon",
-          "label": "Icon",
-          "options": [
-            { "value": "truck", "label": "Truck (shipping)" },
-            { "value": "box", "label": "Box (returns)" },
-            { "value": "wrench", "label": "Wrench (assembly)" },
-            { "value": "return", "label": "Return arrow" },
-            { "value": "document", "label": "Document (guides)" },
-            { "value": "help", "label": "Help circle" }
-          ],
-          "default": "truck"
+          "type": "text",
+          "id": "tab_title",
+          "label": "Tab title",
+          "default": "Shipping"
+        },
+        {
+          "type": "header",
+          "content": "Question 1"
         },
         {
           "type": "text",
-          "id": "title",
-          "label": "Title",
-          "default": "Track Order"
+          "id": "question_1",
+          "label": "Question",
+          "default": "How long does shipping take?"
+        },
+        {
+          "type": "textarea",
+          "id": "answer_1",
+          "label": "Answer",
+          "default": "Standard shipping is 5-7 business days. Express shipping (2-day) is available at checkout."
         },
         {
           "type": "text",
-          "id": "description",
-          "label": "Description (desktop)",
-          "default": "Check the status of your shipment."
+          "id": "mobile_label_1",
+          "label": "Mobile label (optional)",
+          "info": "Shorter label for mobile view"
         },
         {
           "type": "text",
-          "id": "description_mobile",
-          "label": "Description (mobile)",
-          "info": "Leave blank to use desktop description"
+          "id": "mobile_value_1",
+          "label": "Mobile value (optional)",
+          "info": "Shorter answer for mobile view"
         },
         {
-          "type": "url",
-          "id": "link",
-          "label": "Link"
+          "type": "header",
+          "content": "Question 2"
+        },
+        {
+          "type": "text",
+          "id": "question_2",
+          "label": "Question"
+        },
+        {
+          "type": "textarea",
+          "id": "answer_2",
+          "label": "Answer"
+        },
+        {
+          "type": "text",
+          "id": "mobile_label_2",
+          "label": "Mobile label (optional)"
+        },
+        {
+          "type": "text",
+          "id": "mobile_value_2",
+          "label": "Mobile value (optional)"
+        },
+        {
+          "type": "header",
+          "content": "Question 3"
+        },
+        {
+          "type": "text",
+          "id": "question_3",
+          "label": "Question"
+        },
+        {
+          "type": "textarea",
+          "id": "answer_3",
+          "label": "Answer"
+        },
+        {
+          "type": "text",
+          "id": "mobile_label_3",
+          "label": "Mobile label (optional)"
+        },
+        {
+          "type": "text",
+          "id": "mobile_value_3",
+          "label": "Mobile value (optional)"
+        },
+        {
+          "type": "header",
+          "content": "Question 4"
+        },
+        {
+          "type": "text",
+          "id": "question_4",
+          "label": "Question"
+        },
+        {
+          "type": "textarea",
+          "id": "answer_4",
+          "label": "Answer"
+        },
+        {
+          "type": "text",
+          "id": "mobile_label_4",
+          "label": "Mobile label (optional)"
+        },
+        {
+          "type": "text",
+          "id": "mobile_value_4",
+          "label": "Mobile value (optional)"
+        },
+        {
+          "type": "header",
+          "content": "Question 5"
+        },
+        {
+          "type": "text",
+          "id": "question_5",
+          "label": "Question"
+        },
+        {
+          "type": "textarea",
+          "id": "answer_5",
+          "label": "Answer"
+        },
+        {
+          "type": "text",
+          "id": "mobile_label_5",
+          "label": "Mobile label (optional)"
+        },
+        {
+          "type": "text",
+          "id": "mobile_value_5",
+          "label": "Mobile value (optional)"
         }
       ]
     }
   ],
   "presets": [
     {
-      "name": "Support center",
+      "name": "Help center",
       "blocks": [
         {
-          "type": "category",
+          "type": "tab",
           "settings": {
-            "icon": "truck",
-            "title": "Track Order",
-            "description": "Check the status of your shipment.",
-            "description_mobile": "Expected delivery dates"
+            "tab_title": "Shipping",
+            "question_1": "How long does shipping take?",
+            "answer_1": "Standard shipping is 5-7 business days. Express shipping (2-day) is available at checkout.",
+            "mobile_label_1": "Shipping Time",
+            "mobile_value_1": "5-7 Business Days.",
+            "question_2": "Who is your carrier?",
+            "answer_2": "We partner with UPS and FedEx for all domestic shipments. DHL for international.",
+            "mobile_label_2": "Carrier",
+            "mobile_value_2": "UPS, FedEx, DHL",
+            "question_3": "Do you ship to P.O. Boxes?",
+            "answer_3": "Unfortunately, we require a physical address for delivery due to the size of the boxes.",
+            "mobile_label_3": "P.O. Boxes",
+            "mobile_value_3": "Physical addresses only."
           }
         },
         {
-          "type": "category",
+          "type": "tab",
           "settings": {
-            "icon": "return",
-            "title": "Returns",
-            "description": "Start a return or exchange.",
-            "description_mobile": "30-day window"
+            "tab_title": "Product",
+            "question_1": "What materials are used?",
+            "answer_1": "Our fixtures are made with premium brass, steel, and hand-blown glass components.",
+            "mobile_label_1": "Materials",
+            "mobile_value_1": "Brass, steel, glass"
           }
         },
         {
-          "type": "category",
+          "type": "tab",
           "settings": {
-            "icon": "wrench",
-            "title": "Assembly",
-            "description": "Guides for installing your light.",
-            "description_mobile": "Installation guides"
+            "tab_title": "Warranty",
+            "question_1": "What does the warranty cover?",
+            "answer_1": "Our 5-year warranty covers manufacturing defects and electrical components.",
+            "mobile_label_1": "Coverage",
+            "mobile_value_1": "5-year limited warranty"
           }
         }
       ]

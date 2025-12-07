@@ -1,91 +1,79 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
     "main": {
       "type": "support-center",
       "blocks": {
-        "track_order": {
-          "type": "category",
+        "shipping": {
+          "type": "tab",
           "settings": {
-            "icon": "truck",
-            "title": "Track Order",
-            "description": "Check the status of your shipment.",
-            "description_mobile": "Expected delivery dates",
-            "link": ""
+            "tab_title": "Shipping",
+            "question_1": "How long does shipping take?",
+            "answer_1": "Standard shipping is 5-7 business days. Express shipping (2-day) is available at checkout.",
+            "mobile_label_1": "Shipping Time",
+            "mobile_value_1": "5-7 Business Days.",
+            "question_2": "Who is your carrier?",
+            "answer_2": "We partner with UPS and FedEx for all domestic shipments. DHL for international.",
+            "mobile_label_2": "Carrier",
+            "mobile_value_2": "UPS, FedEx, DHL",
+            "question_3": "Do you ship to P.O. Boxes?",
+            "answer_3": "Unfortunately, we require a physical address for delivery due to the size of the boxes.",
+            "mobile_label_3": "P.O. Boxes",
+            "mobile_value_3": "Physical addresses only."
           }
         },
-        "returns": {
-          "type": "category",
+        "product": {
+          "type": "tab",
           "settings": {
-            "icon": "return",
-            "title": "Start Return",
-            "description": "Start a return or exchange.",
-            "description_mobile": "30-day window",
-            "link": ""
+            "tab_title": "Product",
+            "question_1": "What materials are used?",
+            "answer_1": "Our fixtures are made with premium brass, steel, and hand-blown glass components.",
+            "mobile_label_1": "Materials",
+            "mobile_value_1": "Brass, steel, glass"
           }
         },
-        "assembly": {
-          "type": "category",
+        "warranty": {
+          "type": "tab",
           "settings": {
-            "icon": "wrench",
-            "title": "Assembly",
-            "description": "Guides for installing your light.",
-            "description_mobile": "Installation guides",
-            "link": ""
-          }
-        },
-        "care_guides": {
-          "type": "category",
-          "settings": {
-            "icon": "document",
-            "title": "Care Guides",
-            "description": "Maintenance and cleaning tips.",
-            "description_mobile": "Maintenance tips",
-            "link": ""
+            "tab_title": "Warranty",
+            "question_1": "What does the warranty cover?",
+            "answer_1": "Our 5-year warranty covers manufacturing defects and electrical components.",
+            "mobile_label_1": "Coverage",
+            "mobile_value_1": "5-year limited warranty"
           }
         }
       },
       "block_order": [
-        "track_order",
-        "returns",
-        "assembly",
-        "care_guides"
+        "shipping",
+        "product",
+        "warranty"
       ],
       "settings": {
-        "page_bg_color": "#f7f5f0",
-        "page_bg_color_mobile": "#f7f5f0",
-        "heading": "How can we help?",
-        "heading_mobile": "Support Center",
-        "heading_size": 36,
-        "heading_size_mobile": 36,
-        "heading_weight": "400",
-        "heading_color": "#1c1917",
-        "subtitle": "Advice, answers, and support for your fixtures.",
-        "subtitle_size": 16,
-        "subtitle_color": "#78716c",
-        "search_placeholder": "Search for 'installation', 'returns', 'shipping'...",
+        "page_bg_color": "#E8E4DD",
+        "header_bg_color": "#1C1917",
+        "header_overlay_opacity": 85,
+        "heading": "Help Center",
+        "title_size": 32,
+        "title_size_mobile": 28,
+        "title_weight": "500",
+        "title_color": "#ffffff",
+        "track_button_text": "TRACK",
+        "track_button_link": "shopify://pages/tracking",
+        "return_button_text": "RETURN",
+        "return_button_link": "shopify://pages/returns",
+        "button_bg_color": "#1C1917",
+        "button_text_color": "#ffffff",
+        "button_border_color": "#ffffff",
         "card_bg_color": "#ffffff",
-        "card_border_radius": 6,
-        "icon_bg_color": "#f5f5f5",
-        "icon_color": "#1c1917",
-        "card_title_size": 19,
-        "card_title_weight": "500",
-        "card_title_color": "#1c1917",
-        "card_desc_size": 12,
-        "card_desc_color": "#78716c",
-        "show_contact": true,
-        "contact_text": "Can't find what you need?",
-        "contact_button_text": "CONTACT SUPPORT",
-        "contact_link": "shopify://pages/contact",
-        "contact_link_color": "#d97706"
+        "card_border_radius": 12,
+        "tab_color": "#78716C",
+        "tab_active_color": "#D97706",
+        "question_size": 15,
+        "question_size_mobile": 14,
+        "question_weight": "600",
+        "question_color": "#1C1917",
+        "answer_size": 14,
+        "answer_size_mobile": 13,
+        "answer_color": "#57534E"
       }
     }
   },
