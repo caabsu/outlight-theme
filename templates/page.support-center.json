@@ -37,8 +37,8 @@
           "settings": {
             "icon": "document",
             "title": "Our Policy",
-            "description": "Guides for installing your light.",
-            "description_mobile": "Returns & Delivery",
+            "description": "Returns & Exchanges",
+            "description_mobile": "Returns & Exchanges",
             "link": ""
           }
         },
@@ -47,7 +47,7 @@
           "settings": {
             "icon": "help",
             "title": "Contact Us",
-            "description": "Maintenance and cleaning tips.",
+            "description": "Answer within 24 hours",
             "description_mobile": "Answer within 24 hours",
             "link": ""
           }
