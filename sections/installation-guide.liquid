@@ -38,18 +38,28 @@
 
     <!-- Mobile Layout -->
     <div class="installation-guide__card installation-guide__card--mobile">
-      <div class="installation-guide__label installation-guide__label--mobile">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
-        </svg>
-        {{ section.settings.mobile_label }}
-      </div>
-      <div class="installation-guide__content">
-        {%- if product.metafields.custom.installation_guide != blank -%}
-          {{ product.metafields.custom.installation_guide | metafield_tag }}
-        {%- else -%}
-          {{ section.settings.fallback_text }}
-        {%- endif -%}
+      <button type="button" class="installation-guide__toggle" data-installation-toggle aria-expanded="false">
+        <div class="installation-guide__label installation-guide__label--mobile">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+          </svg>
+          {{ section.settings.mobile_label }}
+        </div>
+        <span class="installation-guide__toggle-icon">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <line class="installation-guide__toggle-h" x1="4" y1="10" x2="16" y2="10"/>
+            <line class="installation-guide__toggle-v" x1="10" y1="4" x2="10" y2="16"/>
+          </svg>
+        </span>
+      </button>
+      <div class="installation-guide__collapse" data-installation-content>
+        <div class="installation-guide__content">
+          {%- if product.metafields.custom.installation_guide != blank -%}
+            {{ product.metafields.custom.installation_guide | metafield_tag }}
+          {%- else -%}
+            {{ section.settings.fallback_text }}
+          {%- endif -%}
+        </div>
       </div>
     </div>
   </div>
@@ -107,7 +117,6 @@
     gap: 8px;
     background: var(--mobile-label-bg);
     color: var(--mobile-label-color);
-    margin-bottom: 16px;
     padding: 8px 16px;
   }
 
@@ -117,6 +126,14 @@
     color: var(--desktop-text-color);
     line-height: var(--desktop-line-height);
     text-align: center;
+  }
+
+  .installation-guide__toggle {
+    display: none;
+  }
+
+  .installation-guide__collapse {
+    display: block;
   }
 
   @media (max-width: 768px) {
@@ -137,15 +154,75 @@
       padding: var(--card-padding-mobile);
     }
 
+    .installation-guide__toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .installation-guide__toggle-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      color: var(--mobile-label-color);
+      flex-shrink: 0;
+    }
+
+    .installation-guide__toggle-icon svg {
+      transition: transform 0.3s ease;
+    }
+
+    .installation-guide__toggle-v {
+      transition: opacity 0.2s ease, transform 0.3s ease;
+    }
+
+    .installation-guide__toggle[aria-expanded="true"] .installation-guide__toggle-v {
+      opacity: 0;
+      transform: rotate(90deg);
+    }
+
+    .installation-guide__collapse {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.35s ease;
+    }
+
+    .installation-guide__collapse > .installation-guide__content {
+      overflow: hidden;
+    }
+
+    .installation-guide__toggle[aria-expanded="true"] + .installation-guide__collapse {
+      grid-template-rows: 1fr;
+    }
+
     .installation-guide__card--mobile .installation-guide__content {
       font-size: var(--mobile-text-size);
       font-weight: var(--mobile-text-weight);
       color: var(--mobile-text-color);
       line-height: var(--mobile-line-height);
       text-align: left;
+      padding-top: 16px;
     }
   }
 {% endstylesheet %}
+
+{% javascript %}
+  const toggleBtn = document.querySelector('[data-installation-toggle]');
+  if (toggleBtn) {
+    toggleBtn.addEventListener('click', function() {
+      const isExpanded = this.getAttribute('aria-expanded') === 'true';
+      this.setAttribute('aria-expanded', !isExpanded);
+    });
+  }
+{% endjavascript %}
 
 {% schema %}
 {
