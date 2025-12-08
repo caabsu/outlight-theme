@@ -1408,25 +1408,23 @@
       flex-direction: row;
       max-width: var(--page-width, 1440px);
       margin: 0 auto;
-      padding: 2rem;
+      padding: 2rem var(--page-margin);
       gap: 3rem;
     }
 
     .product-media-gallery {
       flex: 1;
-      display: grid;
-      grid-template-columns: 115px 1fr;
-      grid-template-rows: 1fr;
+      display: flex;
       gap: 15px;
       background: transparent;
-      align-items: stretch;
     }
 
-    /* Desktop Thumbnails Wrapper - constrains height to match main image */
+    /* Desktop Thumbnails Wrapper - fixed width, height synced via JS */
     .product-media-thumbnails-wrapper {
       position: relative;
       overflow: hidden;
-      min-height: 0;
+      width: 115px;
+      flex-shrink: 0;
     }
 
     /* Desktop Thumbnails - absolute positioned within wrapper */
@@ -1482,7 +1480,7 @@
       overflow: hidden;
       background: #f5f5f5;
       aspect-ratio: 1 / 1;
-      width: 100%;
+      flex: 1;
     }
 
     .product-media-track {
@@ -1556,7 +1554,7 @@
 
   @media screen and (min-width: 1024px) {
     .product-container {
-      padding: 3rem 4rem;
+      padding: 3rem var(--page-margin);
       gap: 4rem;
     }
 
@@ -1577,6 +1575,20 @@
     const options = { weekday: 'long', month: 'short', day: 'numeric' };
     deliveryDateEl.textContent = deliveryDate.toLocaleDateString('en-US', options);
   }
+
+  // Sync thumbnail wrapper height with main image (desktop)
+  const mainImage = document.querySelector('.product-media-main');
+  const thumbWrapper = document.querySelector('.product-media-thumbnails-wrapper');
+
+  function syncThumbnailHeight() {
+    if (mainImage && thumbWrapper && window.innerWidth >= 768) {
+      thumbWrapper.style.height = mainImage.offsetHeight + 'px';
+    }
+  }
+
+  syncThumbnailHeight();
+  window.addEventListener('resize', syncThumbnailHeight);
+  window.addEventListener('load', syncThumbnailHeight);
 
   // Gallery navigation
   const galleryTrack = document.querySelector('[data-gallery-track]');
