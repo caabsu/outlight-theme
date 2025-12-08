@@ -356,9 +356,15 @@
                   </div>
                 {%- endif -%}
                 {%- if block.settings.spec_label_4 != blank -%}
-                  <div class="product-details__spec-card">
+                  <div class="product-details__spec-card product-details__spec-card--color-temp">
                     <span class="product-details__spec-label">{{ block.settings.spec_label_4 }}</span>
                     <span class="product-details__spec-value" data-variant-color-temp>{{ product.selected_or_first_available_variant.metafields.custom.color_temperature | default: 'N/A' }}</span>
+                    <button type="button" class="product-details__spec-info" data-open-color-temp-modal aria-label="Color temperature info">
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <circle cx="8" cy="8" r="6.5"/>
+                        <path d="M8 7v4M8 5v.5"/>
+                      </svg>
+                    </button>
                   </div>
                 {%- endif -%}
               </div>
@@ -422,6 +428,84 @@
                   {%- else -%}
                     <p class="specs-modal__empty">No specifications available.</p>
                   {%- endif -%}
+                </div>
+              </div>
+            </div>
+
+            {%- comment -%} Color Temperature Modal {%- endcomment -%}
+            <div class="color-temp-modal" data-color-temp-modal aria-hidden="true">
+              <div class="color-temp-modal__backdrop" data-close-color-temp-modal></div>
+              <div class="color-temp-modal__container">
+                <button type="button" class="color-temp-modal__close" data-close-color-temp-modal aria-label="Close">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M18 6L6 18M6 6l12 12"/>
+                  </svg>
+                </button>
+
+                <div class="color-temp-modal__content">
+                  <!-- Desktop Layout -->
+                  <div class="color-temp-modal__image">
+                    {%- if product.featured_image != blank -%}
+                      {{ product.featured_image | image_url: width: 800 | image_tag: loading: 'lazy' }}
+                    {%- endif -%}
+                  </div>
+
+                  <div class="color-temp-modal__info">
+                    <h3 class="color-temp-modal__title">{{ product.title }}</h3>
+                    <p class="color-temp-modal__description">See how the {{ product.metafields.custom.finish.value | default: 'finish' }} interacts with different bulbs. We recommend 2700K for the signature Outlight warmth.</p>
+
+                    <div class="color-temp-modal__options">
+                      <label class="color-temp-modal__option color-temp-modal__option--active" data-color-temp-option="2700K">
+                        <input type="radio" name="color-temp" value="2700K" checked>
+                        <span class="color-temp-modal__radio"></span>
+                        <span class="color-temp-modal__option-content">
+                          <span class="color-temp-modal__option-label">2700K (Included)</span>
+                          <span class="color-temp-modal__option-subtitle">Enhances stone texture</span>
+                        </span>
+                        <span class="color-temp-modal__option-dot color-temp-modal__option-dot--warm"></span>
+                      </label>
+
+                      <label class="color-temp-modal__option" data-color-temp-option="3000K">
+                        <input type="radio" name="color-temp" value="3000K">
+                        <span class="color-temp-modal__radio"></span>
+                        <span class="color-temp-modal__option-content">
+                          <span class="color-temp-modal__option-label">3000K</span>
+                          <span class="color-temp-modal__option-subtitle">Cleaner white</span>
+                        </span>
+                        <span class="color-temp-modal__option-dot color-temp-modal__option-dot--neutral"></span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Mobile Layout -->
+                <div class="color-temp-modal__mobile">
+                  <div class="color-temp-modal__mobile-image">
+                    {%- if product.featured_image != blank -%}
+                      {{ product.featured_image | image_url: width: 600 | image_tag: loading: 'lazy' }}
+                    {%- endif -%}
+                    <span class="color-temp-modal__preview-badge" data-color-temp-badge>Previewing 2700K</span>
+                  </div>
+
+                  <h4 class="color-temp-modal__mobile-title">Bulb Option</h4>
+
+                  <div class="color-temp-modal__mobile-options">
+                    <label class="color-temp-modal__mobile-option color-temp-modal__mobile-option--active" data-color-temp-mobile="2700K">
+                      <input type="radio" name="color-temp-mobile" value="2700K" checked>
+                      <span class="color-temp-modal__mobile-dot color-temp-modal__mobile-dot--warm"></span>
+                      <span class="color-temp-modal__mobile-label">2700K</span>
+                      <span class="color-temp-modal__mobile-subtitle">Warm</span>
+                    </label>
+
+                    <label class="color-temp-modal__mobile-option" data-color-temp-mobile="3000K">
+                      <input type="radio" name="color-temp-mobile" value="3000K">
+                      <span class="color-temp-modal__mobile-dot color-temp-modal__mobile-dot--neutral"></span>
+                      <span class="color-temp-modal__mobile-label">3000K</span>
+                      <span class="color-temp-modal__mobile-subtitle">Neutral</span>
+                    </label>
+                  </div>
+
+                  <div class="color-temp-modal__spectrum"></div>
                 </div>
               </div>
             </div>
@@ -1357,6 +1441,342 @@
     white-space: pre-wrap;
   }
 
+  /* Color Temperature Info Button */
+  .product-details__spec-card--color-temp {
+    position: relative;
+  }
+
+  .product-details__spec-info {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: #9CA3AF;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease;
+  }
+
+  .product-details__spec-info:hover {
+    color: #1a1a1a;
+  }
+
+  /* Color Temperature Modal */
+  .color-temp-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+
+  .color-temp-modal[aria-hidden="false"] {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .color-temp-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+  }
+
+  .color-temp-modal__container {
+    position: relative;
+    background: #fff;
+    width: 100%;
+    max-width: 900px;
+    max-height: 90vh;
+    overflow-y: auto;
+    transform: scale(0.95);
+    transition: transform 0.3s ease;
+  }
+
+  .color-temp-modal[aria-hidden="false"] .color-temp-modal__container {
+    transform: scale(1);
+  }
+
+  .color-temp-modal__close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: #fff;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: background 0.2s ease;
+  }
+
+  .color-temp-modal__close:hover {
+    background: #f5f5f5;
+  }
+
+  /* Desktop Content - hidden on mobile */
+  .color-temp-modal__content {
+    display: none;
+  }
+
+  /* Mobile Content */
+  .color-temp-modal__mobile {
+    display: block;
+    padding: 0;
+  }
+
+  .color-temp-modal__mobile-image {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    background: #f5f5f5;
+  }
+
+  .color-temp-modal__mobile-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .color-temp-modal__preview-badge {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    background: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    font-size: 12px;
+    padding: 6px 12px;
+    border-radius: 4px;
+  }
+
+  .color-temp-modal__mobile-title {
+    font-size: 24px;
+    font-weight: 500;
+    color: #1a1a1a;
+    margin: 24px 20px 16px;
+  }
+
+  .color-temp-modal__mobile-options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 0 20px;
+  }
+
+  .color-temp-modal__mobile-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 16px;
+    border: 2px solid #e5e5e5;
+    background: #fff;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+  }
+
+  .color-temp-modal__mobile-option input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .color-temp-modal__mobile-option--active {
+    border-color: #c97a3a;
+  }
+
+  .color-temp-modal__mobile-dot {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-bottom: 12px;
+  }
+
+  .color-temp-modal__mobile-dot--warm {
+    background: linear-gradient(135deg, #f5a623 0%, #e08a1e 100%);
+  }
+
+  .color-temp-modal__mobile-dot--neutral {
+    background: linear-gradient(135deg, #ffd280 0%, #f5c560 100%);
+  }
+
+  .color-temp-modal__mobile-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 4px;
+  }
+
+  .color-temp-modal__mobile-subtitle {
+    font-size: 13px;
+    color: #c97a3a;
+  }
+
+  .color-temp-modal__spectrum {
+    height: 8px;
+    margin: 24px 20px 20px;
+    background: linear-gradient(90deg, #f5a623 0%, #ffd280 50%, #fff5e0 100%);
+    border-radius: 4px;
+  }
+
+  /* Desktop Styles */
+  @media (min-width: 768px) {
+    .color-temp-modal__container {
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .color-temp-modal__mobile {
+      display: none;
+    }
+
+    .color-temp-modal__content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .color-temp-modal__image {
+      background: #f0ebe4;
+      padding: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .color-temp-modal__image img {
+      width: 100%;
+      max-width: 400px;
+      height: auto;
+      border-radius: 12px;
+    }
+
+    .color-temp-modal__info {
+      padding: 60px 48px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .color-temp-modal__title {
+      font-family: var(--font-heading-family), serif;
+      font-size: 36px;
+      font-weight: 400;
+      font-style: italic;
+      color: #1a1a1a;
+      margin: 0 0 16px;
+    }
+
+    .color-temp-modal__description {
+      font-size: 15px;
+      line-height: 1.6;
+      color: #6b7280;
+      margin: 0 0 32px;
+    }
+
+    .color-temp-modal__options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .color-temp-modal__option {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 20px;
+      border: 2px solid #e5e5e5;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: border-color 0.2s ease;
+    }
+
+    .color-temp-modal__option input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .color-temp-modal__option--active {
+      border-color: #c97a3a;
+    }
+
+    .color-temp-modal__radio {
+      width: 20px;
+      height: 20px;
+      border: 2px solid #d1d5db;
+      border-radius: 50%;
+      flex-shrink: 0;
+      position: relative;
+      transition: border-color 0.2s ease;
+    }
+
+    .color-temp-modal__option--active .color-temp-modal__radio {
+      border-color: #2563eb;
+    }
+
+    .color-temp-modal__option--active .color-temp-modal__radio::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 10px;
+      height: 10px;
+      background: #2563eb;
+      border-radius: 50%;
+    }
+
+    .color-temp-modal__option-content {
+      flex: 1;
+    }
+
+    .color-temp-modal__option-label {
+      display: block;
+      font-size: 15px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 2px;
+    }
+
+    .color-temp-modal__option-subtitle {
+      display: block;
+      font-size: 13px;
+      color: #c97a3a;
+    }
+
+    .color-temp-modal__option-dot {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .color-temp-modal__option-dot--warm {
+      background: linear-gradient(135deg, #f5a623 0%, #e08a1e 100%);
+    }
+
+    .color-temp-modal__option-dot--neutral {
+      background: linear-gradient(135deg, #ffd280 0%, #f5c560 100%);
+    }
+
+    .color-temp-modal__close {
+      top: 24px;
+      right: 24px;
+    }
+  }
+
   /* Specs */
   .product-specs {
     margin-top: 1.5rem;
@@ -2246,6 +2666,83 @@
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && specsModal && specsModal.getAttribute('aria-hidden') === 'false') {
       closeSpecsModal();
+    }
+  });
+
+  // Color Temperature Modal
+  const colorTempModal = document.querySelector('[data-color-temp-modal]');
+  const openColorTempBtn = document.querySelector('[data-open-color-temp-modal]');
+  const closeColorTempBtns = document.querySelectorAll('[data-close-color-temp-modal]');
+  const colorTempOptions = document.querySelectorAll('[data-color-temp-option]');
+  const colorTempMobileOptions = document.querySelectorAll('[data-color-temp-mobile]');
+  const colorTempBadge = document.querySelector('[data-color-temp-badge]');
+
+  function openColorTempModal() {
+    if (!colorTempModal) return;
+    colorTempModal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeColorTempModal() {
+    if (!colorTempModal) return;
+    colorTempModal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  function updateColorTempSelection(value) {
+    // Update desktop options
+    colorTempOptions.forEach(opt => {
+      if (opt.dataset.colorTempOption === value) {
+        opt.classList.add('color-temp-modal__option--active');
+        opt.querySelector('input').checked = true;
+      } else {
+        opt.classList.remove('color-temp-modal__option--active');
+        opt.querySelector('input').checked = false;
+      }
+    });
+
+    // Update mobile options
+    colorTempMobileOptions.forEach(opt => {
+      if (opt.dataset.colorTempMobile === value) {
+        opt.classList.add('color-temp-modal__mobile-option--active');
+        opt.querySelector('input').checked = true;
+      } else {
+        opt.classList.remove('color-temp-modal__mobile-option--active');
+        opt.querySelector('input').checked = false;
+      }
+    });
+
+    // Update preview badge
+    if (colorTempBadge) {
+      colorTempBadge.textContent = 'Previewing ' + value;
+    }
+  }
+
+  // Event listeners for color temp modal
+  if (openColorTempBtn) {
+    openColorTempBtn.addEventListener('click', openColorTempModal);
+  }
+
+  closeColorTempBtns.forEach(btn => {
+    btn.addEventListener('click', closeColorTempModal);
+  });
+
+  colorTempOptions.forEach(opt => {
+    opt.addEventListener('click', () => {
+      updateColorTempSelection(opt.dataset.colorTempOption);
+    });
+  });
+
+  colorTempMobileOptions.forEach(opt => {
+    opt.addEventListener('click', () => {
+      updateColorTempSelection(opt.dataset.colorTempMobile);
+    });
+  });
+
+  // Close color temp modal on escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && colorTempModal && colorTempModal.getAttribute('aria-hidden') === 'false') {
+      closeColorTempModal();
     }
   });
 {% endjavascript %}
