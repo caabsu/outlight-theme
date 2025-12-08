@@ -417,7 +417,8 @@
                 </div>
                 <div class="specs-modal__content">
                   {%- if product.metafields.custom.collapsible_measurement != blank -%}
-                    <div class="specs-modal__data" data-specs-content>{{ product.metafields.custom.collapsible_measurement }}</div>
+                    <div class="specs-modal__data" data-specs-content style="display:none;">{{ product.metafields.custom.collapsible_measurement | metafield_tag }}</div>
+                    <div class="specs-modal__fallback" data-specs-fallback style="display:none;">{{ product.metafields.custom.collapsible_measurement.value | default: product.metafields.custom.collapsible_measurement | newline_to_br }}</div>
                   {%- else -%}
                     <p class="specs-modal__empty">No specifications available.</p>
                   {%- endif -%}
@@ -1348,6 +1349,14 @@
     margin: 0;
   }
 
+  .specs-modal__fallback {
+    font-family: var(--font-primary-family), sans-serif;
+    font-size: 14px;
+    line-height: 1.7;
+    color: #44403C;
+    white-space: pre-wrap;
+  }
+
   /* Specs */
   .product-specs {
     margin-top: 1.5rem;
@@ -2175,14 +2184,17 @@
   function renderSpecsModal() {
     if (!specsContent) return;
 
-    const rawData = specsContent.textContent.trim();
+    const fallbackEl = document.querySelector('[data-specs-fallback]');
+    const rawData = specsContent.innerHTML.trim();
+
+    // If content is empty, show nothing
+    if (!rawData) return;
+
     const { sections, plainText } = parseRichTextJson(rawData);
 
-    if (sections.length === 0 && !plainText) return;
-
-    let html = '';
-
+    // If parsing succeeded and we have sections, render them
     if (sections.length > 0) {
+      let html = '';
       sections.forEach(section => {
         html += '<div class="specs-modal__section">';
         if (section.title) {
@@ -2202,14 +2214,20 @@
         html += '</ul>';
         html += '</div>';
       });
-    }
 
-    // Insert after the hidden data element
-    const container = specsContent.parentElement;
-    const renderedContent = document.createElement('div');
-    renderedContent.className = 'specs-modal__rendered';
-    renderedContent.innerHTML = html;
-    container.appendChild(renderedContent);
+      // Insert after the hidden data element
+      const container = specsContent.parentElement;
+      const renderedContent = document.createElement('div');
+      renderedContent.className = 'specs-modal__rendered';
+      renderedContent.innerHTML = html;
+      container.appendChild(renderedContent);
+    } else if (fallbackEl) {
+      // Fallback: show the raw content directly
+      fallbackEl.style.display = 'block';
+    } else {
+      // Last resort: show the raw data element content
+      specsContent.style.display = 'block';
+    }
   }
 
   function openSpecsModal() {
