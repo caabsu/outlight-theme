@@ -209,12 +209,20 @@
       justify-content: space-between;
       align-items: flex-start;
       padding: 16px 20px;
-      background: var(--card-info-bg);
-      opacity: var(--card-info-opacity);
       position: absolute;
       bottom: 16px;
       left: 16px;
       right: 16px;
+      isolation: isolate;
+    }
+
+    .collection-carousel__info::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--card-info-bg);
+      opacity: var(--card-info-opacity);
+      z-index: -1;
     }
 
     .collection-carousel__details {
