@@ -2066,119 +2066,90 @@
   const closeSpecsBtns = document.querySelectorAll('[data-close-specs-modal]');
   const specsContent = document.querySelector('[data-specs-content]');
 
-  // Parse HTML rendered specs (when metafield outputs as HTML)
-  function parseHtmlSpecs(html) {
+  // Parse specs content - handles plain text with bullets, HTML, or JSON
+  function parseSpecsContent(data) {
     const sections = [];
     let currentSection = { title: '', items: [] };
 
-    // Create temp element to parse HTML
+    // First, get plain text content (strip HTML tags if any)
     const temp = document.createElement('div');
-    temp.innerHTML = html;
+    temp.innerHTML = data;
+    let text = temp.textContent || temp.innerText || data;
 
-    // Find all paragraphs (might be section headers) and list items
-    const elements = temp.querySelectorAll('p, li');
-    elements.forEach(el => {
-      const text = el.textContent.trim();
-      if (!text) return;
+    // Split by bullet points (•) or line breaks
+    // First try to split by common section header patterns
+    const sectionPattern = /([A-Za-z][A-Za-z\s]+):\s*/g;
+    const parts = text.split(sectionPattern).filter(p => p.trim());
 
-      // Check if it's a header (usually in <em> or <i> and ends with colon)
-      const isHeader = (el.tagName === 'P' && (el.querySelector('em, i') || text.endsWith(':')));
+    if (parts.length >= 2) {
+      // We have sections
+      for (let i = 0; i < parts.length; i++) {
+        const part = parts[i].trim();
 
-      if (isHeader && text.endsWith(':')) {
-        if (currentSection.items.length > 0 || currentSection.title) {
-          sections.push(currentSection);
-        }
-        currentSection = { title: text.replace(':', ''), items: [] };
-      } else if (el.tagName === 'LI') {
-        const colonIndex = text.indexOf(':');
-        if (colonIndex > 0) {
-          currentSection.items.push({
-            label: text.substring(0, colonIndex).trim(),
-            value: text.substring(colonIndex + 1).trim()
-          });
+        // Check if this looks like a section header (short text, no bullet)
+        if (part.length < 50 && !part.includes('•') && !part.includes(':') && i + 1 < parts.length) {
+          // This is a section header
+          if (currentSection.title || currentSection.items.length > 0) {
+            sections.push(currentSection);
+          }
+          currentSection = { title: part, items: [] };
         } else {
-          currentSection.items.push({ label: '', value: text });
+          // This is content - parse bullet items
+          const bulletItems = part.split(/[•\-]\s*/).filter(item => item.trim());
+
+          bulletItems.forEach(item => {
+            const trimmed = item.trim();
+            if (!trimmed) return;
+
+            // Check for label: value format
+            const colonMatch = trimmed.match(/^([^:]+):\s*(.+)$/);
+            if (colonMatch) {
+              currentSection.items.push({
+                label: colonMatch[1].trim(),
+                value: colonMatch[2].trim()
+              });
+            } else if (trimmed.length > 0) {
+              currentSection.items.push({ label: '', value: trimmed });
+            }
+          });
         }
       }
-    });
+    } else {
+      // No clear sections, just parse all bullet items
+      const bulletItems = text.split(/[•\-]\s*/).filter(item => item.trim());
 
-    if (currentSection.items.length > 0 || currentSection.title) {
-      sections.push(currentSection);
-    }
+      bulletItems.forEach(item => {
+        const trimmed = item.trim();
+        if (!trimmed) return;
 
-    return { sections, plainText: null };
-  }
-
-  function parseRichTextJson(data) {
-    // Handle Shopify rich text metafield JSON format
-    let parsed;
-    try {
-      // Try to parse as JSON (might be double-encoded)
-      parsed = typeof data === 'string' ? JSON.parse(data) : data;
-      // Check if it was double-encoded
-      if (typeof parsed === 'string') {
-        parsed = JSON.parse(parsed);
-      }
-    } catch (e) {
-      // If it's not valid JSON, try to extract from HTML or return as plain text
-      // Check if it looks like HTML
-      if (data.includes('<') && data.includes('>')) {
-        return parseHtmlSpecs(data);
-      }
-      return { sections: [], plainText: data };
-    }
-
-    if (!parsed || !parsed.children) {
-      // Might be plain text or different format
-      return { sections: [], plainText: data };
-    }
-
-    const sections = [];
-    let currentSection = { title: '', items: [] };
-
-    parsed.children.forEach(child => {
-      if (child.type === 'paragraph' && child.children) {
-        // Check if it's a section header (italic text ending with colon)
-        const textNode = child.children[0];
-        if (textNode && textNode.value) {
-          const text = textNode.value.trim();
-          if (textNode.italic && text.endsWith(':')) {
-            // Start a new section
-            if (currentSection.items.length > 0 || currentSection.title) {
-              sections.push(currentSection);
-            }
-            currentSection = { title: text.replace(':', ''), items: [] };
+        // Check if this is a section header (ends with : and has no other colons)
+        const colonCount = (trimmed.match(/:/g) || []).length;
+        if (colonCount === 1 && trimmed.endsWith(':')) {
+          if (currentSection.title || currentSection.items.length > 0) {
+            sections.push(currentSection);
+          }
+          currentSection = { title: trimmed.replace(':', '').trim(), items: [] };
+        } else {
+          // Check for label: value format
+          const colonMatch = trimmed.match(/^([^:]+):\s*(.+)$/);
+          if (colonMatch) {
+            currentSection.items.push({
+              label: colonMatch[1].trim(),
+              value: colonMatch[2].trim()
+            });
+          } else if (trimmed.length > 0) {
+            currentSection.items.push({ label: '', value: trimmed });
           }
         }
-      } else if (child.type === 'list' && child.children) {
-        // Process list items
-        child.children.forEach(listItem => {
-          if (listItem.type === 'list-item' && listItem.children) {
-            const textNode = listItem.children[0];
-            if (textNode && textNode.value) {
-              const text = textNode.value.trim();
-              // Try to split by colon for label: value format
-              const colonIndex = text.indexOf(':');
-              if (colonIndex > 0) {
-                const label = text.substring(0, colonIndex).trim();
-                const value = text.substring(colonIndex + 1).trim();
-                currentSection.items.push({ label, value });
-              } else {
-                // Just a plain item
-                currentSection.items.push({ label: '', value: text });
-              }
-            }
-          }
-        });
-      }
-    });
+      });
+    }
 
     // Add the last section
-    if (currentSection.items.length > 0 || currentSection.title) {
+    if (currentSection.title || currentSection.items.length > 0) {
       sections.push(currentSection);
     }
 
-    return { sections, plainText: null };
+    return { sections };
   }
 
   function renderSpecsModal() {
@@ -2190,10 +2161,11 @@
     // If content is empty, show nothing
     if (!rawData) return;
 
-    const { sections, plainText } = parseRichTextJson(rawData);
+    const { sections } = parseSpecsContent(rawData);
 
-    // If parsing succeeded and we have sections, render them
-    if (sections.length > 0) {
+    // If parsing succeeded and we have sections with items, render them
+    const hasItems = sections.some(s => s.items.length > 0);
+    if (sections.length > 0 && hasItems) {
       let html = '';
       sections.forEach(section => {
         html += '<div class="specs-modal__section">';
