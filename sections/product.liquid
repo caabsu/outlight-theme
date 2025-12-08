@@ -15,6 +15,14 @@
   }
 </script>
 
+<script type="application/json" data-variant-color-temps>
+  {
+    {%- for variant in product.variants -%}
+      "{{ variant.id }}": {{ variant.metafields.custom.color_temperature | default: 'N/A' | json }}{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+  }
+</script>
+
 <div class="product-wrapper full-width">
 <div
   class="product-container"
@@ -60,20 +68,22 @@
   <div class="product-media-gallery">
     {%- comment -%} Desktop Thumbnails {%- endcomment -%}
     {%- if product.media.size > 1 -%}
-      <div class="product-media-thumbnails" data-gallery-thumbnails>
-        {%- for media in product.media -%}
-          <button
-            class="product-media-thumbnail {% if forloop.first %}product-media-thumbnail--active{% endif %}"
-            data-thumbnail-index="{{ forloop.index0 }}"
-            aria-label="View image {{ forloop.index }}"
-          >
-            {%- if media.media_type == 'image' -%}
-              {{ media | image_url: width: 200 | image_tag: loading: 'lazy' }}
-            {%- else -%}
-              {{ media.preview_image | image_url: width: 200 | image_tag: loading: 'lazy' }}
-            {%- endif -%}
-          </button>
-        {%- endfor -%}
+      <div class="product-media-thumbnails-wrapper">
+        <div class="product-media-thumbnails" data-gallery-thumbnails>
+          {%- for media in product.media -%}
+            <button
+              class="product-media-thumbnail {% if forloop.first %}product-media-thumbnail--active{% endif %}"
+              data-thumbnail-index="{{ forloop.index0 }}"
+              aria-label="View image {{ forloop.index }}"
+            >
+              {%- if media.media_type == 'image' -%}
+                {{ media | image_url: width: 200 | image_tag: loading: 'lazy' }}
+              {%- else -%}
+                {{ media.preview_image | image_url: width: 200 | image_tag: loading: 'lazy' }}
+              {%- endif -%}
+            </button>
+          {%- endfor -%}
+        </div>
       </div>
     {%- endif -%}
 
@@ -348,7 +358,7 @@
                 {%- if block.settings.spec_label_4 != blank -%}
                   <div class="product-details__spec-card">
                     <span class="product-details__spec-label">{{ block.settings.spec_label_4 }}</span>
-                    <span class="product-details__spec-value">{{ product.metafields.custom.color_temperature | default: 'N/A' }}</span>
+                    <span class="product-details__spec-value" data-variant-color-temp>{{ product.selected_or_first_available_variant.metafields.custom.color_temperature | default: 'N/A' }}</span>
                   </div>
                 {%- endif -%}
               </div>
@@ -1401,16 +1411,25 @@
       background: transparent;
     }
 
-    /* Desktop Thumbnails */
+    /* Desktop Thumbnails Wrapper - constrains height to match main image */
+    .product-media-thumbnails-wrapper {
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Desktop Thumbnails - absolute positioned within wrapper */
     .product-media-thumbnails {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
       display: flex;
       flex-direction: column;
       gap: 10px;
       overflow-y: auto;
       overflow-x: hidden;
       scrollbar-width: none;
-      height: 0;
-      min-height: 100%;
     }
 
     .product-media-thumbnails::-webkit-scrollbar {
@@ -1775,15 +1794,26 @@
     }
   }
 
-  // Parse variant dimensions data
+  // Parse variant metafield data
   const dimensionsDataEl = document.querySelector('[data-variant-dimensions]');
+  const colorTempsDataEl = document.querySelector('[data-variant-color-temps]');
+
   let variantDimensions = {};
+  let variantColorTemps = {};
 
   if (dimensionsDataEl) {
     try {
       variantDimensions = JSON.parse(dimensionsDataEl.textContent);
     } catch (e) {
       console.error('Error parsing variant dimensions:', e);
+    }
+  }
+
+  if (colorTempsDataEl) {
+    try {
+      variantColorTemps = JSON.parse(colorTempsDataEl.textContent);
+    } catch (e) {
+      console.error('Error parsing variant color temps:', e);
     }
   }
 
@@ -1894,10 +1924,25 @@
         }
       }
 
-      // Update variant dimension
+      // Update variant specs
       const dimensionEl = document.querySelector('[data-variant-dimension]');
       if (dimensionEl && variantDimensions) {
         dimensionEl.textContent = variantDimensions[matchingVariant.id] || 'N/A';
+      }
+
+      const lightSourceEl = document.querySelector('[data-variant-light-source]');
+      if (lightSourceEl && variantLightSources) {
+        lightSourceEl.textContent = variantLightSources[matchingVariant.id] || 'N/A';
+      }
+
+      const finishEl = document.querySelector('[data-variant-finish]');
+      if (finishEl && variantFinishes) {
+        finishEl.textContent = variantFinishes[matchingVariant.id] || 'N/A';
+      }
+
+      const colorTempEl = document.querySelector('[data-variant-color-temp]');
+      if (colorTempEl && variantColorTemps) {
+        colorTempEl.textContent = variantColorTemps[matchingVariant.id] || 'N/A';
       }
     }
   });
