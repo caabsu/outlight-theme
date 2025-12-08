@@ -127,6 +127,8 @@
         "desktop_label": "INSTRUCTIONS",
         "mobile_label": "INSTALLTION GUIDE",
         "fallback_text": "Installation should be performed by a licensed electrician. Begin by turning off power at the main breaker panel.",
+        "section_padding_top": 0,
+        "section_padding_bottom": 32,
         "section_bg": "#f7f5f0",
         "card_bg": "#ebe8e0",
         "card_radius": 16,
