@@ -1,0 +1,378 @@
+<div
+  class="collection-carousel full-width"
+  style="
+    --section-bg: {{ section.settings.section_bg }};
+    --section-padding-top: {{ section.settings.padding_top }}px;
+    --section-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --title-color: {{ section.settings.title_color }};
+    --title-size-desktop: {{ section.settings.title_size_desktop }}px;
+    --title-size-mobile: {{ section.settings.title_size_mobile }}px;
+    --card-radius: {{ section.settings.card_radius }}px;
+    --card-info-bg: {{ section.settings.card_info_bg }};
+    --product-name-color: {{ section.settings.product_name_color }};
+    --product-subtitle-color: {{ section.settings.product_subtitle_color }};
+    --price-color: {{ section.settings.price_color }};
+  "
+>
+  <div class="collection-carousel__container">
+    {%- if section.settings.title != blank -%}
+      <h2 class="collection-carousel__title">{{ section.settings.title }}</h2>
+    {%- endif -%}
+
+    <div class="collection-carousel__track" data-carousel-track>
+      {%- assign collection = collections[section.settings.collection] -%}
+      {%- if collection != blank and collection.products.size > 0 -%}
+        {%- for product in collection.products limit: section.settings.products_limit -%}
+          <a href="{{ product.url }}" class="collection-carousel__card">
+            <div class="collection-carousel__image">
+              {%- if product.featured_image != blank -%}
+                {{ product.featured_image | image_url: width: 800 | image_tag: loading: 'lazy' }}
+              {%- else -%}
+                {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+              {%- endif -%}
+            </div>
+            <div class="collection-carousel__info">
+              <div class="collection-carousel__details">
+                <h3 class="collection-carousel__name">{{ product.title }}</h3>
+                {%- if product.metafields.custom.subtitle != blank -%}
+                  <p class="collection-carousel__subtitle">{{ product.metafields.custom.subtitle }}</p>
+                {%- elsif product.type != blank -%}
+                  <p class="collection-carousel__subtitle">{{ product.type }}</p>
+                {%- endif -%}
+              </div>
+              <div class="collection-carousel__price">
+                {{ product.price | money }}
+              </div>
+            </div>
+            <!-- Mobile overlay info -->
+            <div class="collection-carousel__info-mobile">
+              <h3 class="collection-carousel__name-mobile">{{ product.title }}</h3>
+              <p class="collection-carousel__price-mobile">{{ product.price | money }}</p>
+            </div>
+          </a>
+        {%- endfor -%}
+      {%- else -%}
+        {%- for i in (1..4) -%}
+          <div class="collection-carousel__card">
+            <div class="collection-carousel__image">
+              {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+            </div>
+            <div class="collection-carousel__info">
+              <div class="collection-carousel__details">
+                <h3 class="collection-carousel__name">Product Title</h3>
+                <p class="collection-carousel__subtitle">Subtitle</p>
+              </div>
+              <div class="collection-carousel__price">$0.00</div>
+            </div>
+            <div class="collection-carousel__info-mobile">
+              <h3 class="collection-carousel__name-mobile">Product Title</h3>
+              <p class="collection-carousel__price-mobile">$0.00</p>
+            </div>
+          </div>
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .collection-carousel {
+    background: var(--section-bg);
+    padding: var(--section-padding-top) 0 var(--section-padding-bottom);
+  }
+
+  .collection-carousel__container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  .collection-carousel__title {
+    font-family: var(--font-heading-family, Georgia, serif);
+    font-size: var(--title-size-mobile);
+    font-weight: 400;
+    font-style: normal;
+    color: var(--title-color);
+    margin: 0 0 24px;
+  }
+
+  .collection-carousel__track {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -24px;
+    padding: 0 24px;
+  }
+
+  .collection-carousel__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .collection-carousel__card {
+    flex: 0 0 75%;
+    max-width: 320px;
+    scroll-snap-align: start;
+    border-radius: var(--card-radius);
+    overflow: hidden;
+    text-decoration: none;
+    position: relative;
+    display: block;
+  }
+
+  .collection-carousel__image {
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    background: #f5f5f5;
+  }
+
+  .collection-carousel__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Desktop info - hidden on mobile */
+  .collection-carousel__info {
+    display: none;
+  }
+
+  /* Mobile overlay info */
+  .collection-carousel__info-mobile {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 60px 16px 16px;
+    background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%);
+  }
+
+  .collection-carousel__name-mobile {
+    font-size: 18px;
+    font-weight: 600;
+    color: #ffffff;
+    margin: 0 0 4px;
+  }
+
+  .collection-carousel__price-mobile {
+    font-size: 15px;
+    color: #ffffff;
+    margin: 0;
+    opacity: 0.9;
+  }
+
+  /* Desktop styles */
+  @media (min-width: 768px) {
+    .collection-carousel__container {
+      padding: 0 48px;
+    }
+
+    .collection-carousel__title {
+      font-size: var(--title-size-desktop);
+      font-style: italic;
+      margin: 0 0 32px;
+    }
+
+    .collection-carousel__track {
+      overflow-x: visible;
+      scroll-snap-type: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .collection-carousel__card {
+      flex: none;
+      max-width: none;
+    }
+
+    /* Hide mobile overlay, show desktop info */
+    .collection-carousel__info-mobile {
+      display: none;
+    }
+
+    .collection-carousel__info {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 16px 20px;
+      background: var(--card-info-bg);
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      right: 16px;
+      border-radius: 8px;
+    }
+
+    .collection-carousel__details {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .collection-carousel__name {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--product-name-color);
+      margin: 0 0 4px;
+    }
+
+    .collection-carousel__subtitle {
+      font-size: 14px;
+      color: var(--product-subtitle-color);
+      margin: 0;
+    }
+
+    .collection-carousel__price {
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--price-color);
+      flex-shrink: 0;
+      margin-left: 16px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .collection-carousel__track {
+      gap: 32px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Collection carousel",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Glass Collection"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_limit",
+      "label": "Products to show",
+      "min": 3,
+      "max": 12,
+      "step": 1,
+      "default": 6
+    },
+    {
+      "type": "header",
+      "content": "Section style"
+    },
+    {
+      "type": "color",
+      "id": "section_bg",
+      "label": "Background color",
+      "default": "#F5F5F5"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "default": 48,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "default": 48,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Title style"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "range",
+      "id": "title_size_desktop",
+      "label": "Title size (desktop)",
+      "min": 24,
+      "max": 64,
+      "step": 2,
+      "default": 42,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "title_size_mobile",
+      "label": "Title size (mobile)",
+      "min": 20,
+      "max": 40,
+      "step": 2,
+      "default": 28,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Card style"
+    },
+    {
+      "type": "range",
+      "id": "card_radius",
+      "label": "Card border radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "card_info_bg",
+      "label": "Info box background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "product_name_color",
+      "label": "Product name color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "product_subtitle_color",
+      "label": "Subtitle color",
+      "default": "#6b7280"
+    },
+    {
+      "type": "color",
+      "id": "price_color",
+      "label": "Price color",
+      "default": "#c97a3a"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection carousel"
+    }
+  ]
+}
+{% endschema %}
