@@ -1395,24 +1395,22 @@
 
     .product-media-gallery {
       flex: 1;
-      position: relative;
-      padding-left: 130px;
+      display: grid;
+      grid-template-columns: 115px 1fr;
+      gap: 15px;
       background: transparent;
     }
 
     /* Desktop Thumbnails */
     .product-media-thumbnails {
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      width: 115px;
       display: flex;
       flex-direction: column;
       gap: 10px;
       overflow-y: auto;
       overflow-x: hidden;
       scrollbar-width: none;
+      height: 0;
+      min-height: 100%;
     }
 
     .product-media-thumbnails::-webkit-scrollbar {
@@ -1453,7 +1451,6 @@
       overflow: hidden;
       background: #f5f5f5;
       aspect-ratio: 1 / 1;
-      width: 100%;
     }
 
     .product-media-track {
