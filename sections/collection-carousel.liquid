@@ -30,7 +30,14 @@
       <h2 class="collection-carousel__title">{{ section.settings.title }}</h2>
     {%- endif -%}
 
-    <div class="collection-carousel__track" data-carousel-track>
+    <div class="collection-carousel__wrapper">
+      <button class="collection-carousel__nav collection-carousel__nav--prev" data-carousel-prev aria-label="Previous">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12.5 15L7.5 10L12.5 5"/>
+        </svg>
+      </button>
+
+      <div class="collection-carousel__track" data-carousel-track>
       {%- assign collection = collections[section.settings.collection] -%}
       {%- if collection != blank and collection.products.size > 0 -%}
         {%- for product in collection.products limit: section.settings.products_limit -%}
@@ -82,6 +89,13 @@
           </div>
         {%- endfor -%}
       {%- endif -%}
+      </div>
+
+      <button class="collection-carousel__nav collection-carousel__nav--next" data-carousel-next aria-label="Next">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M7.5 15L12.5 10L7.5 5"/>
+        </svg>
+      </button>
     </div>
   </div>
 </div>
@@ -105,6 +119,14 @@
     color: var(--title-color);
     margin: 0 0 24px;
     text-align: center;
+  }
+
+  .collection-carousel__wrapper {
+    position: relative;
+  }
+
+  .collection-carousel__nav {
+    display: none;
   }
 
   .collection-carousel__track {
@@ -132,7 +154,7 @@
   }
 
   .collection-carousel__image {
-    aspect-ratio: 3 / 4;
+    aspect-ratio: 1 / 1;
     overflow: hidden;
     background: #f5f5f5;
   }
@@ -262,8 +284,70 @@
     .collection-carousel__card {
       flex: 0 0 calc(33.333% - 22px);
     }
+
+    .collection-carousel__nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 48px;
+      height: 48px;
+      background: rgba(255, 255, 255, 0.9);
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 10;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .collection-carousel__nav:hover {
+      background: #ffffff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .collection-carousel__nav--prev {
+      left: -24px;
+    }
+
+    .collection-carousel__nav--next {
+      right: -24px;
+    }
+
+    .collection-carousel__nav:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
   }
 {% endstylesheet %}
+
+{% javascript %}
+  const carouselTrack = document.querySelector('[data-carousel-track]');
+  const prevBtn = document.querySelector('[data-carousel-prev]');
+  const nextBtn = document.querySelector('[data-carousel-next]');
+
+  if (carouselTrack && prevBtn && nextBtn) {
+    const scrollAmount = () => {
+      const card = carouselTrack.querySelector('.collection-carousel__card');
+      if (card) {
+        const style = window.getComputedStyle(carouselTrack);
+        const gap = parseInt(style.gap) || 32;
+        return card.offsetWidth + gap;
+      }
+      return 300;
+    };
+
+    prevBtn.addEventListener('click', () => {
+      carouselTrack.scrollBy({ left: -scrollAmount(), behavior: 'smooth' });
+    });
+
+    nextBtn.addEventListener('click', () => {
+      carouselTrack.scrollBy({ left: scrollAmount(), behavior: 'smooth' });
+    });
+  }
+{% endjavascript %}
 
 {% schema %}
 {
