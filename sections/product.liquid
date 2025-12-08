@@ -2502,82 +2502,91 @@
   const closeSpecsBtns = document.querySelectorAll('[data-close-specs-modal]');
   const specsContent = document.querySelector('[data-specs-content]');
 
-  // Parse specs content - handles plain text with bullets, HTML, or JSON
+  // Parse specs content - handles plain text with bullets
+  // Format: bullet items (•) are Label: Value pairs, non-bulleted text ending with : is a section header
   function parseSpecsContent(data) {
     const sections = [];
     let currentSection = { title: '', items: [] };
 
-    // First, get plain text content (strip HTML tags if any)
+    // Get plain text content
     const temp = document.createElement('div');
     temp.innerHTML = data;
     let text = temp.textContent || temp.innerText || data;
 
-    // Split by bullet points (•) or line breaks
-    // First try to split by common section header patterns
-    const sectionPattern = /([A-Za-z][A-Za-z\s]+):\s*/g;
-    const parts = text.split(sectionPattern).filter(p => p.trim());
+    // Normalize whitespace
+    text = text.replace(/\s+/g, ' ').trim();
 
-    if (parts.length >= 2) {
-      // We have sections
-      for (let i = 0; i < parts.length; i++) {
-        const part = parts[i].trim();
+    // Split by bullet character
+    const parts = text.split('•');
 
-        // Check if this looks like a section header (short text, no bullet)
-        if (part.length < 50 && !part.includes('•') && !part.includes(':') && i + 1 < parts.length) {
-          // This is a section header
+    for (let i = 0; i < parts.length; i++) {
+      let part = parts[i].trim();
+      if (!part) continue;
+
+      if (i === 0) {
+        // First part - before any bullets - might be a section header
+        // Check for section header pattern (text ending with :)
+        const headerMatch = part.match(/^([A-Za-z][A-Za-z\s]*?):\s*$/);
+        if (headerMatch) {
+          currentSection.title = headerMatch[1].trim();
+        } else if (part.length < 40 && !part.includes(':')) {
+          // Short text without colon - treat as header
+          currentSection.title = part;
+        }
+        // Otherwise ignore (unusual content before first bullet)
+      } else {
+        // Bullet item - check if it contains a section header at the end
+        // Pattern: "content text SectionName:" (new section follows)
+        const sectionBreakMatch = part.match(/^(.+?)\s+([A-Z][A-Za-z\s]+):\s*$/);
+
+        if (sectionBreakMatch) {
+          // There's content followed by a new section header
+          const content = sectionBreakMatch[1].trim();
+          const newHeader = sectionBreakMatch[2].trim();
+
+          // Parse the content as label:value
+          if (content) {
+            const colonPos = content.indexOf(':');
+            if (colonPos > 0) {
+              currentSection.items.push({
+                label: content.slice(0, colonPos).trim(),
+                value: content.slice(colonPos + 1).trim() || 'N/A'
+              });
+            } else {
+              currentSection.items.push({ label: '', value: content });
+            }
+          }
+
+          // Start new section
           if (currentSection.title || currentSection.items.length > 0) {
             sections.push(currentSection);
           }
-          currentSection = { title: part, items: [] };
+          currentSection = { title: newHeader, items: [] };
         } else {
-          // This is content - parse bullet items
-          const bulletItems = part.split(/[•\-]\s*/).filter(item => item.trim());
-
-          bulletItems.forEach(item => {
-            const trimmed = item.trim();
-            if (!trimmed) return;
-
-            // Check for label: value format
-            const colonMatch = trimmed.match(/^([^:]+):\s*(.+)$/);
-            if (colonMatch) {
-              currentSection.items.push({
-                label: colonMatch[1].trim(),
-                value: colonMatch[2].trim()
-              });
-            } else if (trimmed.length > 0) {
-              currentSection.items.push({ label: '', value: trimmed });
+          // Regular bullet item
+          // Check if this is ONLY a section header (ends with : and nothing after)
+          const standaloneHeader = part.match(/^([A-Z][A-Za-z\s]+):\s*$/);
+          if (standaloneHeader) {
+            // This is a section header like "Specifications:"
+            if (currentSection.title || currentSection.items.length > 0) {
+              sections.push(currentSection);
             }
-          });
+            currentSection = { title: standaloneHeader[1].trim(), items: [] };
+          } else {
+            // Parse as Label: Value
+            const colonPos = part.indexOf(':');
+            if (colonPos > 0) {
+              currentSection.items.push({
+                label: part.slice(0, colonPos).trim(),
+                value: part.slice(colonPos + 1).trim() || 'N/A'
+              });
+            } else {
+              // No colon - just a value
+              currentSection.items.push({ label: '', value: part });
+            }
+          }
         }
       }
-    } else {
-      // No clear sections, just parse all bullet items
-      const bulletItems = text.split(/[•\-]\s*/).filter(item => item.trim());
-
-      bulletItems.forEach(item => {
-        const trimmed = item.trim();
-        if (!trimmed) return;
-
-        // Check if this is a section header (ends with : and has no other colons)
-        const colonCount = (trimmed.match(/:/g) || []).length;
-        if (colonCount === 1 && trimmed.endsWith(':')) {
-          if (currentSection.title || currentSection.items.length > 0) {
-            sections.push(currentSection);
-          }
-          currentSection = { title: trimmed.replace(':', '').trim(), items: [] };
-        } else {
-          // Check for label: value format
-          const colonMatch = trimmed.match(/^([^:]+):\s*(.+)$/);
-          if (colonMatch) {
-            currentSection.items.push({
-              label: colonMatch[1].trim(),
-              value: colonMatch[2].trim()
-            });
-          } else if (trimmed.length > 0) {
-            currentSection.items.push({ label: '', value: trimmed });
-          }
-        }
-      });
     }
 
     // Add the last section
