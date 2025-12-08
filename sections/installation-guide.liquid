@@ -19,7 +19,8 @@
     --mobile-text-weight: {{ section.settings.mobile_text_weight }};
     --mobile-text-color: {{ section.settings.mobile_text_color }};
     --mobile-line-height: {{ section.settings.mobile_line_height }};
-    --mobile-label-bg: {{ section.settings.mobile_label_bg }};
+    --mobile-label-size: {{ section.settings.mobile_label_size }}px;
+    --mobile-label-weight: {{ section.settings.mobile_label_weight }};
     --mobile-label-color: {{ section.settings.mobile_label_color }};
   "
 >
@@ -158,9 +159,9 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      font-size: 15px;
-      font-weight: 500;
-      color: var(--mobile-text-color);
+      font-size: var(--mobile-label-size);
+      font-weight: var(--mobile-label-weight);
+      color: var(--mobile-label-color);
     }
 
     .installation-guide__accordion-icon {
@@ -318,16 +319,33 @@
       "content": "Mobile label"
     },
     {
-      "type": "color",
-      "id": "mobile_label_bg",
-      "label": "Background",
-      "default": "#F0EDE8"
+      "type": "range",
+      "id": "mobile_label_size",
+      "label": "Font size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "default": 15,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "mobile_label_weight",
+      "label": "Font weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "500"
     },
     {
       "type": "color",
       "id": "mobile_label_color",
       "label": "Text color",
-      "default": "#6B6B6B"
+      "default": "#1a1a1a"
     },
     {
       "type": "header",
