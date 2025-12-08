@@ -1,0 +1,367 @@
+<div
+  class="support-banner full-width"
+  style="
+    --section-bg: {{ section.settings.section_bg }};
+    --section-padding-top: {{ section.settings.padding_top }}px;
+    --section-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --accent-color: {{ section.settings.accent_color }};
+    --card-bg: {{ section.settings.card_bg }};
+    --card-radius: {{ section.settings.card_radius }}px;
+    --title-color: {{ section.settings.title_color }};
+    --title-size-desktop: {{ section.settings.title_size_desktop }}px;
+    --title-size-mobile: {{ section.settings.title_size_mobile }}px;
+    --description-color: {{ section.settings.description_color }};
+    --description-size: {{ section.settings.description_size }}px;
+    --btn-primary-bg: {{ section.settings.btn_primary_bg }};
+    --btn-primary-color: {{ section.settings.btn_primary_color }};
+    --btn-secondary-bg: {{ section.settings.btn_secondary_bg }};
+    --btn-secondary-color: {{ section.settings.btn_secondary_color }};
+    --btn-secondary-border: {{ section.settings.btn_secondary_border }};
+  "
+>
+  <div class="support-banner__container">
+    <div class="support-banner__accent-line"></div>
+    <div class="support-banner__card">
+      {%- if section.settings.title != blank -%}
+        <h2 class="support-banner__title">{{ section.settings.title }}</h2>
+      {%- endif -%}
+
+      {%- if section.settings.description != blank -%}
+        <p class="support-banner__description">{{ section.settings.description }}</p>
+      {%- endif -%}
+
+      <div class="support-banner__buttons">
+        {%- if section.settings.btn_secondary_text != blank -%}
+          <a href="{{ section.settings.btn_secondary_url }}" class="support-banner__btn support-banner__btn--secondary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+              <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            {{ section.settings.btn_secondary_text }}
+          </a>
+        {%- endif -%}
+
+        {%- if section.settings.btn_primary_text != blank -%}
+          <a href="{{ section.settings.btn_primary_url }}" class="support-banner__btn support-banner__btn--primary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+            {{ section.settings.btn_primary_text }}
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .support-banner {
+    background: var(--section-bg);
+    padding: var(--section-padding-top) 0 var(--section-padding-bottom);
+  }
+
+  .support-banner__container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  .support-banner__accent-line {
+    height: 4px;
+    background: var(--accent-color);
+    border-radius: 2px 2px 0 0;
+  }
+
+  .support-banner__card {
+    background: var(--card-bg);
+    border-radius: 0 0 var(--card-radius) var(--card-radius);
+    padding: 40px 32px;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  }
+
+  .support-banner__title {
+    font-size: var(--title-size-mobile);
+    font-weight: 400;
+    color: var(--title-color);
+    margin: 0 0 16px;
+  }
+
+  .support-banner__description {
+    font-size: var(--description-size);
+    color: var(--description-color);
+    margin: 0 0 28px;
+    line-height: 1.6;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .support-banner__buttons {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .support-banner__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 28px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    min-width: 140px;
+  }
+
+  .support-banner__btn--primary {
+    background: var(--btn-primary-bg);
+    color: var(--btn-primary-color);
+  }
+
+  .support-banner__btn--primary:hover {
+    opacity: 0.9;
+  }
+
+  .support-banner__btn--secondary {
+    background: var(--btn-secondary-bg);
+    color: var(--btn-secondary-color);
+    border: 1px solid var(--btn-secondary-border);
+  }
+
+  .support-banner__btn--secondary:hover {
+    background: #f5f5f5;
+  }
+
+  @media (min-width: 768px) {
+    .support-banner__container {
+      padding: 0 48px;
+    }
+
+    .support-banner__card {
+      padding: 48px 60px;
+    }
+
+    .support-banner__title {
+      font-size: var(--title-size-desktop);
+      margin-bottom: 12px;
+    }
+
+    .support-banner__description {
+      margin-bottom: 32px;
+    }
+
+    .support-banner__btn {
+      padding: 14px 32px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Support banner",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Support"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "From installation guides to warranty claims, find everything you need in our dedicated portal."
+    },
+    {
+      "type": "header",
+      "content": "Primary button (right)"
+    },
+    {
+      "type": "text",
+      "id": "btn_primary_text",
+      "label": "Text",
+      "default": "Contact"
+    },
+    {
+      "type": "url",
+      "id": "btn_primary_url",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Secondary button (left)"
+    },
+    {
+      "type": "text",
+      "id": "btn_secondary_text",
+      "label": "Text",
+      "default": "Support Hub"
+    },
+    {
+      "type": "url",
+      "id": "btn_secondary_url",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Section style"
+    },
+    {
+      "type": "color",
+      "id": "section_bg",
+      "label": "Background color",
+      "default": "#F5F5F5"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "default": 48,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "default": 48,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Card style"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent line color",
+      "default": "#c97a3a"
+    },
+    {
+      "type": "color",
+      "id": "card_bg",
+      "label": "Card background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "card_radius",
+      "label": "Card border radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Title"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "range",
+      "id": "title_size_desktop",
+      "label": "Size (desktop)",
+      "min": 24,
+      "max": 48,
+      "step": 2,
+      "default": 36,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "title_size_mobile",
+      "label": "Size (mobile)",
+      "min": 20,
+      "max": 36,
+      "step": 2,
+      "default": 28,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Description"
+    },
+    {
+      "type": "color",
+      "id": "description_color",
+      "label": "Color",
+      "default": "#6b7280"
+    },
+    {
+      "type": "range",
+      "id": "description_size",
+      "label": "Size",
+      "min": 14,
+      "max": 20,
+      "step": 1,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Primary button"
+    },
+    {
+      "type": "color",
+      "id": "btn_primary_bg",
+      "label": "Background",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "btn_primary_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Secondary button"
+    },
+    {
+      "type": "color",
+      "id": "btn_secondary_bg",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "btn_secondary_color",
+      "label": "Text color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "btn_secondary_border",
+      "label": "Border color",
+      "default": "#e5e5e5"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Support banner"
+    }
+  ]
+}
+{% endschema %}
