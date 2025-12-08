@@ -196,37 +196,6 @@
         "mobile_subtitle_color": "#dbd6cc"
       }
     },
-    "collection_carousel_mHqtVb": {
-      "type": "collection-carousel",
-      "name": "Collection carousel",
-      "settings": {
-        "title": "You may also like ...",
-        "collection": "best-sellers",
-        "products_limit": 6,
-        "section_bg": "#f5f5f5",
-        "padding_top": 48,
-        "padding_bottom": 48,
-        "title_color": "#1a1a1a",
-        "title_size_desktop": 42,
-        "title_size_mobile": 28,
-        "title_weight": "400",
-        "card_info_bg": "#ffffff",
-        "card_info_opacity": 80,
-        "product_name_color": "#1a1a1a",
-        "product_name_size_desktop": 18,
-        "product_name_weight": "600",
-        "product_subtitle_color": "#6b7280",
-        "product_subtitle_size": 14,
-        "product_subtitle_weight": "400",
-        "price_color": "#c97a3a",
-        "price_size_desktop": 18,
-        "price_weight": "500",
-        "mobile_name_color": "#ffffff",
-        "product_name_size_mobile": 18,
-        "mobile_price_color": "#ffffff",
-        "price_size_mobile": 15
-      }
-    },
     "contact_banner_eEUp7p": {
       "type": "contact-banner",
       "name": "Contact banner",
@@ -269,6 +238,37 @@
         "note_color": "#ffffffb3"
       }
     },
+    "collection_carousel_mHqtVb": {
+      "type": "collection-carousel",
+      "name": "Collection carousel",
+      "settings": {
+        "title": "You may also like ...",
+        "collection": "best-sellers",
+        "products_limit": 6,
+        "section_bg": "#f5f5f5",
+        "padding_top": 48,
+        "padding_bottom": 48,
+        "title_color": "#1a1a1a",
+        "title_size_desktop": 42,
+        "title_size_mobile": 28,
+        "title_weight": "400",
+        "card_info_bg": "#ffffff",
+        "card_info_opacity": 80,
+        "product_name_color": "#1a1a1a",
+        "product_name_size_desktop": 18,
+        "product_name_weight": "600",
+        "product_subtitle_color": "#6b7280",
+        "product_subtitle_size": 14,
+        "product_subtitle_weight": "400",
+        "price_color": "#c97a3a",
+        "price_size_desktop": 18,
+        "price_weight": "500",
+        "mobile_name_color": "#ffffff",
+        "product_name_size_mobile": 18,
+        "mobile_price_color": "#ffffff",
+        "price_size_mobile": 15
+      }
+    },
     "1765072596b5ddad21": {
       "type": "apps",
       "blocks": {
@@ -294,8 +294,8 @@
     "main",
     "installation_guide_r38tPQ",
     "testimonial_showcase_V6L66t",
-    "collection_carousel_mHqtVb",
     "contact_banner_eEUp7p",
+    "collection_carousel_mHqtVb",
     "1765072596b5ddad21"
   ]
 }
