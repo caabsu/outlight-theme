@@ -1395,11 +1395,9 @@
 
     .product-media-gallery {
       flex: 1;
-      display: flex;
+      display: grid;
+      grid-template-columns: 120px 1fr;
       gap: 16px;
-      aspect-ratio: auto;
-      height: auto;
-      overflow: visible;
       background: transparent;
     }
 
@@ -1408,15 +1406,14 @@
       display: flex;
       flex-direction: column;
       gap: 8px;
-      width: 120px;
-      flex-shrink: 0;
       overflow: hidden;
-      align-self: stretch;
+      min-height: 0;
     }
 
     .product-media-thumbnail {
       flex: 1;
       min-height: 0;
+      max-height: 120px;
       border: 2px solid transparent;
       border-radius: 0;
       overflow: hidden;
@@ -1442,11 +1439,11 @@
 
     /* Desktop Main Image */
     .product-media-main {
-      flex: 1;
       position: relative;
       border-radius: 0;
       overflow: hidden;
       background: #f5f5f5;
+      aspect-ratio: 1 / 1;
     }
 
     .product-media-track {
