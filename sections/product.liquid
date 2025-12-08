@@ -58,36 +58,58 @@
 >
   {%- comment -%} Image Gallery {%- endcomment -%}
   <div class="product-media-gallery">
-    <div class="product-media-track" data-gallery-track>
-      {%- for media in product.media -%}
-        <div class="product-media-item">
-          {%- if media.media_type == 'image' -%}
-            {{ media | image_url: width: 1200 | image_tag: loading: 'lazy', class: 'product-media-image' }}
-          {%- elsif media.media_type == 'video' -%}
-            {{ media | video_tag: autoplay: true, loop: true, muted: true, controls: false }}
-          {%- else -%}
-            {{ media | media_tag }}
-          {%- endif -%}
-        </div>
-      {%- else -%}
-        <div class="product-media-item product-media-placeholder">
-          {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
-        </div>
-      {%- endfor -%}
-    </div>
-
+    {%- comment -%} Desktop Thumbnails {%- endcomment -%}
     {%- if product.media.size > 1 -%}
-      <button class="product-media-nav product-media-nav--prev" data-gallery-prev aria-label="Previous image">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
-      <button class="product-media-nav product-media-nav--next" data-gallery-next aria-label="Next image">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
+      <div class="product-media-thumbnails" data-gallery-thumbnails>
+        {%- for media in product.media -%}
+          <button
+            class="product-media-thumbnail {% if forloop.first %}product-media-thumbnail--active{% endif %}"
+            data-thumbnail-index="{{ forloop.index0 }}"
+            aria-label="View image {{ forloop.index }}"
+          >
+            {%- if media.media_type == 'image' -%}
+              {{ media | image_url: width: 200 | image_tag: loading: 'lazy' }}
+            {%- else -%}
+              {{ media.preview_image | image_url: width: 200 | image_tag: loading: 'lazy' }}
+            {%- endif -%}
+          </button>
+        {%- endfor -%}
+      </div>
     {%- endif -%}
+
+    {%- comment -%} Main Image {%- endcomment -%}
+    <div class="product-media-main" data-gallery-main>
+      <div class="product-media-track" data-gallery-track>
+        {%- for media in product.media -%}
+          <div class="product-media-item" data-media-index="{{ forloop.index0 }}">
+            {%- if media.media_type == 'image' -%}
+              {{ media | image_url: width: 1200 | image_tag: loading: 'lazy', class: 'product-media-image' }}
+            {%- elsif media.media_type == 'video' -%}
+              {{ media | video_tag: autoplay: true, loop: true, muted: true, controls: false }}
+            {%- else -%}
+              {{ media | media_tag }}
+            {%- endif -%}
+          </div>
+        {%- else -%}
+          <div class="product-media-item product-media-placeholder">
+            {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+          </div>
+        {%- endfor -%}
+      </div>
+
+      {%- if product.media.size > 1 -%}
+        <button class="product-media-nav product-media-nav--prev" data-gallery-prev aria-label="Previous image">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <button class="product-media-nav product-media-nav--next" data-gallery-next aria-label="Next image">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      {%- endif -%}
+    </div>
   </div>
 
   {%- comment -%} Lightbox Modal {%- endcomment -%}
@@ -540,6 +562,17 @@
 
   .product-media-nav--next {
     right: 4px;
+  }
+
+  /* Thumbnails - Hidden on mobile */
+  .product-media-thumbnails {
+    display: none;
+  }
+
+  .product-media-main {
+    position: relative;
+    width: 100%;
+    height: 100%;
   }
 
   /* Lightbox */
@@ -1362,27 +1395,95 @@
 
     .product-media-gallery {
       flex: 1;
+      display: flex;
+      gap: 16px;
       aspect-ratio: auto;
       height: auto;
+      overflow: visible;
+      background: transparent;
+    }
+
+    /* Desktop Thumbnails */
+    .product-media-thumbnails {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 120px;
+      flex-shrink: 0;
+      overflow-y: auto;
+      scrollbar-width: none;
+    }
+
+    .product-media-thumbnails::-webkit-scrollbar {
+      display: none;
+    }
+
+    .product-media-thumbnail {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border: 2px solid transparent;
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+      background: #f5f5f5;
+      padding: 0;
+      transition: border-color 0.2s ease;
+    }
+
+    .product-media-thumbnail img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .product-media-thumbnail:hover {
+      border-color: #ccc;
+    }
+
+    .product-media-thumbnail--active {
+      border-color: #1a1a1a;
+    }
+
+    /* Desktop Main Image */
+    .product-media-main {
+      flex: 1;
+      position: relative;
       border-radius: 12px;
       overflow: hidden;
+      background: #f5f5f5;
     }
 
     .product-media-track {
-      flex-direction: column;
-      overflow-x: visible;
-      overflow-y: auto;
+      display: flex;
+      flex-direction: row;
+      overflow: hidden;
       scroll-snap-type: none;
     }
 
     .product-media-item {
-      flex: 0 0 auto;
+      flex: 0 0 100%;
       height: auto;
       aspect-ratio: 1 / 1;
+      opacity: 0;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      transition: opacity 0.3s ease;
+    }
+
+    .product-media-item.is-active {
+      opacity: 1;
+      position: relative;
+    }
+
+    .product-media-item:first-child {
+      opacity: 1;
+      position: relative;
     }
 
     .product-media-nav {
-      display: none;
+      display: flex;
     }
 
     .product-info-wrapper {
@@ -1447,10 +1548,23 @@
   const galleryTrack = document.querySelector('[data-gallery-track]');
   const prevBtn = document.querySelector('[data-gallery-prev]');
   const nextBtn = document.querySelector('[data-gallery-next]');
+  const thumbnails = document.querySelectorAll('[data-thumbnail-index]');
 
   let currentIndex = 0;
   const items = galleryTrack ? galleryTrack.querySelectorAll('.product-media-item') : [];
   const totalItems = items.length;
+
+  // Update active states for desktop
+  function updateActiveStates(index) {
+    // Update thumbnails
+    thumbnails.forEach((thumb, i) => {
+      thumb.classList.toggle('product-media-thumbnail--active', i === index);
+    });
+    // Update main images (for desktop fade effect)
+    items.forEach((item, i) => {
+      item.classList.toggle('is-active', i === index);
+    });
+  }
 
   // Navigate to specific index
   function goToSlide(index) {
@@ -1461,12 +1575,20 @@
     if (index >= totalItems) index = 0;
 
     currentIndex = index;
-    items[currentIndex].scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+
+    // On mobile, scroll to the slide
+    if (window.innerWidth < 768) {
+      items[currentIndex].scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+    } else {
+      // On desktop, update active states
+      updateActiveStates(currentIndex);
+    }
   }
 
-  // Track current index on scroll
+  // Track current index on scroll (mobile)
   if (galleryTrack) {
     galleryTrack.addEventListener('scroll', () => {
+      if (window.innerWidth >= 768) return;
       const scrollLeft = galleryTrack.scrollLeft;
       const itemWidth = galleryTrack.offsetWidth;
       currentIndex = Math.round(scrollLeft / itemWidth);
@@ -1480,6 +1602,15 @@
   if (nextBtn) {
     nextBtn.addEventListener('click', () => goToSlide(currentIndex + 1));
   }
+
+  // Thumbnail click (desktop)
+  thumbnails.forEach(thumb => {
+    thumb.addEventListener('click', () => {
+      const index = parseInt(thumb.dataset.thumbnailIndex);
+      currentIndex = index;
+      updateActiveStates(index);
+    });
+  });
 
   // Lightbox functionality
   const lightbox = document.querySelector('[data-lightbox]');
