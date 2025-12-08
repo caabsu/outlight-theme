@@ -166,6 +166,48 @@
         "mobile_subtitle_color": "#DBD6CC"
       }
     },
+    "contact_banner_eEUp7p": {
+      "type": "contact-banner",
+      "name": "Contact banner",
+      "settings": {
+        "bg_image": "shopify://shop_images/Talin_7.jpg",
+        "bg_blur": 8,
+        "bg_brightness": 100,
+        "overlay_color": "#000000",
+        "overlay_opacity": 20,
+        "card_bg_color": "#ffffff",
+        "card_opacity": 15,
+        "card_blur": 12,
+        "card_radius": 12,
+        "card_border_color": "rgba(255, 255, 255, 0.2)",
+        "padding_desktop": 60,
+        "padding_mobile": 40,
+        "heading": "We're here for you.",
+        "heading_size": 28,
+        "heading_size_mobile": 22,
+        "heading_weight": "400",
+        "heading_color": "#ffffff",
+        "heading_color_mobile": "#ffffff",
+        "subtitle": "Whether it's tracking an order or choosing the right finish, our team is ready to help you layer your light.",
+        "subtitle_size": 15,
+        "subtitle_size_mobile": 13,
+        "subtitle_weight": "400",
+        "subtitle_color": "rgba(255, 255, 255, 0.85)",
+        "subtitle_color_mobile": "rgba(255, 255, 255, 0.85)",
+        "button_text": "Contact Us",
+        "button_link": "",
+        "button_bg": "#D97706",
+        "button_text_color": "#ffffff",
+        "button_border_color": "#D97706",
+        "button_radius": 4,
+        "button_size": 14,
+        "button_size_mobile": 13,
+        "button_weight": "500",
+        "note_text": "Response within : 10 hours",
+        "note_size": 12,
+        "note_color": "rgba(255, 255, 255, 0.7)"
+      }
+    },
     "1765072596b5ddad21": {
       "type": "apps",
       "blocks": {
@@ -190,6 +232,7 @@
   "order": [
     "main",
     "testimonial_showcase_V6L66t",
+    "contact_banner_eEUp7p",
     "1765072596b5ddad21"
   ]
 }
