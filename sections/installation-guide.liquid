@@ -36,32 +36,22 @@
       </div>
     </div>
 
-    <!-- Mobile Layout -->
-    <div class="installation-guide__card installation-guide__card--mobile">
-      <button type="button" class="installation-guide__toggle" data-installation-toggle aria-expanded="false">
-        <div class="installation-guide__label installation-guide__label--mobile">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
-          </svg>
-          {{ section.settings.mobile_label }}
-        </div>
-        <span class="installation-guide__toggle-icon">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
-            <line class="installation-guide__toggle-h" x1="4" y1="10" x2="16" y2="10"/>
-            <line class="installation-guide__toggle-v" x1="10" y1="4" x2="10" y2="16"/>
-          </svg>
-        </span>
-      </button>
-      <div class="installation-guide__collapse" data-installation-content>
-        <div class="installation-guide__content">
-          {%- if product.metafields.custom.installation_guide != blank -%}
-            {{ product.metafields.custom.installation_guide | metafield_tag }}
-          {%- else -%}
-            {{ section.settings.fallback_text }}
-          {%- endif -%}
-        </div>
+    <!-- Mobile Layout - Collapsible Tab -->
+    <details class="installation-guide__accordion">
+      <summary class="installation-guide__accordion-header">
+        <span class="installation-guide__accordion-title">{{ section.settings.mobile_label }}</span>
+        <svg class="installation-guide__accordion-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 7.5L10 12.5L15 7.5"/>
+        </svg>
+      </summary>
+      <div class="installation-guide__accordion-content">
+        {%- if product.metafields.custom.installation_guide != blank -%}
+          {{ product.metafields.custom.installation_guide | metafield_tag }}
+        {%- else -%}
+          {{ section.settings.fallback_text }}
+        {%- endif -%}
       </div>
-    </div>
+    </details>
   </div>
 </div>
 
@@ -109,19 +99,6 @@
     white-space: nowrap;
   }
 
-  .installation-guide__label--mobile {
-    position: static;
-    transform: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--mobile-label-bg);
-    color: var(--mobile-label-color);
-    padding: 8px 16px;
-    line-height: 1;
-    border-radius: 100px;
-  }
-
   .installation-guide__content {
     font-size: var(--desktop-text-size);
     font-weight: var(--desktop-text-weight);
@@ -130,12 +107,9 @@
     text-align: center;
   }
 
-  .installation-guide__toggle {
+  /* Mobile Accordion - hidden on desktop */
+  .installation-guide__accordion {
     display: none;
-  }
-
-  .installation-guide__collapse {
-    display: block;
   }
 
   @media (max-width: 768px) {
@@ -144,92 +118,57 @@
     }
 
     .installation-guide__container {
-      padding: 0 16px;
+      padding: 0;
     }
 
     .installation-guide__card--desktop {
       display: none;
     }
 
-    .installation-guide__card--mobile {
+    /* Accordion styles */
+    .installation-guide__accordion {
       display: block;
-      border-radius: 0;
+      background: var(--card-bg);
     }
 
-    .installation-guide__toggle {
+    .installation-guide__accordion-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      width: 100%;
-      background: none;
-      border: none;
-      margin: 0;
-      padding: 14px 16px;
+      padding: 16px 20px;
       cursor: pointer;
-      text-align: left;
+      list-style: none;
     }
 
-    .installation-guide__label--mobile {
-      margin: 0;
+    .installation-guide__accordion-header::-webkit-details-marker {
+      display: none;
     }
 
-    .installation-guide__toggle-icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--mobile-label-color);
+    .installation-guide__accordion-title {
+      font-size: var(--mobile-text-size);
+      font-weight: var(--mobile-text-weight);
+      color: var(--mobile-text-color);
+    }
+
+    .installation-guide__accordion-icon {
       flex-shrink: 0;
-    }
-
-    .installation-guide__toggle-icon svg {
+      color: #999;
       transition: transform 0.3s ease;
     }
 
-    .installation-guide__toggle-v {
-      transition: opacity 0.2s ease, transform 0.3s ease;
+    .installation-guide__accordion[open] .installation-guide__accordion-icon {
+      transform: rotate(180deg);
     }
 
-    .installation-guide__toggle[aria-expanded="true"] .installation-guide__toggle-v {
-      opacity: 0;
-      transform: rotate(90deg);
-    }
-
-    .installation-guide__collapse {
-      display: grid;
-      grid-template-rows: 0fr;
-      transition: grid-template-rows 0.35s ease;
-      overflow: hidden;
-    }
-
-    .installation-guide__collapse > * {
-      overflow: hidden;
-      min-height: 0;
-    }
-
-    .installation-guide__toggle[aria-expanded="true"] + .installation-guide__collapse {
-      grid-template-rows: 1fr;
-    }
-
-    .installation-guide__card--mobile .installation-guide__content {
+    .installation-guide__accordion-content {
+      padding: 0 20px 20px;
       font-size: var(--mobile-text-size);
       font-weight: var(--mobile-text-weight);
       color: var(--mobile-text-color);
       line-height: var(--mobile-line-height);
-      text-align: left;
-      padding: 14px 16px;
     }
   }
 {% endstylesheet %}
-
-{% javascript %}
-  const toggleBtn = document.querySelector('[data-installation-toggle]');
-  if (toggleBtn) {
-    toggleBtn.addEventListener('click', function() {
-      const isExpanded = this.getAttribute('aria-expanded') === 'true';
-      this.setAttribute('aria-expanded', !isExpanded);
-    });
-  }
-{% endjavascript %}
 
 {% schema %}
 {
