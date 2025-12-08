@@ -102,7 +102,6 @@
     display: flex;
     justify-content: center;
     gap: 12px;
-    flex-wrap: wrap;
   }
 
   .support-banner__btn {
@@ -110,13 +109,16 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-    padding: 14px 28px;
-    font-size: 14px;
+    padding: 12px 20px;
+    font-size: 13px;
     font-weight: 500;
     text-decoration: none;
     border-radius: 6px;
     transition: all 0.2s ease;
-    min-width: 140px;
+  }
+
+  .support-banner__btn svg {
+    display: none;
   }
 
   .support-banner__btn--primary {
@@ -158,6 +160,11 @@
 
     .support-banner__btn {
       padding: 14px 32px;
+      font-size: 14px;
+    }
+
+    .support-banner__btn svg {
+      display: block;
     }
   }
 {% endstylesheet %}
