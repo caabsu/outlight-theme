@@ -7,6 +7,14 @@
   {{ product.variants | json }}
 </script>
 
+<script type="application/json" data-variant-dimensions>
+  {
+    {%- for variant in product.variants -%}
+      "{{ variant.id }}": "{{ variant.metafields.custom.variant_dimension | default: 'N/A' | escape }}"{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+  }
+</script>
+
 <div class="product-wrapper full-width">
 <div
   class="product-container"
@@ -300,7 +308,7 @@
                 {%- if block.settings.spec_label_1 != blank -%}
                   <div class="product-details__spec-card">
                     <span class="product-details__spec-label">{{ block.settings.spec_label_1 }}</span>
-                    <span class="product-details__spec-value">{{ block.settings.spec_value_1 }}</span>
+                    <span class="product-details__spec-value" data-variant-dimension>{{ product.selected_or_first_available_variant.metafields.custom.variant_dimension | default: 'N/A' }}</span>
                   </div>
                 {%- endif -%}
                 {%- if block.settings.spec_label_2 != blank -%}
@@ -1636,6 +1644,18 @@
     }
   }
 
+  // Parse variant dimensions data
+  const dimensionsDataEl = document.querySelector('[data-variant-dimensions]');
+  let variantDimensions = {};
+
+  if (dimensionsDataEl) {
+    try {
+      variantDimensions = JSON.parse(dimensionsDataEl.textContent);
+    } catch (e) {
+      console.error('Error parsing variant dimensions:', e);
+    }
+  }
+
   // Get initial variant ID from the hidden input and store globally
   const initialInput = document.querySelector('input[name="id"]');
   window.currentProductVariantId = initialInput ? initialInput.value : null;
@@ -1741,6 +1761,12 @@
           addBtnVariant.disabled = true;
           addBtnVariant.innerHTML = soldOutText;
         }
+      }
+
+      // Update variant dimension
+      const dimensionEl = document.querySelector('[data-variant-dimension]');
+      if (dimensionEl && variantDimensions) {
+        dimensionEl.textContent = variantDimensions[matchingVariant.id] || 'N/A';
       }
     }
   });
