@@ -336,19 +336,19 @@
                 {%- if block.settings.spec_label_2 != blank -%}
                   <div class="product-details__spec-card">
                     <span class="product-details__spec-label">{{ block.settings.spec_label_2 }}</span>
-                    <span class="product-details__spec-value">{{ block.settings.spec_value_2 }}</span>
+                    <span class="product-details__spec-value">{{ product.metafields.custom.light_source | default: 'N/A' }}</span>
                   </div>
                 {%- endif -%}
                 {%- if block.settings.spec_label_3 != blank -%}
                   <div class="product-details__spec-card">
                     <span class="product-details__spec-label">{{ block.settings.spec_label_3 }}</span>
-                    <span class="product-details__spec-value">{{ block.settings.spec_value_3 }}</span>
+                    <span class="product-details__spec-value">{{ product.metafields.custom.finish | default: 'N/A' }}</span>
                   </div>
                 {%- endif -%}
                 {%- if block.settings.spec_label_4 != blank -%}
                   <div class="product-details__spec-card">
                     <span class="product-details__spec-label">{{ block.settings.spec_label_4 }}</span>
-                    <span class="product-details__spec-value">{{ block.settings.spec_value_4 }}</span>
+                    <span class="product-details__spec-value">{{ product.metafields.custom.color_temperature | default: 'N/A' }}</span>
                   </div>
                 {%- endif -%}
               </div>
