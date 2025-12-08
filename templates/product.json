@@ -120,6 +120,33 @@
         "gallery_arrow_color": "#1c1917"
       }
     },
+    "installation_guide_r38tPQ": {
+      "type": "installation-guide",
+      "name": "Installation guide",
+      "settings": {
+        "desktop_label": "INSTRUCTIONS",
+        "mobile_label": "INSTALLTION GUIDE",
+        "fallback_text": "Installation should be performed by a licensed electrician. Begin by turning off power at the main breaker panel.",
+        "section_bg": "#f7f5f0",
+        "card_bg": "#ebe8e0",
+        "card_radius": 16,
+        "card_padding_desktop": 48,
+        "card_padding_mobile": 24,
+        "label_bg": "#f7f5f0",
+        "label_color": "#1a1a1a",
+        "label_size": 13,
+        "mobile_label_bg": "#ebe8e0",
+        "mobile_label_color": "#1c1917",
+        "desktop_text_size": 17,
+        "desktop_text_weight": "400",
+        "desktop_text_color": "#3d3d3d",
+        "desktop_line_height": "1.8",
+        "mobile_text_size": 15,
+        "mobile_text_weight": "400",
+        "mobile_text_color": "#3d3d3d",
+        "mobile_line_height": "1.6"
+      }
+    },
     "testimonial_showcase_V6L66t": {
       "type": "testimonial-showcase",
       "name": "Testimonial showcase",
@@ -164,33 +191,6 @@
         "mobile_subtitle_size": 12,
         "mobile_subtitle_weight": "400",
         "mobile_subtitle_color": "#dbd6cc"
-      }
-    },
-    "installation_guide_r38tPQ": {
-      "type": "installation-guide",
-      "name": "Installation guide",
-      "settings": {
-        "desktop_label": "INSTRUCTIONS",
-        "mobile_label": "INSTALLTION GUIDE",
-        "fallback_text": "Installation should be performed by a licensed electrician. Begin by turning off power at the main breaker panel.",
-        "section_bg": "#F7F5F0",
-        "card_bg": "#EBE8E0",
-        "card_radius": 16,
-        "card_padding_desktop": 48,
-        "card_padding_mobile": 24,
-        "label_bg": "#F7F5F0",
-        "label_color": "#1a1a1a",
-        "label_size": 13,
-        "mobile_label_bg": "#EBE8E0",
-        "mobile_label_color": "#1c1917",
-        "desktop_text_size": 17,
-        "desktop_text_weight": "400",
-        "desktop_text_color": "#3d3d3d",
-        "desktop_line_height": "1.8",
-        "mobile_text_size": 15,
-        "mobile_text_weight": "400",
-        "mobile_text_color": "#3d3d3d",
-        "mobile_line_height": "1.6"
       }
     },
     "contact_banner_eEUp7p": {
@@ -258,8 +258,8 @@
   },
   "order": [
     "main",
-    "testimonial_showcase_V6L66t",
     "installation_guide_r38tPQ",
+    "testimonial_showcase_V6L66t",
     "contact_banner_eEUp7p",
     "1765072596b5ddad21"
   ]
