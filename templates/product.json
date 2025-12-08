@@ -171,7 +171,7 @@
       "name": "Installation guide",
       "settings": {
         "desktop_label": "INSTRUCTIONS",
-        "mobile_label": "GUIDE",
+        "mobile_label": "INSTALLTION GUIDE",
         "fallback_text": "Installation should be performed by a licensed electrician. Begin by turning off power at the main breaker panel.",
         "section_bg": "#F7F5F0",
         "card_bg": "#EBE8E0",
