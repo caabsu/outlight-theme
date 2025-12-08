@@ -1396,8 +1396,8 @@
     .product-media-gallery {
       flex: 1;
       display: grid;
-      grid-template-columns: 120px 1fr;
-      gap: 16px;
+      grid-template-columns: 100px 1fr;
+      gap: 12px;
       background: transparent;
     }
 
@@ -1406,14 +1406,29 @@
       display: flex;
       flex-direction: column;
       gap: 8px;
-      overflow: hidden;
-      min-height: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scrollbar-width: thin;
+      scrollbar-color: #ccc transparent;
+    }
+
+    .product-media-thumbnails::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .product-media-thumbnails::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .product-media-thumbnails::-webkit-scrollbar-thumb {
+      background: #ccc;
+      border-radius: 2px;
     }
 
     .product-media-thumbnail {
-      flex: 1;
-      min-height: 0;
-      max-height: 120px;
+      flex-shrink: 0;
+      width: 100%;
+      aspect-ratio: 1 / 1;
       border: 2px solid transparent;
       border-radius: 0;
       overflow: hidden;
