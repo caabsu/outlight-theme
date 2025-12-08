@@ -7,11 +7,22 @@
     --title-color: {{ section.settings.title_color }};
     --title-size-desktop: {{ section.settings.title_size_desktop }}px;
     --title-size-mobile: {{ section.settings.title_size_mobile }}px;
-    --card-radius: {{ section.settings.card_radius }}px;
+    --title-weight: {{ section.settings.title_weight }};
     --card-info-bg: {{ section.settings.card_info_bg }};
+    --card-info-opacity: {{ section.settings.card_info_opacity | divided_by: 100.0 }};
     --product-name-color: {{ section.settings.product_name_color }};
+    --product-name-size-desktop: {{ section.settings.product_name_size_desktop }}px;
+    --product-name-size-mobile: {{ section.settings.product_name_size_mobile }}px;
+    --product-name-weight: {{ section.settings.product_name_weight }};
     --product-subtitle-color: {{ section.settings.product_subtitle_color }};
+    --product-subtitle-size: {{ section.settings.product_subtitle_size }}px;
+    --product-subtitle-weight: {{ section.settings.product_subtitle_weight }};
     --price-color: {{ section.settings.price_color }};
+    --price-size-desktop: {{ section.settings.price_size_desktop }}px;
+    --price-size-mobile: {{ section.settings.price_size_mobile }}px;
+    --price-weight: {{ section.settings.price_weight }};
+    --mobile-name-color: {{ section.settings.mobile_name_color }};
+    --mobile-price-color: {{ section.settings.mobile_price_color }};
   "
 >
   <div class="collection-carousel__container">
@@ -34,8 +45,8 @@
             <div class="collection-carousel__info">
               <div class="collection-carousel__details">
                 <h3 class="collection-carousel__name">{{ product.title }}</h3>
-                {%- if product.metafields.custom.subtitle != blank -%}
-                  <p class="collection-carousel__subtitle">{{ product.metafields.custom.subtitle }}</p>
+                {%- if product.metafields.descriptors.subtitle != blank -%}
+                  <p class="collection-carousel__subtitle">{{ product.metafields.descriptors.subtitle }}</p>
                 {%- elsif product.type != blank -%}
                   <p class="collection-carousel__subtitle">{{ product.type }}</p>
                 {%- endif -%}
@@ -90,7 +101,7 @@
   .collection-carousel__title {
     font-family: var(--font-heading-family, Georgia, serif);
     font-size: var(--title-size-mobile);
-    font-weight: 400;
+    font-weight: var(--title-weight);
     font-style: normal;
     color: var(--title-color);
     margin: 0 0 24px;
@@ -104,7 +115,7 @@
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
     margin: 0 -24px;
-    padding: 0 24px;
+    padding: 0 calc(50% - 140px);
   }
 
   .collection-carousel__track::-webkit-scrollbar {
@@ -112,10 +123,8 @@
   }
 
   .collection-carousel__card {
-    flex: 0 0 75%;
-    max-width: 320px;
-    scroll-snap-align: start;
-    border-radius: var(--card-radius);
+    flex: 0 0 280px;
+    scroll-snap-align: center;
     overflow: hidden;
     text-decoration: none;
     position: relative;
@@ -150,17 +159,19 @@
   }
 
   .collection-carousel__name-mobile {
-    font-size: 18px;
-    font-weight: 600;
-    color: #ffffff;
+    font-family: var(--font-body-family, sans-serif);
+    font-size: var(--product-name-size-mobile);
+    font-weight: var(--product-name-weight);
+    color: var(--mobile-name-color);
     margin: 0 0 4px;
   }
 
   .collection-carousel__price-mobile {
-    font-size: 15px;
-    color: #ffffff;
+    font-family: var(--font-body-family, sans-serif);
+    font-size: var(--price-size-mobile);
+    font-weight: var(--price-weight);
+    color: var(--mobile-price-color);
     margin: 0;
-    opacity: 0.9;
   }
 
   /* Desktop styles */
@@ -176,18 +187,17 @@
     }
 
     .collection-carousel__track {
-      overflow-x: visible;
-      scroll-snap-type: none;
-      margin: 0;
-      padding: 0;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      margin: 0 -48px;
+      padding: 0 48px;
       gap: 24px;
+      scroll-snap-type: x mandatory;
+      scroll-padding-left: 48px;
     }
 
     .collection-carousel__card {
-      flex: none;
-      max-width: none;
+      flex: 0 0 calc(33.333% - 16px);
+      min-width: 300px;
+      scroll-snap-align: start;
     }
 
     /* Hide mobile overlay, show desktop info */
@@ -201,11 +211,11 @@
       align-items: flex-start;
       padding: 16px 20px;
       background: var(--card-info-bg);
+      opacity: var(--card-info-opacity);
       position: absolute;
       bottom: 16px;
       left: 16px;
       right: 16px;
-      border-radius: 8px;
     }
 
     .collection-carousel__details {
@@ -214,21 +224,25 @@
     }
 
     .collection-carousel__name {
-      font-size: 18px;
-      font-weight: 600;
+      font-family: var(--font-body-family, sans-serif);
+      font-size: var(--product-name-size-desktop);
+      font-weight: var(--product-name-weight);
       color: var(--product-name-color);
       margin: 0 0 4px;
     }
 
     .collection-carousel__subtitle {
-      font-size: 14px;
+      font-family: var(--font-body-family, sans-serif);
+      font-size: var(--product-subtitle-size);
+      font-weight: var(--product-subtitle-weight);
       color: var(--product-subtitle-color);
       margin: 0;
     }
 
     .collection-carousel__price {
-      font-size: 18px;
-      font-weight: 500;
+      font-family: var(--font-body-family, sans-serif);
+      font-size: var(--price-size-desktop);
+      font-weight: var(--price-weight);
       color: var(--price-color);
       flex-shrink: 0;
       margin-left: 16px;
@@ -238,6 +252,10 @@
   @media (min-width: 1024px) {
     .collection-carousel__track {
       gap: 32px;
+    }
+
+    .collection-carousel__card {
+      flex: 0 0 calc(33.333% - 22px);
     }
   }
 {% endstylesheet %}
@@ -302,18 +320,18 @@
     },
     {
       "type": "header",
-      "content": "Title style"
+      "content": "Section title"
     },
     {
       "type": "color",
       "id": "title_color",
-      "label": "Title color",
+      "label": "Color",
       "default": "#1a1a1a"
     },
     {
       "type": "range",
       "id": "title_size_desktop",
-      "label": "Title size (desktop)",
+      "label": "Size (desktop)",
       "min": 24,
       "max": 64,
       "step": 2,
@@ -323,7 +341,7 @@
     {
       "type": "range",
       "id": "title_size_mobile",
-      "label": "Title size (mobile)",
+      "label": "Size (mobile)",
       "min": 20,
       "max": 40,
       "step": 2,
@@ -331,42 +349,172 @@
       "unit": "px"
     },
     {
-      "type": "header",
-      "content": "Card style"
+      "type": "select",
+      "id": "title_weight",
+      "label": "Weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "400"
     },
     {
-      "type": "range",
-      "id": "card_radius",
-      "label": "Card border radius",
-      "min": 0,
-      "max": 24,
-      "step": 2,
-      "default": 12,
-      "unit": "px"
+      "type": "header",
+      "content": "Desktop info box"
     },
     {
       "type": "color",
       "id": "card_info_bg",
-      "label": "Info box background",
+      "label": "Background color",
       "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "card_info_opacity",
+      "label": "Opacity",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "default": 100,
+      "unit": "%"
+    },
+    {
+      "type": "header",
+      "content": "Desktop - Product name"
     },
     {
       "type": "color",
       "id": "product_name_color",
-      "label": "Product name color",
+      "label": "Color",
       "default": "#1a1a1a"
+    },
+    {
+      "type": "range",
+      "id": "product_name_size_desktop",
+      "label": "Size",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "default": 18,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "product_name_weight",
+      "label": "Weight",
+      "options": [
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "header",
+      "content": "Desktop - Subtitle"
     },
     {
       "type": "color",
       "id": "product_subtitle_color",
-      "label": "Subtitle color",
+      "label": "Color",
       "default": "#6b7280"
+    },
+    {
+      "type": "range",
+      "id": "product_subtitle_size",
+      "label": "Size",
+      "min": 12,
+      "max": 18,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "product_subtitle_weight",
+      "label": "Weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "header",
+      "content": "Desktop - Price"
     },
     {
       "type": "color",
       "id": "price_color",
-      "label": "Price color",
+      "label": "Color",
       "default": "#c97a3a"
+    },
+    {
+      "type": "range",
+      "id": "price_size_desktop",
+      "label": "Size",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "default": 18,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "price_weight",
+      "label": "Weight",
+      "options": [
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "header",
+      "content": "Mobile - Product name"
+    },
+    {
+      "type": "color",
+      "id": "mobile_name_color",
+      "label": "Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "product_name_size_mobile",
+      "label": "Size",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "default": 18,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Mobile - Price"
+    },
+    {
+      "type": "color",
+      "id": "mobile_price_color",
+      "label": "Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "price_size_mobile",
+      "label": "Size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "default": 15,
+      "unit": "px"
     }
   ],
   "presets": [
