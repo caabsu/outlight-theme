@@ -198,9 +198,10 @@
       display: grid;
       grid-template-rows: 0fr;
       transition: grid-template-rows 0.35s ease;
+      overflow: hidden;
     }
 
-    .installation-guide__collapse > .installation-guide__content {
+    .installation-guide__collapse > * {
       overflow: hidden;
       min-height: 0;
     }
@@ -215,7 +216,7 @@
       color: var(--mobile-text-color);
       line-height: var(--mobile-line-height);
       text-align: left;
-      padding: 0 16px 14px;
+      padding: 14px 16px;
     }
   }
 {% endstylesheet %}
