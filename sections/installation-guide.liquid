@@ -29,7 +29,7 @@
       </div>
       <div class="installation-guide__content">
         {%- if product.metafields.custom.installation_guide != blank -%}
-          {{ product.metafields.custom.installation_guide }}
+          {{ product.metafields.custom.installation_guide | metafield_tag }}
         {%- else -%}
           {{ section.settings.fallback_text }}
         {%- endif -%}
@@ -46,7 +46,7 @@
       </div>
       <div class="installation-guide__content">
         {%- if product.metafields.custom.installation_guide != blank -%}
-          {{ product.metafields.custom.installation_guide }}
+          {{ product.metafields.custom.installation_guide | metafield_tag }}
         {%- else -%}
           {{ section.settings.fallback_text }}
         {%- endif -%}
