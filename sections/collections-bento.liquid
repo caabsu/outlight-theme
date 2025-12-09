@@ -10,6 +10,8 @@
   --cb-btn-opacity: {{ section.settings.button_opacity | divided_by: 100.0 }};
   --cb-btn-text: {{ section.settings.button_text_color }};
   --cb-btn-bg: {{ section.settings.button_background }};
+  --cb-btn-size: {{ section.settings.button_font_size }}px;
+  --cb-btn-weight: {{ section.settings.button_font_weight }};
   --cb-mobile-title-size: {{ section.settings.mobile_section_title_size }}px;
   --cb-section-height: {{ section.settings.section_height }}px;
   --cb-padding-top-desktop: {{ section.settings.padding_top_desktop }}px;
@@ -206,11 +208,9 @@
     background: var(--cb-btn-bg, #D6D3D1);
     opacity: var(--cb-btn-opacity, 1);
     color: var(--cb-btn-text, #44403C);
-    font-family: var(--font-heading-family), serif;
-    font-size: 12px;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    font-family: var(--font-body-family), sans-serif;
+    font-size: var(--cb-btn-size, 14px);
+    font-weight: var(--cb-btn-weight, 500);
     text-decoration: none;
     transition: opacity 0.2s ease;
   }
@@ -294,11 +294,9 @@
     }
 
     .collections-bento__button-text {
-      font-family: var(--font-heading-family), serif;
-      font-size: 14px;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+      font-family: var(--font-body-family), sans-serif;
+      font-size: var(--cb-btn-size, 14px);
+      font-weight: var(--cb-btn-weight, 500);
       color: var(--cb-btn-text, #44403C);
       text-align: center;
       line-height: 1.4;
@@ -571,6 +569,29 @@
       "id": "button_text_color",
       "label": "Button text color",
       "default": "#44403C"
+    },
+    {
+      "type": "range",
+      "id": "button_font_size",
+      "label": "Button font size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "select",
+      "id": "button_font_weight",
+      "label": "Button font weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "500"
     },
     {
       "type": "range",
