@@ -42,7 +42,7 @@
 
   {%- comment -%} Filter Bar {%- endcomment -%}
   {% if section.settings.show_filter_bar %}
-    <div class="collection-filter-bar" style="
+    <div class="collection-filter-bar" data-filter-bar style="
       --filter-bar-bg: {{ section.settings.filter_bar_bg }};
       --filter-bar-radius: {{ section.settings.filter_bar_radius }}px;
       --filter-bar-text-size: {{ section.settings.filter_bar_text_size }}px;
@@ -51,7 +51,8 @@
       --filter-bar-icon-size: {{ section.settings.filter_bar_icon_size }}px;
       --filter-bar-divider-color: {{ section.settings.filter_bar_divider_color }};
     ">
-      <div class="collection-filter-bar__inner">
+      {%- comment -%} Default buttons state {%- endcomment -%}
+      <div class="collection-filter-bar__inner" data-filter-bar-buttons>
         <button type="button" class="collection-filter-bar__btn" data-filter-toggle>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
             <line x1="4" y1="6" x2="20" y2="6"></line>
@@ -81,6 +82,27 @@
             <line x1="16" y1="16" x2="21" y2="21"></line>
           </svg>
           <span>{{ section.settings.search_text | default: 'SEARCH' }}</span>
+        </button>
+      </div>
+
+      {%- comment -%} Search input state {%- endcomment -%}
+      <div class="collection-filter-bar__search" data-filter-bar-search hidden>
+        <svg class="collection-filter-bar__search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="11" cy="11" r="7"></circle>
+          <line x1="16" y1="16" x2="21" y2="21"></line>
+        </svg>
+        <input
+          type="text"
+          class="collection-filter-bar__search-input"
+          data-search-input
+          placeholder="Search products..."
+          autocomplete="off"
+        >
+        <button type="button" class="collection-filter-bar__search-clear" data-search-clear>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
         </button>
       </div>
     </div>
@@ -183,30 +205,6 @@
       </div>
     </div>
 
-    {%- comment -%} Search Modal {%- endcomment -%}
-    <div class="collection-search-modal" data-search-modal hidden>
-      <div class="collection-search-modal__backdrop" data-search-close></div>
-      <div class="collection-search-modal__content">
-        <div class="collection-search-modal__header">
-          <form action="{{ routes.search_url }}" method="get" class="collection-search-modal__form">
-            <input type="hidden" name="type" value="product">
-            <input type="search" name="q" placeholder="Search products..." class="collection-search-modal__input" data-search-input autocomplete="off">
-            <button type="submit" class="collection-search-modal__submit">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <circle cx="11" cy="11" r="7"></circle>
-                <line x1="16" y1="16" x2="21" y2="21"></line>
-              </svg>
-            </button>
-          </form>
-          <button type="button" class="collection-search-modal__close" data-search-close>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
-        </div>
-      </div>
-    </div>
   {% endif %}
 
   {%- comment -%} Products Grid {%- endcomment -%}
@@ -554,6 +552,76 @@
     background: var(--filter-bar-divider-color, #E5E5E5);
   }
 
+  /* Inline Search */
+  .collection-filter-bar__search {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--filter-bar-bg, #ffffff);
+    border-radius: var(--filter-bar-radius, 50px);
+    padding: 8px 16px;
+    min-width: 280px;
+  }
+
+  .collection-filter-bar__search[hidden] {
+    display: none;
+  }
+
+  .collection-filter-bar__search-icon {
+    width: var(--filter-bar-icon-size, 16px);
+    height: var(--filter-bar-icon-size, 16px);
+    color: var(--filter-bar-text-color, #1C1917);
+    flex-shrink: 0;
+    opacity: 0.6;
+  }
+
+  .collection-filter-bar__search-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 14px;
+    color: var(--filter-bar-text-color, #1C1917);
+    min-width: 0;
+  }
+
+  .collection-filter-bar__search-input::placeholder {
+    color: #A8A29E;
+  }
+
+  .collection-filter-bar__search-clear {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    background: #F5F5F4;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    color: #57534E;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+  }
+
+  .collection-filter-bar__search-clear:hover {
+    background: #E7E5E4;
+    color: #1C1917;
+  }
+
+  .collection-filter-bar__search-clear svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  @media (min-width: 768px) {
+    .collection-filter-bar__search {
+      min-width: 360px;
+    }
+  }
+
   /* Sort Dropdown */
   .collection-sort-dropdown {
     position: fixed;
@@ -814,76 +882,6 @@
     opacity: 0.9;
   }
 
-  /* Search Modal */
-  .collection-search-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 1000;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    padding-top: 100px;
-  }
-
-  .collection-search-modal[hidden] {
-    display: none;
-  }
-
-  .collection-search-modal__backdrop {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.4);
-  }
-
-  .collection-search-modal__content {
-    position: relative;
-    background: #ffffff;
-    width: 90%;
-    max-width: 600px;
-    border-radius: 12px;
-    overflow: hidden;
-  }
-
-  .collection-search-modal__header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 8px;
-  }
-
-  .collection-search-modal__form {
-    flex: 1;
-    display: flex;
-    align-items: center;
-  }
-
-  .collection-search-modal__input {
-    flex: 1;
-    padding: 16px;
-    border: none;
-    font-size: 16px;
-    outline: none;
-  }
-
-  .collection-search-modal__submit {
-    padding: 12px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: #78716C;
-  }
-
-  .collection-search-modal__close {
-    padding: 12px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: #78716C;
-  }
-
   @media (min-width: 768px) {
     .collection-sort-dropdown__inner,
     .collection-filter-modal__content {
@@ -1022,42 +1020,54 @@
       }
     }
 
-    // Search functionality
+    // Inline Search functionality
     const searchToggle = container.querySelector('[data-search-toggle]');
-    const searchModal = container.querySelector('[data-search-modal]');
-    const searchCloses = container.querySelectorAll('[data-search-close]');
     const searchInput = container.querySelector('[data-search-input]');
-    const searchForm = container.querySelector('.collection-search-modal__form');
+    const searchClear = container.querySelector('[data-search-clear]');
+    const filterBarButtons = container.querySelector('[data-filter-bar-buttons]');
+    const filterBarSearch = container.querySelector('[data-filter-bar-search]');
 
-    if (searchToggle && searchModal) {
-      searchToggle.addEventListener('click', () => {
-        searchModal.hidden = false;
-        document.body.style.overflow = 'hidden';
-        if (searchInput) searchInput.focus();
+    const showSearchBar = () => {
+      if (filterBarButtons) filterBarButtons.hidden = true;
+      if (filterBarSearch) {
+        filterBarSearch.hidden = false;
+        if (searchInput) {
+          searchInput.focus();
+        }
+      }
+    };
+
+    const hideSearchBar = () => {
+      if (filterBarSearch) filterBarSearch.hidden = true;
+      if (filterBarButtons) filterBarButtons.hidden = false;
+      if (searchInput) {
+        searchInput.value = '';
+        currentSearchTerm = '';
+        applyAllFilters();
+      }
+    };
+
+    if (searchToggle) {
+      searchToggle.addEventListener('click', showSearchBar);
+    }
+
+    if (searchClear) {
+      searchClear.addEventListener('click', hideSearchBar);
+    }
+
+    // Dynamic search as user types
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        currentSearchTerm = e.target.value.toLowerCase().trim();
+        applyAllFilters();
       });
 
-      const closeSearch = () => {
-        searchModal.hidden = true;
-        document.body.style.overflow = '';
-      };
-
-      // Prevent form submission - search is dynamic
-      if (searchForm) {
-        searchForm.addEventListener('submit', (e) => {
-          e.preventDefault();
-        });
-      }
-
-      // Dynamic search as user types
-      if (searchInput) {
-        searchInput.addEventListener('input', (e) => {
-          currentSearchTerm = e.target.value.toLowerCase().trim();
-          applyAllFilters();
-        });
-      }
-
-      searchCloses.forEach(btn => btn.addEventListener('click', closeSearch));
-      searchModal.querySelector('.collection-search-modal__backdrop')?.addEventListener('click', closeSearch);
+      // ESC key in search input closes search
+      searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          hideSearchBar();
+        }
+      });
     }
 
     // ESC key closes all modals
@@ -1069,10 +1079,6 @@
         }
         if (filterModal && !filterModal.hidden) {
           filterModal.hidden = true;
-          document.body.style.overflow = '';
-        }
-        if (searchModal && !searchModal.hidden) {
-          searchModal.hidden = true;
           document.body.style.overflow = '';
         }
       }
