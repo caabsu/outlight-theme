@@ -195,6 +195,10 @@
   }
 
   .collection-product__content {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
     padding: 0 4px;
   }
 
@@ -203,8 +207,9 @@
     font-size: var(--product-title-size, 16px);
     font-weight: var(--product-title-weight, 400);
     color: var(--product-title-color, #1C1917);
-    margin: 0 0 4px;
+    margin: 0;
     line-height: 1.3;
+    flex: 1;
   }
 
   .collection-product__price {
@@ -213,6 +218,8 @@
     font-weight: var(--product-price-weight, 400);
     color: var(--product-price-color, #78716C);
     margin: 0;
+    flex-shrink: 0;
+    text-align: right;
   }
 
   .collection-pagination {
