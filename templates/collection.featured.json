@@ -1,0 +1,62 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "collection-featured",
+      "settings": {
+        "hero_height_mobile": 300,
+        "hero_height_desktop": 450,
+        "overlay_opacity": 30,
+        "content_padding_x_mobile": 24,
+        "content_padding_x_desktop": 60,
+        "content_padding_bottom_mobile": 24,
+        "content_padding_bottom_desktop": 60,
+        "custom_title": "",
+        "title_size_mobile": 36,
+        "title_size_desktop": 56,
+        "title_color": "#ffffff",
+        "title_weight": "400",
+        "subtitle": "",
+        "subtitle_size_mobile": 14,
+        "subtitle_size_desktop": 16,
+        "subtitle_color": "#ffffff",
+        "tabs_bg": "#ffffff",
+        "tab_active_bg": "#1C1917",
+        "tab_text_color": "#78716C",
+        "tab_active_text_color": "#ffffff",
+        "tab_text_size": 11,
+        "tab_icon_size": 24,
+        "tab_all_text": "ALL",
+        "tab_1_text": "OUTDOOR",
+        "tab_2_text": "INDOOR",
+        "tab_3_text": "FLOOR",
+        "tab_4_text": "WALL",
+        "tab_5_text": "CHANDELIER",
+        "filter_text": "FILTER",
+        "sort_text": "SORT",
+        "products_per_page": 20,
+        "products_gap": 12,
+        "products_padding_x_mobile": 8,
+        "products_padding_x_desktop": 16,
+        "products_padding_top": 24,
+        "products_padding_bottom": 48,
+        "product_title_size": 16,
+        "product_title_color": "#1C1917",
+        "product_title_weight": "400",
+        "product_price_size": 14,
+        "product_price_color": "#78716C"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

@@ -163,12 +163,12 @@
 
     {%- comment -%} Right: Icons {%- endcomment -%}
     <div class="header__right">
-      <a href="{{ routes.search_url }}" class="header__icon header__icon--search" aria-label="{{ 'general.search' | t }}">
+      <button type="button" class="header__icon header__icon--search" aria-label="{{ 'general.search' | t }}" data-search-trigger>
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
           <circle cx="9" cy="9" r="6"/>
           <path d="M13.5 13.5L17 17"/>
         </svg>
-      </a>
+      </button>
 
       <a href="{{ routes.cart_url }}" class="header__icon header__cart" aria-label="{{ 'general.cart' | t }}" data-cart-trigger>
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -336,6 +336,62 @@
         </a>
       </div>
     </div>
+  </div>
+</div>
+
+{%- comment -%} Search Drawer {%- endcomment -%}
+<div class="search-drawer" data-search-drawer>
+  <div class="search-drawer__overlay" data-search-close></div>
+  <div class="search-drawer__panel">
+    <div class="search-drawer__header">
+      <h2 class="search-drawer__title">{{ section.settings.search_title | default: 'Search' }}</h2>
+      <button type="button" class="search-drawer__close" data-search-close aria-label="Close search">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M18 6L6 18M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <form action="{{ routes.search_url }}" method="get" class="search-drawer__form">
+      <input type="hidden" name="type" value="product">
+      <div class="search-drawer__input-wrapper">
+        <svg class="search-drawer__input-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="9" cy="9" r="6"/>
+          <path d="M13.5 13.5L17 17"/>
+        </svg>
+        <input
+          type="search"
+          name="q"
+          placeholder="{{ section.settings.search_placeholder | default: 'Search products...' }}"
+          class="search-drawer__input"
+          autocomplete="off"
+          data-search-input
+        >
+      </div>
+    </form>
+
+    {%- if section.settings.search_collection != blank -%}
+      <div class="search-drawer__suggested">
+        <h3 class="search-drawer__suggested-title">{{ section.settings.search_suggested_title | default: 'Most searched products' }}</h3>
+        <div class="search-drawer__products">
+          {%- for product in section.settings.search_collection.products limit: 3 -%}
+            <a href="{{ product.url }}" class="search-drawer__product">
+              <div class="search-drawer__product-image">
+                {%- if product.featured_image -%}
+                  {{ product.featured_image | image_url: width: 120, height: 120, crop: 'center' | image_tag: loading: 'lazy' }}
+                {%- else -%}
+                  <div class="search-drawer__product-placeholder"></div>
+                {%- endif -%}
+              </div>
+              <div class="search-drawer__product-info">
+                <span class="search-drawer__product-title">{{ product.title }}</span>
+                <span class="search-drawer__product-price">{{ product.price | money }}</span>
+              </div>
+            </a>
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- endif -%}
   </div>
 </div>
 
@@ -1105,6 +1161,211 @@
   body.drawer-open {
     overflow: hidden;
   }
+
+  /* Search Drawer */
+  .search-drawer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1001;
+    pointer-events: none;
+  }
+
+  .search-drawer.is-open {
+    pointer-events: auto;
+  }
+
+  .search-drawer__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .search-drawer.is-open .search-drawer__overlay {
+    opacity: 1;
+  }
+
+  .search-drawer__panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    max-width: 420px;
+    background-color: #ffffff;
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .search-drawer.is-open .search-drawer__panel {
+    transform: translateX(0);
+  }
+
+  .search-drawer__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid #E5E5E5;
+  }
+
+  .search-drawer__title {
+    font-family: var(--font-heading-family), serif;
+    font-size: 20px;
+    font-weight: 400;
+    margin: 0;
+    color: #1C1917;
+  }
+
+  .search-drawer__close {
+    background: none;
+    border: none;
+    padding: 8px;
+    margin: -8px;
+    cursor: pointer;
+    color: #78716C;
+    transition: color 0.2s ease;
+  }
+
+  .search-drawer__close:hover {
+    color: #1C1917;
+  }
+
+  .search-drawer__form {
+    padding: 20px 24px;
+  }
+
+  .search-drawer__input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .search-drawer__input-icon {
+    position: absolute;
+    left: 16px;
+    color: #A8A29E;
+    pointer-events: none;
+  }
+
+  .search-drawer__input {
+    width: 100%;
+    padding: 14px 16px 14px 48px;
+    border: 1px solid #E5E5E5;
+    border-radius: 8px;
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 16px;
+    color: #1C1917;
+    background: #F5F5F4;
+    outline: none;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+  }
+
+  .search-drawer__input:focus {
+    border-color: #1C1917;
+    background-color: #ffffff;
+  }
+
+  .search-drawer__input::placeholder {
+    color: #A8A29E;
+  }
+
+  .search-drawer__suggested {
+    padding: 0 24px 24px;
+    flex: 1;
+  }
+
+  .search-drawer__suggested-title {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #78716C;
+    margin: 0 0 16px;
+  }
+
+  .search-drawer__products {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .search-drawer__product {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px;
+    background: #F5F5F4;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+  }
+
+  .search-drawer__product:hover {
+    background: #E7E5E4;
+  }
+
+  .search-drawer__product-image {
+    width: 60px;
+    height: 60px;
+    flex-shrink: 0;
+    overflow: hidden;
+    border-radius: 4px;
+    background: #ffffff;
+  }
+
+  .search-drawer__product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .search-drawer__product-placeholder {
+    width: 100%;
+    height: 100%;
+    background: #E5E5E5;
+  }
+
+  .search-drawer__product-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  .search-drawer__product-title {
+    font-family: var(--font-heading-family), serif;
+    font-size: 15px;
+    font-weight: 400;
+    color: #1C1917;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .search-drawer__product-price {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 14px;
+    color: #78716C;
+  }
+
+  @media screen and (max-width: 768px) {
+    .search-drawer__panel {
+      max-width: 100%;
+    }
+  }
 {% endstylesheet %}
 
 {% javascript %}
@@ -1171,6 +1432,44 @@
         }
       }, 100);
     });
+  });
+
+  // Search drawer
+  const searchDrawer = document.querySelector('[data-search-drawer]');
+  const searchTrigger = document.querySelector('[data-search-trigger]');
+  const searchCloseButtons = document.querySelectorAll('[data-search-close]');
+  const searchInput = document.querySelector('[data-search-input]');
+
+  function openSearchDrawer() {
+    if (searchDrawer) {
+      searchDrawer.classList.add('is-open');
+      document.body.classList.add('drawer-open');
+      if (searchInput) {
+        setTimeout(() => searchInput.focus(), 300);
+      }
+    }
+  }
+
+  function closeSearchDrawer() {
+    if (searchDrawer) {
+      searchDrawer.classList.remove('is-open');
+      document.body.classList.remove('drawer-open');
+    }
+  }
+
+  if (searchTrigger) {
+    searchTrigger.addEventListener('click', openSearchDrawer);
+  }
+
+  searchCloseButtons.forEach(btn => {
+    btn.addEventListener('click', closeSearchDrawer);
+  });
+
+  // Close search drawer on ESC key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && searchDrawer && searchDrawer.classList.contains('is-open')) {
+      closeSearchDrawer();
+    }
   });
 {% endjavascript %}
 
@@ -1454,6 +1753,34 @@
         { "value": "700", "label": "t:options.font_weight.bold" }
       ],
       "default": "600"
+    },
+    {
+      "type": "header",
+      "content": "Search drawer"
+    },
+    {
+      "type": "text",
+      "id": "search_title",
+      "label": "Drawer title",
+      "default": "Search"
+    },
+    {
+      "type": "text",
+      "id": "search_placeholder",
+      "label": "Search placeholder",
+      "default": "Search products..."
+    },
+    {
+      "type": "text",
+      "id": "search_suggested_title",
+      "label": "Suggested products title",
+      "default": "Most searched products"
+    },
+    {
+      "type": "collection",
+      "id": "search_collection",
+      "label": "Suggested products collection",
+      "info": "Select a collection to show as suggested products"
     }
   ],
   "blocks": [
