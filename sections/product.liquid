@@ -442,6 +442,7 @@
                 --ct-warm-color: {{ section.settings.ct_warm_glow_color }};
                 --ct-neutral-color: {{ section.settings.ct_neutral_glow_color }};
                 --ct-cool-color: {{ section.settings.ct_cool_glow_color }};
+                --ct-active-color: {{ section.settings.ct_warm_glow_color }};
                 --ct-text-color: {{ section.settings.ct_text_color }};
                 --ct-subtitle-color: {{ section.settings.ct_subtitle_color }};
                 --ct-tab-bg: {{ section.settings.ct_tab_background }};
@@ -1563,6 +1564,7 @@
     width: 200px;
     height: 200px;
     border-radius: 50%;
+    background: var(--ct-active-color, var(--ct-warm-color, #F5A623));
     filter: blur(60px);
     opacity: 0.6;
     pointer-events: none;
