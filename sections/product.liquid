@@ -2802,8 +2802,10 @@
     ctTabs.forEach(tab => {
       if (tab.dataset.ctTab === mode) {
         tab.classList.add('color-temp-modal__tab--active');
+        tab.style.backgroundColor = data.color;
       } else {
         tab.classList.remove('color-temp-modal__tab--active');
+        tab.style.backgroundColor = 'transparent';
       }
     });
 
@@ -2815,8 +2817,10 @@
     mobileTabs.forEach(tab => {
       if (tab.dataset.mobileTab === mode) {
         tab.classList.add('color-temp-modal__mobile-tab--active');
+        tab.style.backgroundColor = data.color;
       } else {
         tab.classList.remove('color-temp-modal__mobile-tab--active');
+        tab.style.backgroundColor = 'transparent';
       }
     });
   }
