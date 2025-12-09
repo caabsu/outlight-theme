@@ -12,7 +12,7 @@
     "main": {
       "type": "collection-directory",
       "settings": {
-        "background_color": "#F7F5F0",
+        "background_color": "#f7f5f0",
         "padding_mobile": 16,
         "padding_desktop": 60,
         "sidebar_title": "Collections",
@@ -64,6 +64,8 @@
         "mobile_featured_title": "Best Sellers",
         "mobile_button_collection": "new-arrivals",
         "mobile_button_title": "New Arrivals",
+        "mobile_button_image": "shopify://shop_images/Jova_11.jpg",
+        "mobile_button_image_opacity": 20,
         "cta_collection": "",
         "cta_text_desktop": "SHOP BEST SELLERS",
         "cta_size_mobile": 11,
