@@ -152,9 +152,9 @@
       "type": "collections-bento",
       "name": "Collections Bento Grid",
       "settings": {
-        "grid_gap": 16,
+        "grid_gap": 10,
         "title_font_size_desktop": 28,
-        "title_font_size_mobile": 20,
+        "title_font_size_mobile": 18,
         "show_mobile_title": true,
         "mobile_title": "Collections",
         "mobile_section_title_size": 28,
