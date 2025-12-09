@@ -566,6 +566,8 @@
                     const data = ctConfig[mode];
                     if (!data) return;
 
+                    console.log('updateColorTemp:', mode, data.color, 'glow element:', mobileGlow);
+
                     // Update CSS variable
                     modal.style.setProperty('--ct-active-color', data.color);
 
@@ -582,9 +584,9 @@
                       }
                     });
 
-                    // Mobile glow - set background directly
+                    // Mobile glow - set background directly using setProperty for reliability
                     if (mobileGlow) {
-                      mobileGlow.style.backgroundColor = data.color;
+                      mobileGlow.style.setProperty('background', data.color, 'important');
                     }
 
                     // Mobile text
