@@ -1,0 +1,32 @@
+{
+  "sections": {
+    "main": {
+      "type": "collection-directory",
+      "settings": {
+        "background_color": "#FAF9F7",
+        "padding_mobile": 24,
+        "padding_desktop": 60,
+        "sidebar_title": "Collections",
+        "mobile_title": "Directory",
+        "indoor_label": "INDOOR",
+        "outdoor_label": "OUTDOOR",
+        "table_lamps_text": "Table Lamps",
+        "floor_lamps_text": "Floor Lamps",
+        "chandeliers_text": "Chandeliers",
+        "ceiling_text": "Ceiling",
+        "sconces_text": "Sconces",
+        "wall_lights_text": "Wall Mounts",
+        "path_lights_text": "Landscape",
+        "featured_label": "FEATURED COLLECTION",
+        "card1_title_desktop": "Best Sellers",
+        "card2_title_desktop": "New Arrivals",
+        "mobile_featured_title": "Best Sellers",
+        "mobile_button_title": "New Arrivals",
+        "cta_text_desktop": "SHOP BEST SELLERS"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}
