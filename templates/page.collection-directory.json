@@ -13,7 +13,7 @@
       "type": "collection-directory",
       "settings": {
         "background_color": "#F7F5F0",
-        "padding_mobile": 24,
+        "padding_mobile": 16,
         "padding_desktop": 60,
         "sidebar_title": "Collections",
         "sidebar_title_size_mobile": 32,
