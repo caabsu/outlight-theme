@@ -360,9 +360,10 @@
                     <span class="product-details__spec-label">{{ block.settings.spec_label_4 }}</span>
                     <span class="product-details__spec-value" data-variant-color-temp>{{ product.selected_or_first_available_variant.metafields.custom.color_temperature | default: 'N/A' }}</span>
                     <button type="button" class="product-details__spec-info" data-open-color-temp-modal aria-label="Color temperature info">
-                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <circle cx="8" cy="8" r="6.5"/>
-                        <path d="M8 7v4M8 5v.5"/>
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                        <circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.25"/>
+                        <circle cx="7" cy="4.5" r="0.75" fill="currentColor"/>
+                        <rect x="6.25" y="6.5" width="1.5" height="4" rx="0.75" fill="currentColor"/>
                       </svg>
                     </button>
                   </div>
@@ -433,71 +434,102 @@
             </div>
 
             {%- comment -%} Color Temperature Modal {%- endcomment -%}
-            <div class="color-temp-modal" data-color-temp-modal aria-hidden="true">
+            <div class="color-temp-modal" data-color-temp-modal aria-hidden="true"
+              style="
+                --ct-bg: {{ section.settings.ct_background_color }};
+                --ct-card-bg: {{ section.settings.ct_card_background }};
+                --ct-card-radius: {{ section.settings.ct_card_radius }}px;
+                --ct-warm-color: {{ section.settings.ct_warm_glow_color }};
+                --ct-neutral-color: {{ section.settings.ct_neutral_glow_color }};
+                --ct-cool-color: {{ section.settings.ct_cool_glow_color }};
+                --ct-text-color: {{ section.settings.ct_text_color }};
+                --ct-subtitle-color: {{ section.settings.ct_subtitle_color }};
+                --ct-tab-bg: {{ section.settings.ct_tab_background }};
+                --ct-tab-text: {{ section.settings.ct_tab_text_color }};
+                --ct-tab-active-bg: {{ section.settings.ct_tab_active_background }};
+                --ct-tab-active-text: {{ section.settings.ct_tab_active_text_color }};
+              ">
               <div class="color-temp-modal__backdrop" data-close-color-temp-modal></div>
 
               <!-- Desktop Layout -->
               <div class="color-temp-modal__desktop">
-                <button type="button" class="color-temp-modal__close" data-close-color-temp-modal aria-label="Close">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M15 5L5 15M5 5l10 10"/>
-                  </svg>
-                </button>
-
                 <div class="color-temp-modal__card">
-                  <div class="color-temp-modal__gradient">
-                    <div class="color-temp-modal__gradient-bar"></div>
-                    <div class="color-temp-modal__indicator" data-temp-indicator>
-                      <div class="color-temp-modal__indicator-line"></div>
-                    </div>
-                    <div class="color-temp-modal__markers">
-                      <span data-marker="2700">2700K</span>
-                      <span data-marker="3000">3000K</span>
-                      <span data-marker="4000">4000K</span>
-                      <span data-marker="5000">5000K</span>
-                    </div>
+                  <button type="button" class="color-temp-modal__close" data-close-color-temp-modal aria-label="Close">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <path d="M12 4L4 12M4 4l8 8"/>
+                    </svg>
+                  </button>
+
+                  <div class="color-temp-modal__orb-container">
+                    <div class="color-temp-modal__orb" data-orb></div>
                   </div>
 
-                  <div class="color-temp-modal__info-cards">
-                    <div class="color-temp-modal__info-card">
-                      <span class="color-temp-modal__info-label">COLOR</span>
-                      <span class="color-temp-modal__info-value" data-info-color>Warm Sand</span>
-                    </div>
-                    <div class="color-temp-modal__info-card">
-                      <span class="color-temp-modal__info-label">FEELING</span>
-                      <span class="color-temp-modal__info-value" data-info-feeling>Intimate</span>
-                    </div>
-                    <div class="color-temp-modal__info-card">
-                      <span class="color-temp-modal__info-label">BEST FOR</span>
-                      <span class="color-temp-modal__info-value" data-info-bestfor>Lounging</span>
-                    </div>
+                  <h2 class="color-temp-modal__title" data-ct-title>{{ section.settings.ct_warm_title }}</h2>
+                  <p class="color-temp-modal__subtitle" data-ct-subtitle>{{ section.settings.ct_warm_subtitle }}</p>
+
+                  <div class="color-temp-modal__tabs" data-ct-tabs>
+                    <button type="button" class="color-temp-modal__tab color-temp-modal__tab--active" data-ct-tab="warm">{{ section.settings.ct_tab_1_label }}</button>
+                    <button type="button" class="color-temp-modal__tab" data-ct-tab="neutral">{{ section.settings.ct_tab_2_label }}</button>
+                    <button type="button" class="color-temp-modal__tab" data-ct-tab="cool">{{ section.settings.ct_tab_3_label }}</button>
                   </div>
                 </div>
               </div>
 
               <!-- Mobile Layout -->
-              <div class="color-temp-modal__mobile" data-mobile-bg>
+              <div class="color-temp-modal__mobile" data-mobile-modal>
                 <button type="button" class="color-temp-modal__mobile-close" data-close-color-temp-modal aria-label="Close">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M18 6L6 18M6 6l12 12"/>
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M15 5L5 15M5 5l10 10"/>
                   </svg>
                 </button>
 
-                <div class="color-temp-modal__mobile-hero">
-                  <h2 class="color-temp-modal__mobile-feeling" data-mobile-feeling>Warm</h2>
-                  <span class="color-temp-modal__mobile-kelvin" data-mobile-kelvin>KELVIN: 2700</span>
+                <div class="color-temp-modal__mobile-glow" data-mobile-glow></div>
+
+                <div class="color-temp-modal__mobile-icon">
+                  <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                    <path d="M24 6C17.373 6 12 11.373 12 18c0 4.418 2.686 8.213 6.5 9.82V32a2 2 0 002 2h7a2 2 0 002-2v-4.18c3.814-1.607 6.5-5.402 6.5-9.82 0-6.627-5.373-12-12-12z" stroke="currentColor" stroke-width="2" fill="none"/>
+                    <path d="M18 36h12M20 40h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
                 </div>
 
-                <div class="color-temp-modal__mobile-selector">
-                  <span class="color-temp-modal__mobile-heading">SELECT TEMPERATURE</span>
-                  <div class="color-temp-modal__mobile-buttons">
-                    <button type="button" class="color-temp-modal__mobile-btn color-temp-modal__mobile-btn--active" data-temp-btn="2700">2700K</button>
-                    <button type="button" class="color-temp-modal__mobile-btn" data-temp-btn="3000">3000K</button>
-                    <button type="button" class="color-temp-modal__mobile-btn" data-temp-btn="4000">4000K</button>
-                  </div>
+                <div class="color-temp-modal__mobile-content">
+                  <h2 class="color-temp-modal__mobile-kelvin" data-mobile-kelvin>{{ section.settings.ct_tab_1_label }}</h2>
+                  <p class="color-temp-modal__mobile-subtitle" data-mobile-subtitle>{{ section.settings.ct_warm_mobile_subtitle }}</p>
+                </div>
+
+                <div class="color-temp-modal__mobile-tabs" data-mobile-tabs>
+                  <button type="button" class="color-temp-modal__mobile-tab color-temp-modal__mobile-tab--active" data-mobile-tab="warm">{{ section.settings.ct_warm_title }}</button>
+                  <button type="button" class="color-temp-modal__mobile-tab" data-mobile-tab="neutral">{{ section.settings.ct_neutral_title }}</button>
+                  <button type="button" class="color-temp-modal__mobile-tab" data-mobile-tab="cool">{{ section.settings.ct_cool_title }}</button>
                 </div>
               </div>
             </div>
+
+            <script type="application/json" data-ct-config>
+              {
+                "warm": {
+                  "title": {{ section.settings.ct_warm_title | json }},
+                  "subtitle": {{ section.settings.ct_warm_subtitle | json }},
+                  "mobileKelvin": {{ section.settings.ct_tab_1_label | json }},
+                  "mobileSubtitle": {{ section.settings.ct_warm_mobile_subtitle | json }},
+                  "color": {{ section.settings.ct_warm_glow_color | json }}
+                },
+                "neutral": {
+                  "title": {{ section.settings.ct_neutral_title | json }},
+                  "subtitle": {{ section.settings.ct_neutral_subtitle | json }},
+                  "mobileKelvin": {{ section.settings.ct_tab_2_label | json }},
+                  "mobileSubtitle": {{ section.settings.ct_neutral_mobile_subtitle | json }},
+                  "color": {{ section.settings.ct_neutral_glow_color | json }}
+                },
+                "cool": {
+                  "title": {{ section.settings.ct_cool_title | json }},
+                  "subtitle": {{ section.settings.ct_cool_subtitle | json }},
+                  "mobileKelvin": {{ section.settings.ct_tab_3_label | json }},
+                  "mobileSubtitle": {{ section.settings.ct_cool_mobile_subtitle | json }},
+                  "color": {{ section.settings.ct_cool_glow_color | json }}
+                }
+              }
+            </script>
 
           {%- when 'specs' -%}
             <div class="product-specs" {{ block.shopify_attributes }}>
@@ -1477,7 +1509,7 @@
   .color-temp-modal__backdrop {
     position: absolute;
     inset: 0;
-    background: rgba(245, 245, 245, 0.95);
+    background: var(--ct-bg, #0a0a0a);
   }
 
   /* Desktop Layout - hidden on mobile */
@@ -1488,126 +1520,136 @@
   /* Mobile Layout */
   .color-temp-modal__mobile {
     position: relative;
-    width: 100%;
-    height: 100%;
+    width: calc(100% - 32px);
+    max-width: 360px;
+    margin: auto;
     display: flex;
     flex-direction: column;
-    background: linear-gradient(180deg, #F5A623 0%, #FFCC66 100%);
-    transition: background 0.4s ease;
-  }
-
-  .color-temp-modal__mobile[data-temp="3000"] {
-    background: linear-gradient(180deg, #FFD680 0%, #FFE5A3 100%);
-  }
-
-  .color-temp-modal__mobile[data-temp="4000"] {
-    background: linear-gradient(180deg, #FFF0D4 0%, #FFFAF0 100%);
+    align-items: center;
+    background: var(--ct-card-bg, #1a1a1a);
+    border-radius: var(--ct-card-radius, 24px);
+    padding: 24px;
+    padding-top: 48px;
+    overflow: hidden;
   }
 
   .color-temp-modal__mobile-close {
     position: absolute;
     top: 16px;
     right: 16px;
-    width: 44px;
-    height: 44px;
+    width: 32px;
+    height: 32px;
     border: none;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
+    background: transparent;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #fff;
+    color: rgba(255, 255, 255, 0.5);
     z-index: 10;
-    transition: background 0.2s ease;
+    transition: color 0.2s ease;
   }
 
   .color-temp-modal__mobile-close:hover {
-    background: rgba(255, 255, 255, 0.3);
+    color: rgba(255, 255, 255, 0.8);
   }
 
-  .color-temp-modal__mobile[data-temp="4000"] .color-temp-modal__mobile-close {
-    color: #1a1a1a;
+  .color-temp-modal__mobile-glow {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: var(--ct-warm-color, #F5A623);
+    filter: blur(60px);
+    opacity: 0.6;
+    transition: background 0.4s ease;
+    pointer-events: none;
   }
 
-  .color-temp-modal__mobile-hero {
-    flex: 1;
+  .color-temp-modal__mobile-icon {
+    position: relative;
+    z-index: 1;
+    width: 80px;
+    height: 80px;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 60px 24px;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 24px;
   }
 
-  .color-temp-modal__mobile-feeling {
-    font-family: var(--font-heading-family), serif;
-    font-size: 64px;
-    font-weight: 400;
-    font-style: italic;
-    color: #fff;
-    margin: 0 0 16px;
-    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-    transition: color 0.4s ease;
+  .color-temp-modal__mobile-icon::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: var(--ct-warm-color, #F5A623);
+    opacity: 0.3;
+    filter: blur(20px);
+    transition: background 0.4s ease;
   }
 
-  .color-temp-modal__mobile[data-temp="4000"] .color-temp-modal__mobile-feeling {
-    color: #1a1a1a;
+  .color-temp-modal__mobile-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    margin-bottom: 32px;
   }
 
   .color-temp-modal__mobile-kelvin {
-    font-size: 12px;
+    font-family: var(--font-heading-family), serif;
+    font-size: 48px;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--ct-text-color, #ffffff);
+    margin: 0 0 8px;
+    letter-spacing: -0.02em;
+  }
+
+  .color-temp-modal__mobile-subtitle {
+    font-size: 14px;
     font-weight: 500;
-    letter-spacing: 0.15em;
-    color: rgba(255, 255, 255, 0.8);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ct-warm-color, #F5A623);
+    margin: 0;
     transition: color 0.4s ease;
   }
 
-  .color-temp-modal__mobile[data-temp="4000"] .color-temp-modal__mobile-kelvin {
-    color: rgba(0, 0, 0, 0.5);
-  }
-
-  .color-temp-modal__mobile-selector {
-    background: #fff;
-    padding: 24px;
-    border-radius: 24px 24px 0 0;
-  }
-
-  .color-temp-modal__mobile-heading {
-    display: block;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    color: #9CA3AF;
-    margin-bottom: 16px;
-    text-align: center;
-  }
-
-  .color-temp-modal__mobile-buttons {
+  .color-temp-modal__mobile-tabs {
+    position: relative;
+    z-index: 1;
     display: flex;
-    gap: 12px;
+    width: 100%;
+    background: var(--ct-tab-bg, #2a2a2a);
+    border-radius: 100px;
+    padding: 4px;
   }
 
-  .color-temp-modal__mobile-btn {
+  .color-temp-modal__mobile-tab {
     flex: 1;
-    padding: 14px 16px;
-    border: 2px solid #e5e5e5;
-    background: #fff;
-    border-radius: 8px;
+    padding: 12px 16px;
+    border: none;
+    background: transparent;
+    border-radius: 100px;
     font-size: 14px;
-    font-weight: 600;
-    color: #1a1a1a;
+    font-weight: 500;
+    color: var(--ct-tab-text, rgba(255, 255, 255, 0.6));
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
   }
 
-  .color-temp-modal__mobile-btn:hover {
-    border-color: #d1d5db;
+  .color-temp-modal__mobile-tab:hover {
+    color: var(--ct-text-color, #ffffff);
   }
 
-  .color-temp-modal__mobile-btn--active {
-    border-color: #F5A623;
-    background: #FFFBF5;
-    color: #F5A623;
+  .color-temp-modal__mobile-tab--active {
+    background: var(--ct-tab-active-bg, #F5A623);
+    color: var(--ct-tab-active-text, #000000);
   }
 
   /* Desktop Styles */
@@ -1617,146 +1659,116 @@
     }
 
     .color-temp-modal__desktop {
-      display: block;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       position: relative;
       width: 100%;
-      max-width: 700px;
-      background: #fff;
-      border-radius: 24px;
-      padding: 48px;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+      height: 100%;
+    }
+
+    .color-temp-modal__card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 420px;
+      background: var(--ct-card-bg, #1a1a1a);
+      border-radius: var(--ct-card-radius, 24px);
+      padding: 48px 40px 40px;
+      overflow: hidden;
     }
 
     .color-temp-modal__close {
       position: absolute;
-      top: 20px;
-      right: 20px;
-      width: 36px;
-      height: 36px;
+      top: 16px;
+      right: 16px;
+      width: 32px;
+      height: 32px;
       border: none;
-      background: #f5f5f5;
+      background: transparent;
       border-radius: 50%;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #6b7280;
-      transition: all 0.2s ease;
+      color: rgba(255, 255, 255, 0.4);
+      transition: color 0.2s ease;
+      z-index: 10;
     }
 
     .color-temp-modal__close:hover {
-      background: #e5e5e5;
-      color: #1a1a1a;
+      color: rgba(255, 255, 255, 0.7);
     }
 
-    .color-temp-modal__card {
-      display: flex;
-      flex-direction: column;
-      gap: 32px;
-    }
-
-    .color-temp-modal__gradient {
+    .color-temp-modal__orb-container {
       position: relative;
-      padding: 24px 0;
+      width: 140px;
+      height: 140px;
+      margin-bottom: 32px;
     }
 
-    .color-temp-modal__gradient-bar {
-      height: 64px;
-      border-radius: 12px;
-      background: linear-gradient(90deg,
-        #F5A623 0%,
-        #FFCC66 25%,
-        #FFE5A3 50%,
-        #FFF5E0 75%,
-        #E8F4F8 100%
-      );
-      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
-    }
-
-    .color-temp-modal__indicator {
+    .color-temp-modal__orb {
       position: absolute;
-      top: 24px;
-      left: 5%;
-      width: 4px;
-      height: 64px;
-      transition: left 0.4s ease;
+      inset: 0;
+      border-radius: 50%;
+      background: radial-gradient(circle at 40% 40%,
+        rgba(255, 255, 255, 0.9) 0%,
+        var(--ct-warm-color, #F5A623) 40%,
+        transparent 70%
+      );
+      box-shadow:
+        0 0 60px 30px var(--ct-warm-color, #F5A623),
+        0 0 100px 60px color-mix(in srgb, var(--ct-warm-color, #F5A623) 50%, transparent),
+        0 0 140px 90px color-mix(in srgb, var(--ct-warm-color, #F5A623) 25%, transparent);
+      transition: all 0.5s ease;
     }
 
-    .color-temp-modal__indicator[data-position="3000"] {
-      left: 25%;
+    .color-temp-modal__title {
+      font-family: var(--font-heading-family), serif;
+      font-size: 32px;
+      font-weight: 400;
+      color: var(--ct-text-color, #ffffff);
+      margin: 0 0 8px;
+      text-align: center;
     }
 
-    .color-temp-modal__indicator[data-position="4000"] {
-      left: 55%;
+    .color-temp-modal__subtitle {
+      font-size: 14px;
+      color: var(--ct-subtitle-color, rgba(255, 255, 255, 0.6));
+      margin: 0 0 32px;
+      text-align: center;
     }
 
-    .color-temp-modal__indicator[data-position="5000"] {
-      left: 85%;
-    }
-
-    .color-temp-modal__indicator-line {
-      width: 100%;
-      height: 100%;
-      background: #1a1a1a;
-      border-radius: 2px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    }
-
-    .color-temp-modal__markers {
+    .color-temp-modal__tabs {
       display: flex;
-      justify-content: space-between;
-      padding: 12px 0 0;
+      width: 100%;
+      background: var(--ct-tab-bg, #2a2a2a);
+      border-radius: 100px;
+      padding: 4px;
     }
 
-    .color-temp-modal__markers span {
-      font-size: 13px;
+    .color-temp-modal__tab {
+      flex: 1;
+      padding: 12px 20px;
+      border: none;
+      background: transparent;
+      border-radius: 100px;
+      font-size: 14px;
       font-weight: 500;
-      color: #9CA3AF;
+      color: var(--ct-tab-text, rgba(255, 255, 255, 0.6));
       cursor: pointer;
-      padding: 4px 8px;
-      border-radius: 4px;
-      transition: all 0.2s ease;
-    }
-
-    .color-temp-modal__markers span:hover {
-      background: #f5f5f5;
-      color: #1a1a1a;
-    }
-
-    .color-temp-modal__markers span.active {
-      color: #1a1a1a;
-      font-weight: 600;
-    }
-
-    .color-temp-modal__info-cards {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-    }
-
-    .color-temp-modal__info-card {
-      background: #FAFAFA;
-      border: 1px solid #f0f0f0;
-      border-radius: 12px;
-      padding: 20px;
-      text-align: left;
-    }
-
-    .color-temp-modal__info-label {
-      display: block;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      color: #9CA3AF;
-      margin-bottom: 8px;
-    }
-
-    .color-temp-modal__info-value {
-      display: block;
-      font-size: 18px;
-      font-weight: 500;
-      color: #1a1a1a;
       transition: all 0.3s ease;
+    }
+
+    .color-temp-modal__tab:hover {
+      color: var(--ct-text-color, #ffffff);
+    }
+
+    .color-temp-modal__tab--active {
+      background: var(--ct-tab-active-bg, #F5A623);
+      color: var(--ct-tab-active-text, #000000);
     }
   }
 
@@ -2716,28 +2728,31 @@
   const openColorTempBtn = document.querySelector('[data-open-color-temp-modal]');
   const closeColorTempBtns = document.querySelectorAll('[data-close-color-temp-modal]');
 
+  // Load config from JSON
+  const ctConfigEl = document.querySelector('[data-ct-config]');
+  let ctConfig = {};
+  if (ctConfigEl) {
+    try {
+      ctConfig = JSON.parse(ctConfigEl.textContent);
+    } catch (e) {
+      console.error('Error parsing color temp config:', e);
+    }
+  }
+
   // Desktop elements
-  const tempIndicator = document.querySelector('[data-temp-indicator]');
-  const tempMarkers = document.querySelectorAll('[data-marker]');
-  const infoColor = document.querySelector('[data-info-color]');
-  const infoFeeling = document.querySelector('[data-info-feeling]');
-  const infoBestFor = document.querySelector('[data-info-bestfor]');
+  const ctOrb = document.querySelector('[data-orb]');
+  const ctTitle = document.querySelector('[data-ct-title]');
+  const ctSubtitle = document.querySelector('[data-ct-subtitle]');
+  const ctTabs = document.querySelectorAll('[data-ct-tab]');
 
   // Mobile elements
-  const mobileBg = document.querySelector('[data-mobile-bg]');
-  const mobileFeeling = document.querySelector('[data-mobile-feeling]');
+  const mobileGlow = document.querySelector('[data-mobile-glow]');
   const mobileKelvin = document.querySelector('[data-mobile-kelvin]');
-  const mobileBtns = document.querySelectorAll('[data-temp-btn]');
+  const mobileSubtitle = document.querySelector('[data-mobile-subtitle]');
+  const mobileTabs = document.querySelectorAll('[data-mobile-tab]');
+  const mobileIcon = document.querySelector('.color-temp-modal__mobile-icon');
 
-  // Temperature data
-  const tempData = {
-    '2700': { color: 'Warm Sand', feeling: 'Warm', bestFor: 'Lounging', mobileFeeling: 'Warm' },
-    '3000': { color: 'Soft Amber', feeling: 'Intimate', bestFor: 'Relaxing', mobileFeeling: 'Soft' },
-    '4000': { color: 'Natural White', feeling: 'Balanced', bestFor: 'Working', mobileFeeling: 'Bright' },
-    '5000': { color: 'Cool White', feeling: 'Energizing', bestFor: 'Focus', mobileFeeling: 'Cool' }
-  };
-
-  let currentTemp = '2700';
+  let currentMode = 'warm';
 
   function openColorTempModal() {
     if (!colorTempModal) return;
@@ -2751,44 +2766,53 @@
     document.body.style.overflow = '';
   }
 
-  function updateColorTemp(temp) {
-    currentTemp = temp;
-    const data = tempData[temp] || tempData['2700'];
+  function updateColorTemp(mode) {
+    currentMode = mode;
+    const data = ctConfig[mode] || ctConfig.warm;
+    if (!data) return;
 
-    // Update desktop indicator position
-    if (tempIndicator) {
-      tempIndicator.setAttribute('data-position', temp);
+    // Update desktop orb color
+    if (ctOrb) {
+      ctOrb.style.background = `radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.9) 0%, ${data.color} 40%, transparent 70%)`;
+      ctOrb.style.boxShadow = `0 0 60px 30px ${data.color}, 0 0 100px 60px color-mix(in srgb, ${data.color} 50%, transparent), 0 0 140px 90px color-mix(in srgb, ${data.color} 25%, transparent)`;
     }
 
-    // Update desktop markers
-    tempMarkers.forEach(marker => {
-      if (marker.dataset.marker === temp) {
-        marker.classList.add('active');
+    // Update desktop title and subtitle
+    if (ctTitle) ctTitle.textContent = data.title;
+    if (ctSubtitle) ctSubtitle.textContent = data.subtitle;
+
+    // Update desktop tabs
+    ctTabs.forEach(tab => {
+      if (tab.dataset.ctTab === mode) {
+        tab.classList.add('color-temp-modal__tab--active');
       } else {
-        marker.classList.remove('active');
+        tab.classList.remove('color-temp-modal__tab--active');
       }
     });
 
-    // Update desktop info cards
-    if (infoColor) infoColor.textContent = data.color;
-    if (infoFeeling) infoFeeling.textContent = data.feeling;
-    if (infoBestFor) infoBestFor.textContent = data.bestFor;
+    // Update mobile glow
+    if (mobileGlow) {
+      mobileGlow.style.background = data.color;
+    }
 
-    // Update mobile background
-    if (mobileBg) {
-      mobileBg.setAttribute('data-temp', temp);
+    // Update mobile icon glow
+    if (mobileIcon) {
+      mobileIcon.style.setProperty('--glow-color', data.color);
     }
 
     // Update mobile text
-    if (mobileFeeling) mobileFeeling.textContent = data.mobileFeeling;
-    if (mobileKelvin) mobileKelvin.textContent = 'KELVIN: ' + temp;
+    if (mobileKelvin) mobileKelvin.textContent = data.mobileKelvin;
+    if (mobileSubtitle) {
+      mobileSubtitle.textContent = data.mobileSubtitle;
+      mobileSubtitle.style.color = data.color;
+    }
 
-    // Update mobile buttons
-    mobileBtns.forEach(btn => {
-      if (btn.dataset.tempBtn === temp) {
-        btn.classList.add('color-temp-modal__mobile-btn--active');
+    // Update mobile tabs
+    mobileTabs.forEach(tab => {
+      if (tab.dataset.mobileTab === mode) {
+        tab.classList.add('color-temp-modal__mobile-tab--active');
       } else {
-        btn.classList.remove('color-temp-modal__mobile-btn--active');
+        tab.classList.remove('color-temp-modal__mobile-tab--active');
       }
     });
   }
@@ -2802,17 +2826,17 @@
     btn.addEventListener('click', closeColorTempModal);
   });
 
-  // Desktop marker clicks
-  tempMarkers.forEach(marker => {
-    marker.addEventListener('click', () => {
-      updateColorTemp(marker.dataset.marker);
+  // Desktop tab clicks
+  ctTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      updateColorTemp(tab.dataset.ctTab);
     });
   });
 
-  // Mobile button clicks
-  mobileBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      updateColorTemp(btn.dataset.tempBtn);
+  // Mobile tab clicks
+  mobileTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      updateColorTemp(tab.dataset.mobileTab);
     });
   });
 
@@ -2822,11 +2846,6 @@
       closeColorTempModal();
     }
   });
-
-  // Initialize with first marker active
-  if (tempMarkers.length > 0) {
-    tempMarkers[0].classList.add('active');
-  }
 {% endjavascript %}
 
 {% schema %}
@@ -3757,6 +3776,174 @@
       "id": "gallery_arrow_color",
       "label": "Arrow color",
       "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Color temperature popup"
+    },
+    {
+      "type": "color",
+      "id": "ct_background_color",
+      "label": "Background color",
+      "default": "#0a0a0a"
+    },
+    {
+      "type": "color",
+      "id": "ct_card_background",
+      "label": "Card background",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "range",
+      "id": "ct_card_radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Card corner radius",
+      "default": 24
+    },
+    {
+      "type": "color",
+      "id": "ct_text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "ct_subtitle_color",
+      "label": "Subtitle color",
+      "default": "#999999"
+    },
+    {
+      "type": "header",
+      "content": "Tab controls"
+    },
+    {
+      "type": "color",
+      "id": "ct_tab_background",
+      "label": "Tab bar background",
+      "default": "#2a2a2a"
+    },
+    {
+      "type": "color",
+      "id": "ct_tab_text_color",
+      "label": "Tab text color",
+      "default": "#999999"
+    },
+    {
+      "type": "color",
+      "id": "ct_tab_active_background",
+      "label": "Active tab background",
+      "default": "#F5A623"
+    },
+    {
+      "type": "color",
+      "id": "ct_tab_active_text_color",
+      "label": "Active tab text color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Tab 1 - Warm"
+    },
+    {
+      "type": "text",
+      "id": "ct_tab_1_label",
+      "label": "Tab label",
+      "default": "2700K"
+    },
+    {
+      "type": "color",
+      "id": "ct_warm_glow_color",
+      "label": "Glow color",
+      "default": "#F5A623"
+    },
+    {
+      "type": "text",
+      "id": "ct_warm_title",
+      "label": "Title",
+      "default": "Warm"
+    },
+    {
+      "type": "text",
+      "id": "ct_warm_subtitle",
+      "label": "Subtitle",
+      "default": "Best for relaxing environments."
+    },
+    {
+      "type": "text",
+      "id": "ct_warm_mobile_subtitle",
+      "label": "Mobile subtitle",
+      "default": "SUNSET GLOW"
+    },
+    {
+      "type": "header",
+      "content": "Tab 2 - Neutral"
+    },
+    {
+      "type": "text",
+      "id": "ct_tab_2_label",
+      "label": "Tab label",
+      "default": "3000K"
+    },
+    {
+      "type": "color",
+      "id": "ct_neutral_glow_color",
+      "label": "Glow color",
+      "default": "#FFD180"
+    },
+    {
+      "type": "text",
+      "id": "ct_neutral_title",
+      "label": "Title",
+      "default": "Neutral"
+    },
+    {
+      "type": "text",
+      "id": "ct_neutral_subtitle",
+      "label": "Subtitle",
+      "default": "Perfect balance for any space."
+    },
+    {
+      "type": "text",
+      "id": "ct_neutral_mobile_subtitle",
+      "label": "Mobile subtitle",
+      "default": "SOFT AMBER"
+    },
+    {
+      "type": "header",
+      "content": "Tab 3 - Cool"
+    },
+    {
+      "type": "text",
+      "id": "ct_tab_3_label",
+      "label": "Tab label",
+      "default": "4000K"
+    },
+    {
+      "type": "color",
+      "id": "ct_cool_glow_color",
+      "label": "Glow color",
+      "default": "#E8F4F8"
+    },
+    {
+      "type": "text",
+      "id": "ct_cool_title",
+      "label": "Title",
+      "default": "Cool"
+    },
+    {
+      "type": "text",
+      "id": "ct_cool_subtitle",
+      "label": "Subtitle",
+      "default": "Ideal for focused activities."
+    },
+    {
+      "type": "text",
+      "id": "ct_cool_mobile_subtitle",
+      "label": "Mobile subtitle",
+      "default": "DAYLIGHT"
     }
   ],
   "presets": [
