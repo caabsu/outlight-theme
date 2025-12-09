@@ -422,10 +422,11 @@
                     </svg>
                   </button>
                 </div>
-                <div class="specs-modal__content">
+                <div class="specs-modal__content" data-specs-content>
                   {%- if product.metafields.custom.collapsible_measurement != blank -%}
-                    <div class="specs-modal__data" data-specs-content style="display:none;">{{ product.metafields.custom.collapsible_measurement | metafield_tag }}</div>
-                    <div class="specs-modal__fallback" data-specs-fallback style="display:none;">{{ product.metafields.custom.collapsible_measurement.value | default: product.metafields.custom.collapsible_measurement | newline_to_br }}</div>
+                    {%- assign specs_metafield = product.metafields.custom.collapsible_measurement -%}
+                    <script type="application/json" data-specs-raw>{{ specs_metafield.value | json }}</script>
+                    <div class="specs-modal__parsed" data-specs-parsed></div>
                   {%- else -%}
                     <p class="specs-modal__empty">No specifications available.</p>
                   {%- endif -%}
@@ -506,30 +507,134 @@
               </div>
             </div>
 
-            <script type="application/json" data-ct-config>
-              {
-                "warm": {
-                  "title": {{ section.settings.ct_warm_title | json }},
-                  "subtitle": {{ section.settings.ct_warm_subtitle | json }},
-                  "mobileKelvin": {{ section.settings.ct_tab_1_label | json }},
-                  "mobileSubtitle": {{ section.settings.ct_warm_mobile_subtitle | json }},
-                  "color": {{ section.settings.ct_warm_glow_color | json }}
-                },
-                "neutral": {
-                  "title": {{ section.settings.ct_neutral_title | json }},
-                  "subtitle": {{ section.settings.ct_neutral_subtitle | json }},
-                  "mobileKelvin": {{ section.settings.ct_tab_2_label | json }},
-                  "mobileSubtitle": {{ section.settings.ct_neutral_mobile_subtitle | json }},
-                  "color": {{ section.settings.ct_neutral_glow_color | json }}
-                },
-                "cool": {
-                  "title": {{ section.settings.ct_cool_title | json }},
-                  "subtitle": {{ section.settings.ct_cool_subtitle | json }},
-                  "mobileKelvin": {{ section.settings.ct_tab_3_label | json }},
-                  "mobileSubtitle": {{ section.settings.ct_cool_mobile_subtitle | json }},
-                  "color": {{ section.settings.ct_cool_glow_color | json }}
+            <script>
+              (function() {
+                const ctConfig = {
+                  warm: {
+                    title: {{ section.settings.ct_warm_title | json }},
+                    subtitle: {{ section.settings.ct_warm_subtitle | json }},
+                    mobileKelvin: {{ section.settings.ct_tab_1_label | json }},
+                    mobileSubtitle: {{ section.settings.ct_warm_mobile_subtitle | json }},
+                    color: {{ section.settings.ct_warm_glow_color | json }}
+                  },
+                  neutral: {
+                    title: {{ section.settings.ct_neutral_title | json }},
+                    subtitle: {{ section.settings.ct_neutral_subtitle | json }},
+                    mobileKelvin: {{ section.settings.ct_tab_2_label | json }},
+                    mobileSubtitle: {{ section.settings.ct_neutral_mobile_subtitle | json }},
+                    color: {{ section.settings.ct_neutral_glow_color | json }}
+                  },
+                  cool: {
+                    title: {{ section.settings.ct_cool_title | json }},
+                    subtitle: {{ section.settings.ct_cool_subtitle | json }},
+                    mobileKelvin: {{ section.settings.ct_tab_3_label | json }},
+                    mobileSubtitle: {{ section.settings.ct_cool_mobile_subtitle | json }},
+                    color: {{ section.settings.ct_cool_glow_color | json }}
+                  }
+                };
+
+                function initColorTempModal() {
+                  const modal = document.querySelector('[data-color-temp-modal]');
+                  if (!modal) return;
+
+                  const openBtn = document.querySelector('[data-open-color-temp-modal]');
+                  const closeBtns = modal.querySelectorAll('[data-close-color-temp-modal]');
+                  const backdrop = modal.querySelector('.color-temp-modal__backdrop');
+
+                  // Desktop elements
+                  const ctTitle = modal.querySelector('[data-ct-title]');
+                  const ctSubtitle = modal.querySelector('[data-ct-subtitle]');
+                  const ctTabs = modal.querySelectorAll('[data-ct-tab]');
+
+                  // Mobile elements
+                  const mobileGlow = modal.querySelector('[data-mobile-glow]');
+                  const mobileKelvin = modal.querySelector('[data-mobile-kelvin]');
+                  const mobileSubtitle = modal.querySelector('[data-mobile-subtitle]');
+                  const mobileTabs = modal.querySelectorAll('[data-mobile-tab]');
+
+                  function openModal() {
+                    modal.setAttribute('aria-hidden', 'false');
+                    document.body.style.overflow = 'hidden';
+                  }
+
+                  function closeModal() {
+                    modal.setAttribute('aria-hidden', 'true');
+                    document.body.style.overflow = '';
+                  }
+
+                  function updateColorTemp(mode) {
+                    const data = ctConfig[mode];
+                    if (!data) return;
+
+                    // Update CSS variable
+                    modal.style.setProperty('--ct-active-color', data.color);
+
+                    // Desktop
+                    if (ctTitle) ctTitle.textContent = data.title;
+                    if (ctSubtitle) ctSubtitle.textContent = data.subtitle;
+                    ctTabs.forEach(function(tab) {
+                      if (tab.dataset.ctTab === mode) {
+                        tab.classList.add('color-temp-modal__tab--active');
+                        tab.style.backgroundColor = data.color;
+                      } else {
+                        tab.classList.remove('color-temp-modal__tab--active');
+                        tab.style.backgroundColor = 'transparent';
+                      }
+                    });
+
+                    // Mobile glow - set background directly
+                    if (mobileGlow) {
+                      mobileGlow.style.backgroundColor = data.color;
+                    }
+
+                    // Mobile text
+                    if (mobileKelvin) mobileKelvin.textContent = data.mobileKelvin;
+                    if (mobileSubtitle) {
+                      mobileSubtitle.textContent = data.mobileSubtitle;
+                      mobileSubtitle.style.color = data.color;
+                    }
+
+                    // Mobile tabs
+                    mobileTabs.forEach(function(tab) {
+                      if (tab.dataset.mobileTab === mode) {
+                        tab.classList.add('color-temp-modal__mobile-tab--active');
+                        tab.style.backgroundColor = data.color;
+                      } else {
+                        tab.classList.remove('color-temp-modal__mobile-tab--active');
+                        tab.style.backgroundColor = 'transparent';
+                      }
+                    });
+                  }
+
+                  // Event listeners
+                  if (openBtn) openBtn.addEventListener('click', openModal);
+                  closeBtns.forEach(function(btn) { btn.addEventListener('click', closeModal); });
+                  if (backdrop) backdrop.addEventListener('click', closeModal);
+
+                  ctTabs.forEach(function(tab) {
+                    tab.addEventListener('click', function() { updateColorTemp(tab.dataset.ctTab); });
+                  });
+
+                  mobileTabs.forEach(function(tab) {
+                    tab.addEventListener('click', function() { updateColorTemp(tab.dataset.mobileTab); });
+                  });
+
+                  document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && modal.getAttribute('aria-hidden') === 'false') {
+                      closeModal();
+                    }
+                  });
+
+                  // Initialize
+                  updateColorTemp('warm');
                 }
-              }
+
+                if (document.readyState === 'loading') {
+                  document.addEventListener('DOMContentLoaded', initColorTempModal);
+                } else {
+                  initColorTempModal();
+                }
+              })();
             </script>
 
           {%- when 'specs' -%}
@@ -1382,6 +1487,39 @@
     padding: 1.5rem;
     overflow-y: auto;
     flex: 1;
+  }
+
+  .specs-modal__parsed {
+    font-family: var(--font-primary-family), sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #1C1917;
+  }
+
+  .specs-modal__parsed p {
+    margin: 0 0 1rem;
+    font-weight: 500;
+  }
+
+  .specs-modal__parsed p:last-child {
+    margin-bottom: 0;
+  }
+
+  .specs-modal__parsed ul,
+  .specs-modal__parsed ol {
+    margin: 0 0 1rem;
+    padding-left: 0;
+    list-style: none;
+  }
+
+  .specs-modal__parsed li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #F5F5F4;
+    color: #57534E;
+  }
+
+  .specs-modal__parsed li:last-child {
+    border-bottom: none;
   }
 
   .specs-modal__data {
@@ -2478,200 +2616,70 @@
   const specsModal = document.querySelector('[data-specs-modal]');
   const openSpecsBtn = document.querySelector('[data-open-specs-modal]');
   const closeSpecsBtns = document.querySelectorAll('[data-close-specs-modal]');
-  const specsContent = document.querySelector('[data-specs-content]');
 
-  // Extract text from Shopify rich text JSON structure
-  function extractTextFromRichText(node) {
+  // Render rich text AST to HTML
+  function renderRichTextNode(node) {
     if (!node) return '';
 
-    // Handle text nodes
-    if (node.type === 'text' && node.value) {
-      return node.value;
+    if (node.type === 'text') {
+      return node.value || '';
     }
 
-    // Handle list items - join with bullet points
-    if (node.type === 'list' && node.children) {
-      return node.children.map(child => '• ' + extractTextFromRichText(child)).join(' ');
+    if (node.type === 'root' && node.children) {
+      return node.children.map(renderRichTextNode).join('');
     }
 
-    // Handle paragraphs - add newline
     if (node.type === 'paragraph' && node.children) {
-      return node.children.map(extractTextFromRichText).join('') + ' ';
+      return '<p>' + node.children.map(renderRichTextNode).join('') + '</p>';
     }
 
-    // Handle other nodes with children
+    if (node.type === 'list' && node.children) {
+      const tag = node.listType === 'ordered' ? 'ol' : 'ul';
+      return '<' + tag + '>' + node.children.map(renderRichTextNode).join('') + '</' + tag + '>';
+    }
+
+    if (node.type === 'list-item' && node.children) {
+      return '<li>' + node.children.map(renderRichTextNode).join('') + '</li>';
+    }
+
+    if (node.type === 'heading' && node.children) {
+      const level = node.level || 3;
+      return '<h' + level + '>' + node.children.map(renderRichTextNode).join('') + '</h' + level + '>';
+    }
+
+    if (node.type === 'link' && node.children) {
+      return '<a href="' + (node.url || '#') + '">' + node.children.map(renderRichTextNode).join('') + '</a>';
+    }
+
     if (node.children && Array.isArray(node.children)) {
-      return node.children.map(extractTextFromRichText).join('');
+      return node.children.map(renderRichTextNode).join('');
     }
 
     return '';
   }
 
-  // Parse specs content - handles plain text with bullets and rich text JSON
-  // Format: bullet items (•) are Label: Value pairs, non-bulleted text ending with : is a section header
-  function parseSpecsContent(data) {
-    const sections = [];
-    let currentSection = { title: '', items: [] };
-
-    // Get plain text content
-    const temp = document.createElement('div');
-    temp.innerHTML = data;
-    let text = temp.textContent || temp.innerText || data;
-
-    // Check if content is raw JSON/Ruby hash format (rich text metafield)
-    // Pattern: {"type"=>"root", "children"=>[...]} or {"type":"root","children":[...]}
-    const trimmedText = text.trim();
-    if (trimmedText.startsWith('{') && (trimmedText.includes('"type"=>"root"') || trimmedText.includes('"type":"root"'))) {
-      // Convert Ruby hash format to JSON (=> to :)
-      let jsonStr = trimmedText.replace(/=>/g, ':');
-      // Try to parse as JSON
-      try {
-        const richText = JSON.parse(jsonStr);
-        text = extractTextFromRichText(richText);
-      } catch (e) {
-        // If parsing fails, try to extract text using regex
-        const textMatches = trimmedText.match(/"value"\s*(?:=>|:)\s*"([^"]+)"/g);
-        if (textMatches) {
-          const extractedTexts = textMatches.map(m => {
-            const match = m.match(/"value"\s*(?:=>|:)\s*"([^"]+)"/);
-            return match ? match[1] : '';
-          }).filter(t => t);
-          text = extractedTexts.join(' • ');
-        }
-      }
-    }
-
-    // Normalize whitespace
-    text = text.replace(/\s+/g, ' ').trim();
-
-    // Split by bullet character
-    const parts = text.split('•');
-
-    for (let i = 0; i < parts.length; i++) {
-      let part = parts[i].trim();
-      if (!part) continue;
-
-      if (i === 0) {
-        // First part - before any bullets - might be a section header
-        // Check for section header pattern (text ending with :)
-        const headerMatch = part.match(/^([A-Za-z][A-Za-z\s]*?):\s*$/);
-        if (headerMatch) {
-          currentSection.title = headerMatch[1].trim();
-        } else if (part.length < 40 && !part.includes(':')) {
-          // Short text without colon - treat as header
-          currentSection.title = part;
-        }
-        // Otherwise ignore (unusual content before first bullet)
-      } else {
-        // Bullet item - check if it contains a section header at the end
-        // Pattern: "content text SectionName:" (new section follows)
-        const sectionBreakMatch = part.match(/^(.+?)\s+([A-Z][A-Za-z\s]+):\s*$/);
-
-        if (sectionBreakMatch) {
-          // There's content followed by a new section header
-          const content = sectionBreakMatch[1].trim();
-          const newHeader = sectionBreakMatch[2].trim();
-
-          // Parse the content as label:value
-          if (content) {
-            const colonPos = content.indexOf(':');
-            if (colonPos > 0) {
-              currentSection.items.push({
-                label: content.slice(0, colonPos).trim(),
-                value: content.slice(colonPos + 1).trim() || 'N/A'
-              });
-            } else {
-              currentSection.items.push({ label: '', value: content });
-            }
-          }
-
-          // Start new section
-          if (currentSection.title || currentSection.items.length > 0) {
-            sections.push(currentSection);
-          }
-          currentSection = { title: newHeader, items: [] };
-        } else {
-          // Regular bullet item
-          // Check if this is ONLY a section header (ends with : and nothing after)
-          const standaloneHeader = part.match(/^([A-Z][A-Za-z\s]+):\s*$/);
-          if (standaloneHeader) {
-            // This is a section header like "Specifications:"
-            if (currentSection.title || currentSection.items.length > 0) {
-              sections.push(currentSection);
-            }
-            currentSection = { title: standaloneHeader[1].trim(), items: [] };
-          } else {
-            // Parse as Label: Value
-            const colonPos = part.indexOf(':');
-            if (colonPos > 0) {
-              currentSection.items.push({
-                label: part.slice(0, colonPos).trim(),
-                value: part.slice(colonPos + 1).trim() || 'N/A'
-              });
-            } else {
-              // No colon - just a value
-              currentSection.items.push({ label: '', value: part });
-            }
-          }
-        }
-      }
-    }
-
-    // Add the last section
-    if (currentSection.title || currentSection.items.length > 0) {
-      sections.push(currentSection);
-    }
-
-    return { sections };
-  }
-
   function renderSpecsModal() {
-    if (!specsContent) return;
+    const rawDataEl = document.querySelector('[data-specs-raw]');
+    const parsedEl = document.querySelector('[data-specs-parsed]');
 
-    const fallbackEl = document.querySelector('[data-specs-fallback]');
-    const rawData = specsContent.innerHTML.trim();
+    if (!rawDataEl || !parsedEl) return;
 
-    // If content is empty, show nothing
-    if (!rawData) return;
+    try {
+      const rawValue = JSON.parse(rawDataEl.textContent);
 
-    const { sections } = parseSpecsContent(rawData);
-
-    // If parsing succeeded and we have sections with items, render them
-    const hasItems = sections.some(s => s.items.length > 0);
-    if (sections.length > 0 && hasItems) {
-      let html = '';
-      sections.forEach(section => {
-        html += '<div class="specs-modal__section">';
-        if (section.title) {
-          html += '<h4 class="specs-modal__section-title">' + section.title + '</h4>';
-        }
-        html += '<ul class="specs-modal__list">';
-        section.items.forEach(item => {
-          html += '<li class="specs-modal__item">';
-          if (item.label) {
-            html += '<span class="specs-modal__label">' + item.label + '</span>';
-            html += '<span class="specs-modal__value">' + item.value + '</span>';
-          } else {
-            html += '<span class="specs-modal__value specs-modal__value--full">' + item.value + '</span>';
-          }
-          html += '</li>';
-        });
-        html += '</ul>';
-        html += '</div>';
-      });
-
-      // Insert after the hidden data element
-      const container = specsContent.parentElement;
-      const renderedContent = document.createElement('div');
-      renderedContent.className = 'specs-modal__rendered';
-      renderedContent.innerHTML = html;
-      container.appendChild(renderedContent);
-    } else if (fallbackEl) {
-      // Fallback: show the raw content directly
-      fallbackEl.style.display = 'block';
-    } else {
-      // Last resort: show the raw data element content
-      specsContent.style.display = 'block';
+      // Check if it's a rich text AST (has type: "root")
+      if (rawValue && rawValue.type === 'root') {
+        parsedEl.innerHTML = renderRichTextNode(rawValue);
+      } else if (typeof rawValue === 'string') {
+        // Plain string - just display with line breaks
+        parsedEl.innerHTML = rawValue.replace(/\n/g, '<br>');
+      } else {
+        // Unknown format - stringify
+        parsedEl.textContent = JSON.stringify(rawValue, null, 2);
+      }
+    } catch (e) {
+      // If JSON parse fails, show raw text
+      parsedEl.textContent = rawDataEl.textContent;
     }
   }
 
@@ -2705,129 +2713,6 @@
       closeSpecsModal();
     }
   });
-
-  // Color Temperature Modal
-  const colorTempModal = document.querySelector('[data-color-temp-modal]');
-  const openColorTempBtn = document.querySelector('[data-open-color-temp-modal]');
-  const closeColorTempBtns = document.querySelectorAll('[data-close-color-temp-modal]');
-
-  // Load config from JSON
-  const ctConfigEl = document.querySelector('[data-ct-config]');
-  let ctConfig = {};
-  if (ctConfigEl) {
-    try {
-      ctConfig = JSON.parse(ctConfigEl.textContent);
-    } catch (e) {
-      console.error('Error parsing color temp config:', e);
-    }
-  }
-
-  // Desktop elements
-  const ctTitle = document.querySelector('[data-ct-title]');
-  const ctSubtitle = document.querySelector('[data-ct-subtitle]');
-  const ctTabs = document.querySelectorAll('[data-ct-tab]');
-
-  // Mobile elements (queried fresh in updateColorTemp for reliability)
-  const mobileKelvin = document.querySelector('[data-mobile-kelvin]');
-  const mobileSubtitle = document.querySelector('[data-mobile-subtitle]');
-  const mobileTabs = document.querySelectorAll('[data-mobile-tab]');
-
-  let currentMode = 'warm';
-
-  function openColorTempModal() {
-    if (!colorTempModal) return;
-    colorTempModal.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
-  }
-
-  function closeColorTempModal() {
-    if (!colorTempModal) return;
-    colorTempModal.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
-  }
-
-  function updateColorTemp(mode) {
-    currentMode = mode;
-    const data = ctConfig[mode] || ctConfig.warm;
-    if (!data) return;
-
-    // Update active color CSS variable on the modal (controls orb, glow, icon)
-    if (colorTempModal) {
-      colorTempModal.style.setProperty('--ct-active-color', data.color);
-    }
-
-    // Update desktop title and subtitle
-    if (ctTitle) ctTitle.textContent = data.title;
-    if (ctSubtitle) ctSubtitle.textContent = data.subtitle;
-
-    // Update desktop tabs
-    ctTabs.forEach(tab => {
-      if (tab.dataset.ctTab === mode) {
-        tab.classList.add('color-temp-modal__tab--active');
-        tab.style.backgroundColor = data.color;
-      } else {
-        tab.classList.remove('color-temp-modal__tab--active');
-        tab.style.backgroundColor = 'transparent';
-      }
-    });
-
-    // Update mobile glow - query fresh each time
-    const mobileGlow = document.querySelector('[data-mobile-glow]');
-    if (mobileGlow) {
-      mobileGlow.style.background = data.color;
-    }
-
-    // Update mobile text
-    if (mobileKelvin) mobileKelvin.textContent = data.mobileKelvin;
-    if (mobileSubtitle) {
-      mobileSubtitle.textContent = data.mobileSubtitle;
-      mobileSubtitle.style.color = data.color;
-    }
-
-    // Update mobile tabs
-    mobileTabs.forEach(tab => {
-      if (tab.dataset.mobileTab === mode) {
-        tab.classList.add('color-temp-modal__mobile-tab--active');
-        tab.style.backgroundColor = data.color;
-      } else {
-        tab.classList.remove('color-temp-modal__mobile-tab--active');
-        tab.style.backgroundColor = 'transparent';
-      }
-    });
-  }
-
-  // Event listeners
-  if (openColorTempBtn) {
-    openColorTempBtn.addEventListener('click', openColorTempModal);
-  }
-
-  closeColorTempBtns.forEach(btn => {
-    btn.addEventListener('click', closeColorTempModal);
-  });
-
-  // Desktop tab clicks
-  ctTabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      updateColorTemp(tab.dataset.ctTab);
-    });
-  });
-
-  // Mobile tab clicks
-  mobileTabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      updateColorTemp(tab.dataset.mobileTab);
-    });
-  });
-
-  // Close on escape
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && colorTempModal && colorTempModal.getAttribute('aria-hidden') === 'false') {
-      closeColorTempModal();
-    }
-  });
-
-  // Initialize with warm state
-  updateColorTemp('warm');
 {% endjavascript %}
 
 {% schema %}
