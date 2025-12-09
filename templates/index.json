@@ -147,10 +147,38 @@
         "padding_top": 60,
         "padding_bottom": 60
       }
+    },
+    "collections_bento_PrXpLn": {
+      "type": "collections-bento",
+      "name": "Collections Bento Grid",
+      "settings": {
+        "grid_gap": 16,
+        "title_font_size_desktop": 28,
+        "title_font_size_mobile": 20,
+        "show_mobile_title": true,
+        "mobile_title": "Collections",
+        "mobile_section_title_size": 28,
+        "collection_1": "floor-table-lamps",
+        "title_1": "",
+        "collection_2": "wall-lights",
+        "title_2": "",
+        "collection_3": "chandeliers",
+        "title_3": "",
+        "collection_4": "best-sellers",
+        "title_4": "",
+        "show_view_all": true,
+        "show_mobile_button": true,
+        "button_text": "View All Collections",
+        "view_all_url": "",
+        "button_background": "#D6D3D1",
+        "button_text_color": "#44403C",
+        "button_opacity": 100
+      }
     }
   },
   "order": [
     "hero_banner_MERtpM",
-    "featured_collection_fBjcht"
+    "featured_collection_fBjcht",
+    "collections_bento_PrXpLn"
   ]
 }
