@@ -143,34 +143,34 @@
               <h4 class="collection-filter-group__title">Category</h4>
               <div class="collection-filter-collections">
                 {% if section.settings.filter_collection_1 != blank %}
-                  <a href="{{ section.settings.filter_collection_1.url }}" class="collection-filter-collection{% if collection.handle == section.settings.filter_collection_1.handle %} is-active{% endif %}">
+                  <button type="button" class="collection-filter-collection" data-filter-cat="{{ section.settings.filter_collection_1.handle }}">
                     {{ section.settings.filter_collection_1_text | default: section.settings.filter_collection_1.title }}
-                  </a>
+                  </button>
                 {% endif %}
                 {% if section.settings.filter_collection_2 != blank %}
-                  <a href="{{ section.settings.filter_collection_2.url }}" class="collection-filter-collection{% if collection.handle == section.settings.filter_collection_2.handle %} is-active{% endif %}">
+                  <button type="button" class="collection-filter-collection" data-filter-cat="{{ section.settings.filter_collection_2.handle }}">
                     {{ section.settings.filter_collection_2_text | default: section.settings.filter_collection_2.title }}
-                  </a>
+                  </button>
                 {% endif %}
                 {% if section.settings.filter_collection_3 != blank %}
-                  <a href="{{ section.settings.filter_collection_3.url }}" class="collection-filter-collection{% if collection.handle == section.settings.filter_collection_3.handle %} is-active{% endif %}">
+                  <button type="button" class="collection-filter-collection" data-filter-cat="{{ section.settings.filter_collection_3.handle }}">
                     {{ section.settings.filter_collection_3_text | default: section.settings.filter_collection_3.title }}
-                  </a>
+                  </button>
                 {% endif %}
                 {% if section.settings.filter_collection_4 != blank %}
-                  <a href="{{ section.settings.filter_collection_4.url }}" class="collection-filter-collection{% if collection.handle == section.settings.filter_collection_4.handle %} is-active{% endif %}">
+                  <button type="button" class="collection-filter-collection" data-filter-cat="{{ section.settings.filter_collection_4.handle }}">
                     {{ section.settings.filter_collection_4_text | default: section.settings.filter_collection_4.title }}
-                  </a>
+                  </button>
                 {% endif %}
                 {% if section.settings.filter_collection_5 != blank %}
-                  <a href="{{ section.settings.filter_collection_5.url }}" class="collection-filter-collection{% if collection.handle == section.settings.filter_collection_5.handle %} is-active{% endif %}">
+                  <button type="button" class="collection-filter-collection" data-filter-cat="{{ section.settings.filter_collection_5.handle }}">
                     {{ section.settings.filter_collection_5_text | default: section.settings.filter_collection_5.title }}
-                  </a>
+                  </button>
                 {% endif %}
                 {% if section.settings.filter_collection_6 != blank %}
-                  <a href="{{ section.settings.filter_collection_6.url }}" class="collection-filter-collection{% if collection.handle == section.settings.filter_collection_6.handle %} is-active{% endif %}">
+                  <button type="button" class="collection-filter-collection" data-filter-cat="{{ section.settings.filter_collection_6.handle }}">
                     {{ section.settings.filter_collection_6_text | default: section.settings.filter_collection_6.title }}
-                  </a>
+                  </button>
                 {% endif %}
               </div>
             </div>
@@ -224,9 +224,12 @@
     --product-price-weight: {{ section.settings.product_price_weight }};
   ">
     {% paginate collection.products by section.settings.products_per_page %}
-      <div class="collection-products__grid">
+      <div class="collection-products__grid" data-products-grid>
         {% for product in collection.products %}
-          <a href="{{ product.url }}" class="collection-product">
+          {%- capture product_collections -%}
+            {%- for col in product.collections -%}{{ col.handle }}{% unless forloop.last %},{% endunless %}{%- endfor -%}
+          {%- endcapture -%}
+          <a href="{{ product.url }}" class="collection-product" data-product data-collections="{{ product_collections }}">
             <div class="collection-product__image-wrapper">
               {% if product.featured_image %}
                 {{ product.featured_image | image_url: width: 600, height: 600, crop: 'center' | image_tag: class: 'collection-product__image', loading: 'lazy' }}
@@ -897,6 +900,10 @@
     const filterApply = container.querySelector('[data-filter-apply]');
     const priceMin = container.querySelector('[data-price-min]');
     const priceMax = container.querySelector('[data-price-max]');
+    const filterCats = container.querySelectorAll('[data-filter-cat]');
+    const products = container.querySelectorAll('[data-product]');
+
+    let selectedCategories = new Set();
 
     if (filterToggle && filterModal) {
       filterToggle.addEventListener('click', () => {
@@ -911,17 +918,53 @@
 
       filterCloses.forEach(btn => btn.addEventListener('click', closeFilter));
 
+      // Category filter toggle
+      filterCats.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const cat = btn.dataset.filterCat;
+          if (selectedCategories.has(cat)) {
+            selectedCategories.delete(cat);
+            btn.classList.remove('is-active');
+          } else {
+            selectedCategories.add(cat);
+            btn.classList.add('is-active');
+          }
+        });
+      });
+
+      // Apply filters
+      const applyFilters = () => {
+        products.forEach(product => {
+          const productCollections = (product.dataset.collections || '').split(',').map(c => c.trim());
+
+          // Check category filter
+          let matchesCategory = true;
+          if (selectedCategories.size > 0) {
+            matchesCategory = [...selectedCategories].some(cat => productCollections.includes(cat));
+          }
+
+          // Show/hide product
+          if (matchesCategory) {
+            product.style.display = '';
+          } else {
+            product.style.display = 'none';
+          }
+        });
+      };
+
       if (filterClear) {
         filterClear.addEventListener('click', () => {
           if (priceMin) priceMin.value = '';
           if (priceMax) priceMax.value = '';
+          selectedCategories.clear();
+          filterCats.forEach(btn => btn.classList.remove('is-active'));
+          products.forEach(product => product.style.display = '');
         });
       }
 
       if (filterApply) {
         filterApply.addEventListener('click', () => {
-          // Price filtering would require backend support or JS filtering
-          // For now, just close the modal
+          applyFilters();
           closeFilter();
         });
       }
