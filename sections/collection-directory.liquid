@@ -239,7 +239,6 @@
 
   .directory-mobile__featured-image-wrapper {
     position: relative;
-    border-radius: 12px;
     overflow: hidden;
     aspect-ratio: 4 / 3;
   }
@@ -279,15 +278,14 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 20px 24px;
+    padding: 14px 16px;
     background: #ffffff;
-    border-radius: 12px;
     text-decoration: none;
     color: var(--link-color, #1C1917);
     font-family: var(--font-heading-family), serif;
     font-size: var(--link-size-mobile, 20px);
     font-weight: 400;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
   }
 
   .directory-mobile__button svg {
@@ -565,11 +563,11 @@
       "type": "range",
       "id": "padding_mobile",
       "label": "Padding (mobile)",
-      "min": 16,
-      "max": 60,
+      "min": 8,
+      "max": 40,
       "step": 4,
       "unit": "px",
-      "default": 24
+      "default": 16
     },
     {
       "type": "range",
