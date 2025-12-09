@@ -1563,7 +1563,7 @@
     width: 200px;
     height: 200px;
     border-radius: 50%;
-    background: var(--ct-warm-color, #F5A623);
+    background: var(--ct-active-color, var(--ct-warm-color, #F5A623));
     filter: blur(60px);
     opacity: 0.6;
     transition: background 0.4s ease;
@@ -1588,7 +1588,7 @@
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    background: var(--ct-warm-color, #F5A623);
+    background: var(--ct-active-color, var(--ct-warm-color, #F5A623));
     opacity: 0.3;
     filter: blur(20px);
     transition: background 0.4s ease;
@@ -1717,13 +1717,13 @@
       border-radius: 50%;
       background: radial-gradient(circle at 40% 40%,
         rgba(255, 255, 255, 0.9) 0%,
-        var(--ct-warm-color, #F5A623) 40%,
+        var(--ct-active-color, var(--ct-warm-color, #F5A623)) 40%,
         transparent 70%
       );
       box-shadow:
-        0 0 60px 30px var(--ct-warm-color, #F5A623),
-        0 0 100px 60px color-mix(in srgb, var(--ct-warm-color, #F5A623) 50%, transparent),
-        0 0 140px 90px color-mix(in srgb, var(--ct-warm-color, #F5A623) 25%, transparent);
+        0 0 60px 30px var(--ct-active-color, var(--ct-warm-color, #F5A623)),
+        0 0 100px 60px color-mix(in srgb, var(--ct-active-color, var(--ct-warm-color, #F5A623)) 50%, transparent),
+        0 0 140px 90px color-mix(in srgb, var(--ct-active-color, var(--ct-warm-color, #F5A623)) 25%, transparent);
       transition: all 0.5s ease;
     }
 
@@ -2742,17 +2742,14 @@
   }
 
   // Desktop elements
-  const ctOrb = document.querySelector('[data-orb]');
   const ctTitle = document.querySelector('[data-ct-title]');
   const ctSubtitle = document.querySelector('[data-ct-subtitle]');
   const ctTabs = document.querySelectorAll('[data-ct-tab]');
 
   // Mobile elements
-  const mobileGlow = document.querySelector('[data-mobile-glow]');
   const mobileKelvin = document.querySelector('[data-mobile-kelvin]');
   const mobileSubtitle = document.querySelector('[data-mobile-subtitle]');
   const mobileTabs = document.querySelectorAll('[data-mobile-tab]');
-  const mobileIcon = document.querySelector('.color-temp-modal__mobile-icon');
 
   let currentMode = 'warm';
 
@@ -2773,10 +2770,9 @@
     const data = ctConfig[mode] || ctConfig.warm;
     if (!data) return;
 
-    // Update desktop orb color
-    if (ctOrb) {
-      ctOrb.style.background = `radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.9) 0%, ${data.color} 40%, transparent 70%)`;
-      ctOrb.style.boxShadow = `0 0 60px 30px ${data.color}, 0 0 100px 60px color-mix(in srgb, ${data.color} 50%, transparent), 0 0 140px 90px color-mix(in srgb, ${data.color} 25%, transparent)`;
+    // Update active color CSS variable on the modal (controls orb, glow, icon)
+    if (colorTempModal) {
+      colorTempModal.style.setProperty('--ct-active-color', data.color);
     }
 
     // Update desktop title and subtitle
@@ -2791,16 +2787,6 @@
         tab.classList.remove('color-temp-modal__tab--active');
       }
     });
-
-    // Update mobile glow
-    if (mobileGlow) {
-      mobileGlow.style.background = data.color;
-    }
-
-    // Update mobile icon glow
-    if (mobileIcon) {
-      mobileIcon.style.setProperty('--glow-color', data.color);
-    }
 
     // Update mobile text
     if (mobileKelvin) mobileKelvin.textContent = data.mobileKelvin;
