@@ -43,6 +43,10 @@
   {%- comment -%} Products Grid {%- endcomment -%}
   <div class="collection-products" style="
     --products-gap: {{ section.settings.products_gap }}px;
+    --products-padding-x-mobile: {{ section.settings.products_padding_x_mobile }}px;
+    --products-padding-x-desktop: {{ section.settings.products_padding_x_desktop }}px;
+    --products-padding-top: {{ section.settings.products_padding_top }}px;
+    --products-padding-bottom: {{ section.settings.products_padding_bottom }}px;
     --product-title-size: {{ section.settings.product_title_size }}px;
     --product-title-color: {{ section.settings.product_title_color }};
     --product-title-weight: {{ section.settings.product_title_weight }};
@@ -148,9 +152,10 @@
 
   /* Products Grid */
   .collection-products {
-    padding: 24px 16px 48px;
-    max-width: 1400px;
-    margin: 0 auto;
+    padding-top: var(--products-padding-top, 24px);
+    padding-bottom: var(--products-padding-bottom, 48px);
+    padding-left: var(--products-padding-x-mobile, 12px);
+    padding-right: var(--products-padding-x-mobile, 12px);
   }
 
   .collection-products__grid {
@@ -251,7 +256,8 @@
     }
 
     .collection-products {
-      padding: 40px 40px 80px;
+      padding-left: var(--products-padding-x-desktop, 24px);
+      padding-right: var(--products-padding-x-desktop, 24px);
     }
 
     .collection-products__grid {
@@ -274,11 +280,6 @@
     }
   }
 
-  @media (min-width: 1200px) {
-    .collection-products {
-      padding: 48px 60px 100px;
-    }
-  }
 {% endstylesheet %}
 
 {% schema %}
@@ -483,11 +484,51 @@
       "type": "range",
       "id": "products_gap",
       "label": "Gap between products",
-      "min": 8,
+      "min": 4,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "products_padding_x_mobile",
+      "label": "Side padding (mobile)",
+      "min": 0,
       "max": 40,
       "step": 4,
       "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "products_padding_x_desktop",
+      "label": "Side padding (desktop)",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
       "default": 16
+    },
+    {
+      "type": "range",
+      "id": "products_padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "products_padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 48
     },
     {
       "type": "header",
