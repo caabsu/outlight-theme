@@ -11,7 +11,29 @@
   "sections": {
     "main": {
       "type": "collection",
-      "settings": {}
+      "settings": {
+        "hero_height_mobile": 300,
+        "hero_height_desktop": 450,
+        "overlay_opacity": 30,
+        "custom_title": "",
+        "title_size_mobile": 36,
+        "title_size_desktop": 56,
+        "title_color": "#ffffff",
+        "title_weight": "400",
+        "subtitle": "Explore our collection.",
+        "subtitle_size_mobile": 14,
+        "subtitle_size_desktop": 16,
+        "subtitle_color": "#ffffff",
+        "subtitle_weight": "400",
+        "products_per_page": 20,
+        "products_gap": 16,
+        "product_title_size": 16,
+        "product_title_color": "#1c1917",
+        "product_title_weight": "400",
+        "product_price_size": 14,
+        "product_price_color": "#78716c",
+        "product_price_weight": "400"
+      }
     }
   },
   "order": [
