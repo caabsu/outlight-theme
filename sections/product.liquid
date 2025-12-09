@@ -484,7 +484,7 @@
                   </svg>
                 </button>
 
-                <div class="color-temp-modal__mobile-glow" data-mobile-glow></div>
+                <div class="color-temp-modal__mobile-glow" data-mobile-glow style="background: {{ section.settings.ct_warm_glow_color }};"></div>
 
                 <div class="color-temp-modal__mobile-icon">
                   <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
@@ -1564,7 +1564,6 @@
     width: 200px;
     height: 200px;
     border-radius: 50%;
-    background: var(--ct-active-color, var(--ct-warm-color, #F5A623));
     filter: blur(60px);
     opacity: 0.6;
     pointer-events: none;
@@ -2728,8 +2727,7 @@
   const ctSubtitle = document.querySelector('[data-ct-subtitle]');
   const ctTabs = document.querySelectorAll('[data-ct-tab]');
 
-  // Mobile elements
-  const mobileGlow = document.querySelector('[data-mobile-glow]');
+  // Mobile elements (queried fresh in updateColorTemp for reliability)
   const mobileKelvin = document.querySelector('[data-mobile-kelvin]');
   const mobileSubtitle = document.querySelector('[data-mobile-subtitle]');
   const mobileTabs = document.querySelectorAll('[data-mobile-tab]');
@@ -2773,8 +2771,11 @@
       }
     });
 
-    // Update mobile glow
-    if (mobileGlow) mobileGlow.style.background = data.color;
+    // Update mobile glow - query fresh each time
+    const mobileGlow = document.querySelector('[data-mobile-glow]');
+    if (mobileGlow) {
+      mobileGlow.style.background = data.color;
+    }
 
     // Update mobile text
     if (mobileKelvin) mobileKelvin.textContent = data.mobileKelvin;
