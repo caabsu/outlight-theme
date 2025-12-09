@@ -1,0 +1,1034 @@
+{% comment %}
+  Collection Directory - A page showcasing all collections organized by category
+{% endcomment %}
+
+<div class="collection-directory" style="
+  --dir-bg: {{ section.settings.background_color }};
+  --dir-padding-mobile: {{ section.settings.padding_mobile }}px;
+  --dir-padding-desktop: {{ section.settings.padding_desktop }}px;
+  --sidebar-title-size-mobile: {{ section.settings.sidebar_title_size_mobile }}px;
+  --sidebar-title-size-desktop: {{ section.settings.sidebar_title_size_desktop }}px;
+  --sidebar-title-color: {{ section.settings.sidebar_title_color }};
+  --category-label-size-mobile: {{ section.settings.category_label_size_mobile }}px;
+  --category-label-size-desktop: {{ section.settings.category_label_size_desktop }}px;
+  --category-label-color: {{ section.settings.category_label_color }};
+  --link-size-mobile: {{ section.settings.link_size_mobile }}px;
+  --link-size-desktop: {{ section.settings.link_size_desktop }}px;
+  --link-color: {{ section.settings.link_color }};
+  --link-hover-color: {{ section.settings.link_hover_color }};
+  --featured-label-size: {{ section.settings.featured_label_size }}px;
+  --featured-label-color: {{ section.settings.featured_label_color }};
+  --featured-title-size-mobile: {{ section.settings.featured_title_size_mobile }}px;
+  --featured-title-size-desktop: {{ section.settings.featured_title_size_desktop }}px;
+  --featured-title-color: {{ section.settings.featured_title_color }};
+  --card-title-size-mobile: {{ section.settings.card_title_size_mobile }}px;
+  --card-title-size-desktop: {{ section.settings.card_title_size_desktop }}px;
+  --card-title-color: {{ section.settings.card_title_color }};
+  --mobile-title-size: {{ section.settings.mobile_title_size }}px;
+  --mobile-title-color: {{ section.settings.mobile_title_color }};
+  --cta-size-mobile: {{ section.settings.cta_size_mobile }}px;
+  --cta-size-desktop: {{ section.settings.cta_size_desktop }}px;
+  --cta-color: {{ section.settings.cta_color }};
+">
+  {%- comment -%} Desktop Layout {%- endcomment -%}
+  <div class="directory-desktop">
+    {%- comment -%} Sidebar {%- endcomment -%}
+    <div class="directory-sidebar">
+      <h2 class="directory-sidebar__title">{{ section.settings.sidebar_title }}</h2>
+
+      {%- comment -%} Indoor Category {%- endcomment -%}
+      <div class="directory-category">
+        <span class="directory-category__label">{{ section.settings.indoor_label }}</span>
+        <nav class="directory-category__links">
+          {% if section.settings.table_lamps_collection != blank %}
+            <a href="{{ section.settings.table_lamps_collection.url }}">{{ section.settings.table_lamps_text }}</a>
+          {% endif %}
+          {% if section.settings.floor_lamps_collection != blank %}
+            <a href="{{ section.settings.floor_lamps_collection.url }}">{{ section.settings.floor_lamps_text }}</a>
+          {% endif %}
+          {% if section.settings.chandeliers_collection != blank %}
+            <a href="{{ section.settings.chandeliers_collection.url }}">{{ section.settings.chandeliers_text }}</a>
+          {% endif %}
+          {% if section.settings.ceiling_collection != blank %}
+            <a href="{{ section.settings.ceiling_collection.url }}">{{ section.settings.ceiling_text }}</a>
+          {% endif %}
+          {% if section.settings.sconces_collection != blank %}
+            <a href="{{ section.settings.sconces_collection.url }}">{{ section.settings.sconces_text }}</a>
+          {% endif %}
+        </nav>
+      </div>
+
+      {%- comment -%} Outdoor Category {%- endcomment -%}
+      <div class="directory-category">
+        <span class="directory-category__label">{{ section.settings.outdoor_label }}</span>
+        <nav class="directory-category__links">
+          {% if section.settings.wall_lights_collection != blank %}
+            <a href="{{ section.settings.wall_lights_collection.url }}">{{ section.settings.wall_lights_text }}</a>
+          {% endif %}
+          {% if section.settings.path_lights_collection != blank %}
+            <a href="{{ section.settings.path_lights_collection.url }}">{{ section.settings.path_lights_text }}</a>
+          {% endif %}
+        </nav>
+      </div>
+
+      {%- comment -%} CTA Link {%- endcomment -%}
+      {% if section.settings.cta_collection != blank %}
+        <a href="{{ section.settings.cta_collection.url }}" class="directory-cta">{{ section.settings.cta_text_desktop }}</a>
+      {% endif %}
+    </div>
+
+    {%- comment -%} Featured Collection {%- endcomment -%}
+    <div class="directory-featured">
+      {% if section.settings.featured_collection != blank %}
+        <a href="{{ section.settings.featured_collection.url }}" class="directory-featured__link">
+          <div class="directory-featured__image-wrapper">
+            {% if section.settings.featured_image != blank %}
+              {{ section.settings.featured_image | image_url: width: 1200 | image_tag: class: 'directory-featured__image', loading: 'eager' }}
+            {% elsif section.settings.featured_collection.image %}
+              {{ section.settings.featured_collection.image | image_url: width: 1200 | image_tag: class: 'directory-featured__image', loading: 'eager' }}
+            {% else %}
+              <div class="directory-featured__placeholder"></div>
+            {% endif %}
+            <div class="directory-featured__overlay"></div>
+            <div class="directory-featured__content">
+              <span class="directory-featured__label">{{ section.settings.featured_label }}</span>
+              <h3 class="directory-featured__title">{{ section.settings.featured_title | default: section.settings.featured_collection.title }}</h3>
+            </div>
+          </div>
+        </a>
+      {% endif %}
+    </div>
+
+    {%- comment -%} Side Cards {%- endcomment -%}
+    <div class="directory-cards">
+      {%- comment -%} Best Sellers Card {%- endcomment -%}
+      {% if section.settings.card1_collection != blank %}
+        <a href="{{ section.settings.card1_collection.url }}" class="directory-card">
+          <div class="directory-card__image-wrapper">
+            {% if section.settings.card1_image != blank %}
+              {{ section.settings.card1_image | image_url: width: 600 | image_tag: class: 'directory-card__image', loading: 'lazy' }}
+            {% elsif section.settings.card1_collection.image %}
+              {{ section.settings.card1_collection.image | image_url: width: 600 | image_tag: class: 'directory-card__image', loading: 'lazy' }}
+            {% else %}
+              <div class="directory-card__placeholder"></div>
+            {% endif %}
+            <div class="directory-card__overlay"></div>
+            <span class="directory-card__title">{{ section.settings.card1_title_desktop }}</span>
+          </div>
+        </a>
+      {% endif %}
+
+      {%- comment -%} New Arrivals Card {%- endcomment -%}
+      {% if section.settings.card2_collection != blank %}
+        <a href="{{ section.settings.card2_collection.url }}" class="directory-card">
+          <div class="directory-card__image-wrapper">
+            {% if section.settings.card2_image != blank %}
+              {{ section.settings.card2_image | image_url: width: 600 | image_tag: class: 'directory-card__image', loading: 'lazy' }}
+            {% elsif section.settings.card2_collection.image %}
+              {{ section.settings.card2_collection.image | image_url: width: 600 | image_tag: class: 'directory-card__image', loading: 'lazy' }}
+            {% else %}
+              <div class="directory-card__placeholder"></div>
+            {% endif %}
+            <div class="directory-card__overlay"></div>
+            <span class="directory-card__title">{{ section.settings.card2_title_desktop }}</span>
+          </div>
+        </a>
+      {% endif %}
+    </div>
+  </div>
+
+  {%- comment -%} Mobile Layout {%- endcomment -%}
+  <div class="directory-mobile">
+    <h2 class="directory-mobile__title">{{ section.settings.mobile_title }}</h2>
+
+    {%- comment -%} Featured Card (Best Sellers on mobile) {%- endcomment -%}
+    {% if section.settings.mobile_featured_collection != blank %}
+      <a href="{{ section.settings.mobile_featured_collection.url }}" class="directory-mobile__featured">
+        <div class="directory-mobile__featured-image-wrapper">
+          {% if section.settings.mobile_featured_image != blank %}
+            {{ section.settings.mobile_featured_image | image_url: width: 800 | image_tag: class: 'directory-mobile__featured-image', loading: 'eager' }}
+          {% elsif section.settings.mobile_featured_collection.image %}
+            {{ section.settings.mobile_featured_collection.image | image_url: width: 800 | image_tag: class: 'directory-mobile__featured-image', loading: 'eager' }}
+          {% else %}
+            <div class="directory-mobile__placeholder"></div>
+          {% endif %}
+          <div class="directory-mobile__featured-overlay"></div>
+          <span class="directory-mobile__featured-title">{{ section.settings.mobile_featured_title }}</span>
+        </div>
+      </a>
+    {% endif %}
+
+    {%- comment -%} Button Card (New Arrivals on mobile) {%- endcomment -%}
+    {% if section.settings.mobile_button_collection != blank %}
+      <a href="{{ section.settings.mobile_button_collection.url }}" class="directory-mobile__button">
+        <span>{{ section.settings.mobile_button_title }}</span>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </a>
+    {% endif %}
+
+    {%- comment -%} Indoor Category {%- endcomment -%}
+    <div class="directory-mobile__category">
+      <span class="directory-mobile__label">{{ section.settings.indoor_label }}</span>
+      <nav class="directory-mobile__links">
+        {% if section.settings.table_lamps_collection != blank %}
+          <a href="{{ section.settings.table_lamps_collection.url }}">{{ section.settings.table_lamps_text }}</a>
+        {% endif %}
+        {% if section.settings.floor_lamps_collection != blank %}
+          <a href="{{ section.settings.floor_lamps_collection.url }}">{{ section.settings.floor_lamps_text }}</a>
+        {% endif %}
+        {% if section.settings.chandeliers_collection != blank %}
+          <a href="{{ section.settings.chandeliers_collection.url }}">{{ section.settings.chandeliers_text }}</a>
+        {% endif %}
+        {% if section.settings.ceiling_collection != blank %}
+          <a href="{{ section.settings.ceiling_collection.url }}">{{ section.settings.ceiling_text }}</a>
+        {% endif %}
+        {% if section.settings.sconces_collection != blank %}
+          <a href="{{ section.settings.sconces_collection.url }}">{{ section.settings.sconces_text }}</a>
+        {% endif %}
+      </nav>
+    </div>
+
+    {%- comment -%} Outdoor Category {%- endcomment -%}
+    <div class="directory-mobile__category">
+      <span class="directory-mobile__label">{{ section.settings.outdoor_label }}</span>
+      <nav class="directory-mobile__links">
+        {% if section.settings.wall_lights_collection != blank %}
+          <a href="{{ section.settings.wall_lights_collection.url }}">{{ section.settings.wall_lights_text }}</a>
+        {% endif %}
+        {% if section.settings.path_lights_collection != blank %}
+          <a href="{{ section.settings.path_lights_collection.url }}">{{ section.settings.path_lights_text }}</a>
+        {% endif %}
+      </nav>
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .collection-directory {
+    background-color: var(--dir-bg, #FAF9F7);
+    padding: var(--dir-padding-mobile, 24px);
+    min-height: 100vh;
+  }
+
+  /* Hide desktop on mobile */
+  .directory-desktop {
+    display: none;
+  }
+
+  /* Mobile Layout */
+  .directory-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .directory-mobile__title {
+    font-family: var(--font-heading-family), serif;
+    font-size: var(--mobile-title-size, 32px);
+    font-weight: 400;
+    color: var(--mobile-title-color, #1C1917);
+    margin: 0;
+  }
+
+  .directory-mobile__featured {
+    display: block;
+    text-decoration: none;
+  }
+
+  .directory-mobile__featured-image-wrapper {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+  }
+
+  .directory-mobile__featured-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .directory-mobile__featured-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.4) 100%);
+  }
+
+  .directory-mobile__featured-title {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: var(--font-heading-family), serif;
+    font-style: italic;
+    font-size: var(--card-title-size-mobile, 28px);
+    font-weight: 400;
+    color: #ffffff;
+    text-align: center;
+  }
+
+  .directory-mobile__placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #E7E5E4 0%, #D6D3D1 100%);
+  }
+
+  .directory-mobile__button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    background: #ffffff;
+    border-radius: 12px;
+    text-decoration: none;
+    color: var(--link-color, #1C1917);
+    font-family: var(--font-heading-family), serif;
+    font-size: var(--link-size-mobile, 20px);
+    font-weight: 400;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+
+  .directory-mobile__button svg {
+    flex-shrink: 0;
+  }
+
+  .directory-mobile__category {
+    padding-top: 8px;
+  }
+
+  .directory-mobile__label {
+    display: block;
+    font-family: var(--font-body-family), sans-serif;
+    font-size: var(--category-label-size-mobile, 11px);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--category-label-color, #B8860B);
+    margin-bottom: 12px;
+  }
+
+  .directory-mobile__links {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .directory-mobile__links a {
+    display: block;
+    padding: 14px 0;
+    font-family: var(--font-heading-family), serif;
+    font-size: var(--link-size-mobile, 20px);
+    font-weight: 400;
+    color: var(--link-color, #1C1917);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+  }
+
+  .directory-mobile__links a:last-child {
+    border-bottom: none;
+  }
+
+  /* Desktop Layout */
+  @media (min-width: 1024px) {
+    .collection-directory {
+      padding: var(--dir-padding-desktop, 60px);
+    }
+
+    .directory-mobile {
+      display: none;
+    }
+
+    .directory-desktop {
+      display: grid;
+      grid-template-columns: 240px 1fr 280px;
+      gap: 40px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* Sidebar */
+    .directory-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .directory-sidebar__title {
+      font-family: var(--font-heading-family), serif;
+      font-style: italic;
+      font-size: var(--sidebar-title-size-desktop, 32px);
+      font-weight: 400;
+      color: var(--sidebar-title-color, #1C1917);
+      margin: 0;
+    }
+
+    .directory-category {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .directory-category__label {
+      font-family: var(--font-body-family), sans-serif;
+      font-size: var(--category-label-size-desktop, 11px);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--category-label-color, #B8860B);
+    }
+
+    .directory-category__links {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .directory-category__links a {
+      font-family: var(--font-heading-family), serif;
+      font-size: var(--link-size-desktop, 22px);
+      font-weight: 400;
+      color: var(--link-color, #1C1917);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .directory-category__links a:hover {
+      color: var(--link-hover-color, #78716C);
+    }
+
+    .directory-cta {
+      margin-top: auto;
+      font-family: var(--font-body-family), sans-serif;
+      font-size: var(--cta-size-desktop, 12px);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--cta-color, #B8860B);
+      text-decoration: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .directory-cta:hover {
+      opacity: 0.7;
+    }
+
+    /* Featured */
+    .directory-featured {
+      display: flex;
+    }
+
+    .directory-featured__link {
+      display: block;
+      width: 100%;
+      text-decoration: none;
+    }
+
+    .directory-featured__image-wrapper {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      min-height: 500px;
+      overflow: hidden;
+    }
+
+    .directory-featured__image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .directory-featured__placeholder {
+      width: 100%;
+      height: 100%;
+      min-height: 500px;
+      background: linear-gradient(135deg, #E7E5E4 0%, #D6D3D1 100%);
+    }
+
+    .directory-featured__overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.5) 100%);
+    }
+
+    .directory-featured__content {
+      position: absolute;
+      bottom: 24px;
+      left: 24px;
+      right: 24px;
+      background: #ffffff;
+      padding: 16px 20px;
+    }
+
+    .directory-featured__label {
+      display: block;
+      font-family: var(--font-body-family), sans-serif;
+      font-size: var(--featured-label-size, 10px);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--featured-label-color, #B8860B);
+      margin-bottom: 4px;
+    }
+
+    .directory-featured__title {
+      font-family: var(--font-heading-family), serif;
+      font-size: var(--featured-title-size-desktop, 22px);
+      font-weight: 400;
+      color: var(--featured-title-color, #1C1917);
+      margin: 0;
+    }
+
+    /* Side Cards */
+    .directory-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .directory-card {
+      display: block;
+      text-decoration: none;
+      flex: 1;
+    }
+
+    .directory-card__image-wrapper {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      min-height: 240px;
+      overflow: hidden;
+      background: #ffffff;
+      border: 1px solid rgba(0,0,0,0.08);
+    }
+
+    .directory-card__image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .directory-card__placeholder {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #F5F5F4 0%, #E7E5E4 100%);
+    }
+
+    .directory-card__overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(0,0,0,0) 30%, rgba(0,0,0,0.4) 100%);
+    }
+
+    .directory-card__title {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      font-family: var(--font-heading-family), serif;
+      font-size: var(--card-title-size-desktop, 20px);
+      font-weight: 400;
+      color: var(--card-title-color, #ffffff);
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .directory-desktop {
+      grid-template-columns: 280px 1fr 320px;
+      gap: 60px;
+    }
+
+    .directory-featured__image-wrapper {
+      min-height: 600px;
+    }
+
+    .directory-card__image-wrapper {
+      min-height: 280px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Collection Directory",
+  "settings": [
+    {
+      "type": "header",
+      "content": "General"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#FAF9F7"
+    },
+    {
+      "type": "range",
+      "id": "padding_mobile",
+      "label": "Padding (mobile)",
+      "min": 16,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "padding_desktop",
+      "label": "Padding (desktop)",
+      "min": 24,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "header",
+      "content": "Sidebar (Desktop)"
+    },
+    {
+      "type": "text",
+      "id": "sidebar_title",
+      "label": "Sidebar title",
+      "default": "Collections"
+    },
+    {
+      "type": "range",
+      "id": "sidebar_title_size_mobile",
+      "label": "Title size (mobile)",
+      "min": 24,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "sidebar_title_size_desktop",
+      "label": "Title size (desktop)",
+      "min": 24,
+      "max": 56,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "color",
+      "id": "sidebar_title_color",
+      "label": "Title color",
+      "default": "#1C1917"
+    },
+    {
+      "type": "header",
+      "content": "Mobile Title"
+    },
+    {
+      "type": "text",
+      "id": "mobile_title",
+      "label": "Mobile title",
+      "default": "Directory"
+    },
+    {
+      "type": "range",
+      "id": "mobile_title_size",
+      "label": "Mobile title size",
+      "min": 24,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "color",
+      "id": "mobile_title_color",
+      "label": "Mobile title color",
+      "default": "#1C1917"
+    },
+    {
+      "type": "header",
+      "content": "Category Labels"
+    },
+    {
+      "type": "text",
+      "id": "indoor_label",
+      "label": "Indoor label",
+      "default": "INDOOR"
+    },
+    {
+      "type": "text",
+      "id": "outdoor_label",
+      "label": "Outdoor label",
+      "default": "OUTDOOR"
+    },
+    {
+      "type": "range",
+      "id": "category_label_size_mobile",
+      "label": "Label size (mobile)",
+      "min": 9,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "default": 11
+    },
+    {
+      "type": "range",
+      "id": "category_label_size_desktop",
+      "label": "Label size (desktop)",
+      "min": 9,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "default": 11
+    },
+    {
+      "type": "color",
+      "id": "category_label_color",
+      "label": "Label color",
+      "default": "#B8860B"
+    },
+    {
+      "type": "header",
+      "content": "Collection Links"
+    },
+    {
+      "type": "range",
+      "id": "link_size_mobile",
+      "label": "Link size (mobile)",
+      "min": 16,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "link_size_desktop",
+      "label": "Link size (desktop)",
+      "min": 16,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 22
+    },
+    {
+      "type": "color",
+      "id": "link_color",
+      "label": "Link color",
+      "default": "#1C1917"
+    },
+    {
+      "type": "color",
+      "id": "link_hover_color",
+      "label": "Link hover color",
+      "default": "#78716C"
+    },
+    {
+      "type": "header",
+      "content": "Indoor Collections"
+    },
+    {
+      "type": "collection",
+      "id": "table_lamps_collection",
+      "label": "Table Lamps collection"
+    },
+    {
+      "type": "text",
+      "id": "table_lamps_text",
+      "label": "Table Lamps text",
+      "default": "Table Lamps"
+    },
+    {
+      "type": "collection",
+      "id": "floor_lamps_collection",
+      "label": "Floor Lamps collection"
+    },
+    {
+      "type": "text",
+      "id": "floor_lamps_text",
+      "label": "Floor Lamps text",
+      "default": "Floor Lamps"
+    },
+    {
+      "type": "collection",
+      "id": "chandeliers_collection",
+      "label": "Chandeliers collection"
+    },
+    {
+      "type": "text",
+      "id": "chandeliers_text",
+      "label": "Chandeliers text",
+      "default": "Chandeliers"
+    },
+    {
+      "type": "collection",
+      "id": "ceiling_collection",
+      "label": "Ceiling Lights collection"
+    },
+    {
+      "type": "text",
+      "id": "ceiling_text",
+      "label": "Ceiling Lights text",
+      "default": "Ceiling"
+    },
+    {
+      "type": "collection",
+      "id": "sconces_collection",
+      "label": "Wall Sconces collection"
+    },
+    {
+      "type": "text",
+      "id": "sconces_text",
+      "label": "Wall Sconces text",
+      "default": "Sconces"
+    },
+    {
+      "type": "header",
+      "content": "Outdoor Collections"
+    },
+    {
+      "type": "collection",
+      "id": "wall_lights_collection",
+      "label": "Wall Lights collection"
+    },
+    {
+      "type": "text",
+      "id": "wall_lights_text",
+      "label": "Wall Lights text",
+      "default": "Wall Mounts"
+    },
+    {
+      "type": "collection",
+      "id": "path_lights_collection",
+      "label": "Path Lights collection"
+    },
+    {
+      "type": "text",
+      "id": "path_lights_text",
+      "label": "Path Lights text",
+      "default": "Landscape"
+    },
+    {
+      "type": "header",
+      "content": "Featured Collection (Desktop Center)"
+    },
+    {
+      "type": "collection",
+      "id": "featured_collection",
+      "label": "Featured collection"
+    },
+    {
+      "type": "image_picker",
+      "id": "featured_image",
+      "label": "Featured image",
+      "info": "Uses collection image if not set"
+    },
+    {
+      "type": "text",
+      "id": "featured_label",
+      "label": "Featured label",
+      "default": "FEATURED COLLECTION"
+    },
+    {
+      "type": "text",
+      "id": "featured_title",
+      "label": "Featured title",
+      "info": "Leave blank to use collection title"
+    },
+    {
+      "type": "range",
+      "id": "featured_label_size",
+      "label": "Label size",
+      "min": 8,
+      "max": 14,
+      "step": 1,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "color",
+      "id": "featured_label_color",
+      "label": "Label color",
+      "default": "#B8860B"
+    },
+    {
+      "type": "range",
+      "id": "featured_title_size_mobile",
+      "label": "Title size (mobile)",
+      "min": 18,
+      "max": 36,
+      "step": 1,
+      "unit": "px",
+      "default": 22
+    },
+    {
+      "type": "range",
+      "id": "featured_title_size_desktop",
+      "label": "Title size (desktop)",
+      "min": 18,
+      "max": 36,
+      "step": 1,
+      "unit": "px",
+      "default": 22
+    },
+    {
+      "type": "color",
+      "id": "featured_title_color",
+      "label": "Title color",
+      "default": "#1C1917"
+    },
+    {
+      "type": "header",
+      "content": "Card 1 - Best Sellers (Desktop Right Top)"
+    },
+    {
+      "type": "collection",
+      "id": "card1_collection",
+      "label": "Collection"
+    },
+    {
+      "type": "image_picker",
+      "id": "card1_image",
+      "label": "Image",
+      "info": "Uses collection image if not set"
+    },
+    {
+      "type": "text",
+      "id": "card1_title_desktop",
+      "label": "Title (desktop)",
+      "default": "Best Sellers"
+    },
+    {
+      "type": "header",
+      "content": "Card 2 - New Arrivals (Desktop Right Bottom)"
+    },
+    {
+      "type": "collection",
+      "id": "card2_collection",
+      "label": "Collection"
+    },
+    {
+      "type": "image_picker",
+      "id": "card2_image",
+      "label": "Image",
+      "info": "Uses collection image if not set"
+    },
+    {
+      "type": "text",
+      "id": "card2_title_desktop",
+      "label": "Title (desktop)",
+      "default": "New Arrivals"
+    },
+    {
+      "type": "header",
+      "content": "Card Titles"
+    },
+    {
+      "type": "range",
+      "id": "card_title_size_mobile",
+      "label": "Card title size (mobile)",
+      "min": 18,
+      "max": 36,
+      "step": 1,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "card_title_size_desktop",
+      "label": "Card title size (desktop)",
+      "min": 16,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "color",
+      "id": "card_title_color",
+      "label": "Card title color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Mobile Featured (Best Sellers)"
+    },
+    {
+      "type": "collection",
+      "id": "mobile_featured_collection",
+      "label": "Collection"
+    },
+    {
+      "type": "image_picker",
+      "id": "mobile_featured_image",
+      "label": "Image",
+      "info": "Uses collection image if not set"
+    },
+    {
+      "type": "text",
+      "id": "mobile_featured_title",
+      "label": "Title",
+      "default": "Best Sellers"
+    },
+    {
+      "type": "header",
+      "content": "Mobile Button (New Arrivals)"
+    },
+    {
+      "type": "collection",
+      "id": "mobile_button_collection",
+      "label": "Collection"
+    },
+    {
+      "type": "text",
+      "id": "mobile_button_title",
+      "label": "Title",
+      "default": "New Arrivals"
+    },
+    {
+      "type": "header",
+      "content": "CTA Link (Desktop)"
+    },
+    {
+      "type": "collection",
+      "id": "cta_collection",
+      "label": "CTA collection"
+    },
+    {
+      "type": "text",
+      "id": "cta_text_desktop",
+      "label": "CTA text (desktop)",
+      "default": "SHOP BEST SELLERS"
+    },
+    {
+      "type": "range",
+      "id": "cta_size_mobile",
+      "label": "CTA size (mobile)",
+      "min": 10,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "default": 11
+    },
+    {
+      "type": "range",
+      "id": "cta_size_desktop",
+      "label": "CTA size (desktop)",
+      "min": 10,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "color",
+      "id": "cta_color",
+      "label": "CTA color",
+      "default": "#B8860B"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection Directory"
+    }
+  ]
+}
+{% endschema %}
