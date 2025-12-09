@@ -160,7 +160,12 @@
 
     {%- comment -%} Button Card (New Arrivals on mobile) {%- endcomment -%}
     {% if section.settings.mobile_button_collection != blank %}
-      <a href="{{ section.settings.mobile_button_collection.url }}" class="directory-mobile__button">
+      <a href="{{ section.settings.mobile_button_collection.url }}" class="directory-mobile__button{% if section.settings.mobile_button_image != blank %} has-bg-image{% endif %}">
+        {% if section.settings.mobile_button_image != blank %}
+          <div class="directory-mobile__button-bg" style="--button-bg-opacity: {{ section.settings.mobile_button_image_opacity | divided_by: 100.0 }};">
+            {{ section.settings.mobile_button_image | image_url: width: 800 | image_tag: loading: 'lazy' }}
+          </div>
+        {% endif %}
         <span>{{ section.settings.mobile_button_title }}</span>
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
           <path d="M5 12h14M12 5l7 7-7 7"/>
@@ -275,6 +280,7 @@
   }
 
   .directory-mobile__button {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -286,6 +292,29 @@
     font-size: var(--link-size-mobile, 20px);
     font-weight: 400;
     box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    overflow: hidden;
+  }
+
+  .directory-mobile__button.has-bg-image {
+    min-height: 60px;
+  }
+
+  .directory-mobile__button-bg {
+    position: absolute;
+    inset: 0;
+    opacity: var(--button-bg-opacity, 0.3);
+  }
+
+  .directory-mobile__button-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .directory-mobile__button span,
+  .directory-mobile__button svg {
+    position: relative;
+    z-index: 1;
   }
 
   .directory-mobile__button svg {
@@ -980,6 +1009,21 @@
       "id": "mobile_button_title",
       "label": "Title",
       "default": "New Arrivals"
+    },
+    {
+      "type": "image_picker",
+      "id": "mobile_button_image",
+      "label": "Background image"
+    },
+    {
+      "type": "range",
+      "id": "mobile_button_image_opacity",
+      "label": "Image opacity",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 30
     },
     {
       "type": "header",
