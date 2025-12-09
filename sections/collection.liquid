@@ -4,7 +4,7 @@
 
 <div class="collection-page">
   {%- comment -%} Hero Section {%- endcomment -%}
-  <div class="collection-hero" style="
+  <div class="collection-hero full-width" style="
     --hero-height-mobile: {{ section.settings.hero_height_mobile }}px;
     --hero-height-desktop: {{ section.settings.hero_height_desktop }}px;
     --hero-overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
@@ -79,10 +79,11 @@
     width: 100%;
   }
 
-  /* Hero Section */
+  /* Hero Section - Full Width */
   .collection-hero {
     position: relative;
-    width: 100%;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
     height: var(--hero-height-mobile, 300px);
     overflow: hidden;
   }

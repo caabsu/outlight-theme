@@ -12,23 +12,31 @@
   --cb-btn-bg: {{ section.settings.button_background }};
   --cb-btn-size: {{ section.settings.button_font_size }}px;
   --cb-btn-weight: {{ section.settings.button_font_weight }};
-  --cb-mobile-title-size: {{ section.settings.mobile_section_title_size }}px;
+  --cb-btn-image-opacity: {{ section.settings.button_image_opacity | divided_by: 100.0 }};
+  --cb-section-title-size: {{ section.settings.section_title_size }}px;
+  --cb-section-title-color: {{ section.settings.section_title_color }};
+  --cb-section-title-weight: {{ section.settings.section_title_weight }};
   --cb-section-height: {{ section.settings.section_height }}px;
   --cb-padding-top-desktop: {{ section.settings.padding_top_desktop }}px;
   --cb-padding-bottom-desktop: {{ section.settings.padding_bottom_desktop }}px;
   --cb-padding-top-mobile: {{ section.settings.padding_top_mobile }}px;
   --cb-padding-bottom-mobile: {{ section.settings.padding_bottom_mobile }}px;
 ">
-  {%- if section.settings.show_mobile_title -%}
-    <h2 class="collections-bento__mobile-title">{{ section.settings.mobile_title }}</h2>
+  {%- if section.settings.show_section_title -%}
+    <h2 class="collections-bento__section-title">{{ section.settings.section_title }}</h2>
   {%- endif -%}
 
   <div class="collections-bento__grid">
-    {%- comment -%} Collection 1 - Large Left (Floor) {%- endcomment -%}
+    {%- comment -%} Collection 1 - Large Left {%- endcomment -%}
     {%- if section.settings.collection_1 != blank -%}
       {%- assign collection_1 = section.settings.collection_1 -%}
       <a href="{{ collection_1.url }}" class="collections-bento__item collections-bento__item--large">
-        {%- if section.settings.image_1 != blank -%}
+        {%- if section.settings.image_1_mobile != blank -%}
+          <picture>
+            <source media="(min-width: 768px)" srcset="{{ section.settings.image_1 | default: section.settings.image_1_mobile | image_url: width: 800 }}">
+            {{ section.settings.image_1_mobile | image_url: width: 600 | image_tag: class: 'collections-bento__image', loading: 'lazy' }}
+          </picture>
+        {%- elsif section.settings.image_1 != blank -%}
           {{ section.settings.image_1 | image_url: width: 800 | image_tag: class: 'collections-bento__image', loading: 'lazy' }}
         {%- elsif collection_1.featured_image -%}
           {{ collection_1.featured_image | image_url: width: 800 | image_tag: class: 'collections-bento__image', loading: 'lazy' }}
@@ -39,11 +47,16 @@
       </a>
     {%- endif -%}
 
-    {%- comment -%} Collection 2 - Wide Top Middle (Pendants) {%- endcomment -%}
+    {%- comment -%} Collection 2 - Wide Top Middle {%- endcomment -%}
     {%- if section.settings.collection_2 != blank -%}
       {%- assign collection_2 = section.settings.collection_2 -%}
       <a href="{{ collection_2.url }}" class="collections-bento__item collections-bento__item--wide-top">
-        {%- if section.settings.image_2 != blank -%}
+        {%- if section.settings.image_2_mobile != blank -%}
+          <picture>
+            <source media="(min-width: 768px)" srcset="{{ section.settings.image_2 | default: section.settings.image_2_mobile | image_url: width: 1000 }}">
+            {{ section.settings.image_2_mobile | image_url: width: 800 | image_tag: class: 'collections-bento__image', loading: 'lazy' }}
+          </picture>
+        {%- elsif section.settings.image_2 != blank -%}
           {{ section.settings.image_2 | image_url: width: 1000 | image_tag: class: 'collections-bento__image', loading: 'lazy' }}
         {%- elsif collection_2.featured_image -%}
           {{ collection_2.featured_image | image_url: width: 1000 | image_tag: class: 'collections-bento__image', loading: 'lazy' }}
@@ -54,11 +67,16 @@
       </a>
     {%- endif -%}
 
-    {%- comment -%} Collection 3 - Top Right (Table) {%- endcomment -%}
+    {%- comment -%} Collection 3 - Top Right {%- endcomment -%}
     {%- if section.settings.collection_3 != blank -%}
       {%- assign collection_3 = section.settings.collection_3 -%}
       <a href="{{ collection_3.url }}" class="collections-bento__item collections-bento__item--top-right">
-        {%- if section.settings.image_3 != blank -%}
+        {%- if section.settings.image_3_mobile != blank -%}
+          <picture>
+            <source media="(min-width: 768px)" srcset="{{ section.settings.image_3 | default: section.settings.image_3_mobile | image_url: width: 600 }}">
+            {{ section.settings.image_3_mobile | image_url: width: 400 | image_tag: class: 'collections-bento__image', loading: 'lazy' }}
+          </picture>
+        {%- elsif section.settings.image_3 != blank -%}
           {{ section.settings.image_3 | image_url: width: 600 | image_tag: class: 'collections-bento__image', loading: 'lazy' }}
         {%- elsif collection_3.featured_image -%}
           {{ collection_3.featured_image | image_url: width: 600 | image_tag: class: 'collections-bento__image', loading: 'lazy' }}
@@ -69,11 +87,16 @@
       </a>
     {%- endif -%}
 
-    {%- comment -%} Collection 4 - Bottom Middle (Sconces) {%- endcomment -%}
+    {%- comment -%} Collection 4 - Bottom Middle {%- endcomment -%}
     {%- if section.settings.collection_4 != blank -%}
       {%- assign collection_4 = section.settings.collection_4 -%}
       <a href="{{ collection_4.url }}" class="collections-bento__item collections-bento__item--wide-bottom">
-        {%- if section.settings.image_4 != blank -%}
+        {%- if section.settings.image_4_mobile != blank -%}
+          <picture>
+            <source media="(min-width: 768px)" srcset="{{ section.settings.image_4 | default: section.settings.image_4_mobile | image_url: width: 1000 }}">
+            {{ section.settings.image_4_mobile | image_url: width: 400 | image_tag: class: 'collections-bento__image', loading: 'lazy' }}
+          </picture>
+        {%- elsif section.settings.image_4 != blank -%}
           {{ section.settings.image_4 | image_url: width: 1000 | image_tag: class: 'collections-bento__image', loading: 'lazy' }}
         {%- elsif collection_4.featured_image -%}
           {{ collection_4.featured_image | image_url: width: 1000 | image_tag: class: 'collections-bento__image', loading: 'lazy' }}
@@ -87,10 +110,15 @@
     {%- comment -%} View All Button - Desktop {%- endcomment -%}
     {%- if section.settings.show_view_all -%}
       <a href="{{ section.settings.view_all_url | default: routes.collections_url }}" class="collections-bento__item collections-bento__item--button">
-        <span class="collections-bento__button-text">{{ section.settings.button_text }}</span>
-        <svg class="collections-bento__button-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M4 10h12M12 6l4 4-4 4"/>
-        </svg>
+        {%- if section.settings.button_image != blank -%}
+          {{ section.settings.button_image | image_url: width: 600 | image_tag: class: 'collections-bento__button-image', loading: 'lazy' }}
+        {%- endif -%}
+        <div class="collections-bento__button-content">
+          <span class="collections-bento__button-text">{{ section.settings.button_text }}</span>
+          <svg class="collections-bento__button-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M4 10h12M12 6l4 4-4 4"/>
+          </svg>
+        </div>
       </a>
     {%- endif -%}
   </div>
@@ -98,10 +126,15 @@
   {%- comment -%} View All Button - Mobile {%- endcomment -%}
   {%- if section.settings.show_view_all and section.settings.show_mobile_button -%}
     <a href="{{ section.settings.view_all_url | default: routes.collections_url }}" class="collections-bento__mobile-button">
-      <span>{{ section.settings.button_text }}</span>
-      <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
-        <path d="M4 10h12M12 6l4 4-4 4"/>
-      </svg>
+      {%- if section.settings.button_image_mobile != blank -%}
+        {{ section.settings.button_image_mobile | image_url: width: 800 | image_tag: class: 'collections-bento__mobile-button-image', loading: 'lazy' }}
+      {%- endif -%}
+      <div class="collections-bento__mobile-button-content">
+        <span>{{ section.settings.button_text }}</span>
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M4 10h12M12 6l4 4-4 4"/>
+        </svg>
+      </div>
     </a>
   {%- endif -%}
 </section>
@@ -112,13 +145,14 @@
     padding: var(--cb-padding-top-mobile, 40px) 16px var(--cb-padding-bottom-mobile, 40px);
   }
 
-  .collections-bento__mobile-title {
+  .collections-bento__section-title {
     display: block;
     font-family: var(--font-heading-family), serif;
-    font-size: var(--cb-mobile-title-size, 28px);
-    font-weight: 400;
+    font-size: var(--cb-section-title-size, 28px);
+    font-weight: var(--cb-section-title-weight, 400);
+    color: var(--cb-section-title-color, #1C1917);
     margin: 0 0 16px;
-    color: #1C1917;
+    text-align: left;
   }
 
   /* Mobile Grid */
@@ -196,30 +230,43 @@
     z-index: 1;
   }
 
-  /* Mobile View All Button - Compact */
+  /* Mobile View All Button */
   .collections-bento__mobile-button {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-top: var(--cb-gap, 12px);
+    padding: 12px 20px;
+    background: var(--cb-btn-bg, #D6D3D1);
+    text-decoration: none;
+    overflow: hidden;
+  }
+
+  .collections-bento__mobile-button-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: var(--cb-btn-image-opacity, 1);
+  }
+
+  .collections-bento__mobile-button-content {
+    position: relative;
+    z-index: 1;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    width: 100%;
-    margin-top: var(--cb-gap, 12px);
-    padding: 10px 20px;
-    background: var(--cb-btn-bg, #D6D3D1);
-    opacity: var(--cb-btn-opacity, 1);
     color: var(--cb-btn-text, #44403C);
     font-family: var(--font-body-family), sans-serif;
     font-size: var(--cb-btn-size, 14px);
     font-weight: var(--cb-btn-weight, 500);
-    text-decoration: none;
-    transition: opacity 0.2s ease;
   }
 
-  .collections-bento__mobile-button:hover {
-    opacity: calc(var(--cb-btn-opacity, 1) * 0.9);
-  }
-
-  .collections-bento__mobile-button svg {
+  .collections-bento__mobile-button-content svg {
     color: #B45309;
   }
 
@@ -229,7 +276,7 @@
       padding: var(--cb-padding-top-desktop, 60px) 40px var(--cb-padding-bottom-desktop, 60px);
     }
 
-    .collections-bento__mobile-title {
+    .collections-bento__section-title {
       display: none;
     }
 
@@ -280,17 +327,29 @@
       grid-column: 3;
       grid-row: 2;
       display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--cb-btn-bg, #D6D3D1);
+      overflow: hidden;
+    }
+
+    .collections-bento__button-image {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: var(--cb-btn-image-opacity, 1);
+    }
+
+    .collections-bento__button-content {
+      position: relative;
+      z-index: 1;
+      display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       gap: 12px;
-      background: var(--cb-btn-bg, #D6D3D1);
-      opacity: var(--cb-btn-opacity, 1);
-      transition: opacity 0.2s ease;
-    }
-
-    .collections-bento__item--button:hover {
-      opacity: calc(var(--cb-btn-opacity, 1) * 0.9);
     }
 
     .collections-bento__button-text {
@@ -407,12 +466,57 @@
     },
     {
       "type": "header",
-      "content": "Typography"
+      "content": "Section Title (Mobile)"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_section_title",
+      "label": "Show section title",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Title text",
+      "default": "Collections"
+    },
+    {
+      "type": "range",
+      "id": "section_title_size",
+      "label": "Title size",
+      "min": 20,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "color",
+      "id": "section_title_color",
+      "label": "Title color",
+      "default": "#1C1917"
+    },
+    {
+      "type": "select",
+      "id": "section_title_weight",
+      "label": "Title weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "header",
+      "content": "Collection Titles"
     },
     {
       "type": "range",
       "id": "title_font_size_desktop",
-      "label": "Title font size (desktop)",
+      "label": "Title size (desktop)",
       "min": 16,
       "max": 48,
       "step": 2,
@@ -422,38 +526,12 @@
     {
       "type": "range",
       "id": "title_font_size_mobile",
-      "label": "Title font size (mobile)",
+      "label": "Title size (mobile)",
       "min": 14,
       "max": 32,
       "step": 2,
       "unit": "px",
       "default": 20
-    },
-    {
-      "type": "header",
-      "content": "Mobile settings"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_mobile_title",
-      "label": "Show section title on mobile",
-      "default": true
-    },
-    {
-      "type": "text",
-      "id": "mobile_title",
-      "label": "Mobile section title",
-      "default": "Collections"
-    },
-    {
-      "type": "range",
-      "id": "mobile_section_title_size",
-      "label": "Mobile section title size",
-      "min": 20,
-      "max": 48,
-      "step": 2,
-      "unit": "px",
-      "default": 28
     },
     {
       "type": "header",
@@ -465,14 +543,19 @@
       "label": "Collection"
     },
     {
-      "type": "image_picker",
-      "id": "image_1",
-      "label": "Custom image (optional)"
-    },
-    {
       "type": "text",
       "id": "title_1",
-      "label": "Custom title (optional)"
+      "label": "Custom title"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_1",
+      "label": "Desktop image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_1_mobile",
+      "label": "Mobile image"
     },
     {
       "type": "header",
@@ -484,14 +567,19 @@
       "label": "Collection"
     },
     {
-      "type": "image_picker",
-      "id": "image_2",
-      "label": "Custom image (optional)"
-    },
-    {
       "type": "text",
       "id": "title_2",
-      "label": "Custom title (optional)"
+      "label": "Custom title"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_2",
+      "label": "Desktop image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_2_mobile",
+      "label": "Mobile image"
     },
     {
       "type": "header",
@@ -503,14 +591,19 @@
       "label": "Collection"
     },
     {
-      "type": "image_picker",
-      "id": "image_3",
-      "label": "Custom image (optional)"
-    },
-    {
       "type": "text",
       "id": "title_3",
-      "label": "Custom title (optional)"
+      "label": "Custom title"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_3",
+      "label": "Desktop image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_3_mobile",
+      "label": "Mobile image"
     },
     {
       "type": "header",
@@ -522,18 +615,23 @@
       "label": "Collection"
     },
     {
-      "type": "image_picker",
-      "id": "image_4",
-      "label": "Custom image (optional)"
-    },
-    {
       "type": "text",
       "id": "title_4",
-      "label": "Custom title (optional)"
+      "label": "Custom title"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_4",
+      "label": "Desktop image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_4_mobile",
+      "label": "Mobile image"
     },
     {
       "type": "header",
-      "content": "View all button"
+      "content": "View All Button"
     },
     {
       "type": "checkbox",
@@ -559,21 +657,25 @@
       "label": "Button link"
     },
     {
+      "type": "header",
+      "content": "Button Style"
+    },
+    {
       "type": "color",
       "id": "button_background",
-      "label": "Button background",
+      "label": "Background color",
       "default": "#D6D3D1"
     },
     {
       "type": "color",
       "id": "button_text_color",
-      "label": "Button text color",
+      "label": "Text color",
       "default": "#44403C"
     },
     {
       "type": "range",
       "id": "button_font_size",
-      "label": "Button font size",
+      "label": "Font size",
       "min": 12,
       "max": 20,
       "step": 1,
@@ -583,7 +685,7 @@
     {
       "type": "select",
       "id": "button_font_weight",
-      "label": "Button font weight",
+      "label": "Font weight",
       "options": [
         { "value": "300", "label": "Light" },
         { "value": "400", "label": "Regular" },
@@ -596,12 +698,40 @@
     {
       "type": "range",
       "id": "button_opacity",
-      "label": "Button opacity",
+      "label": "Background opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "header",
+      "content": "Button Image (Desktop)"
+    },
+    {
+      "type": "image_picker",
+      "id": "button_image",
+      "label": "Background image"
+    },
+    {
+      "type": "range",
+      "id": "button_image_opacity",
+      "label": "Image opacity",
       "min": 10,
       "max": 100,
       "step": 5,
       "unit": "%",
       "default": 100
+    },
+    {
+      "type": "header",
+      "content": "Button Image (Mobile)"
+    },
+    {
+      "type": "image_picker",
+      "id": "button_image_mobile",
+      "label": "Background image"
     }
   ],
   "presets": [
