@@ -257,6 +257,16 @@
                 {{ section.settings.filter_collection_6_text | default: section.settings.filter_collection_6.title }}
               </a>
             {% endif %}
+            {% if section.settings.filter_collection_7 != blank %}
+              <a href="{{ section.settings.filter_collection_7.url }}" class="collection-featured-filter-cat{% if collection.handle == section.settings.filter_collection_7.handle %} is-active{% endif %}">
+                {{ section.settings.filter_collection_7_text | default: section.settings.filter_collection_7.title }}
+              </a>
+            {% endif %}
+            {% if section.settings.filter_collection_8 != blank %}
+              <a href="{{ section.settings.filter_collection_8.url }}" class="collection-featured-filter-cat{% if collection.handle == section.settings.filter_collection_8.handle %} is-active{% endif %}">
+                {{ section.settings.filter_collection_8_text | default: section.settings.filter_collection_8.title }}
+              </a>
+            {% endif %}
           </div>
         </div>
       </div>
@@ -1352,6 +1362,26 @@
       "type": "text",
       "id": "filter_collection_6_text",
       "label": "Collection 6 label"
+    },
+    {
+      "type": "collection",
+      "id": "filter_collection_7",
+      "label": "Collection 7"
+    },
+    {
+      "type": "text",
+      "id": "filter_collection_7_text",
+      "label": "Collection 7 label"
+    },
+    {
+      "type": "collection",
+      "id": "filter_collection_8",
+      "label": "Collection 8"
+    },
+    {
+      "type": "text",
+      "id": "filter_collection_8_text",
+      "label": "Collection 8 label"
     },
     {
       "type": "header",
