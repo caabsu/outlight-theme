@@ -151,6 +151,7 @@
         "product_fVnU7p",
         "product_4c3bKa"
       ],
+      "disabled": true,
       "name": "t:sections.featured_collection.name",
       "settings": {
         "heading": "Floor Lamps",
