@@ -140,6 +140,9 @@
         </a>
       {% endif %}
 
+      {%- comment -%} Divider {%- endcomment -%}
+      <span class="collection-featured-tabs__divider"></span>
+
       {%- comment -%} Filter Button {%- endcomment -%}
       <button type="button" class="collection-featured-tab collection-featured-tab--filter" data-filter-toggle>
         <span class="collection-featured-tab__icon">
@@ -296,7 +299,7 @@
           {%- capture product_collections -%}
             {%- for col in product.collections -%}{{ col.handle }}{% unless forloop.last %},{% endunless %}{%- endfor -%}
           {%- endcapture -%}
-          <a href="{{ product.url }}" class="collection-featured-product" data-product data-collections="{{ product_collections }}" data-title="{{ product.title | downcase }}">
+          <a href="{{ product.url }}" class="collection-featured-product" data-product data-collections="{{ product_collections }}" data-title="{{ product.title | downcase }}" data-price="{{ product.price }}">
             <div class="collection-featured-product__image-wrapper">
               {% if product.featured_image %}
                 {{ product.featured_image | image_url: width: 600, height: 600, crop: 'center' | image_tag: class: 'collection-featured-product__image', loading: 'lazy' }}
@@ -388,20 +391,21 @@
     line-height: 1.4;
   }
 
-  /* Category Tabs */
+  /* Category Tabs - Modern Compact Design */
   .collection-featured-tabs {
-    padding: 20px 16px;
+    padding: 12px 16px;
     background: var(--tabs-bg, #ffffff);
   }
 
   .collection-featured-tabs__inner {
     display: flex;
-    justify-content: center;
-    gap: 8px;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 6px;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
-    padding-bottom: 4px;
+    padding: 2px;
   }
 
   .collection-featured-tabs__inner::-webkit-scrollbar {
@@ -409,57 +413,71 @@
   }
 
   .collection-featured-tab {
-    display: flex;
-    flex-direction: column;
+    display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 12px 16px;
-    min-width: 64px;
-    background: none;
+    padding: 8px 14px;
+    background: var(--tab-inactive-bg, #F5F5F4);
     border: none;
-    border-radius: 50%;
+    border-radius: 100px;
     cursor: pointer;
     text-decoration: none;
     color: var(--tab-text-color, #78716C);
-    transition: all 0.2s ease;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
   }
 
   .collection-featured-tab__icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: var(--tab-inactive-bg, #F5F5F4);
-    transition: all 0.2s ease;
+    width: 18px;
+    height: 18px;
   }
 
   .collection-featured-tab__icon svg {
-    width: var(--tab-icon-size, 24px);
-    height: var(--tab-icon-size, 24px);
+    width: 16px;
+    height: 16px;
   }
 
   .collection-featured-tab__label {
     font-family: var(--font-body-family), sans-serif;
-    font-size: var(--tab-text-size, 11px);
+    font-size: var(--tab-text-size, 12px);
     font-weight: var(--tab-text-weight, 500);
     text-transform: uppercase;
-    letter-spacing: 0.02em;
-    white-space: nowrap;
+    letter-spacing: 0.03em;
   }
 
-  .collection-featured-tab.is-active .collection-featured-tab__icon {
+  .collection-featured-tab.is-active {
     background: var(--tab-active-bg, #1C1917);
     color: var(--tab-active-text-color, #ffffff);
   }
 
-  .collection-featured-tab.is-active {
-    color: var(--tab-text-color, #1C1917);
+  .collection-featured-tab:hover:not(.is-active) {
+    background: #E7E5E4;
   }
 
-  .collection-featured-tab:hover:not(.is-active) .collection-featured-tab__icon {
-    opacity: 0.8;
+  /* Divider between categories and actions */
+  .collection-featured-tabs__divider {
+    width: 1px;
+    height: 24px;
+    background: #E5E5E5;
+    margin: 0 6px;
+    flex-shrink: 0;
+  }
+
+  /* Filter/Sort action buttons */
+  .collection-featured-tab--filter,
+  .collection-featured-tab--sort {
+    background: transparent;
+    border: 1px solid #E5E5E5;
+  }
+
+  .collection-featured-tab--filter:hover,
+  .collection-featured-tab--sort:hover {
+    background: #F5F5F4;
+    border-color: #D6D3D1;
   }
 
   /* Sort Dropdown */
@@ -863,21 +881,21 @@
     }
 
     .collection-featured-tabs {
-      padding: 24px 40px;
+      padding: 16px 40px;
     }
 
     .collection-featured-tabs__inner {
-      gap: 16px;
+      justify-content: center;
+      gap: 8px;
     }
 
     .collection-featured-tab {
-      padding: 12px 20px;
-      min-width: 80px;
+      padding: 10px 18px;
     }
 
-    .collection-featured-tab__icon {
-      width: 56px;
-      height: 56px;
+    .collection-featured-tabs__divider {
+      height: 28px;
+      margin: 0 12px;
     }
 
     .collection-featured-products {
@@ -931,11 +949,16 @@
     let selectedCategories = new Set();
     let currentSearchTerm = '';
 
+    // Price filter values
+    let priceMinValue = null;
+    let priceMaxValue = null;
+
     // Combined filter function
     const applyAllFilters = () => {
       products.forEach(product => {
         const productCollections = (product.dataset.collections || '').split(',').map(c => c.trim());
         const productTitle = product.dataset.title || '';
+        const productPrice = parseInt(product.dataset.price || '0', 10); // Price in cents
 
         // If searching, ignore category filter and search ALL products
         if (currentSearchTerm) {
@@ -944,13 +967,22 @@
           return;
         }
 
-        // No search - apply category filter only
+        // Category filter - must match ALL selected categories (AND logic)
         let matchesCategory = true;
         if (selectedCategories.size > 0) {
-          matchesCategory = [...selectedCategories].some(cat => productCollections.includes(cat));
+          matchesCategory = [...selectedCategories].every(cat => productCollections.includes(cat));
         }
 
-        product.style.display = matchesCategory ? '' : 'none';
+        // Price filter (convert dollars to cents for comparison)
+        let matchesPrice = true;
+        if (priceMinValue !== null) {
+          matchesPrice = matchesPrice && (productPrice >= priceMinValue * 100);
+        }
+        if (priceMaxValue !== null) {
+          matchesPrice = matchesPrice && (productPrice <= priceMaxValue * 100);
+        }
+
+        product.style.display = (matchesCategory && matchesPrice) ? '' : 'none';
       });
     };
 
@@ -1026,6 +1058,8 @@
         filterClear.addEventListener('click', () => {
           if (priceMin) priceMin.value = '';
           if (priceMax) priceMax.value = '';
+          priceMinValue = null;
+          priceMaxValue = null;
           selectedCategories.clear();
           filterCats.forEach(btn => btn.classList.remove('is-active'));
           applyAllFilters();
@@ -1034,6 +1068,17 @@
 
       if (filterApply) {
         filterApply.addEventListener('click', () => {
+          // Capture price filter values
+          if (priceMin && priceMin.value) {
+            priceMinValue = parseFloat(priceMin.value);
+          } else {
+            priceMinValue = null;
+          }
+          if (priceMax && priceMax.value) {
+            priceMaxValue = parseFloat(priceMax.value);
+          } else {
+            priceMaxValue = null;
+          }
           applyAllFilters();
           closeFilter();
         });
