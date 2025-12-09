@@ -392,6 +392,15 @@
     text-align: right;
   }
 
+  .collection-no-results {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    color: #78716C;
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 16px;
+  }
+
   .collection-pagination {
     margin-top: 48px;
     margin-bottom: 16px;
@@ -517,6 +526,10 @@
     background: var(--filter-bar-bg, #ffffff);
     border-radius: var(--filter-bar-radius, 50px);
     padding: 10px 8px;
+  }
+
+  .collection-filter-bar__inner[hidden] {
+    display: none;
   }
 
   .collection-filter-bar__btn {
@@ -907,24 +920,122 @@
 
     // Shared elements
     const products = container.querySelectorAll('[data-product]');
+    const productsGrid = container.querySelector('[data-products-grid]');
+    const pagination = container.querySelector('.collection-pagination');
     const filterCats = container.querySelectorAll('[data-filter-cat]');
     let selectedCategories = new Set();
     let currentSearchTerm = '';
+    let allCollectionProducts = null;
+    let isSearching = false;
+    let originalProductsHTML = productsGrid ? productsGrid.innerHTML : '';
 
-    // Combined filter function (shared between filter and search)
+    // Get collection handle from URL
+    const getCollectionHandle = () => {
+      const path = window.location.pathname;
+      const match = path.match(/\/collections\/([^\/\?]+)/);
+      return match ? match[1] : null;
+    };
+
+    // Fetch all products from collection
+    const fetchAllProducts = async () => {
+      if (allCollectionProducts !== null) return allCollectionProducts;
+
+      const handle = getCollectionHandle();
+      if (!handle) return [];
+
+      let products = [];
+      let page = 1;
+      let hasMore = true;
+
+      while (hasMore) {
+        try {
+          const response = await fetch(`/collections/${handle}/products.json?limit=250&page=${page}`);
+          const data = await response.json();
+
+          if (data.products && data.products.length > 0) {
+            products = products.concat(data.products);
+            page++;
+            if (data.products.length < 250) hasMore = false;
+          } else {
+            hasMore = false;
+          }
+        } catch (e) {
+          console.error('Error fetching products:', e);
+          hasMore = false;
+        }
+      }
+
+      allCollectionProducts = products;
+      return products;
+    };
+
+    // Render search results
+    const renderSearchResults = (products) => {
+      if (!productsGrid) return;
+
+      if (products.length === 0) {
+        productsGrid.innerHTML = '<div class="collection-no-results">No products found</div>';
+        return;
+      }
+
+      const html = products.map(product => {
+        const imageUrl = product.images && product.images[0]
+          ? product.images[0].src.replace(/\.([^\.]+)$/, '_600x600_crop_center.$1')
+          : '';
+        const price = product.variants && product.variants[0]
+          ? (product.variants[0].price / 100).toLocaleString('en-US', { style: 'currency', currency: 'USD' })
+          : '';
+
+        return `
+          <a href="/products/${product.handle}" class="collection-product" data-product>
+            <div class="collection-product__image-wrapper">
+              ${imageUrl ? `<img src="${imageUrl}" alt="${product.title}" class="collection-product__image" loading="lazy">` : '<div class="collection-product__placeholder"></div>'}
+            </div>
+            <div class="collection-product__content">
+              <h3 class="collection-product__title">${product.title}</h3>
+              <p class="collection-product__price">${price}</p>
+            </div>
+          </a>
+        `;
+      }).join('');
+
+      productsGrid.innerHTML = html;
+    };
+
+    // Search products
+    const searchProducts = async (term) => {
+      if (!term) {
+        // Restore original products
+        if (productsGrid) productsGrid.innerHTML = originalProductsHTML;
+        if (pagination) pagination.style.display = '';
+        isSearching = false;
+        return;
+      }
+
+      isSearching = true;
+      if (pagination) pagination.style.display = 'none';
+
+      const allProducts = await fetchAllProducts();
+      const searchLower = term.toLowerCase();
+
+      const filtered = allProducts.filter(product => {
+        return product.title.toLowerCase().includes(searchLower) ||
+               (product.product_type && product.product_type.toLowerCase().includes(searchLower)) ||
+               (product.vendor && product.vendor.toLowerCase().includes(searchLower)) ||
+               (product.tags && product.tags.some(tag => tag.toLowerCase().includes(searchLower)));
+      });
+
+      renderSearchResults(filtered);
+    };
+
+    // Combined filter function (for non-search filtering on current page)
     const applyAllFilters = () => {
+      if (isSearching) return; // Don't apply page filters during search
+
       products.forEach(product => {
         const productCollections = (product.dataset.collections || '').split(',').map(c => c.trim());
-        const productTitle = product.dataset.title || '';
 
-        // If searching, ignore category filter and search ALL products
-        if (currentSearchTerm) {
-          const matchesSearch = productTitle.includes(currentSearchTerm);
-          product.style.display = matchesSearch ? '' : 'none';
-          return;
-        }
-
-        // No search - apply category filter only
+        // Apply category filter only
         let matchesCategory = true;
         if (selectedCategories.size > 0) {
           matchesCategory = [...selectedCategories].some(cat => productCollections.includes(cat));
@@ -1043,7 +1154,7 @@
       if (searchInput) {
         searchInput.value = '';
         currentSearchTerm = '';
-        applyAllFilters();
+        searchProducts(''); // Restore original products
       }
     };
 
@@ -1055,11 +1166,17 @@
       searchClear.addEventListener('click', hideSearchBar);
     }
 
-    // Dynamic search as user types
+    // Dynamic search as user types - debounced for performance
+    let searchTimeout = null;
     if (searchInput) {
       searchInput.addEventListener('input', (e) => {
         currentSearchTerm = e.target.value.toLowerCase().trim();
-        applyAllFilters();
+
+        // Debounce search requests
+        if (searchTimeout) clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+          searchProducts(currentSearchTerm);
+        }, 300);
       });
 
       // ESC key in search input closes search
