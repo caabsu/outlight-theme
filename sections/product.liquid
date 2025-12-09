@@ -566,8 +566,6 @@
                     const data = ctConfig[mode];
                     if (!data) return;
 
-                    console.log('updateColorTemp:', mode, data.color, 'glow element:', mobileGlow);
-
                     // Update CSS variable
                     modal.style.setProperty('--ct-active-color', data.color);
 
@@ -584,9 +582,13 @@
                       }
                     });
 
-                    // Mobile glow - set background directly using setProperty for reliability
+                    // Mobile glow - set background and force repaint for mobile browsers
                     if (mobileGlow) {
                       mobileGlow.style.setProperty('background', data.color, 'important');
+                      // Force repaint on mobile by toggling display
+                      mobileGlow.style.display = 'none';
+                      mobileGlow.offsetHeight; // Trigger reflow
+                      mobileGlow.style.display = '';
                     }
 
                     // Mobile text
@@ -1700,13 +1702,16 @@
     position: absolute;
     top: 0;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%) translateZ(0);
     width: 200px;
     height: 200px;
     border-radius: 50%;
     filter: blur(60px);
     opacity: 0.6;
     pointer-events: none;
+    will-change: background;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
   }
 
   .color-temp-modal__mobile-icon {
