@@ -29,7 +29,7 @@
         "subtitle_size_desktop": 16,
         "subtitle_color": "#ffffff",
         "subtitle_weight": "400",
-        "products_per_page": 20,
+        "products_per_page": 12,
         "products_gap": 12,
         "products_padding_x_mobile": 8,
         "products_padding_x_desktop": 16,
