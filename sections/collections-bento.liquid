@@ -12,6 +12,10 @@
   --cb-btn-bg: {{ section.settings.button_background }};
   --cb-mobile-title-size: {{ section.settings.mobile_section_title_size }}px;
   --cb-section-height: {{ section.settings.section_height }}px;
+  --cb-padding-top-desktop: {{ section.settings.padding_top_desktop }}px;
+  --cb-padding-bottom-desktop: {{ section.settings.padding_bottom_desktop }}px;
+  --cb-padding-top-mobile: {{ section.settings.padding_top_mobile }}px;
+  --cb-padding-bottom-mobile: {{ section.settings.padding_bottom_mobile }}px;
 ">
   {%- if section.settings.show_mobile_title -%}
     <h2 class="collections-bento__mobile-title">{{ section.settings.mobile_title }}</h2>
@@ -103,7 +107,7 @@
 {% stylesheet %}
   .collections-bento {
     width: 100%;
-    padding: 0 16px;
+    padding: var(--cb-padding-top-mobile, 40px) 16px var(--cb-padding-bottom-mobile, 40px);
   }
 
   .collections-bento__mobile-title {
@@ -222,7 +226,7 @@
   /* Desktop Layout */
   @media (min-width: 768px) {
     .collections-bento {
-      padding: 0 40px;
+      padding: var(--cb-padding-top-desktop, 60px) 40px var(--cb-padding-bottom-desktop, 60px);
     }
 
     .collections-bento__mobile-title {
@@ -354,6 +358,54 @@
       "step": 2,
       "unit": "px",
       "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Padding (Desktop)"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "label": "Padding top",
+      "min": 0,
+      "max": 150,
+      "step": 10,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 150,
+      "step": 10,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "header",
+      "content": "Padding (Mobile)"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding top",
+      "min": 0,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "default": 40
     },
     {
       "type": "header",
