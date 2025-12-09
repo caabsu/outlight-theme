@@ -31,16 +31,16 @@
         "subtitle_weight": "400",
         "products_per_page": 12,
         "products_gap": 12,
-        "products_padding_x_mobile": 8,
+        "products_padding_x_mobile": 4,
         "products_padding_x_desktop": 16,
         "products_padding_top": 24,
         "products_padding_bottom": 48,
-        "product_title_size": 16,
+        "product_title_size": 18,
         "product_title_color": "#1c1917",
-        "product_title_weight": "400",
+        "product_title_weight": "700",
         "product_price_size": 14,
-        "product_price_color": "#78716c",
-        "product_price_weight": "400"
+        "product_price_color": "#D97706",
+        "product_price_weight": "700"
       }
     }
   },
