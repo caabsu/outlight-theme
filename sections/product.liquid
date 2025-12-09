@@ -1655,7 +1655,6 @@
   }
 
   .color-temp-modal__mobile-tab--active {
-    background: var(--ct-active-color, var(--ct-tab-active-bg, #F5A623));
     color: var(--ct-tab-active-text, #000000);
   }
 
@@ -1780,7 +1779,6 @@
     }
 
     .color-temp-modal__tab--active {
-      background: var(--ct-active-color, var(--ct-tab-active-bg, #F5A623));
       color: var(--ct-tab-active-text, #000000);
     }
   }
@@ -2846,6 +2844,9 @@
       closeColorTempModal();
     }
   });
+
+  // Initialize with warm state
+  updateColorTemp('warm');
 {% endjavascript %}
 
 {% schema %}
