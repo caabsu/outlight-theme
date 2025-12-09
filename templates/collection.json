@@ -12,7 +12,6 @@
     "main": {
       "type": "collection",
       "settings": {
-        "hero_image": "shopify://shop_images/Alera_12_73d6cb63-4d1f-409c-bd97-7fdc494b207d.png",
         "hero_height_mobile": 300,
         "hero_height_desktop": 450,
         "overlay_opacity": 30,
