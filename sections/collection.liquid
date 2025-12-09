@@ -872,24 +872,20 @@
         const productCollections = (product.dataset.collections || '').split(',').map(c => c.trim());
         const productTitle = product.dataset.title || '';
 
-        // Check category filter
+        // If searching, ignore category filter and search ALL products
+        if (currentSearchTerm) {
+          const matchesSearch = productTitle.includes(currentSearchTerm);
+          product.style.display = matchesSearch ? '' : 'none';
+          return;
+        }
+
+        // No search - apply category filter only
         let matchesCategory = true;
         if (selectedCategories.size > 0) {
           matchesCategory = [...selectedCategories].some(cat => productCollections.includes(cat));
         }
 
-        // Check search filter
-        let matchesSearch = true;
-        if (currentSearchTerm) {
-          matchesSearch = productTitle.includes(currentSearchTerm);
-        }
-
-        // Show/hide product
-        if (matchesCategory && matchesSearch) {
-          product.style.display = '';
-        } else {
-          product.style.display = 'none';
-        }
+        product.style.display = matchesCategory ? '' : 'none';
       });
     };
 
