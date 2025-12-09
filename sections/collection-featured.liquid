@@ -42,10 +42,12 @@
   {%- comment -%} Category Tabs {%- endcomment -%}
   <div class="collection-featured-tabs" style="
     --tabs-bg: {{ section.settings.tabs_bg }};
+    --tab-inactive-bg: {{ section.settings.tab_inactive_bg }};
     --tab-active-bg: {{ section.settings.tab_active_bg }};
     --tab-text-color: {{ section.settings.tab_text_color }};
     --tab-active-text-color: {{ section.settings.tab_active_text_color }};
     --tab-text-size: {{ section.settings.tab_text_size }}px;
+    --tab-text-weight: {{ section.settings.tab_text_weight }};
     --tab-icon-size: {{ section.settings.tab_icon_size }}px;
   ">
     <div class="collection-featured-tabs__inner">
@@ -416,7 +418,7 @@
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    background: #F5F5F4;
+    background: var(--tab-inactive-bg, #F5F5F4);
     transition: all 0.2s ease;
   }
 
@@ -428,7 +430,7 @@
   .collection-featured-tab__label {
     font-family: var(--font-body-family), sans-serif;
     font-size: var(--tab-text-size, 11px);
-    font-weight: 500;
+    font-weight: var(--tab-text-weight, 500);
     text-transform: uppercase;
     letter-spacing: 0.02em;
     white-space: nowrap;
@@ -444,7 +446,7 @@
   }
 
   .collection-featured-tab:hover:not(.is-active) .collection-featured-tab__icon {
-    background: #E7E5E4;
+    opacity: 0.8;
   }
 
   /* Sort Dropdown */
@@ -1131,13 +1133,19 @@
     {
       "type": "color",
       "id": "tabs_bg",
-      "label": "Tabs background",
+      "label": "Tabs section background",
       "default": "#ffffff"
     },
     {
       "type": "color",
+      "id": "tab_inactive_bg",
+      "label": "Inactive tab icon background",
+      "default": "#F5F5F4"
+    },
+    {
+      "type": "color",
       "id": "tab_active_bg",
-      "label": "Active tab background",
+      "label": "Active tab icon background",
       "default": "#1C1917"
     },
     {
@@ -1161,6 +1169,18 @@
       "step": 1,
       "unit": "px",
       "default": 11
+    },
+    {
+      "type": "select",
+      "id": "tab_text_weight",
+      "label": "Tab text weight",
+      "options": [
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "500"
     },
     {
       "type": "range",
