@@ -229,7 +229,7 @@
           {%- capture product_collections -%}
             {%- for col in product.collections -%}{{ col.handle }}{% unless forloop.last %},{% endunless %}{%- endfor -%}
           {%- endcapture -%}
-          <a href="{{ product.url }}" class="collection-product" data-product data-collections="{{ product_collections }}">
+          <a href="{{ product.url }}" class="collection-product" data-product data-collections="{{ product_collections }}" data-title="{{ product.title | downcase }}">
             <div class="collection-product__image-wrapper">
               {% if product.featured_image %}
                 {{ product.featured_image | image_url: width: 600, height: 600, crop: 'center' | image_tag: class: 'collection-product__image', loading: 'lazy' }}
@@ -860,6 +860,39 @@
     const container = document.querySelector('[data-collection-page]');
     if (!container) return;
 
+    // Shared elements
+    const products = container.querySelectorAll('[data-product]');
+    const filterCats = container.querySelectorAll('[data-filter-cat]');
+    let selectedCategories = new Set();
+    let currentSearchTerm = '';
+
+    // Combined filter function (shared between filter and search)
+    const applyAllFilters = () => {
+      products.forEach(product => {
+        const productCollections = (product.dataset.collections || '').split(',').map(c => c.trim());
+        const productTitle = product.dataset.title || '';
+
+        // Check category filter
+        let matchesCategory = true;
+        if (selectedCategories.size > 0) {
+          matchesCategory = [...selectedCategories].some(cat => productCollections.includes(cat));
+        }
+
+        // Check search filter
+        let matchesSearch = true;
+        if (currentSearchTerm) {
+          matchesSearch = productTitle.includes(currentSearchTerm);
+        }
+
+        // Show/hide product
+        if (matchesCategory && matchesSearch) {
+          product.style.display = '';
+        } else {
+          product.style.display = 'none';
+        }
+      });
+    };
+
     // Sort functionality
     const sortToggle = container.querySelector('[data-sort-toggle]');
     const sortDropdown = container.querySelector('[data-sort-dropdown]');
@@ -900,10 +933,6 @@
     const filterApply = container.querySelector('[data-filter-apply]');
     const priceMin = container.querySelector('[data-price-min]');
     const priceMax = container.querySelector('[data-price-max]');
-    const filterCats = container.querySelectorAll('[data-filter-cat]');
-    const products = container.querySelectorAll('[data-product]');
-
-    let selectedCategories = new Set();
 
     if (filterToggle && filterModal) {
       filterToggle.addEventListener('click', () => {
@@ -932,39 +961,19 @@
         });
       });
 
-      // Apply filters
-      const applyFilters = () => {
-        products.forEach(product => {
-          const productCollections = (product.dataset.collections || '').split(',').map(c => c.trim());
-
-          // Check category filter
-          let matchesCategory = true;
-          if (selectedCategories.size > 0) {
-            matchesCategory = [...selectedCategories].some(cat => productCollections.includes(cat));
-          }
-
-          // Show/hide product
-          if (matchesCategory) {
-            product.style.display = '';
-          } else {
-            product.style.display = 'none';
-          }
-        });
-      };
-
       if (filterClear) {
         filterClear.addEventListener('click', () => {
           if (priceMin) priceMin.value = '';
           if (priceMax) priceMax.value = '';
           selectedCategories.clear();
           filterCats.forEach(btn => btn.classList.remove('is-active'));
-          products.forEach(product => product.style.display = '');
+          applyAllFilters();
         });
       }
 
       if (filterApply) {
         filterApply.addEventListener('click', () => {
-          applyFilters();
+          applyAllFilters();
           closeFilter();
         });
       }
@@ -975,6 +984,7 @@
     const searchModal = container.querySelector('[data-search-modal]');
     const searchCloses = container.querySelectorAll('[data-search-close]');
     const searchInput = container.querySelector('[data-search-input]');
+    const searchForm = container.querySelector('.collection-search-modal__form');
 
     if (searchToggle && searchModal) {
       searchToggle.addEventListener('click', () => {
@@ -987,6 +997,21 @@
         searchModal.hidden = true;
         document.body.style.overflow = '';
       };
+
+      // Prevent form submission - search is dynamic
+      if (searchForm) {
+        searchForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+        });
+      }
+
+      // Dynamic search as user types
+      if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+          currentSearchTerm = e.target.value.toLowerCase().trim();
+          applyAllFilters();
+        });
+      }
 
       searchCloses.forEach(btn => btn.addEventListener('click', closeSearch));
       searchModal.querySelector('.collection-search-modal__backdrop')?.addEventListener('click', closeSearch);
