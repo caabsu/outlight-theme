@@ -194,6 +194,16 @@
                     {{ section.settings.filter_collection_6_text | default: section.settings.filter_collection_6.title }}
                   </button>
                 {% endif %}
+                {% if section.settings.filter_collection_7 != blank %}
+                  <button type="button" class="collection-filter-collection" data-filter-cat="{{ section.settings.filter_collection_7.handle }}">
+                    {{ section.settings.filter_collection_7_text | default: section.settings.filter_collection_7.title }}
+                  </button>
+                {% endif %}
+                {% if section.settings.filter_collection_8 != blank %}
+                  <button type="button" class="collection-filter-collection" data-filter-cat="{{ section.settings.filter_collection_8.handle }}">
+                    {{ section.settings.filter_collection_8_text | default: section.settings.filter_collection_8.title }}
+                  </button>
+                {% endif %}
               </div>
             </div>
           {% endif %}
@@ -1424,6 +1434,26 @@
       "type": "text",
       "id": "filter_collection_6_text",
       "label": "Collection 6 label"
+    },
+    {
+      "type": "collection",
+      "id": "filter_collection_7",
+      "label": "Collection 7"
+    },
+    {
+      "type": "text",
+      "id": "filter_collection_7_text",
+      "label": "Collection 7 label"
+    },
+    {
+      "type": "collection",
+      "id": "filter_collection_8",
+      "label": "Collection 8"
+    },
+    {
+      "type": "text",
+      "id": "filter_collection_8_text",
+      "label": "Collection 8 label"
     },
     {
       "type": "header",
