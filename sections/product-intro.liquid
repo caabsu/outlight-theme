@@ -1,0 +1,434 @@
+{% comment %}
+  Product Intro Section - Uses product metafields
+  Metafields used:
+  - custom.intro_title
+  - custom.intro_strap_text
+  - custom.intro_subheading
+  - custom.intro_main_image
+  - custom.intro_image_text
+  - custom.intro_image1
+  - custom.intro_image2
+{% endcomment %}
+
+{% liquid
+  assign intro_title = product.metafields.custom.intro_title
+  assign intro_strap = product.metafields.custom.intro_strap_text
+  assign intro_subheading = product.metafields.custom.intro_subheading
+  assign intro_main_image = product.metafields.custom.intro_main_image.value
+  assign intro_image_text = product.metafields.custom.intro_image_text
+  assign intro_image1 = product.metafields.custom.intro_image1.value
+  assign intro_image2 = product.metafields.custom.intro_image2.value
+%}
+
+{% if intro_title != blank or intro_main_image != blank %}
+<div class="product-intro" style="
+  --intro-bg: {{ section.settings.background_color }};
+  --intro-strap-color: {{ section.settings.strap_color }};
+  --intro-strap-size: {{ section.settings.strap_size }}px;
+  --intro-title-color: {{ section.settings.title_color }};
+  --intro-title-size-mobile: {{ section.settings.title_size_mobile }}px;
+  --intro-title-size-desktop: {{ section.settings.title_size_desktop }}px;
+  --intro-subheading-color: {{ section.settings.subheading_color }};
+  --intro-subheading-size-mobile: {{ section.settings.subheading_size_mobile }}px;
+  --intro-subheading-size-desktop: {{ section.settings.subheading_size_desktop }}px;
+  --intro-text-color: {{ section.settings.text_color }};
+  --intro-text-size: {{ section.settings.text_size }}px;
+  --intro-accent-color: {{ section.settings.accent_color }};
+  --intro-padding-mobile: {{ section.settings.padding_mobile }}px;
+  --intro-padding-desktop: {{ section.settings.padding_desktop }}px;
+">
+  <div class="product-intro__container">
+    {%- comment -%} Mobile: Image first {%- endcomment -%}
+    <div class="product-intro__image-col product-intro__image-col--mobile">
+      {% if intro_main_image %}
+        <div class="product-intro__main-image">
+          {{ intro_main_image | image_url: width: 800 | image_tag: loading: 'lazy' }}
+        </div>
+      {% endif %}
+    </div>
+
+    {%- comment -%} Content Column {%- endcomment -%}
+    <div class="product-intro__content-col">
+      {% if intro_strap != blank %}
+        <p class="product-intro__strap">{{ intro_strap }}</p>
+      {% endif %}
+
+      {% if intro_title != blank %}
+        <h2 class="product-intro__title">{{ intro_title }}</h2>
+      {% endif %}
+
+      {% if intro_subheading != blank %}
+        <blockquote class="product-intro__subheading">
+          {{ intro_subheading }}
+        </blockquote>
+      {% endif %}
+
+      {% if intro_image_text != blank %}
+        <p class="product-intro__text">{{ intro_image_text }}</p>
+      {% endif %}
+    </div>
+
+    {%- comment -%} Desktop: Image Column {%- endcomment -%}
+    <div class="product-intro__image-col product-intro__image-col--desktop">
+      {% if intro_main_image %}
+        <div class="product-intro__main-image">
+          {{ intro_main_image | image_url: width: 1200 | image_tag: loading: 'lazy' }}
+        </div>
+      {% endif %}
+
+      {% if intro_image1 != blank or intro_image2 != blank %}
+        <div class="product-intro__thumbnails">
+          {% if intro_image1 %}
+            <div class="product-intro__thumbnail">
+              {{ intro_image1 | image_url: width: 400 | image_tag: loading: 'lazy' }}
+            </div>
+          {% endif %}
+          {% if intro_image2 %}
+            <div class="product-intro__thumbnail">
+              {{ intro_image2 | image_url: width: 400 | image_tag: loading: 'lazy' }}
+            </div>
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
+
+    {%- comment -%} Mobile: Thumbnails at bottom {%- endcomment -%}
+    {% if intro_image1 != blank or intro_image2 != blank %}
+      <div class="product-intro__thumbnails product-intro__thumbnails--mobile">
+        {% if intro_image1 %}
+          <div class="product-intro__thumbnail">
+            {{ intro_image1 | image_url: width: 400 | image_tag: loading: 'lazy' }}
+          </div>
+        {% endif %}
+        {% if intro_image2 %}
+          <div class="product-intro__thumbnail">
+            {{ intro_image2 | image_url: width: 400 | image_tag: loading: 'lazy' }}
+          </div>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endif %}
+
+{% stylesheet %}
+  .product-intro {
+    background-color: var(--intro-bg, #F7F5F0);
+    padding: var(--intro-padding-mobile, 40px) 24px;
+  }
+
+  .product-intro__container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  /* Content Column */
+  .product-intro__content-col {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .product-intro__strap {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: var(--intro-strap-size, 12px);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--intro-strap-color, #D97706);
+    margin: 0;
+  }
+
+  .product-intro__title {
+    font-family: var(--font-heading-family), serif;
+    font-size: var(--intro-title-size-mobile, 40px);
+    font-weight: 400;
+    color: var(--intro-title-color, #1C1917);
+    margin: 0;
+    line-height: 1.1;
+  }
+
+  .product-intro__subheading {
+    font-family: var(--font-heading-family), serif;
+    font-size: var(--intro-subheading-size-mobile, 18px);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--intro-subheading-color, #57534E);
+    margin: 0;
+    padding-left: 20px;
+    border-left: 3px solid var(--intro-accent-color, #D97706);
+    line-height: 1.5;
+  }
+
+  .product-intro__text {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: var(--intro-text-size, 15px);
+    font-weight: 400;
+    color: var(--intro-text-color, #78716C);
+    margin: 0;
+    line-height: 1.7;
+  }
+
+  /* Image Column */
+  .product-intro__image-col--desktop {
+    display: none;
+  }
+
+  .product-intro__image-col--mobile {
+    display: block;
+  }
+
+  .product-intro__main-image {
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .product-intro__main-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* Thumbnails */
+  .product-intro__thumbnails {
+    display: none;
+  }
+
+  .product-intro__thumbnails--mobile {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  .product-intro__thumbnail {
+    flex: 1;
+    max-width: 50%;
+    overflow: hidden;
+  }
+
+  .product-intro__thumbnail img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* Desktop Styles */
+  @media (min-width: 768px) {
+    .product-intro {
+      padding: var(--intro-padding-desktop, 80px) 48px;
+    }
+
+    .product-intro__container {
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 60px;
+    }
+
+    .product-intro__content-col {
+      flex: 1;
+      max-width: 45%;
+      padding-top: 40px;
+      gap: 24px;
+    }
+
+    .product-intro__title {
+      font-size: var(--intro-title-size-desktop, 56px);
+    }
+
+    .product-intro__subheading {
+      font-size: var(--intro-subheading-size-desktop, 22px);
+      padding-left: 24px;
+    }
+
+    .product-intro__image-col--mobile {
+      display: none;
+    }
+
+    .product-intro__image-col--desktop {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      flex: 1;
+      max-width: 50%;
+    }
+
+    .product-intro__thumbnails {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+    }
+
+    .product-intro__thumbnails--mobile {
+      display: none;
+    }
+
+    .product-intro__thumbnail {
+      flex: 0 0 auto;
+      max-width: 140px;
+    }
+
+    .product-intro__thumbnail img {
+      border: 1px solid transparent;
+      transition: border-color 0.2s ease;
+    }
+
+    .product-intro__thumbnail:hover img {
+      border-color: #E5E5E5;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .product-intro__container {
+      gap: 80px;
+    }
+
+    .product-intro__thumbnail {
+      max-width: 160px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Product Intro",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#F7F5F0"
+    },
+    {
+      "type": "color",
+      "id": "strap_color",
+      "label": "Strap text color",
+      "default": "#D97706"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#1C1917"
+    },
+    {
+      "type": "color",
+      "id": "subheading_color",
+      "label": "Subheading color",
+      "default": "#57534E"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Body text color",
+      "default": "#78716C"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color (border)",
+      "default": "#D97706"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "strap_size",
+      "label": "Strap text size",
+      "min": 10,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "title_size_mobile",
+      "label": "Title size (mobile)",
+      "min": 28,
+      "max": 56,
+      "step": 2,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "title_size_desktop",
+      "label": "Title size (desktop)",
+      "min": 36,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "subheading_size_mobile",
+      "label": "Subheading size (mobile)",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "subheading_size_desktop",
+      "label": "Subheading size (desktop)",
+      "min": 18,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 22
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "label": "Body text size",
+      "min": 13,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_mobile",
+      "label": "Section padding (mobile)",
+      "min": 24,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_desktop",
+      "label": "Section padding (desktop)",
+      "min": 40,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Intro"
+    }
+  ],
+  "templates": ["product"]
+}
+{% endschema %}
