@@ -20,7 +20,7 @@
         "filter_bar_radius": 0,
         "filter_bar_text_size": 12,
         "filter_bar_text_color": "#1c1917",
-        "filter_bar_text_weight": "600",
+        "filter_bar_text_weight": "400",
         "filter_bar_icon_size": 16,
         "filter_bar_divider_color": "#e5e5e5",
         "filter_text": "FILTER",
