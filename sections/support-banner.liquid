@@ -4,14 +4,11 @@
     --section-bg: {{ section.settings.section_bg }};
     --section-padding-top: {{ section.settings.padding_top }}px;
     --section-padding-bottom: {{ section.settings.padding_bottom }}px;
-    --accent-color: {{ section.settings.accent_color }};
     --card-bg: {{ section.settings.card_bg }};
-    --card-radius: {{ section.settings.card_radius }}px;
+    --icon-bg: {{ section.settings.icon_bg }};
+    --icon-color: {{ section.settings.icon_color }};
     --title-color: {{ section.settings.title_color }};
-    --title-size-desktop: {{ section.settings.title_size_desktop }}px;
-    --title-size-mobile: {{ section.settings.title_size_mobile }}px;
     --description-color: {{ section.settings.description_color }};
-    --description-size: {{ section.settings.description_size }}px;
     --btn-primary-bg: {{ section.settings.btn_primary_bg }};
     --btn-primary-color: {{ section.settings.btn_primary_color }};
     --btn-secondary-bg: {{ section.settings.btn_secondary_bg }};
@@ -20,35 +17,39 @@
   "
 >
   <div class="support-banner__container">
-    <div class="support-banner__accent-line"></div>
     <div class="support-banner__card">
-      {%- if section.settings.title != blank -%}
-        <h2 class="support-banner__title">{{ section.settings.title }}</h2>
-      {%- endif -%}
+      <div class="support-banner__icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+          <line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+      </div>
 
-      {%- if section.settings.description != blank -%}
-        <p class="support-banner__description">{{ section.settings.description }}</p>
-      {%- endif -%}
+      <div class="support-banner__content">
+        {%- if section.settings.title != blank -%}
+          <h2 class="support-banner__title">{{ section.settings.title }}</h2>
+        {%- endif -%}
+
+        {%- if section.settings.description != blank -%}
+          <p class="support-banner__description">{{ section.settings.description }}</p>
+        {%- endif -%}
+      </div>
 
       <div class="support-banner__buttons">
-        {%- if section.settings.btn_secondary_text != blank -%}
-          <a href="{{ section.settings.btn_secondary_url }}" class="support-banner__btn support-banner__btn--secondary">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"/>
-              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
-              <line x1="12" y1="17" x2="12.01" y2="17"/>
-            </svg>
-            {{ section.settings.btn_secondary_text }}
+        {%- if section.settings.btn_primary_text != blank -%}
+          <a href="{{ section.settings.btn_primary_url }}" class="support-banner__btn support-banner__btn--primary">
+            {{ section.settings.btn_primary_text }}
           </a>
         {%- endif -%}
 
-        {%- if section.settings.btn_primary_text != blank -%}
-          <a href="{{ section.settings.btn_primary_url }}" class="support-banner__btn support-banner__btn--primary">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-              <polyline points="22,6 12,13 2,6"/>
+        {%- if section.settings.btn_secondary_text != blank -%}
+          <a href="{{ section.settings.btn_secondary_url }}" class="support-banner__btn support-banner__btn--secondary">
+            {{ section.settings.btn_secondary_text }}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
             </svg>
-            {{ section.settings.btn_primary_text }}
           </a>
         {%- endif -%}
       </div>
@@ -68,57 +69,73 @@
     padding: 0 var(--page-margin);
   }
 
-  .support-banner__accent-line {
-    height: 4px;
-    background: var(--accent-color);
-    border-radius: 2px 2px 0 0;
-  }
-
   .support-banner__card {
     background: var(--card-bg);
-    border-radius: 0 0 var(--card-radius) var(--card-radius);
-    padding: 40px 32px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .support-banner__icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--icon-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--icon-color);
+    flex-shrink: 0;
+  }
+
+  .support-banner__icon svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .support-banner__content {
     text-align: center;
   }
 
   .support-banner__title {
-    font-size: var(--title-size-mobile);
-    font-weight: 400;
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
     color: var(--title-color);
-    margin: 0 0 16px;
+    margin: 0 0 4px;
   }
 
   .support-banner__description {
-    font-size: var(--description-size);
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 14px;
+    font-weight: 400;
     color: var(--description-color);
-    margin: 0 0 28px;
-    line-height: 1.6;
-    max-width: 500px;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 0;
+    line-height: 1.5;
   }
 
   .support-banner__buttons {
     display: flex;
-    justify-content: center;
     gap: 12px;
+    width: 100%;
   }
 
   .support-banner__btn {
+    flex: 1;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 6px;
     padding: 12px 20px;
+    font-family: var(--font-body-family), sans-serif;
     font-size: 13px;
     font-weight: 500;
     text-decoration: none;
-    border-radius: 6px;
     transition: all 0.2s ease;
-  }
-
-  .support-banner__btn svg {
-    display: none;
   }
 
   .support-banner__btn--primary {
@@ -137,34 +154,65 @@
   }
 
   .support-banner__btn--secondary:hover {
-    background: #f5f5f5;
+    background: #f9f9f9;
+  }
+
+  .support-banner__btn--secondary svg {
+    display: none;
   }
 
   @media (min-width: 768px) {
-    .support-banner__container {
-      padding: 0 var(--page-margin);
+    .support-banner__card {
+      flex-direction: row;
+      align-items: center;
+      padding: 28px 32px;
+      gap: 24px;
     }
 
-    .support-banner__card {
-      padding: 48px 60px;
+    .support-banner__icon {
+      width: 56px;
+      height: 56px;
+    }
+
+    .support-banner__icon svg {
+      width: 26px;
+      height: 26px;
+    }
+
+    .support-banner__content {
+      flex: 1;
+      text-align: left;
     }
 
     .support-banner__title {
-      font-size: var(--title-size-desktop);
-      margin-bottom: 12px;
+      font-size: 13px;
+      margin-bottom: 2px;
     }
 
     .support-banner__description {
-      margin-bottom: 32px;
+      font-size: 15px;
+    }
+
+    .support-banner__buttons {
+      width: auto;
+      flex-shrink: 0;
     }
 
     .support-banner__btn {
-      padding: 14px 32px;
+      flex: none;
+      padding: 12px 24px;
       font-size: 14px;
     }
 
-    .support-banner__btn svg {
+    .support-banner__btn--secondary {
+      background: transparent;
+      border: 1px solid var(--btn-secondary-border);
+    }
+
+    .support-banner__btn--secondary svg {
       display: block;
+      width: 14px;
+      height: 14px;
     }
   }
 {% endstylesheet %}
@@ -181,17 +229,17 @@
       "type": "text",
       "id": "title",
       "label": "Title",
-      "default": "Support"
+      "default": "SUPPORT"
     },
     {
-      "type": "textarea",
+      "type": "text",
       "id": "description",
       "label": "Description",
-      "default": "From installation guides to warranty claims, find everything you need in our dedicated portal."
+      "default": "Our concierge team is available Mon-Fri."
     },
     {
       "type": "header",
-      "content": "Primary button (right)"
+      "content": "Primary button"
     },
     {
       "type": "text",
@@ -206,7 +254,7 @@
     },
     {
       "type": "header",
-      "content": "Secondary button (left)"
+      "content": "Secondary button"
     },
     {
       "type": "text",
@@ -236,7 +284,7 @@
       "min": 0,
       "max": 100,
       "step": 4,
-      "default": 48,
+      "default": 32,
       "unit": "px"
     },
     {
@@ -246,7 +294,7 @@
       "min": 0,
       "max": 100,
       "step": 4,
-      "default": 48,
+      "default": 32,
       "unit": "px"
     },
     {
@@ -255,75 +303,41 @@
     },
     {
       "type": "color",
-      "id": "accent_color",
-      "label": "Accent line color",
-      "default": "#c97a3a"
-    },
-    {
-      "type": "color",
       "id": "card_bg",
       "label": "Card background",
       "default": "#ffffff"
     },
     {
-      "type": "range",
-      "id": "card_radius",
-      "label": "Card border radius",
-      "min": 0,
-      "max": 24,
-      "step": 2,
-      "default": 12,
-      "unit": "px"
+      "type": "header",
+      "content": "Icon"
+    },
+    {
+      "type": "color",
+      "id": "icon_bg",
+      "label": "Icon background",
+      "default": "#F5F5F5"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon color",
+      "default": "#78716C"
     },
     {
       "type": "header",
-      "content": "Title"
+      "content": "Typography"
     },
     {
       "type": "color",
       "id": "title_color",
-      "label": "Color",
-      "default": "#1a1a1a"
-    },
-    {
-      "type": "range",
-      "id": "title_size_desktop",
-      "label": "Size (desktop)",
-      "min": 24,
-      "max": 48,
-      "step": 2,
-      "default": 36,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "title_size_mobile",
-      "label": "Size (mobile)",
-      "min": 20,
-      "max": 36,
-      "step": 2,
-      "default": 28,
-      "unit": "px"
-    },
-    {
-      "type": "header",
-      "content": "Description"
+      "label": "Title color",
+      "default": "#1C1917"
     },
     {
       "type": "color",
       "id": "description_color",
-      "label": "Color",
-      "default": "#6b7280"
-    },
-    {
-      "type": "range",
-      "id": "description_size",
-      "label": "Size",
-      "min": 14,
-      "max": 20,
-      "step": 1,
-      "default": 16,
-      "unit": "px"
+      "label": "Description color",
+      "default": "#D97706"
     },
     {
       "type": "header",
@@ -333,7 +347,7 @@
       "type": "color",
       "id": "btn_primary_bg",
       "label": "Background",
-      "default": "#1a1a1a"
+      "default": "#1C1917"
     },
     {
       "type": "color",
@@ -355,13 +369,13 @@
       "type": "color",
       "id": "btn_secondary_color",
       "label": "Text color",
-      "default": "#1a1a1a"
+      "default": "#1C1917"
     },
     {
       "type": "color",
       "id": "btn_secondary_border",
       "label": "Border color",
-      "default": "#e5e5e5"
+      "default": "#E5E5E5"
     }
   ],
   "presets": [
