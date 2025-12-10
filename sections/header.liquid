@@ -163,13 +163,6 @@
 
     {%- comment -%} Right: Icons {%- endcomment -%}
     <div class="header__right">
-      <button type="button" class="header__icon header__icon--search" aria-label="{{ 'general.search' | t }}" data-search-trigger>
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
-          <circle cx="9" cy="9" r="6"/>
-          <path d="M13.5 13.5L17 17"/>
-        </svg>
-      </button>
-
       <a href="{{ routes.cart_url }}" class="header__icon header__cart" aria-label="{{ 'general.cart' | t }}" data-cart-trigger>
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
           <path d="M4 4h2l2.5 10h7l2-7H7"/>
@@ -180,6 +173,13 @@
           <span class="header__cart-count">{{ cart.item_count }}</span>
         {%- endif -%}
       </a>
+
+      <button type="button" class="header__search-btn" aria-label="{{ 'general.search' | t }}" data-search-trigger>
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="9" cy="9" r="6"/>
+          <path d="M13.5 13.5L17 17"/>
+        </svg>
+      </button>
     </div>
   </header>
 </div>
@@ -609,6 +609,32 @@
     align-items: center;
     justify-content: center;
     padding: 0 4px;
+  }
+
+  /* Minimal search button */
+  .header__search-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    padding: 6px;
+    cursor: pointer;
+    color: var(--header-text);
+    transition: opacity 0.2s ease, color 0.3s ease;
+  }
+
+  .header__search-btn:hover {
+    opacity: 0.7;
+  }
+
+  .header__search-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .header-wrapper--transparent:not(.is-scrolled) .header__search-btn {
+    color: var(--header-text-transparent);
   }
 
   /* Mega Menu */
@@ -1146,10 +1172,6 @@
     .header__right {
       grid-area: icons;
       justify-self: end;
-    }
-
-    .header__icon--search {
-      display: none;
     }
 
     .header__logo-image {
