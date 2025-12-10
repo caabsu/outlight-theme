@@ -174,6 +174,26 @@
         "mobile_line_height": "1.6"
       }
     },
+    "product_intro_NrLrBk": {
+      "type": "product-intro",
+      "name": "Product Intro",
+      "settings": {
+        "background_color": "#F7F5F0",
+        "strap_color": "#D97706",
+        "title_color": "#1C1917",
+        "subheading_color": "#57534E",
+        "text_color": "#78716C",
+        "accent_color": "#D97706",
+        "strap_size": 12,
+        "title_size_mobile": 40,
+        "title_size_desktop": 56,
+        "subheading_size_mobile": 18,
+        "subheading_size_desktop": 22,
+        "text_size": 15,
+        "padding_mobile": 40,
+        "padding_desktop": 80
+      }
+    },
     "testimonial_showcase_V6L66t": {
       "type": "testimonial-showcase",
       "name": "Testimonial showcase",
@@ -303,6 +323,7 @@
   "order": [
     "main",
     "installation_guide_r38tPQ",
+    "product_intro_NrLrBk",
     "testimonial_showcase_V6L66t",
     "support_banner_PjaKXH",
     "collection_carousel_mHqtVb",
