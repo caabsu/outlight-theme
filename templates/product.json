@@ -178,12 +178,12 @@
       "type": "product-intro",
       "name": "Product Intro",
       "settings": {
-        "background_color": "#F7F5F0",
-        "strap_color": "#D97706",
-        "title_color": "#1C1917",
-        "subheading_color": "#57534E",
-        "text_color": "#78716C",
-        "accent_color": "#D97706",
+        "background_color": "#f7f5f0",
+        "strap_color": "#d97706",
+        "title_color": "#1c1917",
+        "subheading_color": "#57534e",
+        "text_color": "#78716c",
+        "accent_color": "#d97706",
         "strap_size": 12,
         "title_size_mobile": 40,
         "title_size_desktop": 56,
@@ -191,11 +191,14 @@
         "subheading_size_desktop": 22,
         "text_size": 15,
         "padding_mobile": 44,
-        "padding_desktop": 80
+        "padding_desktop": 80,
+        "padding_x_mobile": 0,
+        "padding_x_desktop": 0
       }
     },
     "testimonial_showcase_V6L66t": {
       "type": "testimonial-showcase",
+      "disabled": true,
       "name": "Testimonial showcase",
       "settings": {
         "image": "shopify://shop_images/Zela_6.jpg",
