@@ -18,22 +18,24 @@
 >
   <div class="support-banner__container">
     <div class="support-banner__card">
-      <div class="support-banner__icon">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"/>
-          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
-          <line x1="12" y1="17" x2="12.01" y2="17"/>
-        </svg>
-      </div>
+      <div class="support-banner__main">
+        <div class="support-banner__icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+        </div>
 
-      <div class="support-banner__content">
-        {%- if section.settings.title != blank -%}
-          <h2 class="support-banner__title">{{ section.settings.title }}</h2>
-        {%- endif -%}
+        <div class="support-banner__content">
+          {%- if section.settings.title != blank -%}
+            <h2 class="support-banner__title">{{ section.settings.title }}</h2>
+          {%- endif -%}
 
-        {%- if section.settings.description != blank -%}
-          <p class="support-banner__description">{{ section.settings.description }}</p>
-        {%- endif -%}
+          {%- if section.settings.description != blank -%}
+            <p class="support-banner__description">{{ section.settings.description }}</p>
+          {%- endif -%}
+        </div>
       </div>
 
       <div class="support-banner__buttons">
@@ -71,16 +73,21 @@
 
   .support-banner__card {
     background: var(--card-bg);
-    padding: 24px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
-    align-items: center;
     gap: 16px;
   }
 
+  .support-banner__main {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
   .support-banner__icon {
-    width: 48px;
-    height: 48px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     background: var(--icon-bg);
     display: flex;
@@ -91,12 +98,12 @@
   }
 
   .support-banner__icon svg {
-    width: 22px;
-    height: 22px;
+    width: 18px;
+    height: 18px;
   }
 
   .support-banner__content {
-    text-align: center;
+    text-align: left;
   }
 
   .support-banner__title {
@@ -165,23 +172,23 @@
     .support-banner__card {
       flex-direction: row;
       align-items: center;
-      padding: 28px 32px;
+      padding: 24px 32px;
       gap: 24px;
     }
 
+    .support-banner__main {
+      flex: 1;
+      gap: 20px;
+    }
+
     .support-banner__icon {
-      width: 56px;
-      height: 56px;
+      width: 52px;
+      height: 52px;
     }
 
     .support-banner__icon svg {
-      width: 26px;
-      height: 26px;
-    }
-
-    .support-banner__content {
-      flex: 1;
-      text-align: left;
+      width: 24px;
+      height: 24px;
     }
 
     .support-banner__title {
