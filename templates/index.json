@@ -86,7 +86,7 @@
         "show_view_all": true,
         "show_mobile_button": true,
         "button_text": "View All Collections",
-        "view_all_url": "",
+        "view_all_url": "shopify://pages/collection-directory",
         "button_background": "#57534e",
         "button_text_color": "#f7f5f0",
         "button_font_size": 16,
