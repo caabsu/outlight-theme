@@ -527,15 +527,14 @@
   .collection-filter-bar {
     display: flex;
     justify-content: center;
-    padding: 16px 20px;
+    padding: 12px 0;
+    background: var(--filter-bar-bg, #ffffff);
   }
 
   .collection-filter-bar__inner {
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    background: var(--filter-bar-bg, #ffffff);
-    border-radius: var(--filter-bar-radius, 50px);
-    padding: 10px 8px;
+    width: 100%;
   }
 
   .collection-filter-bar__inner[hidden] {
@@ -543,10 +542,12 @@
   }
 
   .collection-filter-bar__btn {
+    flex: 1;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
-    padding: 8px 16px;
+    padding: 12px 16px;
     background: none;
     border: none;
     cursor: pointer;
@@ -571,8 +572,9 @@
 
   .collection-filter-bar__divider {
     width: 1px;
-    height: 20px;
+    height: 28px;
     background: var(--filter-bar-divider-color, #E5E5E5);
+    flex-shrink: 0;
   }
 
   /* Inline Search */
@@ -580,10 +582,9 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    background: var(--filter-bar-bg, #ffffff);
-    border-radius: var(--filter-bar-radius, 50px);
-    padding: 8px 16px;
-    min-width: 280px;
+    background: transparent;
+    padding: 4px 16px;
+    width: 100%;
   }
 
   .collection-filter-bar__search[hidden] {
@@ -637,12 +638,6 @@
   .collection-filter-bar__search-clear svg {
     width: 14px;
     height: 14px;
-  }
-
-  @media (min-width: 768px) {
-    .collection-filter-bar__search {
-      min-width: 360px;
-    }
   }
 
   /* Sort Dropdown */
