@@ -36,6 +36,8 @@
   --intro-accent-color: {{ section.settings.accent_color }};
   --intro-padding-mobile: {{ section.settings.padding_mobile }}px;
   --intro-padding-desktop: {{ section.settings.padding_desktop }}px;
+  --intro-padding-x-mobile: {{ section.settings.padding_x_mobile }}px;
+  --intro-padding-x-desktop: {{ section.settings.padding_x_desktop }}px;
 ">
   <div class="product-intro__container">
     {%- comment -%} Mobile: Image first {%- endcomment -%}
@@ -114,7 +116,7 @@
 {% stylesheet %}
   .product-intro {
     background-color: var(--intro-bg, #F7F5F0);
-    padding: var(--intro-padding-mobile, 40px) 16px;
+    padding: var(--intro-padding-mobile, 40px) var(--intro-padding-x-mobile, 0px);
   }
 
   .product-intro__container {
@@ -218,7 +220,7 @@
   /* Desktop Styles */
   @media (min-width: 768px) {
     .product-intro {
-      padding: var(--intro-padding-desktop, 80px) 48px;
+      padding: var(--intro-padding-desktop, 80px) var(--intro-padding-x-desktop, 48px);
     }
 
     .product-intro__container {
@@ -447,8 +449,8 @@
     {
       "type": "range",
       "id": "padding_mobile",
-      "label": "Section padding (mobile)",
-      "min": 24,
+      "label": "Top/bottom padding (mobile)",
+      "min": 0,
       "max": 80,
       "step": 4,
       "unit": "px",
@@ -457,12 +459,32 @@
     {
       "type": "range",
       "id": "padding_desktop",
-      "label": "Section padding (desktop)",
-      "min": 40,
+      "label": "Top/bottom padding (desktop)",
+      "min": 0,
       "max": 120,
       "step": 4,
       "unit": "px",
       "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_x_mobile",
+      "label": "Side padding (mobile)",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_x_desktop",
+      "label": "Side padding (desktop)",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 48
     }
   ],
   "presets": [
