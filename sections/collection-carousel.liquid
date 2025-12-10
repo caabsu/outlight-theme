@@ -126,7 +126,37 @@
   }
 
   .collection-carousel__nav {
-    display: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    z-index: 10;
+    transition: opacity 0.2s ease;
+    color: #1C1917;
+  }
+
+  .collection-carousel__nav:hover {
+    opacity: 0.6;
+  }
+
+  .collection-carousel__nav--prev {
+    left: 4px;
+  }
+
+  .collection-carousel__nav--next {
+    right: 4px;
+  }
+
+  .collection-carousel__nav:disabled {
+    opacity: 0.2;
+    cursor: not-allowed;
   }
 
   .collection-carousel__track {
@@ -181,9 +211,9 @@
   }
 
   .collection-carousel__name-mobile {
-    font-family: inherit;
+    font-family: var(--font-heading-family), serif;
     font-size: var(--product-name-size-mobile);
-    font-weight: var(--product-name-weight);
+    font-weight: 400;
     color: var(--mobile-name-color);
     margin: 0 0 4px;
   }
@@ -253,9 +283,9 @@
     }
 
     .collection-carousel__name {
-      font-family: inherit;
+      font-family: var(--font-heading-family), serif;
       font-size: var(--product-name-size-desktop);
-      font-weight: var(--product-name-weight);
+      font-weight: 400;
       color: var(--product-name-color);
       margin: 0 0 4px;
     }
@@ -286,39 +316,16 @@
     }
 
     .collection-carousel__nav {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
       width: 48px;
       height: 48px;
-      background: rgba(255, 255, 255, 0.9);
-      border: none;
-      border-radius: 50%;
-      cursor: pointer;
-      z-index: 10;
-      transition: all 0.2s ease;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .collection-carousel__nav:hover {
-      background: #ffffff;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
 
     .collection-carousel__nav--prev {
-      left: -24px;
+      left: 16px;
     }
 
     .collection-carousel__nav--next {
-      right: -24px;
-    }
-
-    .collection-carousel__nav:disabled {
-      opacity: 0.3;
-      cursor: not-allowed;
+      right: 16px;
     }
   }
 {% endstylesheet %}
