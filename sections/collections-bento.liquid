@@ -13,17 +13,42 @@
   --cb-btn-size: {{ section.settings.button_font_size }}px;
   --cb-btn-weight: {{ section.settings.button_font_weight }};
   --cb-btn-image-opacity: {{ section.settings.button_image_opacity | divided_by: 100.0 }};
-  --cb-section-title-size: {{ section.settings.section_title_size }}px;
-  --cb-section-title-color: {{ section.settings.section_title_color }};
-  --cb-section-title-weight: {{ section.settings.section_title_weight }};
+  --cb-section-title-size-mobile: {{ section.settings.section_title_size_mobile }}px;
+  --cb-section-title-color-mobile: {{ section.settings.section_title_color_mobile }};
+  --cb-section-title-weight-mobile: {{ section.settings.section_title_weight_mobile }};
+  --cb-section-title-size-desktop: {{ section.settings.section_title_size_desktop }}px;
+  --cb-section-title-color-desktop: {{ section.settings.section_title_color_desktop }};
+  --cb-section-title-weight-desktop: {{ section.settings.section_title_weight_desktop }};
+  --cb-section-subtitle-size-mobile: {{ section.settings.section_subtitle_size_mobile }}px;
+  --cb-section-subtitle-color-mobile: {{ section.settings.section_subtitle_color_mobile }};
+  --cb-section-subtitle-weight-mobile: {{ section.settings.section_subtitle_weight_mobile }};
+  --cb-section-subtitle-size-desktop: {{ section.settings.section_subtitle_size_desktop }}px;
+  --cb-section-subtitle-color-desktop: {{ section.settings.section_subtitle_color_desktop }};
+  --cb-section-subtitle-weight-desktop: {{ section.settings.section_subtitle_weight_desktop }};
   --cb-section-height: {{ section.settings.section_height }}px;
   --cb-padding-top-desktop: {{ section.settings.padding_top_desktop }}px;
   --cb-padding-bottom-desktop: {{ section.settings.padding_bottom_desktop }}px;
   --cb-padding-top-mobile: {{ section.settings.padding_top_mobile }}px;
   --cb-padding-bottom-mobile: {{ section.settings.padding_bottom_mobile }}px;
 ">
-  {%- if section.settings.show_section_title -%}
-    <h2 class="collections-bento__section-title">{{ section.settings.section_title }}</h2>
+  {%- comment -%} Mobile Title & Subtitle {%- endcomment -%}
+  {%- if section.settings.show_section_title_mobile -%}
+    <div class="collections-bento__header collections-bento__header--mobile">
+      <h2 class="collections-bento__section-title collections-bento__section-title--mobile">{{ section.settings.section_title }}</h2>
+      {%- if section.settings.section_subtitle != blank -%}
+        <p class="collections-bento__section-subtitle collections-bento__section-subtitle--mobile">{{ section.settings.section_subtitle }}</p>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  {%- comment -%} Desktop Title & Subtitle {%- endcomment -%}
+  {%- if section.settings.show_section_title_desktop -%}
+    <div class="collections-bento__header collections-bento__header--desktop">
+      <h2 class="collections-bento__section-title collections-bento__section-title--desktop">{{ section.settings.section_title }}</h2>
+      {%- if section.settings.section_subtitle != blank -%}
+        <p class="collections-bento__section-subtitle collections-bento__section-subtitle--desktop">{{ section.settings.section_subtitle }}</p>
+      {%- endif -%}
+    </div>
   {%- endif -%}
 
   <div class="collections-bento__grid">
@@ -145,14 +170,47 @@
     padding: var(--cb-padding-top-mobile, 40px) 0 var(--cb-padding-bottom-mobile, 40px);
   }
 
-  .collections-bento__section-title {
-    display: block;
-    font-family: var(--font-heading-family), serif;
-    font-size: var(--cb-section-title-size, 28px);
-    font-weight: var(--cb-section-title-weight, 400);
-    color: var(--cb-section-title-color, #1C1917);
+  .collections-bento__header {
     margin: 0 0 16px;
     text-align: left;
+  }
+
+  .collections-bento__header--desktop {
+    display: none;
+  }
+
+  .collections-bento__section-title {
+    font-family: var(--font-body-family), sans-serif;
+    margin: 0;
+  }
+
+  .collections-bento__section-title--mobile {
+    font-size: var(--cb-section-title-size-mobile, 28px);
+    font-weight: var(--cb-section-title-weight-mobile, 400);
+    color: var(--cb-section-title-color-mobile, #1C1917);
+  }
+
+  .collections-bento__section-title--desktop {
+    font-size: var(--cb-section-title-size-desktop, 32px);
+    font-weight: var(--cb-section-title-weight-desktop, 400);
+    color: var(--cb-section-title-color-desktop, #1C1917);
+  }
+
+  .collections-bento__section-subtitle {
+    font-family: var(--font-body-family), sans-serif;
+    margin: 8px 0 0;
+  }
+
+  .collections-bento__section-subtitle--mobile {
+    font-size: var(--cb-section-subtitle-size-mobile, 14px);
+    font-weight: var(--cb-section-subtitle-weight-mobile, 400);
+    color: var(--cb-section-subtitle-color-mobile, #78716C);
+  }
+
+  .collections-bento__section-subtitle--desktop {
+    font-size: var(--cb-section-subtitle-size-desktop, 16px);
+    font-weight: var(--cb-section-subtitle-weight-desktop, 400);
+    color: var(--cb-section-subtitle-color-desktop, #78716C);
   }
 
   /* Mobile Grid */
@@ -276,8 +334,13 @@
       padding: var(--cb-padding-top-desktop, 60px) 40px var(--cb-padding-bottom-desktop, 60px);
     }
 
-    .collections-bento__section-title {
+    .collections-bento__header--mobile {
       display: none;
+    }
+
+    .collections-bento__header--desktop {
+      display: block;
+      margin-bottom: 24px;
     }
 
     .collections-bento__mobile-button {
@@ -466,13 +529,7 @@
     },
     {
       "type": "header",
-      "content": "Section Title (Mobile)"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_section_title",
-      "label": "Show section title",
-      "default": true
+      "content": "Section Title & Subtitle"
     },
     {
       "type": "text",
@@ -481,10 +538,25 @@
       "default": "Collections"
     },
     {
+      "type": "text",
+      "id": "section_subtitle",
+      "label": "Subtitle text"
+    },
+    {
+      "type": "header",
+      "content": "Title - Mobile"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_section_title_mobile",
+      "label": "Show title on mobile",
+      "default": true
+    },
+    {
       "type": "range",
-      "id": "section_title_size",
+      "id": "section_title_size_mobile",
       "label": "Title size",
-      "min": 20,
+      "min": 16,
       "max": 48,
       "step": 2,
       "unit": "px",
@@ -492,14 +564,119 @@
     },
     {
       "type": "color",
-      "id": "section_title_color",
+      "id": "section_title_color_mobile",
       "label": "Title color",
       "default": "#1C1917"
     },
     {
       "type": "select",
-      "id": "section_title_weight",
+      "id": "section_title_weight_mobile",
       "label": "Title weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "header",
+      "content": "Title - Desktop"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_section_title_desktop",
+      "label": "Show title on desktop",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "section_title_size_desktop",
+      "label": "Title size",
+      "min": 16,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "color",
+      "id": "section_title_color_desktop",
+      "label": "Title color",
+      "default": "#1C1917"
+    },
+    {
+      "type": "select",
+      "id": "section_title_weight_desktop",
+      "label": "Title weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "header",
+      "content": "Subtitle - Mobile"
+    },
+    {
+      "type": "range",
+      "id": "section_subtitle_size_mobile",
+      "label": "Subtitle size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "color",
+      "id": "section_subtitle_color_mobile",
+      "label": "Subtitle color",
+      "default": "#78716C"
+    },
+    {
+      "type": "select",
+      "id": "section_subtitle_weight_mobile",
+      "label": "Subtitle weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "header",
+      "content": "Subtitle - Desktop"
+    },
+    {
+      "type": "range",
+      "id": "section_subtitle_size_desktop",
+      "label": "Subtitle size",
+      "min": 12,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "section_subtitle_color_desktop",
+      "label": "Subtitle color",
+      "default": "#78716C"
+    },
+    {
+      "type": "select",
+      "id": "section_subtitle_weight_desktop",
+      "label": "Subtitle weight",
       "options": [
         { "value": "300", "label": "Light" },
         { "value": "400", "label": "Regular" },
