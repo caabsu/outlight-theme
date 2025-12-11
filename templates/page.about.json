@@ -1,14 +1,25 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "about-hero": {
       "type": "about-hero",
       "settings": {
+        "image": "shopify://shop_images/Karo_11.png",
+        "image_mobile": "shopify://shop_images/Elan_6.png",
+        "overlay_opacity": 40,
         "label": "OUR PHILOSOPHY",
         "title": "Curated Sanctuary",
         "subtitle": "We believe lighting isn't just about utility. It's about sculpting the atmosphere of your most sacred spaces.",
-        "height_mobile": 60,
+        "height_mobile": 50,
         "height_desktop": 80,
-        "overlay_opacity": 20,
         "label_color": "#ffffff",
         "label_size": 12,
         "title_color": "#ffffff",
@@ -26,40 +37,22 @@
         "title_prefix": "Born from",
         "title_accent": "Silence",
         "text_1": "Outlight began with a simple observation: modern life is loud. Our visual environments are cluttered. We sought to create a counter-balance.",
-        "text_2": "Founded in 2020, our studio focuses on stripping away the non-essential. We work exclusively with ceramic and sandstone—materials that ground us and interact beautifully with light.",
+        "text_2": "Founded in 2024, our studio focuses on stripping away the non-essential. We work exclusively with ceramic and sandstone—materials that ground us and interact beautifully with light.",
         "quote": "Light is the first element of design; without it there is no form.",
-        "background_color": "#FAF9F7",
-        "label_color": "#D97706",
-        "title_color": "#1C1917",
-        "title_accent_color": "#D97706",
-        "text_color": "#57534E",
+        "background_color": "#F7F5F0",
+        "label_color": "#d97706",
+        "title_color": "#1c1917",
+        "title_accent_color": "#d97706",
+        "text_color": "#57534e",
         "quote_background": "#ffffff",
-        "quote_color": "#1C1917",
+        "quote_color": "#1c1917",
         "padding_mobile": 60,
         "padding_desktop": 100
       }
     },
     "about-values": {
       "type": "about-values",
-      "settings": {
-        "heading": "Core Values",
-        "background_color": "#ffffff",
-        "heading_color": "#1C1917",
-        "icon_color": "#D97706",
-        "title_color": "#1C1917",
-        "text_color": "#78716C",
-        "padding_mobile": 60,
-        "padding_desktop": 80
-      },
       "blocks": {
-        "value-1": {
-          "type": "value",
-          "settings": {
-            "icon": "leaf",
-            "title": "Natural Materials",
-            "text": "We honor the imperfections of raw earth, using unglazed ceramics that age with grace."
-          }
-        },
         "value-2": {
           "type": "value",
           "settings": {
@@ -77,20 +70,34 @@
           }
         }
       },
-      "block_order": ["value-1", "value-2", "value-3"]
+      "block_order": [
+        "value-2",
+        "value-3"
+      ],
+      "settings": {
+        "heading": "Core Values",
+        "background_color": "#F7F5F0",
+        "heading_color": "#1c1917",
+        "icon_color": "#d97706",
+        "title_color": "#1c1917",
+        "text_color": "#78716c",
+        "padding_mobile": 60,
+        "padding_desktop": 80
+      }
     },
     "about-cta": {
       "type": "about-cta",
       "settings": {
+        "overlay_opacity": 10,
         "title": "Bring Calm Home",
         "button_text": "EXPLORE COLLECTION",
+        "button_url": "",
         "height_mobile": 300,
         "height_desktop": 400,
-        "overlay_opacity": 10,
-        "title_color": "#1C1917",
+        "title_color": "#1c1917",
         "title_size_mobile": 32,
         "title_size_desktop": 48,
-        "button_background": "#1C1917",
+        "button_background": "#1c1917",
         "button_text_color": "#ffffff"
       }
     }
