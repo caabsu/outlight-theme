@@ -1,0 +1,346 @@
+{% comment %}
+  About Story Section - Two-column layout with image and quote overlay
+{% endcomment %}
+
+<section class="about-story" style="
+  --about-story-bg: {{ section.settings.background_color }};
+  --about-story-label-color: {{ section.settings.label_color }};
+  --about-story-title-color: {{ section.settings.title_color }};
+  --about-story-title-accent: {{ section.settings.title_accent_color }};
+  --about-story-text-color: {{ section.settings.text_color }};
+  --about-story-quote-bg: {{ section.settings.quote_background }};
+  --about-story-quote-color: {{ section.settings.quote_color }};
+  --about-story-padding-mobile: {{ section.settings.padding_mobile }}px;
+  --about-story-padding-desktop: {{ section.settings.padding_desktop }}px;
+">
+  <div class="about-story__container">
+    <div class="about-story__content">
+      {%- if section.settings.label != blank -%}
+        <span class="about-story__label">{{ section.settings.label }}</span>
+      {%- endif -%}
+
+      {%- if section.settings.title != blank -%}
+        <h2 class="about-story__title">
+          {{ section.settings.title_prefix }}
+          {%- if section.settings.title_accent != blank -%}
+            <em>{{ section.settings.title_accent }}</em>
+          {%- endif -%}
+        </h2>
+      {%- endif -%}
+
+      {%- if section.settings.text_1 != blank -%}
+        <p class="about-story__text">{{ section.settings.text_1 }}</p>
+      {%- endif -%}
+
+      {%- if section.settings.text_2 != blank -%}
+        <p class="about-story__text">{{ section.settings.text_2 }}</p>
+      {%- endif -%}
+    </div>
+
+    <div class="about-story__image-wrapper">
+      {%- if section.settings.image != blank -%}
+        <div class="about-story__image">
+          {{ section.settings.image | image_url: width: 800 | image_tag: loading: 'lazy' }}
+        </div>
+      {%- else -%}
+        <div class="about-story__image about-story__placeholder"></div>
+      {%- endif -%}
+
+      {%- if section.settings.quote != blank -%}
+        <blockquote class="about-story__quote">
+          <p>"{{ section.settings.quote }}"</p>
+        </blockquote>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .about-story {
+    background-color: var(--about-story-bg, #FAF9F7);
+    padding: var(--about-story-padding-mobile, 60px) 16px;
+  }
+
+  .about-story__container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .about-story__content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .about-story__label {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--about-story-label-color, #D97706);
+  }
+
+  .about-story__title {
+    font-family: var(--font-heading-family), serif;
+    font-size: 32px;
+    font-weight: 400;
+    color: var(--about-story-title-color, #1C1917);
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  .about-story__title em {
+    font-style: italic;
+    color: var(--about-story-title-accent, #D97706);
+  }
+
+  .about-story__text {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--about-story-text-color, #57534E);
+    margin: 0;
+    line-height: 1.7;
+  }
+
+  .about-story__image-wrapper {
+    position: relative;
+  }
+
+  .about-story__image {
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .about-story__image img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .about-story__placeholder {
+    aspect-ratio: 3/4;
+    background: linear-gradient(135deg, #E7E5E4 0%, #D6D3D1 100%);
+  }
+
+  .about-story__quote {
+    background: var(--about-story-quote-bg, #ffffff);
+    padding: 24px;
+    margin: -40px 16px 0;
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  }
+
+  .about-story__quote p {
+    font-family: var(--font-heading-family), serif;
+    font-size: 18px;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--about-story-quote-color, #1C1917);
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  @media (min-width: 768px) {
+    .about-story {
+      padding: var(--about-story-padding-desktop, 100px) 40px;
+    }
+
+    .about-story__container {
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 60px;
+    }
+
+    .about-story__content {
+      flex: 1;
+      max-width: 45%;
+      padding-top: 40px;
+      gap: 24px;
+    }
+
+    .about-story__title {
+      font-size: 42px;
+    }
+
+    .about-story__text {
+      font-size: 16px;
+    }
+
+    .about-story__image-wrapper {
+      flex: 1;
+      max-width: 50%;
+    }
+
+    .about-story__quote {
+      padding: 32px;
+      margin: -60px 0 0 -40px;
+      max-width: 380px;
+    }
+
+    .about-story__quote p {
+      font-size: 20px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .about-story__container {
+      gap: 80px;
+    }
+
+    .about-story__content {
+      padding-top: 60px;
+    }
+
+    .about-story__title {
+      font-size: 48px;
+    }
+
+    .about-story__quote {
+      margin: -80px 0 0 -60px;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .about-story {
+      padding: var(--about-story-padding-desktop, 100px) 60px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "About Story",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Label",
+      "default": "OUR STORY"
+    },
+    {
+      "type": "text",
+      "id": "title_prefix",
+      "label": "Title (first part)",
+      "default": "Born from"
+    },
+    {
+      "type": "text",
+      "id": "title_accent",
+      "label": "Title (italic accent)",
+      "default": "Silence"
+    },
+    {
+      "type": "textarea",
+      "id": "text_1",
+      "label": "Paragraph 1",
+      "default": "Outlight began with a simple observation: modern life is loud. Our visual environments are cluttered. We sought to create a counter-balance."
+    },
+    {
+      "type": "textarea",
+      "id": "text_2",
+      "label": "Paragraph 2",
+      "default": "Founded in 2020, our studio focuses on stripping away the non-essential. We work exclusively with ceramic and sandstone—materials that ground us and interact beautifully with light."
+    },
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "textarea",
+      "id": "quote",
+      "label": "Quote text",
+      "default": "Light is the first element of design; without it there is no form."
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#FAF9F7"
+    },
+    {
+      "type": "color",
+      "id": "label_color",
+      "label": "Label color",
+      "default": "#D97706"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#1C1917"
+    },
+    {
+      "type": "color",
+      "id": "title_accent_color",
+      "label": "Title accent color",
+      "default": "#D97706"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#57534E"
+    },
+    {
+      "type": "color",
+      "id": "quote_background",
+      "label": "Quote background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "quote_color",
+      "label": "Quote text color",
+      "default": "#1C1917"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_mobile",
+      "label": "Padding (mobile)",
+      "min": 40,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_desktop",
+      "label": "Padding (desktop)",
+      "min": 60,
+      "max": 150,
+      "step": 10,
+      "unit": "px",
+      "default": 100
+    }
+  ],
+  "presets": [
+    {
+      "name": "About Story"
+    }
+  ]
+}
+{% endschema %}

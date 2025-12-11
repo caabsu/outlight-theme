@@ -1,0 +1,104 @@
+{
+  "sections": {
+    "about-hero": {
+      "type": "about-hero",
+      "settings": {
+        "label": "OUR PHILOSOPHY",
+        "title": "Curated Sanctuary",
+        "subtitle": "We believe lighting isn't just about utility. It's about sculpting the atmosphere of your most sacred spaces.",
+        "height_mobile": 70,
+        "height_desktop": 80,
+        "overlay_opacity": 20,
+        "label_color": "#ffffff",
+        "label_size": 12,
+        "title_color": "#ffffff",
+        "title_size_mobile": 40,
+        "title_size_desktop": 72,
+        "subtitle_color": "#ffffff",
+        "subtitle_size_mobile": 16,
+        "subtitle_size_desktop": 18
+      }
+    },
+    "about-story": {
+      "type": "about-story",
+      "settings": {
+        "label": "OUR STORY",
+        "title_prefix": "Born from",
+        "title_accent": "Silence",
+        "text_1": "Outlight began with a simple observation: modern life is loud. Our visual environments are cluttered. We sought to create a counter-balance.",
+        "text_2": "Founded in 2020, our studio focuses on stripping away the non-essential. We work exclusively with ceramic and sandstone—materials that ground us and interact beautifully with light.",
+        "quote": "Light is the first element of design; without it there is no form.",
+        "background_color": "#FAF9F7",
+        "label_color": "#D97706",
+        "title_color": "#1C1917",
+        "title_accent_color": "#D97706",
+        "text_color": "#57534E",
+        "quote_background": "#ffffff",
+        "quote_color": "#1C1917",
+        "padding_mobile": 60,
+        "padding_desktop": 100
+      }
+    },
+    "about-values": {
+      "type": "about-values",
+      "settings": {
+        "heading": "Core Values",
+        "background_color": "#ffffff",
+        "heading_color": "#1C1917",
+        "icon_color": "#D97706",
+        "title_color": "#1C1917",
+        "text_color": "#78716C",
+        "padding_mobile": 60,
+        "padding_desktop": 80
+      },
+      "blocks": {
+        "value-1": {
+          "type": "value",
+          "settings": {
+            "icon": "leaf",
+            "title": "Natural Materials",
+            "text": "We honor the imperfections of raw earth, using unglazed ceramics that age with grace."
+          }
+        },
+        "value-2": {
+          "type": "value",
+          "settings": {
+            "icon": "grid",
+            "title": "Diffused Light",
+            "text": "Every fixture is engineered to soften harsh lumens into a gentle, ambient wash."
+          }
+        },
+        "value-3": {
+          "type": "value",
+          "settings": {
+            "icon": "figure",
+            "title": "Timeless Form",
+            "text": "Silhouettes that transcend trends, designed to bring balance to any era of interior."
+          }
+        }
+      },
+      "block_order": ["value-1", "value-2", "value-3"]
+    },
+    "about-cta": {
+      "type": "about-cta",
+      "settings": {
+        "title": "Bring Calm Home",
+        "button_text": "EXPLORE COLLECTION",
+        "height_mobile": 300,
+        "height_desktop": 400,
+        "overlay_opacity": 10,
+        "title_color": "#1C1917",
+        "title_size_mobile": 32,
+        "title_size_desktop": 48,
+        "button_background": "#1C1917",
+        "button_text_color": "#ffffff"
+      }
+    }
+  },
+  "order": [
+    "about-hero",
+    "about-story",
+    "about-values",
+    "about-cta"
+  ]
+}

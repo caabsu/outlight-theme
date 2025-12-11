@@ -1,0 +1,311 @@
+{% comment %}
+  About Hero Section - Full-width image with centered text overlay
+{% endcomment %}
+
+<section class="about-hero" style="
+  --about-hero-height-mobile: {{ section.settings.height_mobile }}vh;
+  --about-hero-height-desktop: {{ section.settings.height_desktop }}vh;
+  --about-hero-overlay: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
+  --about-hero-label-color: {{ section.settings.label_color }};
+  --about-hero-label-size: {{ section.settings.label_size }}px;
+  --about-hero-title-color: {{ section.settings.title_color }};
+  --about-hero-title-size-mobile: {{ section.settings.title_size_mobile }}px;
+  --about-hero-title-size-desktop: {{ section.settings.title_size_desktop }}px;
+  --about-hero-subtitle-color: {{ section.settings.subtitle_color }};
+  --about-hero-subtitle-size-mobile: {{ section.settings.subtitle_size_mobile }}px;
+  --about-hero-subtitle-size-desktop: {{ section.settings.subtitle_size_desktop }}px;
+">
+  {%- if section.settings.image != blank -%}
+    <picture class="about-hero__image">
+      {%- if section.settings.image_mobile != blank -%}
+        <source media="(min-width: 768px)" srcset="{{ section.settings.image | image_url: width: 2000 }}">
+        {{ section.settings.image_mobile | image_url: width: 800 | image_tag: loading: 'eager' }}
+      {%- else -%}
+        {{ section.settings.image | image_url: width: 2000 | image_tag: loading: 'eager' }}
+      {%- endif -%}
+    </picture>
+  {%- else -%}
+    <div class="about-hero__placeholder"></div>
+  {%- endif -%}
+
+  <div class="about-hero__overlay"></div>
+
+  <div class="about-hero__content">
+    {%- if section.settings.label != blank -%}
+      <span class="about-hero__label">{{ section.settings.label }}</span>
+    {%- endif -%}
+
+    {%- if section.settings.title != blank -%}
+      <h1 class="about-hero__title">{{ section.settings.title }}</h1>
+    {%- endif -%}
+
+    {%- if section.settings.subtitle != blank -%}
+      <p class="about-hero__subtitle">{{ section.settings.subtitle }}</p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .about-hero {
+    position: relative;
+    width: 100%;
+    height: var(--about-hero-height-mobile, 70vh);
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .about-hero__image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .about-hero__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .about-hero__placeholder {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #D6CFC7 0%, #A69B8D 100%);
+  }
+
+  .about-hero__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, var(--about-hero-overlay, 0.2));
+  }
+
+  .about-hero__content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 24px;
+    max-width: 800px;
+  }
+
+  .about-hero__label {
+    display: block;
+    font-family: var(--font-body-family), sans-serif;
+    font-size: var(--about-hero-label-size, 12px);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--about-hero-label-color, #ffffff);
+    margin-bottom: 16px;
+  }
+
+  .about-hero__title {
+    font-family: var(--font-heading-family), serif;
+    font-size: var(--about-hero-title-size-mobile, 40px);
+    font-weight: 400;
+    color: var(--about-hero-title-color, #ffffff);
+    margin: 0 0 16px;
+    line-height: 1.1;
+  }
+
+  .about-hero__subtitle {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: var(--about-hero-subtitle-size-mobile, 16px);
+    font-weight: 400;
+    color: var(--about-hero-subtitle-color, #ffffff);
+    margin: 0;
+    line-height: 1.6;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  @media (min-width: 768px) {
+    .about-hero {
+      height: var(--about-hero-height-desktop, 80vh);
+      min-height: 500px;
+    }
+
+    .about-hero__content {
+      padding: 40px;
+    }
+
+    .about-hero__label {
+      margin-bottom: 20px;
+    }
+
+    .about-hero__title {
+      font-size: var(--about-hero-title-size-desktop, 72px);
+      margin-bottom: 24px;
+    }
+
+    .about-hero__subtitle {
+      font-size: var(--about-hero-subtitle-size-desktop, 18px);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "About Hero",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Desktop image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_mobile",
+      "label": "Mobile image"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Overlay opacity",
+      "min": 0,
+      "max": 70,
+      "step": 5,
+      "unit": "%",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Label",
+      "default": "OUR PHILOSOPHY"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Curated Sanctuary"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "We believe lighting isn't just about utility. It's about sculpting the atmosphere of your most sacred spaces."
+    },
+    {
+      "type": "header",
+      "content": "Height"
+    },
+    {
+      "type": "range",
+      "id": "height_mobile",
+      "label": "Height (mobile)",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "vh",
+      "default": 70
+    },
+    {
+      "type": "range",
+      "id": "height_desktop",
+      "label": "Height (desktop)",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "vh",
+      "default": 80
+    },
+    {
+      "type": "header",
+      "content": "Label Style"
+    },
+    {
+      "type": "color",
+      "id": "label_color",
+      "label": "Label color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "label_size",
+      "label": "Label size",
+      "min": 10,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Title Style"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "title_size_mobile",
+      "label": "Title size (mobile)",
+      "min": 28,
+      "max": 56,
+      "step": 2,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "title_size_desktop",
+      "label": "Title size (desktop)",
+      "min": 48,
+      "max": 96,
+      "step": 2,
+      "unit": "px",
+      "default": 72
+    },
+    {
+      "type": "header",
+      "content": "Subtitle Style"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size_mobile",
+      "label": "Subtitle size (mobile)",
+      "min": 14,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size_desktop",
+      "label": "Subtitle size (desktop)",
+      "min": 16,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    }
+  ],
+  "presets": [
+    {
+      "name": "About Hero"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,267 @@
+{% comment %}
+  About CTA Section - Full-width banner with background image and button
+{% endcomment %}
+
+<section class="about-cta" style="
+  --about-cta-height-mobile: {{ section.settings.height_mobile }}px;
+  --about-cta-height-desktop: {{ section.settings.height_desktop }}px;
+  --about-cta-overlay: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
+  --about-cta-title-color: {{ section.settings.title_color }};
+  --about-cta-title-size-mobile: {{ section.settings.title_size_mobile }}px;
+  --about-cta-title-size-desktop: {{ section.settings.title_size_desktop }}px;
+  --about-cta-btn-bg: {{ section.settings.button_background }};
+  --about-cta-btn-text: {{ section.settings.button_text_color }};
+">
+  {%- if section.settings.image != blank -%}
+    <picture class="about-cta__image">
+      {%- if section.settings.image_mobile != blank -%}
+        <source media="(min-width: 768px)" srcset="{{ section.settings.image | image_url: width: 2000 }}">
+        {{ section.settings.image_mobile | image_url: width: 800 | image_tag: loading: 'lazy' }}
+      {%- else -%}
+        {{ section.settings.image | image_url: width: 2000 | image_tag: loading: 'lazy' }}
+      {%- endif -%}
+    </picture>
+  {%- else -%}
+    <div class="about-cta__placeholder"></div>
+  {%- endif -%}
+
+  <div class="about-cta__overlay"></div>
+
+  <div class="about-cta__content">
+    {%- if section.settings.title != blank -%}
+      <h2 class="about-cta__title">{{ section.settings.title }}</h2>
+    {%- endif -%}
+
+    {%- if section.settings.button_text != blank -%}
+      <a href="{{ section.settings.button_url }}" class="about-cta__button">
+        {{ section.settings.button_text }}
+      </a>
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .about-cta {
+    position: relative;
+    width: 100%;
+    height: var(--about-cta-height-mobile, 300px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .about-cta__image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .about-cta__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .about-cta__placeholder {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #E7E5E4 0%, #D6D3D1 100%);
+  }
+
+  .about-cta__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, var(--about-cta-overlay, 0.1));
+  }
+
+  .about-cta__content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .about-cta__title {
+    font-family: var(--font-heading-family), serif;
+    font-size: var(--about-cta-title-size-mobile, 32px);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--about-cta-title-color, #1C1917);
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  .about-cta__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 32px;
+    background: var(--about-cta-btn-bg, #1C1917);
+    color: var(--about-cta-btn-text, #ffffff);
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .about-cta__button:hover {
+    opacity: 0.85;
+  }
+
+  @media (min-width: 768px) {
+    .about-cta {
+      height: var(--about-cta-height-desktop, 400px);
+    }
+
+    .about-cta__content {
+      padding: 40px;
+      gap: 32px;
+    }
+
+    .about-cta__title {
+      font-size: var(--about-cta-title-size-desktop, 48px);
+    }
+
+    .about-cta__button {
+      padding: 16px 40px;
+      font-size: 14px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "About CTA",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Desktop image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_mobile",
+      "label": "Mobile image"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Overlay opacity",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "%",
+      "default": 10
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Bring Calm Home"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "EXPLORE COLLECTION"
+    },
+    {
+      "type": "url",
+      "id": "button_url",
+      "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Height"
+    },
+    {
+      "type": "range",
+      "id": "height_mobile",
+      "label": "Height (mobile)",
+      "min": 200,
+      "max": 500,
+      "step": 20,
+      "unit": "px",
+      "default": 300
+    },
+    {
+      "type": "range",
+      "id": "height_desktop",
+      "label": "Height (desktop)",
+      "min": 300,
+      "max": 600,
+      "step": 20,
+      "unit": "px",
+      "default": 400
+    },
+    {
+      "type": "header",
+      "content": "Title Style"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#1C1917"
+    },
+    {
+      "type": "range",
+      "id": "title_size_mobile",
+      "label": "Title size (mobile)",
+      "min": 24,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "title_size_desktop",
+      "label": "Title size (desktop)",
+      "min": 36,
+      "max": 72,
+      "step": 2,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "header",
+      "content": "Button Style"
+    },
+    {
+      "type": "color",
+      "id": "button_background",
+      "label": "Button background",
+      "default": "#1C1917"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text color",
+      "default": "#ffffff"
+    }
+  ],
+  "presets": [
+    {
+      "name": "About CTA"
+    }
+  ]
+}
+{% endschema %}
