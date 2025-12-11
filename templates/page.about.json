@@ -38,6 +38,7 @@
         "title_accent": "Silence",
         "text_1": "Outlight began with a simple observation: modern life is loud. Our visual environments are cluttered. We sought to create a counter-balance.",
         "text_2": "Founded in 2024, our studio focuses on stripping away the non-essential. We work exclusively with ceramic and sandstone—materials that ground us and interact beautifully with light.",
+        "image": "shopify://shop_images/Ciro_closeup.png",
         "quote": "Light is the first element of design; without it there is no form.",
         "background_color": "#F7F5F0",
         "label_color": "#d97706",
@@ -76,7 +77,7 @@
       ],
       "settings": {
         "heading": "Core Values",
-        "background_color": "#F7F5F0",
+        "background_color": "#EBE8E0",
         "heading_color": "#1c1917",
         "icon_color": "#d97706",
         "title_color": "#1c1917",
