@@ -53,14 +53,6 @@
     "about-values": {
       "type": "about-values",
       "blocks": {
-        "value-1": {
-          "type": "value",
-          "settings": {
-            "icon": "leaf",
-            "title": "Natural Materials",
-            "text": "We honor the imperfections of raw earth, using unglazed ceramics that age with grace."
-          }
-        },
         "value-2": {
           "type": "value",
           "settings": {
@@ -79,13 +71,12 @@
         }
       },
       "block_order": [
-        "value-1",
         "value-2",
         "value-3"
       ],
       "settings": {
         "heading": "Core Values",
-        "background_color": "#ffffff",
+        "background_color": "#F7F5F0",
         "heading_color": "#1c1917",
         "icon_color": "#d97706",
         "title_color": "#1c1917",
