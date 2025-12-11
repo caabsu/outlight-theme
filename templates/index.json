@@ -56,6 +56,17 @@
         "button_padding_y": 16
       }
     },
+    "search_bar_FbyPxV": {
+      "type": "search-bar",
+      "name": "Search bar",
+      "settings": {
+        "placeholder": "What can we help you find?",
+        "max_width": 600,
+        "padding_top": 24,
+        "padding_bottom": 0,
+        "padding_x": 0
+      }
+    },
     "collections_bento_PrXpLn": {
       "type": "collections-bento",
       "name": "Collections Bento Grid",
@@ -204,6 +215,7 @@
   },
   "order": [
     "hero_banner_MERtpM",
+    "search_bar_FbyPxV",
     "collections_bento_PrXpLn",
     "featured_collection_fBjcht"
   ]
