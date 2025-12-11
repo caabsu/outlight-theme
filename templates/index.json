@@ -28,7 +28,7 @@
         "button_link_mobile": "",
         "background_color": "#1c1917",
         "min_height_desktop": 70,
-        "min_height_mobile": 50,
+        "min_height_mobile": 70,
         "padding_desktop": 60,
         "padding_mobile": 24,
         "content_width": 45,
@@ -56,6 +56,17 @@
         "button_padding_y": 16
       }
     },
+    "search_bar_FbyPxV": {
+      "type": "search-bar",
+      "name": "Search bar",
+      "settings": {
+        "placeholder": "What can we help you find?",
+        "max_width": 600,
+        "padding_top": 24,
+        "padding_bottom": 0,
+        "padding_x": 0
+      }
+    },
     "collections_bento_PrXpLn": {
       "type": "collections-bento",
       "name": "Collections Bento Grid",
@@ -66,11 +77,22 @@
         "padding_bottom_desktop": 60,
         "padding_top_mobile": 40,
         "padding_bottom_mobile": 40,
-        "show_section_title": true,
         "section_title": "Collections",
-        "section_title_size": 40,
-        "section_title_color": "#1c1917",
-        "section_title_weight": "400",
+        "section_subtitle": "",
+        "show_section_title_mobile": true,
+        "section_title_size_mobile": 28,
+        "section_title_color_mobile": "#1c1917",
+        "section_title_weight_mobile": "400",
+        "show_section_title_desktop": true,
+        "section_title_size_desktop": 32,
+        "section_title_color_desktop": "#1c1917",
+        "section_title_weight_desktop": "400",
+        "section_subtitle_size_mobile": 14,
+        "section_subtitle_color_mobile": "#78716c",
+        "section_subtitle_weight_mobile": "400",
+        "section_subtitle_size_desktop": 16,
+        "section_subtitle_color_desktop": "#78716c",
+        "section_subtitle_weight_desktop": "400",
         "title_font_size_desktop": 28,
         "title_font_size_mobile": 20,
         "collection_1": "floor-table-lamps",
@@ -193,6 +215,7 @@
   },
   "order": [
     "hero_banner_MERtpM",
+    "search_bar_FbyPxV",
     "collections_bento_PrXpLn",
     "featured_collection_fBjcht"
   ]
