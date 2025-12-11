@@ -28,6 +28,7 @@
     --description-color: {{ section.settings.description_color }};
     --description-size: {{ section.settings.description_size }}px;
     --description-weight: {{ section.settings.description_weight }};
+    --learn-more-color: {{ section.settings.learn_more_color }};
 
     --menu-heading-color: {{ section.settings.menu_heading_color }};
     --menu-heading-size: {{ section.settings.menu_heading_size }}px;
@@ -343,7 +344,7 @@
     margin-left: 0.3em;
     font-size: inherit;
     font-weight: 500;
-    color: var(--description-color);
+    color: var(--learn-more-color);
     text-decoration: underline;
     text-underline-offset: 2px;
     transition: opacity 0.2s ease;
@@ -790,6 +791,12 @@
       "type": "url",
       "id": "learn_more_url",
       "label": "Learn more link"
+    },
+    {
+      "type": "color",
+      "id": "learn_more_color",
+      "label": "Learn more text color",
+      "default": "#57534E"
     },
     {
       "type": "header",
