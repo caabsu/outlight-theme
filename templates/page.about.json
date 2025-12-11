@@ -118,7 +118,13 @@
         "title_size_mobile": 32,
         "title_size_desktop": 48,
         "button_background": "#1c1917",
-        "button_text_color": "#ffffff"
+        "button_text_color": "#ffffff",
+        "secondary_button_1_text": "CONTACT",
+        "secondary_button_1_url": "shopify://pages/contact",
+        "secondary_button_2_text": "SUPPORT HUB",
+        "secondary_button_2_url": "shopify://pages/support-center",
+        "secondary_button_border": "#1c1917",
+        "secondary_button_text": "#1c1917"
       }
     }
   },
