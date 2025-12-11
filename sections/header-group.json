@@ -68,7 +68,7 @@
           "type": "menu_item",
           "settings": {
             "title": "SUPPORT",
-            "link": ""
+            "link": "shopify://pages/support-center"
           }
         }
       },
@@ -105,7 +105,11 @@
         "mega_menu_promo_title_weight": "400",
         "mega_menu_header_color": "#d97706",
         "mega_menu_header_size": 12,
-        "mega_menu_header_weight": "700"
+        "mega_menu_header_weight": "700",
+        "search_title": "Search",
+        "search_placeholder": "Search products...",
+        "search_suggested_title": "Most searched products",
+        "search_collection": ""
       }
     }
   },
