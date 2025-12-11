@@ -237,7 +237,10 @@
           {%- capture product_collections -%}
             {%- for col in product.collections -%}{{ col.handle }}{% unless forloop.last %},{% endunless %}{%- endfor -%}
           {%- endcapture -%}
-          <a href="{{ product.url }}" class="collection-product" data-product data-collections="{{ product_collections }}" data-title="{{ product.title | downcase }}" data-price="{{ product.price }}">
+          {%- capture product_collection_titles -%}
+            {%- for col in product.collections -%}{{ col.title | downcase }}{% unless forloop.last %},{% endunless %}{%- endfor -%}
+          {%- endcapture -%}
+          <a href="{{ product.url }}" class="collection-product" data-product data-collections="{{ product_collections }}" data-collection-titles="{{ product_collection_titles }}" data-title="{{ product.title | downcase }}" data-price="{{ product.price }}">
             <div class="collection-product__image-wrapper">
               {% if product.featured_image %}
                 {{ product.featured_image | image_url: width: 600, height: 600, crop: 'center' | image_tag: class: 'collection-product__image', loading: 'lazy' }}
@@ -1025,6 +1028,7 @@
       const searchLower = term.toLowerCase();
 
       const filtered = allProducts.filter(product => {
+        // Search by title, product type, vendor, and tags
         return product.title.toLowerCase().includes(searchLower) ||
                (product.product_type && product.product_type.toLowerCase().includes(searchLower)) ||
                (product.vendor && product.vendor.toLowerCase().includes(searchLower)) ||
