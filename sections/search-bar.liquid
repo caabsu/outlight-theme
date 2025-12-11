@@ -4,10 +4,11 @@
 {% endcomment %}
 
 <div class="search-bar-section" style="
-  --search-bar-max-width: {{ section.settings.max_width }}px;
-  --search-bar-padding-top: {{ section.settings.padding_top }}px;
-  --search-bar-padding-bottom: {{ section.settings.padding_bottom }}px;
-  --search-bar-padding-x: {{ section.settings.padding_x }}px;
+  --search-bar-padding-top-mobile: {{ section.settings.padding_top_mobile }}px;
+  --search-bar-padding-bottom-mobile: {{ section.settings.padding_bottom_mobile }}px;
+  --search-bar-padding-x-mobile: {{ section.settings.padding_x_mobile }}px;
+  --search-bar-padding-top-desktop: {{ section.settings.padding_top_desktop }}px;
+  --search-bar-padding-bottom-desktop: {{ section.settings.padding_bottom_desktop }}px;
 ">
   <div class="search-bar-section__inner" data-search-bar-section>
     <form action="{{ routes.search_url }}" method="get" class="search-bar-section__form" data-search-bar-form>
@@ -31,14 +32,14 @@
 
 {% stylesheet %}
   .search-bar-section {
-    padding-top: var(--search-bar-padding-top, 24px);
-    padding-bottom: var(--search-bar-padding-bottom, 24px);
-    padding-left: var(--search-bar-padding-x, 24px);
-    padding-right: var(--search-bar-padding-x, 24px);
+    padding-top: var(--search-bar-padding-top-mobile, 24px);
+    padding-bottom: var(--search-bar-padding-bottom-mobile, 24px);
+    padding-left: var(--search-bar-padding-x-mobile, 16px);
+    padding-right: var(--search-bar-padding-x-mobile, 16px);
   }
 
   .search-bar-section__inner {
-    max-width: var(--search-bar-max-width, 600px);
+    max-width: 100%;
     margin: 0 auto;
     position: relative;
   }
@@ -186,14 +187,16 @@
     font-size: 13px;
   }
 
-  /* Desktop: Full width, no padding */
+  /* Desktop: Match bento grid width */
   @media (min-width: 768px) {
     .search-bar-section {
-      padding: 0;
+      padding: var(--search-bar-padding-top-desktop, 40px) 40px var(--search-bar-padding-bottom-desktop, 24px);
     }
+  }
 
-    .search-bar-section__inner {
-      max-width: 100%;
+  @media (min-width: 1200px) {
+    .search-bar-section {
+      padding: var(--search-bar-padding-top-desktop, 40px) 60px var(--search-bar-padding-bottom-desktop, 24px);
     }
   }
 {% endstylesheet %}
@@ -367,18 +370,12 @@
       "default": "What can we help you find?"
     },
     {
-      "type": "range",
-      "id": "max_width",
-      "label": "Max width",
-      "min": 300,
-      "max": 1200,
-      "step": 50,
-      "unit": "px",
-      "default": 600
+      "type": "header",
+      "content": "Padding (Mobile)"
     },
     {
       "type": "range",
-      "id": "padding_top",
+      "id": "padding_top_mobile",
       "label": "Top padding",
       "min": 0,
       "max": 80,
@@ -388,7 +385,7 @@
     },
     {
       "type": "range",
-      "id": "padding_bottom",
+      "id": "padding_bottom_mobile",
       "label": "Bottom padding",
       "min": 0,
       "max": 80,
@@ -398,8 +395,32 @@
     },
     {
       "type": "range",
-      "id": "padding_x",
+      "id": "padding_x_mobile",
       "label": "Side padding",
+      "min": 0,
+      "max": 40,
+      "step": 4,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Padding (Desktop)"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "label": "Top padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "label": "Bottom padding",
       "min": 0,
       "max": 80,
       "step": 4,
