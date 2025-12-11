@@ -999,7 +999,7 @@
           ? product.images[0].src.replace(/\.([^\.]+)$/, '_600x600_crop_center.$1')
           : '';
         const price = product.variants && product.variants[0]
-          ? (product.variants[0].price / 100).toLocaleString('en-US', { style: 'currency', currency: 'USD' })
+          ? parseFloat(product.variants[0].price).toLocaleString('en-US', { style: 'currency', currency: 'USD' })
           : '';
 
         return `
