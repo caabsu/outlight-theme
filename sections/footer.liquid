@@ -93,6 +93,9 @@
         {%- if section.settings.brand_description != blank -%}
           <p class="footer__description">
             {{ section.settings.brand_description }}
+            {%- if section.settings.learn_more_url != blank -%}
+              <a href="{{ section.settings.learn_more_url }}" class="footer__learn-more">{{ section.settings.learn_more_text }}</a>
+            {%- endif -%}
           </p>
         {%- endif -%}
 
@@ -333,6 +336,21 @@
     color: var(--description-color);
     max-width: 280px;
     margin: 0;
+  }
+
+  .footer__learn-more {
+    display: inline;
+    margin-left: 0.3em;
+    font-size: inherit;
+    font-weight: 500;
+    color: var(--description-color);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: opacity 0.2s ease;
+  }
+
+  .footer__learn-more:hover {
+    opacity: 0.7;
   }
 
   /* Social Icons */
@@ -761,6 +779,17 @@
       "id": "brand_description",
       "label": "t:sections.footer.settings.brand.description",
       "default": "We curate lighting that turns houses into sanctuaries. Banish the harshness."
+    },
+    {
+      "type": "text",
+      "id": "learn_more_text",
+      "label": "Learn more text",
+      "default": "Learn More"
+    },
+    {
+      "type": "url",
+      "id": "learn_more_url",
+      "label": "Learn more link"
     },
     {
       "type": "header",
