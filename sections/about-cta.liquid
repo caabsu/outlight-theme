@@ -22,9 +22,8 @@
         {{ section.settings.image | image_url: width: 2000 | image_tag: loading: 'lazy' }}
       {%- endif -%}
     </picture>
+    <div class="about-cta__overlay"></div>
   {%- endif -%}
-
-  <div class="about-cta__overlay"></div>
 
   <div class="about-cta__content">
     {%- if section.settings.title != blank -%}
@@ -48,7 +47,7 @@
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    background-color: var(--about-cta-bg, transparent);
+    background-color: var(--about-cta-bg, #F7F5F0);
   }
 
   .about-cta__image {
@@ -144,7 +143,7 @@
       "type": "color",
       "id": "background_color",
       "label": "Background color",
-      "default": "#E7E5E4"
+      "default": "#F7F5F0"
     },
     {
       "type": "header",
