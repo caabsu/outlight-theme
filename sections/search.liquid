@@ -1,70 +1,724 @@
 {% comment %}
-  This section is used in the search template to render search results for
-  products, articles, and pages.
-
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/search
+  Search page with hero banner and product grid matching collection style
 {% endcomment %}
 
-<h1>{{ 'search.title' | t }}</h1>
-
-<form action="{{ routes.search_url }}" method="get" role="search">
-  <input
-    type="search"
-    size="50"
-    name="q"
-    value="{{ search.terms | escape }}"
-    placeholder="{{ 'search.placeholder' | t }}"
-  >
-  <button type="submit">{{ 'search.submit' | t }}</button>
-</form>
-
-{% if search.performed %}
-  {% if search.results_count == 0 %}
-    <p>{{ 'search.no_results_html' | t: terms: search.terms }}</p>
-  {% else %}
-    <p>{{ 'search.results_for_html' | t: terms: search.terms, count: search.results_count }}</p>
-
-    <div class="search-results">
-      {% paginate search.results by 20 %}
-        {% # Search result items may be an article, a page, or a product. %}
-        {% for result in search.results %}
-          <div class="search-result">
-            {% assign featured_image = result.featured_image | default: result.image %}
-            {% if featured_image %}
-              {% render 'image', class: 'search-result__image', image: featured_image, url: result.url, width: 400 %}
-            {% endif %}
-            <div class="search-result__content">
-              <p>
-                {{ result.title | link_to: result.url }}
-                {% if result.price %}
-                  {{ result.price | money_with_currency }}
-                {% endif %}
-              </p>
-            </div>
-          </div>
-        {% endfor %}
-
-        {{ paginate | default_pagination }}
-      {% endpaginate %}
+<div class="search-page" data-search-page>
+  {%- comment -%} Hero Section {%- endcomment -%}
+  <div class="search-hero full-width" style="
+    --hero-height-mobile: {{ section.settings.hero_height_mobile }}px;
+    --hero-height-desktop: {{ section.settings.hero_height_desktop }}px;
+    --hero-overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
+    --hero-bg-color: {{ section.settings.hero_bg_color }};
+    --content-align-h: {{ section.settings.content_align_horizontal }};
+    --content-align-v: {{ section.settings.content_align_vertical }};
+    --content-padding-x-mobile: {{ section.settings.content_padding_x_mobile }}px;
+    --content-padding-x-desktop: {{ section.settings.content_padding_x_desktop }}px;
+    --content-padding-y-mobile: {{ section.settings.content_padding_y_mobile }}px;
+    --content-padding-y-desktop: {{ section.settings.content_padding_y_desktop }}px;
+    --title-size-mobile: {{ section.settings.title_size_mobile }}px;
+    --title-size-desktop: {{ section.settings.title_size_desktop }}px;
+    --title-color: {{ section.settings.title_color }};
+    --title-weight: {{ section.settings.title_weight }};
+    --subtitle-size-mobile: {{ section.settings.subtitle_size_mobile }}px;
+    --subtitle-size-desktop: {{ section.settings.subtitle_size_desktop }}px;
+    --subtitle-color: {{ section.settings.subtitle_color }};
+    --subtitle-weight: {{ section.settings.subtitle_weight }};
+  ">
+    <div class="search-hero__image-wrapper">
+      {%- if section.settings.hero_image != blank -%}
+        {{ section.settings.hero_image | image_url: width: 1920 | image_tag: class: 'search-hero__image', loading: 'eager' }}
+      {%- else -%}
+        <div class="search-hero__placeholder"></div>
+      {%- endif -%}
+      <div class="search-hero__overlay"></div>
     </div>
-  {% endif %}
-{% endif %}
+
+    <div class="search-hero__content">
+      <h1 class="search-hero__title">{{ section.settings.title | default: 'Search' }}</h1>
+      {%- if section.settings.subtitle != blank -%}
+        <p class="search-hero__subtitle">{{ section.settings.subtitle }}</p>
+      {%- elsif search.performed and search.results_count > 0 -%}
+        <p class="search-hero__subtitle">{{ search.results_count }} results for "{{ search.terms }}"</p>
+      {%- elsif search.performed and search.results_count == 0 -%}
+        <p class="search-hero__subtitle">No results found for "{{ search.terms }}"</p>
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- comment -%} Search Results Grid {%- endcomment -%}
+  <div class="search-products" style="
+    --products-gap: {{ section.settings.products_gap }}px;
+    --products-padding-x-mobile: {{ section.settings.products_padding_x_mobile }}px;
+    --products-padding-x-desktop: {{ section.settings.products_padding_x_desktop }}px;
+    --products-padding-top: {{ section.settings.products_padding_top }}px;
+    --products-padding-bottom: {{ section.settings.products_padding_bottom }}px;
+    --product-title-size: {{ section.settings.product_title_size }}px;
+    --product-title-color: {{ section.settings.product_title_color }};
+    --product-title-weight: {{ section.settings.product_title_weight }};
+    --product-price-size: {{ section.settings.product_price_size }}px;
+    --product-price-color: {{ section.settings.product_price_color }};
+    --product-price-weight: {{ section.settings.product_price_weight }};
+  ">
+    {% if search.performed %}
+      {% if search.results_count == 0 %}
+        <div class="search-no-results">
+          <p>{{ 'search.no_results_html' | t: terms: search.terms | default: 'No results found. Try a different search term.' }}</p>
+        </div>
+      {% else %}
+        {% paginate search.results by section.settings.products_per_page %}
+          <div class="search-products__grid" data-products-grid>
+            {% for result in search.results %}
+              {% if result.object_type == 'product' %}
+                <a href="{{ result.url }}" class="search-product">
+                  <div class="search-product__image-wrapper">
+                    {% if result.featured_image %}
+                      {{ result.featured_image | image_url: width: 600, height: 600, crop: 'center' | image_tag: class: 'search-product__image', loading: 'lazy' }}
+                    {% else %}
+                      <div class="search-product__placeholder"></div>
+                    {% endif %}
+                  </div>
+                  <div class="search-product__content">
+                    <h3 class="search-product__title">{{ result.title }}</h3>
+                    <p class="search-product__price">{{ result.price | money }}</p>
+                  </div>
+                </a>
+              {% elsif result.object_type == 'collection' %}
+                <a href="{{ result.url }}" class="search-product search-product--collection">
+                  <div class="search-product__image-wrapper">
+                    {% if result.featured_image %}
+                      {{ result.featured_image | image_url: width: 600, height: 600, crop: 'center' | image_tag: class: 'search-product__image', loading: 'lazy' }}
+                    {% else %}
+                      <div class="search-product__placeholder"></div>
+                    {% endif %}
+                  </div>
+                  <div class="search-product__content">
+                    <span class="search-product__type">Collection</span>
+                    <h3 class="search-product__title">{{ result.title }}</h3>
+                  </div>
+                </a>
+              {% endif %}
+            {% endfor %}
+          </div>
+
+          {%- if paginate.pages > 1 -%}
+            <div class="search-pagination">
+              {{ paginate | default_pagination }}
+            </div>
+          {%- endif -%}
+        {% endpaginate %}
+      {% endif %}
+    {% else %}
+      <div class="search-no-results">
+        <p>Enter a search term to find products and collections.</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
 
 {% stylesheet %}
-  .search-results {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  .search-page {
+    width: 100%;
   }
-  .search-results .prev,
-  .search-results .page,
-  .search-results .next {
-    grid-column: 1 / -1;
+
+  /* Hero Section */
+  .search-hero {
+    position: relative;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    height: var(--hero-height-mobile, 250px);
+    overflow: hidden;
+  }
+
+  .search-hero__image-wrapper {
+    position: absolute;
+    inset: 0;
+  }
+
+  .search-hero__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .search-hero__placeholder {
+    width: 100%;
+    height: 100%;
+    background: var(--hero-bg-color, linear-gradient(135deg, #1C1917 0%, #44403C 100%));
+  }
+
+  .search-hero__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, var(--hero-overlay-opacity, 0.3));
+  }
+
+  .search-hero__content {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: var(--content-align-v, flex-end);
+    align-items: var(--content-align-h, flex-start);
+    padding: var(--content-padding-y-mobile, 24px) var(--content-padding-x-mobile, 24px);
+    z-index: 1;
+    text-align: left;
+  }
+
+  .search-hero__content[style*="--content-align-h: center"] {
+    text-align: center;
+  }
+
+  .search-hero__content[style*="--content-align-h: flex-end"] {
+    text-align: right;
+  }
+
+  .search-hero__title {
+    font-family: var(--font-heading-family), serif;
+    font-size: var(--title-size-mobile, 36px);
+    font-weight: var(--title-weight, 400);
+    color: var(--title-color, #ffffff);
+    margin: 0;
+    line-height: 1.1;
+  }
+
+  .search-hero__subtitle {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: var(--subtitle-size-mobile, 14px);
+    font-weight: var(--subtitle-weight, 400);
+    color: var(--subtitle-color, rgba(255, 255, 255, 0.8));
+    margin: 8px 0 0;
+    line-height: 1.4;
+  }
+
+  /* Products Grid */
+  .search-products {
+    padding-top: var(--products-padding-top, 24px);
+    padding-bottom: var(--products-padding-bottom, 48px);
+    padding-left: var(--products-padding-x-mobile, 12px);
+    padding-right: var(--products-padding-x-mobile, 12px);
+  }
+
+  .search-products__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--products-gap, 16px);
+  }
+
+  .search-product {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+
+  .search-product__image-wrapper {
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background-color: #f5f5f5;
+    margin-bottom: 12px;
+  }
+
+  .search-product__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .search-product:hover .search-product__image {
+    transform: scale(1.03);
+  }
+
+  .search-product__placeholder {
+    width: 100%;
+    height: 100%;
+    background-color: #e5e5e5;
+  }
+
+  .search-product__content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 0 4px;
+  }
+
+  .search-product__type {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #78716C;
+  }
+
+  .search-product__title {
+    font-family: var(--font-heading-family), serif;
+    font-size: var(--product-title-size, 16px);
+    font-weight: var(--product-title-weight, 400);
+    color: var(--product-title-color, #1C1917);
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  .search-product__price {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: var(--product-price-size, 14px);
+    font-weight: var(--product-price-weight, 400);
+    color: var(--product-price-color, #78716C);
+    margin: 0;
+  }
+
+  .search-no-results {
+    text-align: center;
+    padding: 60px 20px;
+    color: #78716C;
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 16px;
+  }
+
+  .search-pagination {
+    margin-top: 48px;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+
+  .search-pagination a,
+  .search-pagination span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    padding: 0 12px;
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #57534E;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+  }
+
+  .search-pagination a:hover {
+    background: #F5F5F4;
+    color: #1C1917;
+  }
+
+  .search-pagination span.current {
+    background: #1C1917;
+    color: #ffffff;
+    font-weight: 600;
+  }
+
+  .search-pagination span.deco {
+    min-width: auto;
+    padding: 0 4px;
+    color: #A8A29E;
+  }
+
+  /* Desktop */
+  @media (min-width: 768px) {
+    .search-hero {
+      height: var(--hero-height-desktop, 350px);
+    }
+
+    .search-hero__content {
+      padding: var(--content-padding-y-desktop, 60px) var(--content-padding-x-desktop, 60px);
+    }
+
+    .search-hero__title {
+      font-size: var(--title-size-desktop, 56px);
+    }
+
+    .search-hero__subtitle {
+      font-size: var(--subtitle-size-desktop, 16px);
+      margin-top: 12px;
+    }
+
+    .search-products {
+      padding-left: var(--products-padding-x-desktop, 24px);
+      padding-right: var(--products-padding-x-desktop, 24px);
+    }
+
+    .search-products__grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--products-gap, 24px);
+    }
+
+    .search-product__image-wrapper {
+      margin-bottom: 16px;
+    }
+
+    .search-product__title {
+      font-size: calc(var(--product-title-size, 16px) + 2px);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .search-products__grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  @media (max-width: 767px) {
+    .search-pagination {
+      gap: 2px;
+    }
+
+    .search-pagination a,
+    .search-pagination span {
+      min-width: 36px;
+      height: 36px;
+      padding: 0 8px;
+      font-size: 13px;
+      border-radius: 6px;
+    }
   }
 {% endstylesheet %}
 
 {% schema %}
 {
-  "name": "t:general.search",
-  "settings": []
+  "name": "Search page",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Hero banner"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Hero image",
+      "info": "Leave blank for solid color background"
+    },
+    {
+      "type": "color",
+      "id": "hero_bg_color",
+      "label": "Background color (if no image)",
+      "default": "#1C1917"
+    },
+    {
+      "type": "range",
+      "id": "hero_height_mobile",
+      "label": "Hero height (mobile)",
+      "min": 150,
+      "max": 400,
+      "step": 25,
+      "unit": "px",
+      "default": 250
+    },
+    {
+      "type": "range",
+      "id": "hero_height_desktop",
+      "label": "Hero height (desktop)",
+      "min": 200,
+      "max": 600,
+      "step": 25,
+      "unit": "px",
+      "default": 350
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Overlay opacity",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "default": 30
+    },
+    {
+      "type": "header",
+      "content": "Content position"
+    },
+    {
+      "type": "select",
+      "id": "content_align_horizontal",
+      "label": "Horizontal alignment",
+      "options": [
+        { "value": "flex-start", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "flex-end", "label": "Right" }
+      ],
+      "default": "flex-start"
+    },
+    {
+      "type": "select",
+      "id": "content_align_vertical",
+      "label": "Vertical alignment",
+      "options": [
+        { "value": "flex-start", "label": "Top" },
+        { "value": "center", "label": "Center" },
+        { "value": "flex-end", "label": "Bottom" }
+      ],
+      "default": "flex-end"
+    },
+    {
+      "type": "range",
+      "id": "content_padding_x_mobile",
+      "label": "Horizontal padding (mobile)",
+      "min": 16,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "content_padding_x_desktop",
+      "label": "Horizontal padding (desktop)",
+      "min": 20,
+      "max": 200,
+      "step": 10,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "content_padding_y_mobile",
+      "label": "Vertical padding (mobile)",
+      "min": 16,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "content_padding_y_desktop",
+      "label": "Vertical padding (desktop)",
+      "min": 20,
+      "max": 120,
+      "step": 10,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "header",
+      "content": "Title"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Search"
+    },
+    {
+      "type": "range",
+      "id": "title_size_mobile",
+      "label": "Title size (mobile)",
+      "min": 24,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "title_size_desktop",
+      "label": "Title size (desktop)",
+      "min": 32,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "select",
+      "id": "title_weight",
+      "label": "Title weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "header",
+      "content": "Subtitle"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Custom subtitle",
+      "info": "Leave blank to show search results count"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size_mobile",
+      "label": "Subtitle size (mobile)",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size_desktop",
+      "label": "Subtitle size (desktop)",
+      "min": 14,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "select",
+      "id": "subtitle_weight",
+      "label": "Subtitle weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "header",
+      "content": "Products grid"
+    },
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Products per page",
+      "min": 8,
+      "max": 48,
+      "step": 4,
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "products_gap",
+      "label": "Gap between products",
+      "min": 4,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "products_padding_x_mobile",
+      "label": "Side padding (mobile)",
+      "min": 0,
+      "max": 40,
+      "step": 4,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "products_padding_x_desktop",
+      "label": "Side padding (desktop)",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "products_padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "products_padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "header",
+      "content": "Product title"
+    },
+    {
+      "type": "range",
+      "id": "product_title_size",
+      "label": "Product title size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "product_title_color",
+      "label": "Product title color",
+      "default": "#1C1917"
+    },
+    {
+      "type": "select",
+      "id": "product_title_weight",
+      "label": "Product title weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "header",
+      "content": "Product price"
+    },
+    {
+      "type": "range",
+      "id": "product_price_size",
+      "label": "Product price size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "color",
+      "id": "product_price_color",
+      "label": "Product price color",
+      "default": "#78716C"
+    },
+    {
+      "type": "select",
+      "id": "product_price_weight",
+      "label": "Product price weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" }
+      ],
+      "default": "400"
+    }
+  ]
 }
 {% endschema %}
