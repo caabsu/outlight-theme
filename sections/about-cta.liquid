@@ -12,6 +12,8 @@
   --about-cta-title-size-desktop: {{ section.settings.title_size_desktop }}px;
   --about-cta-btn-bg: {{ section.settings.button_background }};
   --about-cta-btn-text: {{ section.settings.button_text_color }};
+  --about-cta-secondary-border: {{ section.settings.secondary_button_border }};
+  --about-cta-secondary-text: {{ section.settings.secondary_button_text }};
 ">
   {%- if section.settings.image != blank -%}
     <picture class="about-cta__image">
@@ -34,6 +36,21 @@
       <a href="{{ section.settings.button_url }}" class="about-cta__button">
         {{ section.settings.button_text }}
       </a>
+    {%- endif -%}
+
+    {%- if section.settings.secondary_button_1_text != blank or section.settings.secondary_button_2_text != blank -%}
+      <div class="about-cta__secondary-buttons">
+        {%- if section.settings.secondary_button_1_text != blank -%}
+          <a href="{{ section.settings.secondary_button_1_url }}" class="about-cta__button-secondary">
+            {{ section.settings.secondary_button_1_text }}
+          </a>
+        {%- endif -%}
+        {%- if section.settings.secondary_button_2_text != blank -%}
+          <a href="{{ section.settings.secondary_button_2_url }}" class="about-cta__button-secondary">
+            {{ section.settings.secondary_button_2_text }}
+          </a>
+        {%- endif -%}
+      </div>
     {%- endif -%}
   </div>
 </section>
@@ -110,6 +127,33 @@
     opacity: 0.85;
   }
 
+  .about-cta__secondary-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+  }
+
+  .about-cta__button-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    background: transparent;
+    border: 1px solid var(--about-cta-secondary-border, #1C1917);
+    color: var(--about-cta-secondary-text, #1C1917);
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .about-cta__button-secondary:hover {
+    opacity: 0.7;
+  }
+
   @media (min-width: 768px) {
     .about-cta {
       height: var(--about-cta-height-desktop, 400px);
@@ -127,6 +171,15 @@
     .about-cta__button {
       padding: 16px 40px;
       font-size: 14px;
+    }
+
+    .about-cta__secondary-buttons {
+      gap: 16px;
+    }
+
+    .about-cta__button-secondary {
+      padding: 14px 32px;
+      font-size: 13px;
     }
   }
 {% endstylesheet %}
@@ -259,6 +312,44 @@
       "id": "button_text_color",
       "label": "Button text color",
       "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Secondary Buttons"
+    },
+    {
+      "type": "text",
+      "id": "secondary_button_1_text",
+      "label": "Button 1 text",
+      "default": "CONTACT"
+    },
+    {
+      "type": "url",
+      "id": "secondary_button_1_url",
+      "label": "Button 1 link"
+    },
+    {
+      "type": "text",
+      "id": "secondary_button_2_text",
+      "label": "Button 2 text",
+      "default": "SUPPORT HUB"
+    },
+    {
+      "type": "url",
+      "id": "secondary_button_2_url",
+      "label": "Button 2 link"
+    },
+    {
+      "type": "color",
+      "id": "secondary_button_border",
+      "label": "Secondary button border",
+      "default": "#1C1917"
+    },
+    {
+      "type": "color",
+      "id": "secondary_button_text",
+      "label": "Secondary button text",
+      "default": "#1C1917"
     }
   ],
   "presets": [
