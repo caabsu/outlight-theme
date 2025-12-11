@@ -1,0 +1,374 @@
+{% comment %}
+  About Founder Section - Quote with founder image and decorative frame
+{% endcomment %}
+
+<section class="about-founder full-width" style="
+  --about-founder-bg: {{ section.settings.background_color }};
+  --about-founder-frame-color: {{ section.settings.frame_color }};
+  --about-founder-quote-color: {{ section.settings.quote_color }};
+  --about-founder-quote-size-mobile: {{ section.settings.quote_size_mobile }}px;
+  --about-founder-quote-size-desktop: {{ section.settings.quote_size_desktop }}px;
+  --about-founder-name-color: {{ section.settings.name_color }};
+  --about-founder-title-color: {{ section.settings.title_color }};
+  --about-founder-quotemark-color: {{ section.settings.quotemark_color }};
+  --about-founder-padding-mobile: {{ section.settings.padding_mobile }}px;
+  --about-founder-padding-desktop: {{ section.settings.padding_desktop }}px;
+">
+  <div class="about-founder__container">
+    {%- comment -%} Image with frame - Desktop {%- endcomment -%}
+    <div class="about-founder__image-wrap about-founder__image-wrap--desktop">
+      <div class="about-founder__frame"></div>
+      {%- if section.settings.image != blank -%}
+        <div class="about-founder__image">
+          {{ section.settings.image | image_url: width: 600 | image_tag: loading: 'lazy' }}
+        </div>
+      {%- else -%}
+        <div class="about-founder__image about-founder__placeholder"></div>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} Content {%- endcomment -%}
+    <div class="about-founder__content">
+      {%- comment -%} Mobile circular image {%- endcomment -%}
+      <div class="about-founder__image-wrap about-founder__image-wrap--mobile">
+        {%- if section.settings.image != blank -%}
+          <div class="about-founder__image-circle">
+            {{ section.settings.image | image_url: width: 300 | image_tag: loading: 'lazy' }}
+          </div>
+        {%- endif -%}
+      </div>
+
+      <div class="about-founder__quotemark">99</div>
+
+      {%- if section.settings.quote != blank -%}
+        <blockquote class="about-founder__quote">
+          {{ section.settings.quote }}
+        </blockquote>
+      {%- endif -%}
+
+      <div class="about-founder__attribution">
+        {%- if section.settings.name != blank -%}
+          <span class="about-founder__name">{{ section.settings.name }}</span>
+        {%- endif -%}
+        {%- if section.settings.title != blank -%}
+          <span class="about-founder__title">{{ section.settings.title }}</span>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .about-founder {
+    background-color: var(--about-founder-bg, #F7F5F0);
+    padding: var(--about-founder-padding-mobile, 60px) 16px;
+  }
+
+  .about-founder__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+  }
+
+  /* Desktop image with frame - hidden on mobile */
+  .about-founder__image-wrap--desktop {
+    display: none;
+    position: relative;
+    width: 380px;
+    flex-shrink: 0;
+  }
+
+  .about-founder__frame {
+    position: absolute;
+    bottom: -20px;
+    right: -20px;
+    width: 100%;
+    height: 100%;
+    border: 3px solid var(--about-founder-frame-color, #D97706);
+    z-index: 0;
+  }
+
+  .about-founder__image {
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    background: #E7E5E4;
+  }
+
+  .about-founder__image img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .about-founder__placeholder {
+    aspect-ratio: 3/4;
+    background: linear-gradient(135deg, #E7E5E4 0%, #D6D3D1 100%);
+  }
+
+  /* Mobile circular image */
+  .about-founder__image-wrap--mobile {
+    display: block;
+  }
+
+  .about-founder__image-circle {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 3px solid var(--about-founder-frame-color, #D97706);
+    overflow: hidden;
+    margin: 0 auto;
+  }
+
+  .about-founder__image-circle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Content */
+  .about-founder__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .about-founder__quotemark {
+    font-family: var(--font-heading-family), serif;
+    font-size: 48px;
+    font-weight: 300;
+    color: var(--about-founder-quotemark-color, #D97706);
+    line-height: 1;
+    margin-bottom: 16px;
+    opacity: 0.6;
+  }
+
+  .about-founder__quote {
+    font-family: var(--font-heading-family), serif;
+    font-size: var(--about-founder-quote-size-mobile, 20px);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--about-founder-quote-color, #1C1917);
+    line-height: 1.5;
+    margin: 0 0 24px;
+    max-width: 700px;
+  }
+
+  .about-founder__attribution {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .about-founder__name {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--about-founder-name-color, #D97706);
+  }
+
+  .about-founder__title {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--about-founder-title-color, #57534E);
+  }
+
+  /* Desktop styles */
+  @media (min-width: 768px) {
+    .about-founder {
+      padding: var(--about-founder-padding-desktop, 100px) 40px;
+    }
+
+    .about-founder__container {
+      flex-direction: row;
+      align-items: center;
+      gap: 80px;
+    }
+
+    .about-founder__image-wrap--desktop {
+      display: block;
+    }
+
+    .about-founder__image-wrap--mobile {
+      display: none;
+    }
+
+    .about-founder__content {
+      flex: 1;
+      align-items: flex-start;
+      text-align: left;
+    }
+
+    .about-founder__quotemark {
+      font-size: 64px;
+      margin-bottom: 24px;
+    }
+
+    .about-founder__quote {
+      font-size: var(--about-founder-quote-size-desktop, 32px);
+      margin-bottom: 32px;
+    }
+
+    .about-founder__attribution {
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .about-founder__name {
+      font-size: 14px;
+    }
+
+    .about-founder__title {
+      font-size: 14px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .about-founder__container {
+      gap: 100px;
+    }
+
+    .about-founder__image-wrap--desktop {
+      width: 420px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "About Founder",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Founder image"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "textarea",
+      "id": "quote",
+      "label": "Quote",
+      "default": "We don't just sell lamps. We sell the backdrop for your morning coffee, your late-night reading, and your quiet moments of reflection."
+    },
+    {
+      "type": "text",
+      "id": "name",
+      "label": "Name",
+      "default": "ELENA V."
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Founder & Creative Director"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#F7F5F0"
+    },
+    {
+      "type": "color",
+      "id": "frame_color",
+      "label": "Frame color",
+      "default": "#D97706"
+    },
+    {
+      "type": "color",
+      "id": "quotemark_color",
+      "label": "Quote mark color",
+      "default": "#D97706"
+    },
+    {
+      "type": "color",
+      "id": "quote_color",
+      "label": "Quote text color",
+      "default": "#1C1917"
+    },
+    {
+      "type": "color",
+      "id": "name_color",
+      "label": "Name color",
+      "default": "#D97706"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#57534E"
+    },
+    {
+      "type": "header",
+      "content": "Quote Size"
+    },
+    {
+      "type": "range",
+      "id": "quote_size_mobile",
+      "label": "Quote size (mobile)",
+      "min": 16,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "quote_size_desktop",
+      "label": "Quote size (desktop)",
+      "min": 24,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_mobile",
+      "label": "Padding (mobile)",
+      "min": 40,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_desktop",
+      "label": "Padding (desktop)",
+      "min": 60,
+      "max": 150,
+      "step": 10,
+      "unit": "px",
+      "default": 100
+    }
+  ],
+  "presets": [
+    {
+      "name": "About Founder"
+    }
+  ]
+}
+{% endschema %}
