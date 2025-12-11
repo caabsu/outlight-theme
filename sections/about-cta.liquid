@@ -22,8 +22,6 @@
         {{ section.settings.image | image_url: width: 2000 | image_tag: loading: 'lazy' }}
       {%- endif -%}
     </picture>
-  {%- else -%}
-    <div class="about-cta__placeholder"></div>
   {%- endif -%}
 
   <div class="about-cta__overlay"></div>
@@ -64,12 +62,6 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-  }
-
-  .about-cta__placeholder {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, #E7E5E4 0%, #D6D3D1 100%);
   }
 
   .about-cta__overlay {
