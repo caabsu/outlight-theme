@@ -49,6 +49,8 @@
       --filter-bar-text-weight: {{ section.settings.filter_bar_text_weight }};
       --filter-bar-icon-size: {{ section.settings.filter_bar_icon_size }}px;
       --filter-bar-border-color: {{ section.settings.filter_bar_border_color }};
+      --products-padding-x-mobile: {{ section.settings.products_padding_x_mobile }}px;
+      --products-padding-x-desktop: {{ section.settings.products_padding_x_desktop }}px;
     ">
       {%- comment -%} Buttons row {%- endcomment -%}
       <div class="collection-filter-bar__buttons">
@@ -520,14 +522,14 @@
   .collection-filter-bar {
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    padding: 20px 16px;
+    gap: 12px;
+    padding: 16px var(--products-padding-x-mobile, 12px);
     background: var(--filter-bar-bg, #ffffff);
   }
 
   .collection-filter-bar__buttons {
     display: flex;
-    gap: 12px;
+    gap: 10px;
   }
 
   .collection-filter-bar__btn {
@@ -536,7 +538,7 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    padding: 12px 20px;
+    padding: 10px 16px;
     background: transparent;
     border: 1px solid var(--filter-bar-border-color, #1C1917);
     cursor: pointer;
@@ -623,33 +625,29 @@
       flex-direction: row;
       justify-content: space-between;
       align-items: center;
-      padding: 20px 24px;
-      gap: 40px;
+      padding: 16px var(--products-padding-x-desktop, 24px);
+      gap: 32px;
     }
 
     .collection-filter-bar__buttons {
       flex-shrink: 0;
-      gap: 12px;
+      gap: 10px;
     }
 
     .collection-filter-bar__btn {
       flex: none;
-      padding: 12px 28px;
+      padding: 10px 24px;
     }
 
     .collection-filter-bar__search {
-      max-width: 400px;
+      max-width: 350px;
       flex: 1;
     }
   }
 
   @media (min-width: 1024px) {
-    .collection-filter-bar {
-      padding: 24px 40px;
-    }
-
     .collection-filter-bar__search {
-      max-width: 450px;
+      max-width: 400px;
     }
   }
 
