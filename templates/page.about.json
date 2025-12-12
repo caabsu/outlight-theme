@@ -142,6 +142,7 @@
     "about-founder": {
       "type": "about-founder",
       "settings": {
+        "image": "shopify://shop_images/custom_nano-banana-pro_1765519693194.png",
         "quote": "We don't just sell lamps. We sell the backdrop for your morning coffee, your late-night reading, and your quiet moments of reflection.",
         "name": "DAVID C.",
         "title": "Creative Director",
