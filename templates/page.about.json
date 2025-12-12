@@ -108,7 +108,7 @@
       ],
       "settings": {
         "heading": "Core Values",
-        "background_color": "#ebe8e0",
+        "background_color": "#FBFAF9",
         "heading_color": "#1c1917",
         "icon_color": "#d97706",
         "title_color": "#1c1917",
@@ -138,7 +138,7 @@
     "about-cta": {
       "type": "about-cta",
       "settings": {
-        "background_color": "#f7f5f0",
+        "background_color": "#FBFAF9",
         "overlay_opacity": 10,
         "title": "Bring Calm Home",
         "button_text": "EXPLORE COLLECTION",
