@@ -82,6 +82,28 @@
         "card_title_color_right": "#d97706"
       }
     },
+    "about_showcase_t7XgFD": {
+      "type": "about-showcase",
+      "name": "About showcase",
+      "settings": {
+        "video": "shopify://files/videos/kling_20251212_Image_to_Video_The_scene__3473_0.mp4",
+        "overlay_opacity": 0,
+        "label_left": "FIG. 04",
+        "label_right": "SHADOW STUDY",
+        "heading_desktop": "Distinctive Form",
+        "heading_mobile": "No labels needed.",
+        "text_mobile": "A shape so unique it acts as a signature for the room, even when the light is off.",
+        "min_height_desktop": 90,
+        "min_height_mobile": 65,
+        "label_color": "#6b6b6b",
+        "heading_color": "#8a8578",
+        "heading_size_desktop": 72,
+        "mobile_accent_color": "#c9a227",
+        "mobile_heading_color": "#ffffff",
+        "mobile_text_color": "#a0a0a0",
+        "heading_size_mobile": 32
+      }
+    },
     "about-values": {
       "type": "about-values",
       "blocks": {
@@ -115,28 +137,6 @@
         "text_color": "#78716c",
         "padding_mobile": 60,
         "padding_desktop": 80
-      }
-    },
-    "about_showcase_t7XgFD": {
-      "type": "about-showcase",
-      "name": "About showcase",
-      "settings": {
-        "video": "shopify://files/videos/kling_20251212_Image_to_Video_The_scene__3473_0.mp4",
-        "overlay_opacity": 0,
-        "label_left": "FIG. 04",
-        "label_right": "SHADOW STUDY",
-        "heading_desktop": "Distinctive Form",
-        "heading_mobile": "No labels needed.",
-        "text_mobile": "A shape so unique it acts as a signature for the room, even when the light is off.",
-        "min_height_desktop": 90,
-        "min_height_mobile": 65,
-        "label_color": "#6b6b6b",
-        "heading_color": "#8a8578",
-        "heading_size_desktop": 72,
-        "mobile_accent_color": "#c9a227",
-        "mobile_heading_color": "#ffffff",
-        "mobile_text_color": "#a0a0a0",
-        "heading_size_mobile": 32
       }
     },
     "about-founder": {
@@ -184,8 +184,8 @@
   "order": [
     "about-hero",
     "about-story",
-    "problem_solution_Mf649h",
     "about-values",
+    "problem_solution_Mf649h",
     "about_showcase_t7XgFD",
     "about-founder",
     "about-cta"
