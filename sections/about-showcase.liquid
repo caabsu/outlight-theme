@@ -114,6 +114,16 @@
       </div>
     </div>
   </div>
+
+  <!-- Play/Pause Button -->
+  <button class="about-showcase__play-btn" data-video-toggle aria-label="Play/Pause video">
+    <svg class="about-showcase__play-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M8 5v14l11-7z"/>
+    </svg>
+    <svg class="about-showcase__pause-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+    </svg>
+  </button>
 </div>
 
 {% stylesheet %}
@@ -303,7 +313,105 @@
       right: 64px;
     }
   }
+
+  /* Play/Pause Button */
+  .about-showcase__play-btn {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 50%;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.7);
+    transition: background 0.2s ease, color 0.2s ease;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+
+  .about-showcase__play-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .about-showcase__play-icon {
+    display: none;
+  }
+
+  .about-showcase__pause-icon {
+    display: block;
+  }
+
+  .about-showcase__play-btn.is-paused .about-showcase__play-icon {
+    display: block;
+  }
+
+  .about-showcase__play-btn.is-paused .about-showcase__pause-icon {
+    display: none;
+  }
+
+  @media (min-width: 768px) {
+    .about-showcase__play-btn {
+      bottom: 24px;
+      right: 24px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .about-showcase__play-btn {
+      bottom: 32px;
+      right: 32px;
+    }
+  }
 {% endstylesheet %}
+
+{% javascript %}
+  (function() {
+    const section = document.querySelector('.about-showcase');
+    if (!section) return;
+
+    const toggleBtn = section.querySelector('[data-video-toggle]');
+    if (!toggleBtn) return;
+
+    const getVisibleVideo = () => {
+      const desktopMedia = section.querySelector('.about-showcase__media--desktop');
+      const mobileMedia = section.querySelector('.about-showcase__media--mobile');
+
+      if (window.innerWidth >= 768) {
+        return desktopMedia?.querySelector('video');
+      } else {
+        return mobileMedia?.querySelector('video');
+      }
+    };
+
+    toggleBtn.addEventListener('click', () => {
+      const video = getVisibleVideo();
+      if (!video) return;
+
+      if (video.paused) {
+        video.play();
+        toggleBtn.classList.remove('is-paused');
+      } else {
+        video.pause();
+        toggleBtn.classList.add('is-paused');
+      }
+    });
+
+    // Sync button state on resize
+    window.addEventListener('resize', () => {
+      const video = getVisibleVideo();
+      if (video) {
+        toggleBtn.classList.toggle('is-paused', video.paused);
+      }
+    });
+  })();
+{% endjavascript %}
 
 {% schema %}
 {
