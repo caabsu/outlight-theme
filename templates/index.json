@@ -14,7 +14,7 @@
       "name": "t:sections.hero_banner.name",
       "settings": {
         "enable_transparent_header": true,
-        "image_desktop": "shopify://shop_images/Jova_4.jpg",
+        "image_desktop": "shopify://shop_images/custom_seedream-4-5_1765525375401.png",
         "image_mobile": "shopify://shop_images/Rumi_10.jpg",
         "eyebrow": "limited time promotion",
         "heading": "Holiday Sale",
@@ -32,7 +32,7 @@
         "padding_desktop": 60,
         "padding_mobile": 24,
         "content_width": 45,
-        "overlay_opacity": 45,
+        "overlay_opacity": 25,
         "eyebrow_color": "#d97706",
         "eyebrow_size_desktop": 15,
         "eyebrow_size_mobile": 12,
