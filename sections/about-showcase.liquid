@@ -19,9 +19,11 @@
     --mobile-accent-color: {{ section.settings.mobile_accent_color }};
   "
 >
-  <!-- Video Background -->
-  <div class="about-showcase__media">
-    {%- if section.settings.video != blank -%}
+  <!-- Desktop Video Background -->
+  <div class="about-showcase__media about-showcase__media--desktop">
+    {%- if section.settings.video_desktop != blank -%}
+      {{ section.settings.video_desktop | video_tag: autoplay: true, loop: true, muted: true, playsinline: true, class: 'about-showcase__video' }}
+    {%- elsif section.settings.video != blank -%}
       {{ section.settings.video | video_tag: autoplay: true, loop: true, muted: true, playsinline: true, class: 'about-showcase__video' }}
     {%- elsif section.settings.video_url != blank -%}
       {%- if section.settings.video_url.type == 'youtube' -%}
@@ -43,6 +45,40 @@
       {%- endif -%}
     {%- elsif section.settings.fallback_image != blank -%}
       {{ section.settings.fallback_image | image_url: width: 2000 | image_tag: class: 'about-showcase__image', loading: 'lazy' }}
+    {%- else -%}
+      <div class="about-showcase__placeholder"></div>
+    {%- endif -%}
+    <div class="about-showcase__overlay"></div>
+  </div>
+
+  <!-- Mobile Video Background -->
+  <div class="about-showcase__media about-showcase__media--mobile">
+    {%- if section.settings.video_mobile != blank -%}
+      {{ section.settings.video_mobile | video_tag: autoplay: true, loop: true, muted: true, playsinline: true, class: 'about-showcase__video' }}
+    {%- elsif section.settings.video != blank -%}
+      {{ section.settings.video | video_tag: autoplay: true, loop: true, muted: true, playsinline: true, class: 'about-showcase__video' }}
+    {%- elsif section.settings.video_url != blank -%}
+      {%- if section.settings.video_url.type == 'youtube' -%}
+        <iframe
+          class="about-showcase__video about-showcase__video--external"
+          src="https://www.youtube.com/embed/{{ section.settings.video_url.id }}?autoplay=1&mute=1&loop=1&playlist={{ section.settings.video_url.id }}&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1"
+          frameborder="0"
+          allow="autoplay; encrypted-media"
+          allowfullscreen
+        ></iframe>
+      {%- elsif section.settings.video_url.type == 'vimeo' -%}
+        <iframe
+          class="about-showcase__video about-showcase__video--external"
+          src="https://player.vimeo.com/video/{{ section.settings.video_url.id }}?autoplay=1&muted=1&loop=1&background=1&playsinline=1"
+          frameborder="0"
+          allow="autoplay; encrypted-media"
+          allowfullscreen
+        ></iframe>
+      {%- endif -%}
+    {%- elsif section.settings.fallback_image_mobile != blank -%}
+      {{ section.settings.fallback_image_mobile | image_url: width: 1000 | image_tag: class: 'about-showcase__image', loading: 'lazy' }}
+    {%- elsif section.settings.fallback_image != blank -%}
+      {{ section.settings.fallback_image | image_url: width: 1000 | image_tag: class: 'about-showcase__image', loading: 'lazy' }}
     {%- else -%}
       <div class="about-showcase__placeholder"></div>
     {%- endif -%}
@@ -93,6 +129,14 @@
     position: absolute;
     inset: 0;
     z-index: 0;
+  }
+
+  .about-showcase__media--desktop {
+    display: none;
+  }
+
+  .about-showcase__media--mobile {
+    display: block;
   }
 
   .about-showcase__video,
@@ -190,6 +234,14 @@
       justify-content: center;
     }
 
+    .about-showcase__media--desktop {
+      display: block;
+    }
+
+    .about-showcase__media--mobile {
+      display: none;
+    }
+
     .about-showcase__content--mobile {
       display: none;
     }
@@ -259,26 +311,52 @@
   "settings": [
     {
       "type": "header",
-      "content": "Video/Image"
+      "content": "Video/Image (Fallback)"
     },
     {
       "type": "video",
       "id": "video",
       "label": "Video",
-      "info": "Upload a video file (recommended)"
+      "info": "Used if no desktop/mobile video is set"
     },
     {
       "type": "video_url",
       "id": "video_url",
       "label": "Or video URL",
       "accept": ["youtube", "vimeo"],
-      "info": "YouTube or Vimeo URL (used if no uploaded video)"
+      "info": "YouTube or Vimeo URL (fallback)"
     },
     {
       "type": "image_picker",
       "id": "fallback_image",
       "label": "Fallback image",
       "info": "Shown if no video is set"
+    },
+    {
+      "type": "header",
+      "content": "Desktop video"
+    },
+    {
+      "type": "video",
+      "id": "video_desktop",
+      "label": "Desktop video",
+      "info": "Landscape video for desktop (optional)"
+    },
+    {
+      "type": "header",
+      "content": "Mobile video"
+    },
+    {
+      "type": "video",
+      "id": "video_mobile",
+      "label": "Mobile video",
+      "info": "Portrait video for mobile (optional)"
+    },
+    {
+      "type": "image_picker",
+      "id": "fallback_image_mobile",
+      "label": "Mobile fallback image",
+      "info": "Shown on mobile if no mobile video is set"
     },
     {
       "type": "range",
