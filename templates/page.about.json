@@ -129,7 +129,7 @@
         "heading_mobile": "No labels needed.",
         "text_mobile": "A shape so unique it acts as a signature for the room, even when the light is off.",
         "min_height_desktop": 90,
-        "min_height_mobile": 55,
+        "min_height_mobile": 65,
         "label_color": "#6b6b6b",
         "heading_color": "#8a8578",
         "heading_size_desktop": 72,
