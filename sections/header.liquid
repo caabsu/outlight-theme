@@ -1737,17 +1737,15 @@
         html += '<div class="mobile-drawer__search-group">';
         html += '<h4 class="mobile-drawer__search-group-title">Products</h4>';
         products.forEach(product => {
-          // Shopify predictive search API returns price in cents
-          // Convert cents to dollars for display
           let price = '';
           if (product.price) {
-            const priceInDollars = product.price / 100;
+            const priceValue = parseFloat(product.price);
             price = new Intl.NumberFormat('en-US', {
               style: 'currency',
               currency: Shopify?.currency?.active || 'USD',
-              minimumFractionDigits: priceInDollars % 1 === 0 ? 0 : 2,
+              minimumFractionDigits: priceValue % 1 === 0 ? 0 : 2,
               maximumFractionDigits: 2
-            }).format(priceInDollars);
+            }).format(priceValue);
           }
           html += `
             <a href="${product.url}" class="mobile-drawer__search-item">

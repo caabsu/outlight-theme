@@ -285,13 +285,13 @@
         products.forEach(product => {
           let price = '';
           if (product.price) {
-            const priceInDollars = product.price / 100;
+            const priceValue = parseFloat(product.price);
             price = new Intl.NumberFormat('en-US', {
               style: 'currency',
               currency: Shopify?.currency?.active || 'USD',
-              minimumFractionDigits: priceInDollars % 1 === 0 ? 0 : 2,
+              minimumFractionDigits: priceValue % 1 === 0 ? 0 : 2,
               maximumFractionDigits: 2
-            }).format(priceInDollars);
+            }).format(priceValue);
           }
           html += `
             <a href="${product.url}" class="search-bar-section__item">
