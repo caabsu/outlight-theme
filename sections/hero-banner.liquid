@@ -36,24 +36,41 @@
     --hero-overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
   "
 >
-  {%- comment -%} Background Image {%- endcomment -%}
+  {%- comment -%} Background - Desktop {%- endcomment -%}
   <div class="hero-banner__bg hero-banner__bg--desktop">
-    {%- if section.settings.image_desktop -%}
+    {%- if section.settings.video_desktop != blank -%}
+      {{ section.settings.video_desktop | video_tag: autoplay: true, loop: true, muted: true, playsinline: true, class: 'hero-banner__bg-video' }}
+    {%- elsif section.settings.image_desktop -%}
       {{ section.settings.image_desktop | image_url: width: 2400 | image_tag: class: 'hero-banner__bg-img', loading: 'eager' }}
     {%- endif -%}
     <div class="hero-banner__overlay"></div>
   </div>
 
+  {%- comment -%} Background - Mobile {%- endcomment -%}
   <div class="hero-banner__bg hero-banner__bg--mobile">
-    {%- if section.settings.image_mobile -%}
+    {%- if section.settings.video_mobile != blank -%}
+      {{ section.settings.video_mobile | video_tag: autoplay: true, loop: true, muted: true, playsinline: true, class: 'hero-banner__bg-video' }}
+    {%- elsif section.settings.video_desktop != blank -%}
+      {{ section.settings.video_desktop | video_tag: autoplay: true, loop: true, muted: true, playsinline: true, class: 'hero-banner__bg-video' }}
+    {%- elsif section.settings.image_mobile -%}
       {{ section.settings.image_mobile | image_url: width: 1200 | image_tag: class: 'hero-banner__bg-img', loading: 'eager' }}
-    {%- else -%}
-      {%- if section.settings.image_desktop -%}
-        {{ section.settings.image_desktop | image_url: width: 1200 | image_tag: class: 'hero-banner__bg-img', loading: 'eager' }}
-      {%- endif -%}
+    {%- elsif section.settings.image_desktop -%}
+      {{ section.settings.image_desktop | image_url: width: 1200 | image_tag: class: 'hero-banner__bg-img', loading: 'eager' }}
     {%- endif -%}
     <div class="hero-banner__overlay"></div>
   </div>
+
+  {%- comment -%} Play/Pause Button (only if video exists) {%- endcomment -%}
+  {%- if section.settings.video_desktop != blank or section.settings.video_mobile != blank -%}
+    <button class="hero-banner__play-btn" data-hero-video-toggle aria-label="Play/Pause video">
+      <svg class="hero-banner__play-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M8 5v14l11-7z"/>
+      </svg>
+      <svg class="hero-banner__pause-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+      </svg>
+    </button>
+  {%- endif -%}
 
   {%- comment -%} Content {%- endcomment -%}
   <div class="hero-banner__container">
@@ -129,7 +146,8 @@
     display: none;
   }
 
-  .hero-banner__bg-img {
+  .hero-banner__bg-img,
+  .hero-banner__bg-video {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -289,7 +307,100 @@
       font-size: var(--hero-button-size-mobile);
     }
   }
+
+  /* Play/Pause Button */
+  .hero-banner__play-btn {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 50%;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.7);
+    transition: background 0.2s ease, color 0.2s ease;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+
+  .hero-banner__play-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .hero-banner__play-icon {
+    display: none;
+  }
+
+  .hero-banner__pause-icon {
+    display: block;
+  }
+
+  .hero-banner__play-btn.is-paused .hero-banner__play-icon {
+    display: block;
+  }
+
+  .hero-banner__play-btn.is-paused .hero-banner__pause-icon {
+    display: none;
+  }
+
+  @media screen and (min-width: 769px) {
+    .hero-banner__play-btn {
+      bottom: 24px;
+      right: 24px;
+    }
+  }
+
+  @media screen and (min-width: 1024px) {
+    .hero-banner__play-btn {
+      bottom: 32px;
+      right: 32px;
+    }
+  }
 {% endstylesheet %}
+
+{% javascript %}
+  (function() {
+    const section = document.querySelector('.hero-banner');
+    if (!section) return;
+
+    const toggleBtn = section.querySelector('[data-hero-video-toggle]');
+    if (!toggleBtn) return;
+
+    const getVisibleVideo = () => {
+      const isMobile = window.innerWidth <= 768;
+      const bgSelector = isMobile ? '.hero-banner__bg--mobile' : '.hero-banner__bg--desktop';
+      const bg = section.querySelector(bgSelector);
+      return bg?.querySelector('video');
+    };
+
+    toggleBtn.addEventListener('click', () => {
+      const video = getVisibleVideo();
+      if (!video) return;
+
+      if (video.paused) {
+        video.play();
+        toggleBtn.classList.remove('is-paused');
+      } else {
+        video.pause();
+        toggleBtn.classList.add('is-paused');
+      }
+    });
+
+    window.addEventListener('resize', () => {
+      const video = getVisibleVideo();
+      if (video) {
+        toggleBtn.classList.toggle('is-paused', video.paused);
+      }
+    });
+  })();
+{% endjavascript %}
 
 {% schema %}
 {
@@ -309,17 +420,35 @@
     },
     {
       "type": "header",
-      "content": "t:sections.hero_banner.settings.images.header"
+      "content": "Desktop background"
+    },
+    {
+      "type": "video",
+      "id": "video_desktop",
+      "label": "Desktop video",
+      "info": "Landscape video for desktop"
     },
     {
       "type": "image_picker",
       "id": "image_desktop",
-      "label": "t:sections.hero_banner.settings.images.desktop"
+      "label": "Desktop image",
+      "info": "Used if no video is set"
+    },
+    {
+      "type": "header",
+      "content": "Mobile background"
+    },
+    {
+      "type": "video",
+      "id": "video_mobile",
+      "label": "Mobile video",
+      "info": "Portrait video for mobile (falls back to desktop video)"
     },
     {
       "type": "image_picker",
       "id": "image_mobile",
-      "label": "t:sections.hero_banner.settings.images.mobile"
+      "label": "Mobile image",
+      "info": "Used if no video is set"
     },
     {
       "type": "header",
