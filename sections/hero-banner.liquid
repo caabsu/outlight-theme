@@ -24,12 +24,13 @@
     --hero-subheading-size-mobile: {{ section.settings.subheading_size_mobile }}px;
     --hero-subheading-weight: {{ section.settings.subheading_weight }};
 
-    --hero-button-bg: {{ section.settings.button_bg_color }};
+    --hero-button-bg: {{ section.settings.button_bg_color | color_modify: 'alpha', section.settings.button_bg_opacity | divided_by: 100.0 }};
     --hero-button-text: {{ section.settings.button_text_color }};
+    --hero-button-border-color: {{ section.settings.button_border_color }};
+    --hero-button-border-width: {{ section.settings.button_border_width }}px;
     --hero-button-size-desktop: {{ section.settings.button_size_desktop }}px;
     --hero-button-size-mobile: {{ section.settings.button_size_mobile }}px;
     --hero-button-weight: {{ section.settings.button_weight }};
-    --hero-button-radius: {{ section.settings.button_border_radius }}px;
     --hero-button-padding-x: {{ section.settings.button_padding_x }}px;
     --hero-button-padding-y: {{ section.settings.button_padding_y }}px;
 
@@ -231,13 +232,15 @@
     letter-spacing: 0.1em;
     text-decoration: none;
     padding: var(--hero-button-padding-y) var(--hero-button-padding-x);
-    border-radius: var(--hero-button-radius);
+    border: var(--hero-button-border-width) solid var(--hero-button-border-color);
     margin-top: 12px;
     transition: opacity 0.2s ease;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
   }
 
   .hero-banner__button:hover {
-    opacity: 0.9;
+    opacity: 0.85;
   }
 
   .hero-banner__button--mobile {
@@ -724,14 +727,40 @@
     {
       "type": "color",
       "id": "button_bg_color",
-      "label": "t:sections.hero_banner.settings.button_style.background",
+      "label": "Background color",
       "default": "#FFFFFF"
+    },
+    {
+      "type": "range",
+      "id": "button_bg_opacity",
+      "label": "Background opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 15,
+      "unit": "%"
     },
     {
       "type": "color",
       "id": "button_text_color",
-      "label": "t:sections.hero_banner.settings.button_style.text_color",
-      "default": "#1C1917"
+      "label": "Text color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "button_border_color",
+      "label": "Border color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "range",
+      "id": "button_border_width",
+      "label": "Border width",
+      "min": 0,
+      "max": 3,
+      "step": 1,
+      "default": 1,
+      "unit": "px"
     },
     {
       "type": "range",
@@ -763,16 +792,6 @@
         { "value": "600", "label": "t:options.font_weight.semibold" }
       ],
       "default": "500"
-    },
-    {
-      "type": "range",
-      "id": "button_border_radius",
-      "label": "t:sections.hero_banner.settings.button_style.border_radius",
-      "min": 0,
-      "max": 40,
-      "step": 2,
-      "default": 30,
-      "unit": "px"
     },
     {
       "type": "range",
