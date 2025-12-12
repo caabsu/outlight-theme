@@ -1,0 +1,420 @@
+{%- comment -%}
+  About Showcase Section
+  Full-width video background with corner labels and centered heading.
+  Different layout for mobile with accent bar.
+{%- endcomment -%}
+
+<div
+  class="about-showcase full-width"
+  style="
+    --section-min-height: {{ section.settings.min_height_desktop }}vh;
+    --section-min-height-mobile: {{ section.settings.min_height_mobile }}vh;
+    --overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
+    --label-color: {{ section.settings.label_color }};
+    --heading-color: {{ section.settings.heading_color }};
+    --heading-size-desktop: {{ section.settings.heading_size_desktop }}px;
+    --heading-size-mobile: {{ section.settings.heading_size_mobile }}px;
+    --mobile-heading-color: {{ section.settings.mobile_heading_color }};
+    --mobile-text-color: {{ section.settings.mobile_text_color }};
+    --mobile-accent-color: {{ section.settings.mobile_accent_color }};
+  "
+>
+  <!-- Video Background -->
+  <div class="about-showcase__media">
+    {%- if section.settings.video != blank -%}
+      {{ section.settings.video | video_tag: autoplay: true, loop: true, muted: true, playsinline: true, class: 'about-showcase__video' }}
+    {%- elsif section.settings.video_url != blank -%}
+      {%- if section.settings.video_url.type == 'youtube' -%}
+        <iframe
+          class="about-showcase__video about-showcase__video--external"
+          src="https://www.youtube.com/embed/{{ section.settings.video_url.id }}?autoplay=1&mute=1&loop=1&playlist={{ section.settings.video_url.id }}&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1"
+          frameborder="0"
+          allow="autoplay; encrypted-media"
+          allowfullscreen
+        ></iframe>
+      {%- elsif section.settings.video_url.type == 'vimeo' -%}
+        <iframe
+          class="about-showcase__video about-showcase__video--external"
+          src="https://player.vimeo.com/video/{{ section.settings.video_url.id }}?autoplay=1&muted=1&loop=1&background=1&playsinline=1"
+          frameborder="0"
+          allow="autoplay; encrypted-media"
+          allowfullscreen
+        ></iframe>
+      {%- endif -%}
+    {%- elsif section.settings.fallback_image != blank -%}
+      {{ section.settings.fallback_image | image_url: width: 2000 | image_tag: class: 'about-showcase__image', loading: 'lazy' }}
+    {%- else -%}
+      <div class="about-showcase__placeholder"></div>
+    {%- endif -%}
+    <div class="about-showcase__overlay"></div>
+  </div>
+
+  <!-- Desktop Content -->
+  <div class="about-showcase__content about-showcase__content--desktop">
+    {%- if section.settings.label_left != blank -%}
+      <span class="about-showcase__label about-showcase__label--left">{{ section.settings.label_left }}</span>
+    {%- endif -%}
+
+    {%- if section.settings.label_right != blank -%}
+      <span class="about-showcase__label about-showcase__label--right">{{ section.settings.label_right }}</span>
+    {%- endif -%}
+
+    {%- if section.settings.heading_desktop != blank -%}
+      <h2 class="about-showcase__heading">{{ section.settings.heading_desktop }}</h2>
+    {%- endif -%}
+  </div>
+
+  <!-- Mobile Content -->
+  <div class="about-showcase__content about-showcase__content--mobile">
+    <div class="about-showcase__mobile-text">
+      <div class="about-showcase__accent-bar"></div>
+      <div class="about-showcase__mobile-inner">
+        {%- if section.settings.heading_mobile != blank -%}
+          <h2 class="about-showcase__mobile-heading">{{ section.settings.heading_mobile }}</h2>
+        {%- endif -%}
+        {%- if section.settings.text_mobile != blank -%}
+          <p class="about-showcase__mobile-description">{{ section.settings.text_mobile }}</p>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .about-showcase {
+    position: relative;
+    min-height: var(--section-min-height-mobile);
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+  }
+
+  .about-showcase__media {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .about-showcase__video,
+  .about-showcase__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .about-showcase__video--external {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 177.78vh;
+    height: 100vh;
+    min-width: 100%;
+    min-height: 100%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  .about-showcase__placeholder {
+    width: 100%;
+    height: 100%;
+    background: #1a1a1a;
+  }
+
+  .about-showcase__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, var(--overlay-opacity));
+    pointer-events: none;
+  }
+
+  .about-showcase__content {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    padding: var(--page-margin);
+  }
+
+  /* Desktop content - hidden on mobile */
+  .about-showcase__content--desktop {
+    display: none;
+  }
+
+  /* Mobile content */
+  .about-showcase__content--mobile {
+    display: flex;
+    align-items: flex-end;
+    min-height: var(--section-min-height-mobile);
+    padding-bottom: 48px;
+  }
+
+  .about-showcase__mobile-text {
+    display: flex;
+    gap: 16px;
+    max-width: 400px;
+  }
+
+  .about-showcase__accent-bar {
+    width: 3px;
+    flex-shrink: 0;
+    background: var(--mobile-accent-color);
+    border-radius: 2px;
+  }
+
+  .about-showcase__mobile-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .about-showcase__mobile-heading {
+    font-family: var(--font-heading-family), serif;
+    font-size: var(--heading-size-mobile);
+    font-weight: 400;
+    color: var(--mobile-heading-color);
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  .about-showcase__mobile-description {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--mobile-text-color);
+    margin: 0;
+  }
+
+  /* Desktop styles */
+  @media (min-width: 768px) {
+    .about-showcase {
+      min-height: var(--section-min-height);
+      align-items: center;
+      justify-content: center;
+    }
+
+    .about-showcase__content--mobile {
+      display: none;
+    }
+
+    .about-showcase__content--desktop {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      inset: 0;
+      padding: 32px 48px;
+    }
+
+    .about-showcase__label {
+      position: absolute;
+      top: 32px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--label-color);
+    }
+
+    .about-showcase__label--left {
+      left: 48px;
+    }
+
+    .about-showcase__label--right {
+      right: 48px;
+    }
+
+    .about-showcase__heading {
+      font-family: var(--font-heading-family), serif;
+      font-size: var(--heading-size-desktop);
+      font-weight: 400;
+      font-style: italic;
+      color: var(--heading-color);
+      text-align: center;
+      margin: 0;
+      line-height: 1.1;
+      max-width: 800px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .about-showcase__content--desktop {
+      padding: 48px 64px;
+    }
+
+    .about-showcase__label {
+      top: 48px;
+    }
+
+    .about-showcase__label--left {
+      left: 64px;
+    }
+
+    .about-showcase__label--right {
+      right: 64px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "About showcase",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Video/Image"
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Video",
+      "info": "Upload a video file (recommended)"
+    },
+    {
+      "type": "video_url",
+      "id": "video_url",
+      "label": "Or video URL",
+      "accept": ["youtube", "vimeo"],
+      "info": "YouTube or Vimeo URL (used if no uploaded video)"
+    },
+    {
+      "type": "image_picker",
+      "id": "fallback_image",
+      "label": "Fallback image",
+      "info": "Shown if no video is set"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Overlay darkness",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "default": 30,
+      "unit": "%"
+    },
+    {
+      "type": "header",
+      "content": "Desktop content"
+    },
+    {
+      "type": "text",
+      "id": "label_left",
+      "label": "Label (top left)",
+      "default": "FIG. 04"
+    },
+    {
+      "type": "text",
+      "id": "label_right",
+      "label": "Label (top right)",
+      "default": "SHADOW STUDY"
+    },
+    {
+      "type": "textarea",
+      "id": "heading_desktop",
+      "label": "Heading",
+      "default": "Distinctive Form"
+    },
+    {
+      "type": "header",
+      "content": "Mobile content"
+    },
+    {
+      "type": "text",
+      "id": "heading_mobile",
+      "label": "Heading",
+      "default": "No labels needed."
+    },
+    {
+      "type": "textarea",
+      "id": "text_mobile",
+      "label": "Description",
+      "default": "A shape so unique it acts as a signature for the room, even when the light is off."
+    },
+    {
+      "type": "header",
+      "content": "Section size"
+    },
+    {
+      "type": "range",
+      "id": "min_height_desktop",
+      "label": "Min height (desktop)",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "default": 90,
+      "unit": "vh"
+    },
+    {
+      "type": "range",
+      "id": "min_height_mobile",
+      "label": "Min height (mobile)",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "default": 80,
+      "unit": "vh"
+    },
+    {
+      "type": "header",
+      "content": "Desktop colors"
+    },
+    {
+      "type": "color",
+      "id": "label_color",
+      "label": "Labels color",
+      "default": "#6b6b6b"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#8a8578"
+    },
+    {
+      "type": "range",
+      "id": "heading_size_desktop",
+      "label": "Heading size",
+      "min": 48,
+      "max": 120,
+      "step": 4,
+      "default": 72,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Mobile colors"
+    },
+    {
+      "type": "color",
+      "id": "mobile_accent_color",
+      "label": "Accent bar color",
+      "default": "#c9a227"
+    },
+    {
+      "type": "color",
+      "id": "mobile_heading_color",
+      "label": "Heading color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "mobile_text_color",
+      "label": "Text color",
+      "default": "#a0a0a0"
+    },
+    {
+      "type": "range",
+      "id": "heading_size_mobile",
+      "label": "Heading size",
+      "min": 24,
+      "max": 48,
+      "step": 2,
+      "default": 32,
+      "unit": "px"
+    }
+  ],
+  "presets": [
+    {
+      "name": "About showcase"
+    }
+  ]
+}
+{% endschema %}
