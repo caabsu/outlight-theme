@@ -20,7 +20,7 @@
         "subtitle": "We believe lighting isn't just about utility. It's about sculpting the atmosphere of your most sacred spaces.",
         "height_mobile": 40,
         "height_desktop": 80,
-        "label_color": "#EBE8E0",
+        "label_color": "#ebe8e0",
         "label_size": 12,
         "title_color": "#ffffff",
         "title_size_mobile": 40,
@@ -64,22 +64,22 @@
         "icon_right": "sunrise",
         "card_title_right": "THE OUTLIGHT WAY",
         "card_text_right": "Layered. Diffused. Low-level. It mimics the safety of a campfire, signaling your brain to rest.",
-        "section_bg": "#1C1917",
+        "section_bg": "#1c1917",
         "padding_top": 80,
         "padding_bottom": 80,
         "label_bg": "#292524",
         "label_color": "#a3b5ab",
         "heading_color": "#e8ebe9",
-        "heading_italic_color": "#D97706",
+        "heading_italic_color": "#d97706",
         "heading_size_desktop": 52,
         "heading_size_mobile": 32,
         "card_bg": "#292524",
         "card_border_color": "#3a4a44",
-        "card_text_color": "#DBD6CC",
-        "card_icon_color_left": "#DBD6CC",
-        "card_title_color_left": "#DBD6CC",
-        "card_icon_color_right": "#D97706",
-        "card_title_color_right": "#D97706"
+        "card_text_color": "#dbd6cc",
+        "card_icon_color_left": "#dbd6cc",
+        "card_title_color_left": "#dbd6cc",
+        "card_icon_color_right": "#d97706",
+        "card_title_color_right": "#d97706"
       }
     },
     "about-values": {
@@ -108,13 +108,35 @@
       ],
       "settings": {
         "heading": "Core Values",
-        "background_color": "#FBFAF9",
+        "background_color": "#fbfaf9",
         "heading_color": "#1c1917",
         "icon_color": "#d97706",
         "title_color": "#1c1917",
         "text_color": "#78716c",
         "padding_mobile": 60,
         "padding_desktop": 80
+      }
+    },
+    "about_showcase_t7XgFD": {
+      "type": "about-showcase",
+      "name": "About showcase",
+      "settings": {
+        "video": "shopify://files/videos/kling_20251212_Image_to_Video_The_scene__3473_0.mp4",
+        "overlay_opacity": 0,
+        "label_left": "FIG. 04",
+        "label_right": "SHADOW STUDY",
+        "heading_desktop": "Distinctive Form",
+        "heading_mobile": "No labels needed.",
+        "text_mobile": "A shape so unique it acts as a signature for the room, even when the light is off.",
+        "min_height_desktop": 90,
+        "min_height_mobile": 55,
+        "label_color": "#6b6b6b",
+        "heading_color": "#8a8578",
+        "heading_size_desktop": 72,
+        "mobile_accent_color": "#c9a227",
+        "mobile_heading_color": "#ffffff",
+        "mobile_text_color": "#a0a0a0",
+        "heading_size_mobile": 32
       }
     },
     "about-founder": {
@@ -138,7 +160,7 @@
     "about-cta": {
       "type": "about-cta",
       "settings": {
-        "background_color": "#FBFAF9",
+        "background_color": "#fbfaf9",
         "overlay_opacity": 10,
         "title": "Bring Calm Home",
         "button_text": "EXPLORE COLLECTION",
@@ -164,6 +186,7 @@
     "about-story",
     "problem_solution_Mf649h",
     "about-values",
+    "about_showcase_t7XgFD",
     "about-founder",
     "about-cta"
   ]
