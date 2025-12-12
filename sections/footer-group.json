@@ -34,12 +34,20 @@
             "menu": "footer",
             "custom_title": "Our Policy"
           }
+        },
+        "menu_XqCjBR": {
+          "type": "menu",
+          "settings": {
+            "menu": "our-story",
+            "custom_title": ""
+          }
         }
       },
       "block_order": [
         "menu_6LyAYX",
         "menu_44TfhC",
-        "menu_QgPmFY"
+        "menu_QgPmFY",
+        "menu_XqCjBR"
       ],
       "settings": {
         "show_newsletter": true,
