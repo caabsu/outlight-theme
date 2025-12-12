@@ -51,6 +51,37 @@
         "padding_desktop": 100
       }
     },
+    "problem_solution_Mf649h": {
+      "type": "problem-solution",
+      "name": "Problem/Solution",
+      "settings": {
+        "label": "THE PROBLEM",
+        "heading": "The \"Big Light\" is the",
+        "heading_italic": "enemy of calm.",
+        "icon_left": "eye-off",
+        "card_title_left": "STANDARD LIGHTING",
+        "card_text_left": "Overhead. Harsh. Creates anxiety and flattens architectural details. It turns your home into a waiting room.",
+        "icon_right": "sunrise",
+        "card_title_right": "THE OUTLIGHT WAY",
+        "card_text_right": "Layered. Diffused. Low-level. It mimics the safety of a campfire, signaling your brain to rest.",
+        "section_bg": "#1C1917",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "label_bg": "#292524",
+        "label_color": "#a3b5ab",
+        "heading_color": "#e8ebe9",
+        "heading_italic_color": "#D97706",
+        "heading_size_desktop": 52,
+        "heading_size_mobile": 32,
+        "card_bg": "#292524",
+        "card_border_color": "#3a4a44",
+        "card_text_color": "#DBD6CC",
+        "card_icon_color_left": "#DBD6CC",
+        "card_title_color_left": "#DBD6CC",
+        "card_icon_color_right": "#D97706",
+        "card_title_color_right": "#D97706"
+      }
+    },
     "about-values": {
       "type": "about-values",
       "blocks": {
@@ -84,37 +115,6 @@
         "text_color": "#78716c",
         "padding_mobile": 60,
         "padding_desktop": 80
-      }
-    },
-    "problem_solution_Mf649h": {
-      "type": "problem-solution",
-      "name": "Problem/Solution",
-      "settings": {
-        "label": "THE PROBLEM",
-        "heading": "The \"Big Light\" is the",
-        "heading_italic": "enemy of calm.",
-        "icon_left": "eye-off",
-        "card_title_left": "STANDARD LIGHTING",
-        "card_text_left": "Overhead. Harsh. Creates anxiety and flattens architectural details. It turns your home into a waiting room.",
-        "icon_right": "sunrise",
-        "card_title_right": "THE OUTLIGHT WAY",
-        "card_text_right": "Layered. Diffused. Low-level. It mimics the safety of a campfire, signaling your brain to rest.",
-        "section_bg": "#1C1917",
-        "padding_top": 80,
-        "padding_bottom": 80,
-        "label_bg": "#292524",
-        "label_color": "#a3b5ab",
-        "heading_color": "#e8ebe9",
-        "heading_italic_color": "#D97706",
-        "heading_size_desktop": 52,
-        "heading_size_mobile": 32,
-        "card_bg": "#292524",
-        "card_border_color": "#3a4a44",
-        "card_text_color": "#DBD6CC",
-        "card_icon_color_left": "#DBD6CC",
-        "card_title_color_left": "#DBD6CC",
-        "card_icon_color_right": "#D97706",
-        "card_title_color_right": "#D97706"
       }
     },
     "about-founder": {
@@ -162,8 +162,8 @@
   "order": [
     "about-hero",
     "about-story",
-    "about-values",
     "problem_solution_Mf649h",
+    "about-values",
     "about-founder",
     "about-cta"
   ]
