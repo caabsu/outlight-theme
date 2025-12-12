@@ -18,7 +18,11 @@
     {%- comment -%} Image with frame - Desktop {%- endcomment -%}
     <div class="about-founder__image-wrap about-founder__image-wrap--desktop">
       <div class="about-founder__frame"></div>
-      {%- if section.settings.image != blank -%}
+      {%- if section.settings.image_desktop != blank -%}
+        <div class="about-founder__image">
+          {{ section.settings.image_desktop | image_url: width: 600 | image_tag: loading: 'lazy' }}
+        </div>
+      {%- elsif section.settings.image != blank -%}
         <div class="about-founder__image">
           {{ section.settings.image | image_url: width: 600 | image_tag: loading: 'lazy' }}
         </div>
@@ -30,10 +34,11 @@
     {%- comment -%} Content {%- endcomment -%}
     <div class="about-founder__content">
       {%- comment -%} Mobile circular image {%- endcomment -%}
+      {%- assign mobile_image = section.settings.image_mobile | default: section.settings.image -%}
       <div class="about-founder__image-wrap about-founder__image-wrap--mobile">
-        {%- if section.settings.image != blank -%}
+        {%- if mobile_image != blank -%}
           <div class="about-founder__image-circle">
-            {{ section.settings.image | image_url: width: 300 | image_tag: loading: 'lazy' }}
+            {{ mobile_image | image_url: width: 300 | image_tag: loading: 'lazy' }}
           </div>
         {%- endif -%}
       </div>
@@ -247,12 +252,25 @@
   "settings": [
     {
       "type": "header",
-      "content": "Image"
+      "content": "Images"
     },
     {
       "type": "image_picker",
       "id": "image",
-      "label": "Founder image"
+      "label": "Founder image",
+      "info": "Used if no desktop/mobile images are set"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_desktop",
+      "label": "Desktop image",
+      "info": "Rectangular image with frame (optional)"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_mobile",
+      "label": "Mobile image",
+      "info": "Circular cropped image (optional)"
     },
     {
       "type": "header",
