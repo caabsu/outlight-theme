@@ -131,7 +131,7 @@
         "min_height_desktop": 90,
         "min_height_mobile": 65,
         "label_color": "#6b6b6b",
-        "heading_color": "#8a8578",
+        "heading_color": "#f7f5f0",
         "heading_size_desktop": 72,
         "mobile_accent_color": "#c9a227",
         "mobile_heading_color": "#ffffff",
