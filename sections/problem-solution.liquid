@@ -1,0 +1,500 @@
+{%- comment -%}
+  Problem/Solution Comparison Section
+  Shows a heading with label and two comparison cards side by side.
+{%- endcomment -%}
+
+<div
+  class="problem-solution full-width"
+  style="
+    --section-bg: {{ section.settings.section_bg }};
+    --section-padding-top: {{ section.settings.padding_top }}px;
+    --section-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --label-bg: {{ section.settings.label_bg }};
+    --label-color: {{ section.settings.label_color }};
+    --heading-color: {{ section.settings.heading_color }};
+    --heading-italic-color: {{ section.settings.heading_italic_color }};
+    --heading-size-desktop: {{ section.settings.heading_size_desktop }}px;
+    --heading-size-mobile: {{ section.settings.heading_size_mobile }}px;
+    --card-bg: {{ section.settings.card_bg }};
+    --card-border-color: {{ section.settings.card_border_color }};
+    --card-title-color-left: {{ section.settings.card_title_color_left }};
+    --card-title-color-right: {{ section.settings.card_title_color_right }};
+    --card-text-color: {{ section.settings.card_text_color }};
+    --card-icon-color-left: {{ section.settings.card_icon_color_left }};
+    --card-icon-color-right: {{ section.settings.card_icon_color_right }};
+  "
+>
+  <div class="problem-solution__container">
+    {%- if section.settings.label != blank -%}
+      <div class="problem-solution__label">{{ section.settings.label }}</div>
+    {%- endif -%}
+
+    {%- if section.settings.heading != blank or section.settings.heading_italic != blank -%}
+      <h2 class="problem-solution__heading">
+        {%- if section.settings.heading != blank -%}
+          <span class="problem-solution__heading-regular">{{ section.settings.heading }}</span>
+        {%- endif -%}
+        {%- if section.settings.heading_italic != blank -%}
+          <em class="problem-solution__heading-italic">{{ section.settings.heading_italic }}</em>
+        {%- endif -%}
+      </h2>
+    {%- endif -%}
+
+    <div class="problem-solution__cards">
+      <!-- Left Card (Problem) -->
+      <div class="problem-solution__card problem-solution__card--left">
+        <div class="problem-solution__card-header">
+          <div class="problem-solution__icon problem-solution__icon--left">
+            {%- if section.settings.icon_left == 'eye-off' -%}
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                <line x1="1" y1="1" x2="23" y2="23"/>
+              </svg>
+            {%- elsif section.settings.icon_left == 'x-circle' -%}
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="15" y1="9" x2="9" y2="15"/>
+                <line x1="9" y1="9" x2="15" y2="15"/>
+              </svg>
+            {%- elsif section.settings.icon_left == 'alert-triangle' -%}
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+              </svg>
+            {%- elsif section.settings.icon_left == 'cloud-off' -%}
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="1" y1="1" x2="23" y2="23"/>
+                <path d="M22 15.04a6 6 0 0 0-6-6c-.34 0-.67.03-1 .09a7 7 0 0 0-11.6-1.97"/>
+                <path d="M5 5a6 6 0 0 0 1 11.88h13.44"/>
+              </svg>
+            {%- else -%}
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                <line x1="1" y1="1" x2="23" y2="23"/>
+              </svg>
+            {%- endif -%}
+          </div>
+          <h3 class="problem-solution__card-title problem-solution__card-title--left">{{ section.settings.card_title_left }}</h3>
+        </div>
+        <p class="problem-solution__card-text">{{ section.settings.card_text_left }}</p>
+      </div>
+
+      <!-- Right Card (Solution) -->
+      <div class="problem-solution__card problem-solution__card--right">
+        <div class="problem-solution__card-header">
+          <div class="problem-solution__icon problem-solution__icon--right">
+            {%- if section.settings.icon_right == 'sunrise' -%}
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 18a5 5 0 0 0-10 0"/>
+                <line x1="12" y1="2" x2="12" y2="9"/>
+                <line x1="4.22" y1="10.22" x2="5.64" y2="11.64"/>
+                <line x1="1" y1="18" x2="3" y2="18"/>
+                <line x1="21" y1="18" x2="23" y2="18"/>
+                <line x1="18.36" y1="11.64" x2="19.78" y2="10.22"/>
+                <line x1="23" y1="22" x2="1" y2="22"/>
+                <polyline points="8 6 12 2 16 6"/>
+              </svg>
+            {%- elsif section.settings.icon_right == 'sun' -%}
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="5"/>
+                <line x1="12" y1="1" x2="12" y2="3"/>
+                <line x1="12" y1="21" x2="12" y2="23"/>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                <line x1="1" y1="12" x2="3" y2="12"/>
+                <line x1="21" y1="12" x2="23" y2="12"/>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+              </svg>
+            {%- elsif section.settings.icon_right == 'check-circle' -%}
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                <polyline points="22 4 12 14.01 9 11.01"/>
+              </svg>
+            {%- elsif section.settings.icon_right == 'heart' -%}
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              </svg>
+            {%- else -%}
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 18a5 5 0 0 0-10 0"/>
+                <line x1="12" y1="2" x2="12" y2="9"/>
+                <line x1="4.22" y1="10.22" x2="5.64" y2="11.64"/>
+                <line x1="1" y1="18" x2="3" y2="18"/>
+                <line x1="21" y1="18" x2="23" y2="18"/>
+                <line x1="18.36" y1="11.64" x2="19.78" y2="10.22"/>
+                <line x1="23" y1="22" x2="1" y2="22"/>
+                <polyline points="8 6 12 2 16 6"/>
+              </svg>
+            {%- endif -%}
+          </div>
+          <h3 class="problem-solution__card-title problem-solution__card-title--right">{{ section.settings.card_title_right }}</h3>
+        </div>
+        <p class="problem-solution__card-text">{{ section.settings.card_text_right }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .problem-solution {
+    background: var(--section-bg);
+    padding: var(--section-padding-top) 0 var(--section-padding-bottom);
+  }
+
+  .problem-solution__container {
+    max-width: var(--page-width);
+    margin: 0 auto;
+    padding: 0 var(--page-margin);
+    text-align: center;
+  }
+
+  .problem-solution__label {
+    display: inline-block;
+    padding: 8px 20px;
+    background: var(--label-bg);
+    color: var(--label-color);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-radius: 50px;
+    margin-bottom: 24px;
+  }
+
+  .problem-solution__heading {
+    font-family: var(--font-heading-family), serif;
+    font-size: var(--heading-size-mobile);
+    font-weight: 400;
+    line-height: 1.2;
+    margin: 0 0 48px;
+  }
+
+  .problem-solution__heading-regular {
+    display: block;
+    color: var(--heading-color);
+  }
+
+  .problem-solution__heading-italic {
+    display: block;
+    color: var(--heading-italic-color);
+    font-style: italic;
+  }
+
+  .problem-solution__cards {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .problem-solution__card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border-color);
+    border-radius: 8px;
+    padding: 24px;
+    text-align: left;
+  }
+
+  .problem-solution__card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .problem-solution__icon {
+    flex-shrink: 0;
+  }
+
+  .problem-solution__icon--left {
+    color: var(--card-icon-color-left);
+  }
+
+  .problem-solution__icon--right {
+    color: var(--card-icon-color-right);
+  }
+
+  .problem-solution__card-title {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin: 0;
+  }
+
+  .problem-solution__card-title--left {
+    color: var(--card-title-color-left);
+  }
+
+  .problem-solution__card-title--right {
+    color: var(--card-title-color-right);
+  }
+
+  .problem-solution__card-text {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--card-text-color);
+    margin: 0;
+  }
+
+  @media (min-width: 768px) {
+    .problem-solution__heading {
+      font-size: var(--heading-size-desktop);
+      margin-bottom: 64px;
+    }
+
+    .problem-solution__cards {
+      flex-direction: row;
+      gap: 24px;
+    }
+
+    .problem-solution__card {
+      flex: 1;
+      padding: 32px;
+    }
+
+    .problem-solution__card-text {
+      font-size: 16px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .problem-solution__cards {
+      gap: 32px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .problem-solution__card {
+      padding: 40px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Problem/Solution",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Label",
+      "default": "THE PROBLEM"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading (line 1)",
+      "default": "The \"Big Light\" is the"
+    },
+    {
+      "type": "text",
+      "id": "heading_italic",
+      "label": "Heading italic (line 2)",
+      "default": "enemy of calm."
+    },
+    {
+      "type": "header",
+      "content": "Left card (Problem)"
+    },
+    {
+      "type": "select",
+      "id": "icon_left",
+      "label": "Icon",
+      "options": [
+        { "value": "eye-off", "label": "Eye off" },
+        { "value": "x-circle", "label": "X circle" },
+        { "value": "alert-triangle", "label": "Alert triangle" },
+        { "value": "cloud-off", "label": "Cloud off" }
+      ],
+      "default": "eye-off"
+    },
+    {
+      "type": "text",
+      "id": "card_title_left",
+      "label": "Title",
+      "default": "STANDARD LIGHTING"
+    },
+    {
+      "type": "textarea",
+      "id": "card_text_left",
+      "label": "Description",
+      "default": "Overhead. Harsh. Creates anxiety and flattens architectural details. It turns your home into a waiting room."
+    },
+    {
+      "type": "header",
+      "content": "Right card (Solution)"
+    },
+    {
+      "type": "select",
+      "id": "icon_right",
+      "label": "Icon",
+      "options": [
+        { "value": "sunrise", "label": "Sunrise" },
+        { "value": "sun", "label": "Sun" },
+        { "value": "check-circle", "label": "Check circle" },
+        { "value": "heart", "label": "Heart" }
+      ],
+      "default": "sunrise"
+    },
+    {
+      "type": "text",
+      "id": "card_title_right",
+      "label": "Title",
+      "default": "THE OUTLIGHT WAY"
+    },
+    {
+      "type": "textarea",
+      "id": "card_text_right",
+      "label": "Description",
+      "default": "Layered. Diffused. Low-level. It mimics the safety of a campfire, signaling your brain to rest."
+    },
+    {
+      "type": "header",
+      "content": "Section style"
+    },
+    {
+      "type": "color",
+      "id": "section_bg",
+      "label": "Background color",
+      "default": "#1a2421"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 150,
+      "step": 4,
+      "default": 80,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 150,
+      "step": 4,
+      "default": 80,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Label style"
+    },
+    {
+      "type": "color",
+      "id": "label_bg",
+      "label": "Background color",
+      "default": "#2d3b36"
+    },
+    {
+      "type": "color",
+      "id": "label_color",
+      "label": "Text color",
+      "default": "#a3b5ab"
+    },
+    {
+      "type": "header",
+      "content": "Heading style"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Color (line 1)",
+      "default": "#e8ebe9"
+    },
+    {
+      "type": "color",
+      "id": "heading_italic_color",
+      "label": "Color (italic line)",
+      "default": "#a3b5ab"
+    },
+    {
+      "type": "range",
+      "id": "heading_size_desktop",
+      "label": "Size (desktop)",
+      "min": 32,
+      "max": 72,
+      "step": 2,
+      "default": 52,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "heading_size_mobile",
+      "label": "Size (mobile)",
+      "min": 24,
+      "max": 48,
+      "step": 2,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Card style"
+    },
+    {
+      "type": "color",
+      "id": "card_bg",
+      "label": "Background color",
+      "default": "#232f2b"
+    },
+    {
+      "type": "color",
+      "id": "card_border_color",
+      "label": "Border color",
+      "default": "#3a4a44"
+    },
+    {
+      "type": "color",
+      "id": "card_text_color",
+      "label": "Text color",
+      "default": "#a3b5ab"
+    },
+    {
+      "type": "header",
+      "content": "Left card colors"
+    },
+    {
+      "type": "color",
+      "id": "card_icon_color_left",
+      "label": "Icon color",
+      "default": "#6b8a7a"
+    },
+    {
+      "type": "color",
+      "id": "card_title_color_left",
+      "label": "Title color",
+      "default": "#a3b5ab"
+    },
+    {
+      "type": "header",
+      "content": "Right card colors"
+    },
+    {
+      "type": "color",
+      "id": "card_icon_color_right",
+      "label": "Icon color",
+      "default": "#c9a227"
+    },
+    {
+      "type": "color",
+      "id": "card_title_color_right",
+      "label": "Title color",
+      "default": "#c9a227"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Problem/Solution"
+    }
+  ]
+}
+{% endschema %}
