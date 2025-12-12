@@ -32,6 +32,13 @@
           "type": "menu",
           "settings": {
             "menu": "footer",
+            "custom_title": "Our Policy"
+          }
+        },
+        "menu_XqCjBR": {
+          "type": "menu",
+          "settings": {
+            "menu": "our-story",
             "custom_title": ""
           }
         }
@@ -39,7 +46,8 @@
       "block_order": [
         "menu_6LyAYX",
         "menu_44TfhC",
-        "menu_QgPmFY"
+        "menu_QgPmFY",
+        "menu_XqCjBR"
       ],
       "settings": {
         "show_newsletter": true,
@@ -64,6 +72,7 @@
         "brand_description": "We curate lighting that turns houses into sanctuaries. Banish the harshness.",
         "learn_more_text": "Learn More",
         "learn_more_url": "shopify://pages/about-us",
+        "learn_more_color": "#dbd6cc",
         "description_color": "#57534e",
         "description_size": 14,
         "description_weight": "400",

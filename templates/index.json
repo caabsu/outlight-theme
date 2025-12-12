@@ -15,7 +15,7 @@
       "settings": {
         "enable_transparent_header": true,
         "image_desktop": "shopify://shop_images/Jova_4.jpg",
-        "image_mobile": "shopify://shop_images/Jova_9.jpg",
+        "image_mobile": "shopify://shop_images/Rumi_10.jpg",
         "eyebrow": "limited time promotion",
         "heading": "Holiday Sale",
         "subheading": "Embrace the winter with our warm, modern selection of lighting.",
@@ -61,10 +61,11 @@
       "name": "Search bar",
       "settings": {
         "placeholder": "What can we help you find?",
-        "max_width": 600,
-        "padding_top": 24,
-        "padding_bottom": 0,
-        "padding_x": 0
+        "padding_top_mobile": 24,
+        "padding_bottom_mobile": 0,
+        "padding_x_mobile": 16,
+        "padding_top_desktop": 40,
+        "padding_bottom_desktop": 0
       }
     },
     "collections_bento_PrXpLn": {

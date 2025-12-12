@@ -61,7 +61,7 @@
           "type": "menu_item",
           "settings": {
             "title": "ABOUT US",
-            "link": ""
+            "link": "shopify://pages/about-us"
           }
         },
         "menu_item_HWqznU": {

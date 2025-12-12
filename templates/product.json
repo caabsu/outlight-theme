@@ -117,7 +117,10 @@
         "delivery_date_size": 13,
         "delivery_date_weight": "600",
         "delivery_date_color": "#57534e",
-        "gallery_arrow_color": "#1C1917",
+        "gallery_arrow_color": "#1c1917",
+        "gallery_arrow_size": 24,
+        "gallery_arrow_opacity": 70,
+        "gallery_arrow_hover_opacity": 100,
         "ct_background_color": "#0a0a0a",
         "ct_card_background": "#1a1a1a",
         "ct_card_radius": 24,
@@ -263,7 +266,7 @@
         "description_color": "#57534e",
         "btn_primary_bg": "#1a1a1a",
         "btn_primary_color": "#ffffff",
-        "btn_secondary_bg": "#ffffff",
+        "btn_secondary_bg": "#F7F5F0",
         "btn_secondary_color": "#1a1a1a",
         "btn_secondary_border": "#e5e5e5"
       }
