@@ -9,6 +9,7 @@
     --section-bg: {{ section.settings.section_bg }};
     --section-padding-top: {{ section.settings.padding_top }}px;
     --section-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
     --label-bg: {{ section.settings.label_bg }};
     --label-color: {{ section.settings.label_color }};
     --heading-color: {{ section.settings.heading_color }};
@@ -24,6 +25,13 @@
     --card-icon-color-right: {{ section.settings.card_icon_color_right }};
   "
 >
+  {%- if section.settings.background_image != blank -%}
+    <div class="problem-solution__bg">
+      {{ section.settings.background_image | image_url: width: 2000 | image_tag: loading: 'lazy' }}
+      <div class="problem-solution__overlay"></div>
+    </div>
+  {%- endif -%}
+
   <div class="problem-solution__container">
     {%- if section.settings.label != blank -%}
       <div class="problem-solution__label">{{ section.settings.label }}</div>
@@ -139,11 +147,34 @@
 
 {% stylesheet %}
   .problem-solution {
+    position: relative;
     background: var(--section-bg);
     padding: var(--section-padding-top) 0 var(--section-padding-bottom);
+    overflow: hidden;
+  }
+
+  .problem-solution__bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .problem-solution__bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .problem-solution__overlay {
+    position: absolute;
+    inset: 0;
+    background: var(--section-bg);
+    opacity: var(--overlay-opacity);
   }
 
   .problem-solution__container {
+    position: relative;
+    z-index: 1;
     max-width: var(--page-width);
     margin: 0 auto;
     padding: 0 var(--page-margin);
@@ -359,10 +390,26 @@
       "content": "Section style"
     },
     {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background image"
+    },
+    {
       "type": "color",
       "id": "section_bg",
-      "label": "Background color",
+      "label": "Background/Overlay color",
       "default": "#1a2421"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Overlay opacity",
+      "info": "Darkens the background image",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 85,
+      "unit": "%"
     },
     {
       "type": "range",
