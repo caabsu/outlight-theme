@@ -1,0 +1,404 @@
+{% comment %}
+  Announcement Bar - Dismissible banner with customizable text and styling
+{% endcomment %}
+
+<div
+  class="announcement-bar"
+  id="announcement-bar-{{ section.id }}"
+  style="
+    --ab-bg: {{ section.settings.bg_color }};
+    --ab-text-color: {{ section.settings.text_color }};
+    --ab-link-color: {{ section.settings.link_color }};
+    --ab-padding-top: {{ section.settings.padding_top }}px;
+    --ab-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --ab-padding-top-mobile: {{ section.settings.padding_top_mobile }}px;
+    --ab-padding-bottom-mobile: {{ section.settings.padding_bottom_mobile }}px;
+    --ab-text-size: {{ section.settings.text_size }}px;
+    --ab-text-size-mobile: {{ section.settings.text_size_mobile }}px;
+    --ab-text-weight: {{ section.settings.text_weight }};
+    --ab-link-size: {{ section.settings.link_size }}px;
+    --ab-link-size-mobile: {{ section.settings.link_size_mobile }}px;
+    --ab-link-weight: {{ section.settings.link_weight }};
+    --ab-close-color: {{ section.settings.close_color }};
+  "
+>
+  <div class="announcement-bar__container">
+    <div class="announcement-bar__content">
+      {%- comment -%} Desktop content {%- endcomment -%}
+      <div class="announcement-bar__desktop">
+        <p class="announcement-bar__text">
+          {{ section.settings.text }}
+          {%- if section.settings.link_text != blank -%}
+            <a href="{{ section.settings.link_url }}" class="announcement-bar__link">{{ section.settings.link_text }}</a>
+          {%- endif -%}
+        </p>
+      </div>
+
+      {%- comment -%} Mobile content {%- endcomment -%}
+      <div class="announcement-bar__mobile">
+        <p class="announcement-bar__text">{{ section.settings.text_mobile | default: section.settings.text }}</p>
+        {%- if section.settings.link_text_mobile != blank or section.settings.link_text != blank -%}
+          <a href="{{ section.settings.link_url }}" class="announcement-bar__link">
+            {{ section.settings.link_text_mobile | default: section.settings.link_text }}
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+
+    {%- if section.settings.show_close -%}
+      <button class="announcement-bar__close" aria-label="Close announcement" data-announcement-close>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M12 4L4 12M4 4L12 12"/>
+        </svg>
+      </button>
+    {%- endif -%}
+  </div>
+</div>
+
+{% stylesheet %}
+  .announcement-bar {
+    background: var(--ab-bg);
+    padding: var(--ab-padding-top-mobile) 0 var(--ab-padding-bottom-mobile);
+    width: 100%;
+  }
+
+  .announcement-bar.is-hidden {
+    display: none;
+  }
+
+  .announcement-bar__container {
+    max-width: var(--page-width);
+    margin: 0 auto;
+    padding: 0 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .announcement-bar__content {
+    flex: 1;
+    text-align: center;
+  }
+
+  .announcement-bar__desktop {
+    display: none;
+  }
+
+  .announcement-bar__mobile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .announcement-bar__text {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: var(--ab-text-size-mobile);
+    font-weight: var(--ab-text-weight);
+    color: var(--ab-text-color);
+    margin: 0;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    line-height: 1.4;
+  }
+
+  .announcement-bar__link {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: var(--ab-link-size-mobile);
+    font-weight: var(--ab-link-weight);
+    color: var(--ab-link-color);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: opacity 0.2s ease;
+  }
+
+  .announcement-bar__link:hover {
+    opacity: 0.7;
+  }
+
+  .announcement-bar__close {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    color: var(--ab-close-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.2s ease;
+  }
+
+  .announcement-bar__close:hover {
+    opacity: 0.6;
+  }
+
+  /* Desktop styles */
+  @media (min-width: 768px) {
+    .announcement-bar {
+      padding: var(--ab-padding-top) 0 var(--ab-padding-bottom);
+    }
+
+    .announcement-bar__container {
+      padding: 0 2rem;
+    }
+
+    .announcement-bar__desktop {
+      display: block;
+    }
+
+    .announcement-bar__mobile {
+      display: none;
+    }
+
+    .announcement-bar__text {
+      font-size: var(--ab-text-size);
+      display: inline;
+    }
+
+    .announcement-bar__desktop .announcement-bar__link {
+      font-size: var(--ab-link-size);
+      margin-left: 0.5rem;
+    }
+
+    .announcement-bar__close {
+      right: 2rem;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (function() {
+    const bar = document.querySelector('.announcement-bar');
+    const closeBtn = bar ? bar.querySelector('[data-announcement-close]') : null;
+    const storageKey = 'announcement-bar-closed-' + bar?.id;
+
+    if (bar && sessionStorage.getItem(storageKey)) {
+      bar.classList.add('is-hidden');
+    }
+
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function() {
+        bar.classList.add('is-hidden');
+        sessionStorage.setItem(storageKey, 'true');
+      });
+    }
+  })();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Announcement bar",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Desktop content"
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Text",
+      "default": "COMPLIMENTARY SHIPPING ON ALL ORDERS OVER $250."
+    },
+    {
+      "type": "text",
+      "id": "link_text",
+      "label": "Link text",
+      "default": "SHOP NOW"
+    },
+    {
+      "type": "url",
+      "id": "link_url",
+      "label": "Link URL"
+    },
+    {
+      "type": "header",
+      "content": "Mobile content"
+    },
+    {
+      "type": "text",
+      "id": "text_mobile",
+      "label": "Text (mobile)",
+      "info": "Leave blank to use desktop text",
+      "default": "FREE SHIPPING OVER $250."
+    },
+    {
+      "type": "text",
+      "id": "link_text_mobile",
+      "label": "Link text (mobile)",
+      "info": "Leave blank to use desktop link text",
+      "default": "SHOP COLLECTION"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#1C1917"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "link_color",
+      "label": "Link color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "close_color",
+      "label": "Close button color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Padding (desktop)"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Padding (mobile)"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding top",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "default": 10,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "default": 10,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Text styling"
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "label": "Text size (desktop)",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "default": 13,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "text_size_mobile",
+      "label": "Text size (mobile)",
+      "min": 9,
+      "max": 16,
+      "step": 1,
+      "default": 11,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "text_weight",
+      "label": "Text weight",
+      "options": [
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "header",
+      "content": "Link styling"
+    },
+    {
+      "type": "range",
+      "id": "link_size",
+      "label": "Link size (desktop)",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "default": 13,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "link_size_mobile",
+      "label": "Link size (mobile)",
+      "min": 9,
+      "max": 16,
+      "step": 1,
+      "default": 11,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "link_weight",
+      "label": "Link weight",
+      "options": [
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "header",
+      "content": "Close button"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_close",
+      "label": "Show close button",
+      "default": true,
+      "info": "Dismisses for the session when clicked"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Announcement bar"
+    }
+  ]
+}
+{% endschema %}
