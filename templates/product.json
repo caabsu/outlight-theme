@@ -305,6 +305,18 @@
     "curated_collection_carousel_DwU4ep": {
       "type": "curated-collection-carousel",
       "blocks": {
+        "collection_MYaLpd": {
+          "type": "collection",
+          "settings": {
+            "collection": "desk-lamp"
+          }
+        },
+        "collection_xbJjcB": {
+          "type": "collection",
+          "settings": {
+            "collection": "floor-table-lamps"
+          }
+        },
         "collection_Ccw67a": {
           "type": "collection",
           "settings": {
@@ -325,6 +337,8 @@
         }
       },
       "block_order": [
+        "collection_MYaLpd",
+        "collection_xbJjcB",
         "collection_Ccw67a",
         "collection_PRe7NH",
         "collection_Qai8a6"
