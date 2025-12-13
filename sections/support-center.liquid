@@ -1,5 +1,5 @@
 {% comment %}
-  Support Center / Help Center section with dark header, tabs, and FAQ
+  Support Center / Help Center section with dark header and FAQ categories
 {% endcomment %}
 
 <div class="help-center" style="
@@ -18,8 +18,10 @@
   --hc-return-btn-border: {{ section.settings.return_button_border }};
   --hc-card-bg: {{ section.settings.card_bg_color }};
   --hc-card-radius: {{ section.settings.card_border_radius }}px;
-  --hc-tab-color: {{ section.settings.tab_color }};
-  --hc-tab-active-color: {{ section.settings.tab_active_color }};
+  --hc-category-title-size: {{ section.settings.category_title_size }}px;
+  --hc-category-title-size-mobile: {{ section.settings.category_title_size_mobile }}px;
+  --hc-category-title-color: {{ section.settings.category_title_color }};
+  --hc-category-title-weight: {{ section.settings.category_title_weight }};
   --hc-faq-bg: {{ section.settings.faq_bg_color }};
   --hc-faq-alt-bg: {{ section.settings.faq_alt_bg_color }};
   --hc-question-size: {{ section.settings.question_size }}px;
@@ -61,33 +63,14 @@
   {%- comment -%} Main Content {%- endcomment -%}
   <div class="help-center__body">
     <div class="help-center__card">
-      {%- comment -%} Tabs {%- endcomment -%}
-      {%- assign tabs = section.blocks | where: "type", "tab" -%}
-      {%- if tabs.size > 0 -%}
-        <div class="help-center__tabs" role="tablist">
-          {%- for block in tabs -%}
-            <button
-              class="help-center__tab{% if forloop.first %} help-center__tab--active{% endif %}"
-              role="tab"
-              aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
-              aria-controls="tab-panel-{{ block.id }}"
-              data-tab-index="{{ forloop.index0 }}"
-              {{ block.shopify_attributes }}
-            >
-              {{ block.settings.tab_title }}
-            </button>
-          {%- endfor -%}
-        </div>
+      {%- assign categories = section.blocks | where: "type", "tab" -%}
+      {%- if categories.size > 0 -%}
+        <div class="help-center__categories">
+          {%- for block in categories -%}
+            <div class="help-center__category" {{ block.shopify_attributes }}>
+              {%- comment -%} Category Header {%- endcomment -%}
+              <h2 class="help-center__category-title">{{ block.settings.tab_title }}</h2>
 
-        {%- comment -%} Tab Panels {%- endcomment -%}
-        <div class="help-center__panels">
-          {%- for block in tabs -%}
-            <div
-              class="help-center__panel{% if forloop.first %} help-center__panel--active{% endif %}"
-              role="tabpanel"
-              id="tab-panel-{{ block.id }}"
-              data-panel-index="{{ forloop.index0 }}"
-            >
               {%- comment -%} Desktop FAQ Layout {%- endcomment -%}
               <div class="help-center__faq help-center__faq--desktop">
                 {%- if block.settings.question_1 != blank -%}
@@ -187,31 +170,6 @@
     </div>
   </div>
 </div>
-
-{% javascript %}
-  (function() {
-    const tabs = document.querySelectorAll('.help-center__tab');
-    const panels = document.querySelectorAll('.help-center__panel');
-
-    tabs.forEach(tab => {
-      tab.addEventListener('click', function() {
-        const index = this.getAttribute('data-tab-index');
-
-        tabs.forEach(t => {
-          t.classList.remove('help-center__tab--active');
-          t.setAttribute('aria-selected', 'false');
-        });
-        this.classList.add('help-center__tab--active');
-        this.setAttribute('aria-selected', 'true');
-
-        panels.forEach(p => {
-          p.classList.remove('help-center__panel--active');
-        });
-        document.querySelector(`[data-panel-index="${index}"]`).classList.add('help-center__panel--active');
-      });
-    });
-  })();
-{% endjavascript %}
 
 {% stylesheet %}
   .help-center {
@@ -318,49 +276,29 @@
     overflow: hidden;
   }
 
-  /* Tabs */
-  .help-center__tabs {
+  /* Categories */
+  .help-center__categories {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+  }
+
+  .help-center__category {
     border-bottom: 1px solid #E5E5E5;
-    padding: 0 2rem;
   }
 
-  .help-center__tab {
-    padding: 1.25rem 1.5rem;
-    font-family: var(--font-primary-family), sans-serif;
-    font-size: 0.8125rem;
-    font-weight: 500;
-    letter-spacing: 0.05em;
+  .help-center__category:last-child {
+    border-bottom: none;
+  }
+
+  .help-center__category-title {
+    font-family: var(--font-heading-family), serif;
+    font-size: var(--hc-category-title-size, 20px);
+    font-weight: var(--hc-category-title-weight, 600);
+    color: var(--hc-category-title-color, #1C1917);
+    margin: 0;
+    padding: 1.5rem 2rem 0.5rem;
     text-transform: uppercase;
-    color: var(--hc-tab-color, #78716C);
-    background: none;
-    border: none;
-    border-bottom: 2px solid transparent;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .help-center__tab:hover {
-    color: var(--hc-tab-active-color, #D97706);
-  }
-
-  .help-center__tab--active {
-    color: var(--hc-tab-active-color, #D97706);
-    border-bottom-color: var(--hc-tab-active-color, #D97706);
-  }
-
-  /* Panels */
-  .help-center__panels {
-    padding: 0;
-  }
-
-  .help-center__panel {
-    display: none;
-  }
-
-  .help-center__panel--active {
-    display: block;
+    letter-spacing: 0.05em;
   }
 
   /* FAQ - Desktop */
@@ -504,21 +442,13 @@
       padding: 0.625rem 1rem;
     }
 
-    .help-center__tabs {
-      padding: 0 1rem;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      justify-content: center;
+    .help-center__category-title {
+      font-size: var(--hc-category-title-size-mobile, 16px);
+      padding: 1.25rem 1rem 0.75rem;
     }
 
-    .help-center__tab {
-      padding: 1rem 0.75rem;
-      font-size: 0.75rem;
-      white-space: nowrap;
-    }
-
-    .help-center__panels {
-      padding: 1rem;
+    .help-center__faq--mobile {
+      padding: 0 1rem 1rem;
     }
 
     .help-center__faq--desktop {
@@ -703,19 +633,44 @@
     },
     {
       "type": "header",
-      "content": "Tabs"
+      "content": "Category titles"
+    },
+    {
+      "type": "range",
+      "id": "category_title_size",
+      "min": 16,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Title size (desktop)",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "category_title_size_mobile",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Title size (mobile)",
+      "default": 16
     },
     {
       "type": "color",
-      "id": "tab_color",
-      "label": "Tab text color",
-      "default": "#78716C"
+      "id": "category_title_color",
+      "label": "Title color",
+      "default": "#1C1917"
     },
     {
-      "type": "color",
-      "id": "tab_active_color",
-      "label": "Active tab color",
-      "default": "#D97706"
+      "type": "select",
+      "id": "category_title_weight",
+      "label": "Title weight",
+      "options": [
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "600"
     },
     {
       "type": "header",
@@ -826,12 +781,12 @@
   "blocks": [
     {
       "type": "tab",
-      "name": "FAQ Tab",
+      "name": "FAQ Category",
       "settings": [
         {
           "type": "text",
           "id": "tab_title",
-          "label": "Tab title",
+          "label": "Category title",
           "default": "Shipping"
         },
         {
