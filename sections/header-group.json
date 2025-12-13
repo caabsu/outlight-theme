@@ -11,6 +11,20 @@
   "type": "header",
   "name": "t:general.header",
   "sections": {
+    "announcement-bar": {
+      "type": "announcement-bar",
+      "settings": {
+        "text": "COMPLIMENTARY SHIPPING ON ALL ORDERS OVER $250.",
+        "link_text": "SHOP NOW",
+        "link_url": "/collections/all",
+        "text_mobile": "FREE SHIPPING OVER $250.",
+        "link_text_mobile": "SHOP COLLECTION",
+        "bg_color": "#1C1917",
+        "text_color": "#ffffff",
+        "link_color": "#ffffff",
+        "enable_sticky": true
+      }
+    },
     "header": {
       "type": "header",
       "blocks": {
@@ -114,6 +128,7 @@
     }
   },
   "order": [
+    "announcement-bar",
     "header"
   ]
 }

@@ -3,7 +3,7 @@
 {% endcomment %}
 
 <div
-  class="announcement-bar"
+  class="announcement-bar{% if section.settings.enable_sticky %} announcement-bar--sticky{% endif %}"
   id="announcement-bar-{{ section.id }}"
   style="
     --ab-bg: {{ section.settings.bg_color }};
@@ -60,6 +60,12 @@
     background: var(--ab-bg);
     padding: var(--ab-padding-top-mobile) 0 var(--ab-padding-bottom-mobile);
     width: 100%;
+    z-index: 100;
+  }
+
+  .announcement-bar--sticky {
+    position: sticky;
+    top: 0;
   }
 
   .announcement-bar.is-hidden {
@@ -393,6 +399,13 @@
       "label": "Show close button",
       "default": true,
       "info": "Dismisses for the session when clicked"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sticky",
+      "label": "Sticky on scroll",
+      "default": true,
+      "info": "Bar stays at top when scrolling"
     }
   ],
   "presets": [
