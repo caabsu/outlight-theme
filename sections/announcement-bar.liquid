@@ -3,7 +3,7 @@
 {% endcomment %}
 
 <div
-  class="announcement-bar{% if section.settings.enable_sticky %} announcement-bar--sticky{% endif %}"
+  class="announcement-bar"
   id="announcement-bar-{{ section.id }}"
   style="
     --ab-bg: {{ section.settings.bg_color }};
@@ -59,13 +59,10 @@
   .announcement-bar {
     background: var(--ab-bg);
     padding: var(--ab-padding-top-mobile) 0 var(--ab-padding-bottom-mobile);
-    width: 100%;
-    z-index: 100;
-  }
-
-  .announcement-bar--sticky {
-    position: sticky;
-    top: 0;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    position: relative;
+    z-index: 101;
   }
 
   .announcement-bar.is-hidden {
@@ -73,9 +70,10 @@
   }
 
   .announcement-bar__container {
-    max-width: var(--page-width);
-    margin: 0 auto;
-    padding: 0 1rem;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0 1.5rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -152,7 +150,7 @@
     }
 
     .announcement-bar__container {
-      padding: 0 2rem;
+      padding: 0 3rem;
     }
 
     .announcement-bar__desktop {
@@ -399,13 +397,6 @@
       "label": "Show close button",
       "default": true,
       "info": "Dismisses for the session when clicked"
-    },
-    {
-      "type": "checkbox",
-      "id": "enable_sticky",
-      "label": "Sticky on scroll",
-      "default": true,
-      "info": "Bar stays at top when scrolling"
     }
   ],
   "presets": [
