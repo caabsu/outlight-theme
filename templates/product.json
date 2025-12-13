@@ -305,6 +305,24 @@
     "curated_collection_carousel_DwU4ep": {
       "type": "curated-collection-carousel",
       "blocks": {
+        "collection_WxJBPx": {
+          "type": "collection",
+          "settings": {
+            "collection": ""
+          }
+        },
+        "collection_Ee4qgT": {
+          "type": "collection",
+          "settings": {
+            "collection": ""
+          }
+        },
+        "collection_AgUejJ": {
+          "type": "collection",
+          "settings": {
+            "collection": "ceiling-lights"
+          }
+        },
         "collection_MYaLpd": {
           "type": "collection",
           "settings": {
@@ -337,6 +355,9 @@
         }
       },
       "block_order": [
+        "collection_WxJBPx",
+        "collection_Ee4qgT",
+        "collection_AgUejJ",
         "collection_MYaLpd",
         "collection_xbJjcB",
         "collection_Ccw67a",
