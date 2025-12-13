@@ -266,7 +266,7 @@
         "description_color": "#57534e",
         "btn_primary_bg": "#1a1a1a",
         "btn_primary_color": "#ffffff",
-        "btn_secondary_bg": "#F7F5F0",
+        "btn_secondary_bg": "#f7f5f0",
         "btn_secondary_color": "#1a1a1a",
         "btn_secondary_border": "#e5e5e5"
       }
@@ -302,6 +302,57 @@
         "price_size_mobile": 15
       }
     },
+    "curated_collection_carousel_DwU4ep": {
+      "type": "curated-collection-carousel",
+      "blocks": {
+        "collection_Ccw67a": {
+          "type": "collection",
+          "settings": {
+            "collection": "chandeliers"
+          }
+        },
+        "collection_PRe7NH": {
+          "type": "collection",
+          "settings": {
+            "collection": "wall-lights"
+          }
+        },
+        "collection_Qai8a6": {
+          "type": "collection",
+          "settings": {
+            "collection": "path-lights"
+          }
+        }
+      },
+      "block_order": [
+        "collection_Ccw67a",
+        "collection_PRe7NH",
+        "collection_Qai8a6"
+      ],
+      "name": "Curated carousel",
+      "settings": {
+        "title_prefix": "More from",
+        "products_limit": 10,
+        "show_view_all": true,
+        "view_all_text": "View All",
+        "section_bg": "#ffffff",
+        "padding_top": 48,
+        "padding_bottom": 48,
+        "title_color": "#1C1917",
+        "title_size": 24,
+        "title_size_mobile": 18,
+        "title_weight": "600",
+        "card_bg": "#ffffff",
+        "card_radius": 8,
+        "product_name_color": "#1C1917",
+        "product_name_size": 15,
+        "product_name_size_mobile": 14,
+        "price_color": "#57534E",
+        "price_size": 14,
+        "nav_bg": "#ffffff",
+        "nav_color": "#1C1917"
+      }
+    },
     "1765072596b5ddad21": {
       "type": "apps",
       "blocks": {
@@ -330,6 +381,7 @@
     "testimonial_showcase_V6L66t",
     "support_banner_PjaKXH",
     "collection_carousel_mHqtVb",
+    "curated_collection_carousel_DwU4ep",
     "1765072596b5ddad21"
   ]
 }
