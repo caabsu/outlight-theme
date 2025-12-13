@@ -427,13 +427,14 @@
   .header-wrapper--transparent:not(.is-scrolled) {
     background-color: transparent;
     position: absolute;
-    top: 0;
+    top: var(--announcement-bar-height, 0px);
     left: 0;
     right: 0;
   }
 
   .header-wrapper--transparent.header-wrapper--sticky {
     position: fixed;
+    top: var(--announcement-bar-height, 0px);
     left: 0;
     right: 0;
   }

@@ -59,10 +59,9 @@
   .announcement-bar {
     background: var(--ab-bg);
     padding: var(--ab-padding-top-mobile) 0 var(--ab-padding-bottom-mobile);
-    width: 100vw;
-    margin-left: calc(-50vw + 50%);
+    width: 100%;
     position: relative;
-    z-index: 101;
+    z-index: 102;
   }
 
   .announcement-bar.is-hidden {
@@ -183,14 +182,27 @@
     const closeBtn = bar ? bar.querySelector('[data-announcement-close]') : null;
     const storageKey = 'announcement-bar-closed-' + bar?.id;
 
+    function updateHeaderOffset() {
+      if (bar && !bar.classList.contains('is-hidden')) {
+        const barHeight = bar.offsetHeight;
+        document.documentElement.style.setProperty('--announcement-bar-height', barHeight + 'px');
+      } else {
+        document.documentElement.style.setProperty('--announcement-bar-height', '0px');
+      }
+    }
+
     if (bar && sessionStorage.getItem(storageKey)) {
       bar.classList.add('is-hidden');
     }
+
+    updateHeaderOffset();
+    window.addEventListener('resize', updateHeaderOffset);
 
     if (closeBtn) {
       closeBtn.addEventListener('click', function() {
         bar.classList.add('is-hidden');
         sessionStorage.setItem(storageKey, 'true');
+        updateHeaderOffset();
       });
     }
   })();
