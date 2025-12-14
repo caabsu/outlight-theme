@@ -68,10 +68,12 @@
 
     <div class="curated-grid__products">
       {%- assign product_count = 0 -%}
-      {%- for col_product in matched_collection.products limit: section.settings.products_limit -%}
+      {%- assign fetch_limit = section.settings.products_limit | plus: 1 -%}
+      {%- for col_product in matched_collection.products limit: fetch_limit -%}
         {%- unless col_product.id == product.id -%}
-          {%- assign product_count = product_count | plus: 1 -%}
-          <a href="{{ col_product.url }}" class="curated-grid__card">
+          {%- if product_count < section.settings.products_limit -%}
+            {%- assign product_count = product_count | plus: 1 -%}
+            <a href="{{ col_product.url }}" class="curated-grid__card">
             <div class="curated-grid__image">
               {%- if col_product.featured_image != blank -%}
                 {{ col_product.featured_image | image_url: width: 800 | image_tag: loading: 'lazy' }}
@@ -84,6 +86,7 @@
               </div>
             </div>
           </a>
+          {%- endif -%}
         {%- endunless -%}
       {%- endfor -%}
     </div>
