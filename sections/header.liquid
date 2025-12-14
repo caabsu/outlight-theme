@@ -433,8 +433,8 @@
   }
 
   .header-wrapper--transparent.header-wrapper--sticky:not(.is-scrolled) {
-    position: fixed;
-    top: 0;
+    position: absolute;
+    top: var(--announcement-bar-height, 0px);
   }
 
   .header-wrapper--transparent.header-wrapper--sticky.is-scrolled {
@@ -1562,7 +1562,7 @@
 {% javascript %}
   const headerWrapper = document.querySelector('[data-header-wrapper]');
   const isTransparent = headerWrapper && headerWrapper.classList.contains('header-wrapper--transparent');
-  const scrollThreshold = 50;
+  const scrollThreshold = 1;
   let megaMenuOpen = false;
 
   // Header scroll behavior
