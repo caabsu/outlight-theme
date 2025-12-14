@@ -397,13 +397,18 @@
     text-align: right;
   }
 
-  .collection-no-results {
+  .collection-no-results,
+  .collection-loading {
     grid-column: 1 / -1;
     text-align: center;
     padding: 60px 20px;
     color: #78716C;
     font-family: var(--font-body-family), sans-serif;
     font-size: 16px;
+  }
+
+  .collection-loading {
+    color: #A8A29E;
   }
 
   .collection-pagination {
@@ -939,14 +944,17 @@
     if (!container) return;
 
     // Shared elements
-    const products = container.querySelectorAll('[data-product]');
     const productsGrid = container.querySelector('[data-products-grid]');
     const pagination = container.querySelector('.collection-pagination');
     const filterCats = container.querySelectorAll('[data-filter-cat]');
+
+    // State
     let selectedCategories = new Set();
     let currentSearchTerm = '';
     let allCollectionProducts = null;
-    let isSearching = false;
+    let isFiltering = false;
+    let priceMinValue = null;
+    let priceMaxValue = null;
     let originalProductsHTML = productsGrid ? productsGrid.innerHTML : '';
 
     // Get collection handle from URL
@@ -956,7 +964,7 @@
       return match ? match[1] : null;
     };
 
-    // Fetch all products from collection
+    // Fetch all products from collection (with caching)
     const fetchAllProducts = async () => {
       if (allCollectionProducts !== null) return allCollectionProducts;
 
@@ -966,6 +974,11 @@
       let products = [];
       let page = 1;
       let hasMore = true;
+
+      // Show loading state
+      if (productsGrid) {
+        productsGrid.innerHTML = '<div class="collection-loading">Loading products...</div>';
+      }
 
       while (hasMore) {
         try {
@@ -989,12 +1002,12 @@
       return products;
     };
 
-    // Render search results
-    const renderSearchResults = (products) => {
+    // Render filtered products
+    const renderProducts = (products) => {
       if (!productsGrid) return;
 
       if (products.length === 0) {
-        productsGrid.innerHTML = '<div class="collection-no-results">No products found</div>';
+        productsGrid.innerHTML = '<div class="collection-no-results">No products found matching your filters</div>';
         return;
       }
 
@@ -1006,8 +1019,11 @@
           ? parseFloat(product.variants[0].price).toLocaleString('en-US', { style: 'currency', currency: 'USD' })
           : '';
 
+        // Get collection handles for this product
+        const collectionHandles = (product.collections || []).map(c => c.handle || c).join(',');
+
         return `
-          <a href="/products/${product.handle}" class="collection-product" data-product>
+          <a href="/products/${product.handle}" class="collection-product" data-product data-collections="${collectionHandles}">
             <div class="collection-product__image-wrapper">
               ${imageUrl ? `<img src="${imageUrl}" alt="${product.title}" class="collection-product__image" loading="lazy">` : '<div class="collection-product__placeholder"></div>'}
             </div>
@@ -1022,62 +1038,103 @@
       productsGrid.innerHTML = html;
     };
 
-    // Search products
-    const searchProducts = async (term) => {
-      if (!term) {
-        // Restore original products
+    // Check if any filters are active
+    const hasActiveFilters = () => {
+      return currentSearchTerm.length > 0 ||
+             selectedCategories.size > 0 ||
+             priceMinValue !== null ||
+             priceMaxValue !== null;
+    };
+
+    // Apply all filters to ALL products in collection
+    const applyAllFilters = async () => {
+      // If no filters active, restore original page
+      if (!hasActiveFilters()) {
         if (productsGrid) productsGrid.innerHTML = originalProductsHTML;
         if (pagination) pagination.style.display = '';
-        isSearching = false;
+        isFiltering = false;
         return;
       }
 
-      isSearching = true;
+      isFiltering = true;
       if (pagination) pagination.style.display = 'none';
 
+      // Fetch ALL products from collection
       const allProducts = await fetchAllProducts();
-      const searchLower = term.toLowerCase();
 
+      // Apply filters
       const filtered = allProducts.filter(product => {
-        // Search by title, product type, vendor, and tags
-        return product.title.toLowerCase().includes(searchLower) ||
-               (product.product_type && product.product_type.toLowerCase().includes(searchLower)) ||
-               (product.vendor && product.vendor.toLowerCase().includes(searchLower)) ||
-               (product.tags && product.tags.some(tag => tag.toLowerCase().includes(searchLower)));
+        // Search filter
+        if (currentSearchTerm) {
+          const searchLower = currentSearchTerm.toLowerCase();
+          const matchesSearch =
+            product.title.toLowerCase().includes(searchLower) ||
+            (product.product_type && product.product_type.toLowerCase().includes(searchLower)) ||
+            (product.vendor && product.vendor.toLowerCase().includes(searchLower)) ||
+            (product.tags && product.tags.some(tag => tag.toLowerCase().includes(searchLower)));
+          if (!matchesSearch) return false;
+        }
+
+        // Category filter - product must be in ALL selected collections (AND logic)
+        if (selectedCategories.size > 0) {
+          // Get all collection handles for this product
+          const productCollectionHandles = [];
+
+          // products.json returns collections as array of objects with handle
+          if (product.collections) {
+            product.collections.forEach(col => {
+              if (col.handle) productCollectionHandles.push(col.handle);
+              else if (typeof col === 'string') productCollectionHandles.push(col);
+            });
+          }
+
+          // Also check product_type as a fallback category match
+          if (product.product_type) {
+            productCollectionHandles.push(product.product_type.toLowerCase().replace(/\s+/g, '-'));
+          }
+
+          // Check if product matches all selected categories
+          const matchesAllCategories = [...selectedCategories].every(cat =>
+            productCollectionHandles.includes(cat)
+          );
+          if (!matchesAllCategories) return false;
+        }
+
+        // Price filter
+        if (priceMinValue !== null || priceMaxValue !== null) {
+          const productPrice = product.variants && product.variants[0]
+            ? parseFloat(product.variants[0].price)
+            : 0;
+
+          if (priceMinValue !== null && productPrice < priceMinValue) return false;
+          if (priceMaxValue !== null && productPrice > priceMaxValue) return false;
+        }
+
+        return true;
       });
 
-      renderSearchResults(filtered);
+      renderProducts(filtered);
     };
 
-    // Price filter values
-    let priceMinValue = null;
-    let priceMaxValue = null;
+    // Reset all filters and restore original page
+    const resetAllFilters = () => {
+      currentSearchTerm = '';
+      selectedCategories.clear();
+      priceMinValue = null;
+      priceMaxValue = null;
+      filterCats.forEach(btn => btn.classList.remove('is-active'));
 
-    // Combined filter function (for non-search filtering on current page)
-    const applyAllFilters = () => {
-      if (isSearching) return; // Don't apply page filters during search
+      const priceMin = container.querySelector('[data-price-min]');
+      const priceMax = container.querySelector('[data-price-max]');
+      if (priceMin) priceMin.value = '';
+      if (priceMax) priceMax.value = '';
 
-      products.forEach(product => {
-        const productCollections = (product.dataset.collections || '').split(',').map(c => c.trim());
-        const productPrice = parseInt(product.dataset.price || '0', 10); // Price in cents
+      const searchInput = container.querySelector('[data-search-input]');
+      if (searchInput) searchInput.value = '';
 
-        // Category filter - must match ALL selected categories (AND logic)
-        let matchesCategory = true;
-        if (selectedCategories.size > 0) {
-          matchesCategory = [...selectedCategories].every(cat => productCollections.includes(cat));
-        }
-
-        // Price filter (convert dollars to cents for comparison)
-        let matchesPrice = true;
-        if (priceMinValue !== null) {
-          matchesPrice = matchesPrice && (productPrice >= priceMinValue * 100);
-        }
-        if (priceMaxValue !== null) {
-          matchesPrice = matchesPrice && (productPrice <= priceMaxValue * 100);
-        }
-
-        product.style.display = (matchesCategory && matchesPrice) ? '' : 'none';
-      });
+      if (productsGrid) productsGrid.innerHTML = originalProductsHTML;
+      if (pagination) pagination.style.display = '';
+      isFiltering = false;
     };
 
     // Sort functionality
@@ -1150,13 +1207,8 @@
 
       if (filterClear) {
         filterClear.addEventListener('click', () => {
-          if (priceMin) priceMin.value = '';
-          if (priceMax) priceMax.value = '';
-          priceMinValue = null;
-          priceMaxValue = null;
-          selectedCategories.clear();
-          filterCats.forEach(btn => btn.classList.remove('is-active'));
-          applyAllFilters();
+          resetAllFilters();
+          closeFilter();
         });
       }
 
@@ -1179,44 +1231,40 @@
       }
     }
 
-    // Search functionality (always visible)
+    // Search functionality
     const searchInput = container.querySelector('[data-search-input]');
     const searchSubmit = container.querySelector('[data-search-submit]');
 
-    // Dynamic search as user types - debounced for performance
+    // Dynamic search as user types - debounced
     let searchTimeout = null;
     if (searchInput) {
       searchInput.addEventListener('input', (e) => {
-        currentSearchTerm = e.target.value.toLowerCase().trim();
+        currentSearchTerm = e.target.value.trim();
 
-        // Debounce search requests
         if (searchTimeout) clearTimeout(searchTimeout);
         searchTimeout = setTimeout(() => {
-          searchProducts(currentSearchTerm);
+          applyAllFilters();
         }, 300);
       });
 
-      // Enter key triggers search
       searchInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
           e.preventDefault();
           if (searchTimeout) clearTimeout(searchTimeout);
-          searchProducts(currentSearchTerm);
+          applyAllFilters();
         }
-        // ESC key clears search
         if (e.key === 'Escape') {
           searchInput.value = '';
           currentSearchTerm = '';
-          searchProducts('');
+          applyAllFilters();
         }
       });
     }
 
-    // Arrow button triggers search
     if (searchSubmit) {
       searchSubmit.addEventListener('click', () => {
         if (searchTimeout) clearTimeout(searchTimeout);
-        searchProducts(currentSearchTerm);
+        applyAllFilters();
       });
     }
 

@@ -25,22 +25,33 @@
   "
 >
   <div class="installation-guide__container">
-    <!-- Desktop Layout -->
-    <div class="installation-guide__card installation-guide__card--desktop">
-      <div class="installation-guide__label">
-        {{ section.settings.desktop_label }}
-      </div>
-      <div class="installation-guide__content">
+    <!-- Desktop Layout - Collapsible -->
+    <details class="installation-guide__accordion installation-guide__accordion--desktop">
+      <summary class="installation-guide__accordion-header">
+        <span class="installation-guide__accordion-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+          </svg>
+          {{ section.settings.desktop_label }}
+        </span>
+        <span class="installation-guide__accordion-icon">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <line class="installation-guide__icon-h" x1="4" y1="10" x2="16" y2="10"/>
+            <line class="installation-guide__icon-v" x1="10" y1="4" x2="10" y2="16"/>
+          </svg>
+        </span>
+      </summary>
+      <div class="installation-guide__accordion-content">
         {%- if product.metafields.custom.installation_guide != blank -%}
           {{ product.metafields.custom.installation_guide | metafield_tag }}
         {%- else -%}
           {{ section.settings.fallback_text }}
         {%- endif -%}
       </div>
-    </div>
+    </details>
 
     <!-- Mobile Layout - Collapsible Tab -->
-    <details class="installation-guide__accordion">
+    <details class="installation-guide__accordion installation-guide__accordion--mobile">
       <summary class="installation-guide__accordion-header">
         <span class="installation-guide__accordion-title">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -118,9 +129,65 @@
     text-align: center;
   }
 
-  /* Mobile Accordion - hidden on desktop */
-  .installation-guide__accordion {
+  /* Desktop Accordion */
+  .installation-guide__accordion--desktop {
+    display: block;
+    background: var(--card-bg);
+    border-radius: var(--card-radius);
+  }
+
+  .installation-guide__accordion--mobile {
     display: none;
+  }
+
+  .installation-guide__accordion-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--card-padding-desktop);
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .installation-guide__accordion-header::-webkit-details-marker {
+    display: none;
+  }
+
+  .installation-guide__accordion-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: var(--label-size);
+    font-weight: 600;
+    color: var(--label-color);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .installation-guide__accordion-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: #999;
+  }
+
+  .installation-guide__icon-v {
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .installation-guide__accordion[open] .installation-guide__icon-v {
+    opacity: 0;
+    transform: scaleY(0);
+  }
+
+  .installation-guide__accordion-content {
+    padding: 0 var(--card-padding-desktop) var(--card-padding-desktop);
+    font-size: var(--desktop-text-size);
+    font-weight: var(--desktop-text-weight);
+    color: var(--desktop-text-color);
+    line-height: var(--desktop-line-height);
+    text-align: center;
   }
 
   @media (max-width: 768px) {
@@ -132,53 +199,25 @@
       padding: 0;
     }
 
-    .installation-guide__card--desktop {
+    .installation-guide__accordion--desktop {
       display: none;
     }
 
-    /* Accordion styles */
-    .installation-guide__accordion {
+    .installation-guide__accordion--mobile {
       display: block;
       background: var(--card-bg);
     }
 
     .installation-guide__accordion-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
       padding: 16px;
-      cursor: pointer;
-      list-style: none;
-    }
-
-    .installation-guide__accordion-header::-webkit-details-marker {
-      display: none;
     }
 
     .installation-guide__accordion-title {
-      display: flex;
-      align-items: center;
-      gap: 10px;
       font-size: var(--mobile-label-size);
       font-weight: var(--mobile-label-weight);
       color: var(--mobile-label-color);
-    }
-
-    .installation-guide__accordion-icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      color: #999;
-    }
-
-    .installation-guide__icon-v {
-      transition: opacity 0.2s ease, transform 0.2s ease;
-    }
-
-    .installation-guide__accordion[open] .installation-guide__icon-v {
-      opacity: 0;
-      transform: scaleY(0);
+      letter-spacing: 0;
+      text-transform: none;
     }
 
     .installation-guide__accordion-content {
@@ -187,6 +226,7 @@
       font-weight: var(--mobile-text-weight);
       color: var(--mobile-text-color);
       line-height: var(--mobile-line-height);
+      text-align: left;
     }
   }
 {% endstylesheet %}
