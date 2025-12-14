@@ -427,14 +427,14 @@
   .header-wrapper--transparent:not(.is-scrolled) {
     background-color: transparent;
     position: absolute;
-    top: 0;
+    top: var(--announcement-bar-height, 0px);
     left: 0;
     right: 0;
   }
 
   .header-wrapper--transparent.header-wrapper--sticky:not(.is-scrolled) {
     position: absolute;
-    top: 0;
+    top: var(--announcement-bar-height, 0px);
   }
 
   .header-wrapper--transparent.header-wrapper--sticky.is-scrolled {
@@ -447,7 +447,7 @@
   /* When mega menu is open but not actually scrolled, keep header in original position */
   .header-wrapper--transparent.mega-menu-open:not(.actually-scrolled) {
     position: absolute;
-    top: 0;
+    top: var(--announcement-bar-height, 0px);
   }
 
   .header-wrapper--transparent.is-scrolled {
@@ -665,7 +665,7 @@
   /* Mega Menu */
   .mega-menu {
     position: fixed;
-    top: var(--header-height);
+    top: calc(var(--header-height) + var(--announcement-bar-height, 0px));
     left: 0;
     right: 0;
     background-color: var(--mega-menu-bg);
@@ -675,6 +675,11 @@
     transition: opacity 0.2s ease, visibility 0.2s ease;
     padding: 2.5rem var(--page-margin);
     z-index: 200;
+  }
+
+  /* When actually scrolled, announcement bar is hidden so mega menu goes to header height only */
+  .header-wrapper--transparent.actually-scrolled .mega-menu {
+    top: var(--header-height);
   }
 
   .header__nav-item--mega:hover .mega-menu,
