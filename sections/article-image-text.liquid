@@ -11,26 +11,42 @@
     --ait-quote-color: {{ section.settings.quote_color }};
     --ait-quote-size: {{ section.settings.quote_size }}px;
     --ait-quote-size-mobile: {{ section.settings.quote_size_mobile }}px;
+    --ait-text-bg: {{ section.settings.text_background }};
     --ait-padding-top: {{ section.settings.padding_top }}px;
     --ait-padding-bottom: {{ section.settings.padding_bottom }}px;
     --ait-padding-top-mobile: {{ section.settings.padding_top_mobile }}px;
     --ait-padding-bottom-mobile: {{ section.settings.padding_bottom_mobile }}px;
   "
 >
-  <div class="article-image-text__container">
-    <div class="article-image-text__grid {% if section.settings.image_position == 'right' %}article-image-text__grid--reverse{% endif %}">
+  {%- comment -%} Mobile layout {%- endcomment -%}
+  <div class="article-image-text__mobile">
+    {%- if section.settings.image != blank -%}
+      <div class="article-image-text__image">
+        {{ section.settings.image | image_url: width: 1200 | image_tag: loading: 'lazy' }}
+      </div>
+    {%- endif -%}
+    {%- if section.settings.caption != blank -%}
+      <p class="article-image-text__caption">{{ section.settings.caption }}</p>
+    {%- endif -%}
+    {%- if section.settings.quote != blank -%}
+      <blockquote class="article-image-text__quote">
+        {{ section.settings.quote }}
+      </blockquote>
+    {%- endif -%}
+  </div>
+
+  {%- comment -%} Desktop layout - image with overlaid text box {%- endcomment -%}
+  <div class="article-image-text__desktop">
+    <div class="article-image-text__image-container">
       {%- if section.settings.image != blank -%}
-        <div class="article-image-text__image-wrapper">
-          <div class="article-image-text__image">
-            {{ section.settings.image | image_url: width: 1200 | image_tag: loading: 'lazy' }}
-          </div>
-          {%- if section.settings.caption != blank -%}
-            <p class="article-image-text__caption">{{ section.settings.caption }}</p>
-          {%- endif -%}
+        <div class="article-image-text__image">
+          {{ section.settings.image | image_url: width: 1800 | image_tag: loading: 'lazy' }}
         </div>
       {%- endif -%}
-
-      <div class="article-image-text__content">
+      <div class="article-image-text__overlay">
+        {%- if section.settings.caption != blank -%}
+          <p class="article-image-text__caption">{{ section.settings.caption }}</p>
+        {%- endif -%}
         {%- if section.settings.quote != blank -%}
           <blockquote class="article-image-text__quote">
             {{ section.settings.quote }}
@@ -44,22 +60,18 @@
 {% stylesheet %}
   .article-image-text {
     background-color: var(--ait-bg);
-    padding: var(--ait-padding-top-mobile) var(--page-margin) var(--ait-padding-bottom-mobile);
   }
 
-  .article-image-text__container {
-    max-width: var(--page-width);
-    margin: 0 auto;
-  }
-
-  .article-image-text__grid {
+  /* Mobile layout */
+  .article-image-text__mobile {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    padding: var(--ait-padding-top-mobile) var(--page-margin) var(--ait-padding-bottom-mobile);
   }
 
-  .article-image-text__image-wrapper {
-    width: 100%;
+  .article-image-text__desktop {
+    display: none;
   }
 
   .article-image-text__image {
@@ -79,13 +91,7 @@
     letter-spacing: 0.15em;
     text-transform: uppercase;
     color: var(--ait-caption-color);
-    margin: 1rem 0 0;
-  }
-
-  .article-image-text__content {
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
+    margin: 0;
   }
 
   .article-image-text__quote {
@@ -100,42 +106,42 @@
   }
 
   @media (min-width: 768px) {
-    .article-image-text {
+    /* Hide mobile, show desktop */
+    .article-image-text__mobile {
+      display: none;
+    }
+
+    .article-image-text__desktop {
+      display: block;
       padding: var(--ait-padding-top) var(--page-margin) var(--ait-padding-bottom);
     }
 
-    .article-image-text__grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4rem;
-      align-items: flex-start;
+    .article-image-text__image-container {
+      position: relative;
+      max-width: var(--page-width);
+      margin: 0 auto;
     }
 
-    .article-image-text__grid--reverse {
-      direction: rtl;
+    .article-image-text__overlay {
+      position: absolute;
+      bottom: 2rem;
+      right: 2rem;
+      background-color: var(--ait-text-bg, #F7F5F0);
+      padding: 2rem;
+      max-width: 400px;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
     }
 
-    .article-image-text__grid--reverse > * {
-      direction: ltr;
-    }
-
-    .article-image-text__image-wrapper {
-      max-width: 500px;
-    }
-
-    .article-image-text__caption {
+    .article-image-text__overlay .article-image-text__caption {
       font-size: 11px;
-      margin-top: 1.25rem;
     }
 
-    .article-image-text__content {
-      padding-top: 1rem;
-    }
-
-    .article-image-text__quote {
+    .article-image-text__overlay .article-image-text__quote {
       font-size: var(--ait-quote-size);
       text-align: left;
-      max-width: 400px;
+      line-height: 1.5;
     }
   }
 {% endstylesheet %}
@@ -158,16 +164,6 @@
       "id": "caption",
       "label": "Figure caption",
       "default": "FIG 1.0 — THE CANVAS"
-    },
-    {
-      "type": "select",
-      "id": "image_position",
-      "label": "Image position (desktop)",
-      "options": [
-        { "value": "left", "label": "Left" },
-        { "value": "right", "label": "Right" }
-      ],
-      "default": "left"
     },
     {
       "type": "header",
@@ -223,6 +219,12 @@
       "type": "color",
       "id": "background_color",
       "label": "Background color",
+      "default": "#F7F5F0"
+    },
+    {
+      "type": "color",
+      "id": "text_background",
+      "label": "Text box background (desktop)",
       "default": "#F7F5F0"
     },
     {

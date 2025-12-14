@@ -51,12 +51,6 @@
       </div>
     </div>
   </div>
-
-  {%- if section.settings.featured_image != blank -%}
-    <div class="article-hero__image">
-      {{ section.settings.featured_image | image_url: width: 1800 | image_tag: loading: 'eager', class: 'article-hero__img' }}
-    </div>
-  {%- endif -%}
 </section>
 
 {% stylesheet %}
@@ -138,16 +132,6 @@
     opacity: 0.5;
   }
 
-  .article-hero__image {
-    width: 100%;
-  }
-
-  .article-hero__img {
-    width: 100%;
-    height: auto;
-    display: block;
-  }
-
   @media (min-width: 768px) {
     .article-hero {
       padding: var(--ah-padding-top) var(--page-margin) var(--ah-padding-bottom);
@@ -218,11 +202,6 @@
       "id": "read_time",
       "label": "Read time",
       "default": "6 MIN READ"
-    },
-    {
-      "type": "image_picker",
-      "id": "featured_image",
-      "label": "Featured image"
     },
     {
       "type": "header",

@@ -17,7 +17,6 @@
         "title_line_2": "of Shadow",
         "author": "Julian Vance",
         "read_time": "6 MIN READ",
-        "featured_image": "shopify://shop_images/Fenra_10R.png",
         "category_color": "#d97706",
         "category_size": 12,
         "title_color": "#1c1917",
@@ -40,7 +39,6 @@
       "settings": {
         "image": "shopify://shop_images/Oris_4.png",
         "caption": "FIG 1.0 — THE CANVAS",
-        "image_position": "left",
         "quote": "\"Light is not the absence of dark. It is the carving of space.\"",
         "caption_color": "#78716c",
         "quote_color": "#d97706",
@@ -103,7 +101,6 @@
       "settings": {
         "image": "shopify://shop_images/Fenra_8R.png",
         "caption": "FIG 1.2 — CIRCADIAN IMPACT",
-        "image_position": "left",
         "quote": "By moving light to the perimeter (walls) and lower planes (tables, floors), you expand the perceived size of the room and highlight the texture of your furnishings, while signaling to your body that the day is done.",
         "caption_color": "#78716c",
         "quote_color": "#44403c",
