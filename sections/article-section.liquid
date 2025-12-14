@@ -56,7 +56,11 @@
 
         <div class="article-section__image-wrapper">
           <div class="article-section__image">
-            {{ section.settings.image | image_url: width: 1200 | image_tag: loading: 'lazy' }}
+            {%- if section.settings.image_mobile != blank -%}
+              {{ section.settings.image_mobile | image_url: width: 1200 | image_tag: loading: 'lazy' }}
+            {%- else -%}
+              {{ section.settings.image | image_url: width: 1200 | image_tag: loading: 'lazy' }}
+            {%- endif -%}
           </div>
           {%- if section.settings.caption != blank -%}
             <p class="article-section__caption">{{ section.settings.caption }}</p>
@@ -417,7 +421,13 @@
     {
       "type": "image_picker",
       "id": "image",
-      "label": "Image"
+      "label": "Image (desktop)"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_mobile",
+      "label": "Image (mobile)",
+      "info": "Optional. Falls back to desktop image if not set."
     },
     {
       "type": "text",

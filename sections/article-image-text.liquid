@@ -20,9 +20,13 @@
 >
   {%- comment -%} Mobile layout {%- endcomment -%}
   <div class="article-image-text__mobile">
-    {%- if section.settings.image != blank -%}
+    {%- if section.settings.image_mobile != blank or section.settings.image != blank -%}
       <div class="article-image-text__image">
-        {{ section.settings.image | image_url: width: 1200 | image_tag: loading: 'lazy' }}
+        {%- if section.settings.image_mobile != blank -%}
+          {{ section.settings.image_mobile | image_url: width: 1200 | image_tag: loading: 'lazy' }}
+        {%- else -%}
+          {{ section.settings.image | image_url: width: 1200 | image_tag: loading: 'lazy' }}
+        {%- endif -%}
       </div>
     {%- endif -%}
     {%- if section.settings.caption != blank -%}
@@ -157,7 +161,13 @@
     {
       "type": "image_picker",
       "id": "image",
-      "label": "Image"
+      "label": "Image (desktop)"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_mobile",
+      "label": "Image (mobile)",
+      "info": "Optional. Falls back to desktop image if not set."
     },
     {
       "type": "text",
