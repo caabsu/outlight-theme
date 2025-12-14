@@ -265,6 +265,7 @@
       scrollbar-width: none;
       -webkit-overflow-scrolling: touch;
       flex: 1;
+      justify-content: center;
     }
 
     .collection-carousel__track::-webkit-scrollbar {
@@ -274,13 +275,6 @@
     .collection-carousel__card {
       flex: 0 0 var(--cc-card-width);
       scroll-snap-align: start;
-    }
-
-    /* Center products when less than 4 */
-    .collection-carousel[data-product-count="1"] .collection-carousel__track,
-    .collection-carousel[data-product-count="2"] .collection-carousel__track,
-    .collection-carousel[data-product-count="3"] .collection-carousel__track {
-      justify-content: center;
     }
 
     .collection-carousel__overlay {

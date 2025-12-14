@@ -300,6 +300,7 @@
       scrollbar-width: none;
       -webkit-overflow-scrolling: touch;
       flex: 1;
+      justify-content: center;
     }
 
     .curated-carousel__track::-webkit-scrollbar {
@@ -309,13 +310,6 @@
     .curated-carousel__card {
       flex: 0 0 var(--cc-card-width);
       scroll-snap-align: start;
-    }
-
-    /* Center products when less than 4 */
-    .curated-carousel[data-product-count="1"] .curated-carousel__track,
-    .curated-carousel[data-product-count="2"] .curated-carousel__track,
-    .curated-carousel[data-product-count="3"] .curated-carousel__track {
-      justify-content: center;
     }
 
     .curated-carousel__overlay {
