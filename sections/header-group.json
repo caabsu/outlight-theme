@@ -19,10 +19,21 @@
         "link_url": "/collections/all",
         "text_mobile": "FREE SHIPPING OVER $250.",
         "link_text_mobile": "SHOP COLLECTION",
-        "bg_color": "#1C1917",
+        "bg_color": "#1c1917",
         "text_color": "#ffffff",
         "link_color": "#ffffff",
-        "enable_sticky": true
+        "close_color": "#ffffff",
+        "padding_top": 12,
+        "padding_bottom": 12,
+        "padding_top_mobile": 10,
+        "padding_bottom_mobile": 10,
+        "text_size": 13,
+        "text_size_mobile": 11,
+        "text_weight": "500",
+        "link_size": 13,
+        "link_size_mobile": 11,
+        "link_weight": "600",
+        "show_close": true
       }
     },
     "header": {
