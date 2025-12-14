@@ -187,7 +187,9 @@
 
     function updateHeaderOffset() {
       if (bar && !bar.classList.contains('is-hidden')) {
-        const barHeight = bar.offsetHeight;
+        // Measure the shopify-section wrapper to get accurate height including grid spacing
+        const wrapper = bar.closest('.shopify-section') || bar;
+        const barHeight = wrapper.offsetHeight;
         document.documentElement.style.setProperty('--announcement-bar-height', barHeight + 'px');
       } else {
         document.documentElement.style.setProperty('--announcement-bar-height', '0px');
