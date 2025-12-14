@@ -1,0 +1,388 @@
+{% comment %}
+  Article Text Section
+  Numbered section with title and body text with drop cap
+{% endcomment %}
+
+<section
+  class="article-section"
+  style="
+    --as-bg: {{ section.settings.background_color }};
+    --as-number-color: {{ section.settings.number_color }};
+    --as-title-color: {{ section.settings.title_color }};
+    --as-title-size: {{ section.settings.title_size }}px;
+    --as-title-size-mobile: {{ section.settings.title_size_mobile }}px;
+    --as-text-color: {{ section.settings.text_color }};
+    --as-text-size: {{ section.settings.text_size }}px;
+    --as-text-size-mobile: {{ section.settings.text_size_mobile }}px;
+    --as-dropcap-color: {{ section.settings.dropcap_color }};
+    --as-dropcap-size: {{ section.settings.dropcap_size }}px;
+    --as-dropcap-size-mobile: {{ section.settings.dropcap_size_mobile }}px;
+    --as-divider-color: {{ section.settings.divider_color }};
+    --as-padding-top: {{ section.settings.padding_top }}px;
+    --as-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --as-padding-top-mobile: {{ section.settings.padding_top_mobile }}px;
+    --as-padding-bottom-mobile: {{ section.settings.padding_bottom_mobile }}px;
+  "
+>
+  <div class="article-section__container">
+    <div class="article-section__grid">
+      <div class="article-section__header">
+        <div class="article-section__divider"></div>
+        {%- if section.settings.section_number != blank or section.settings.section_label != blank -%}
+          <p class="article-section__number">
+            {%- if section.settings.section_number != blank -%}
+              {{ section.settings.section_number }}.
+            {%- endif -%}
+            {%- if section.settings.section_label != blank -%}
+              {{ section.settings.section_label | upcase }}
+            {%- endif -%}
+          </p>
+        {%- endif -%}
+        {%- if section.settings.title != blank -%}
+          <h2 class="article-section__title">{{ section.settings.title }}</h2>
+        {%- endif -%}
+      </div>
+
+      <div class="article-section__content">
+        {%- if section.settings.body_text != blank -%}
+          <div class="article-section__text {% if section.settings.enable_dropcap %}article-section__text--dropcap{% endif %}">
+            {{ section.settings.body_text }}
+          </div>
+        {%- endif -%}
+        {%- if section.settings.body_text_2 != blank -%}
+          <div class="article-section__text article-section__text--secondary">
+            {{ section.settings.body_text_2 }}
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .article-section {
+    background-color: var(--as-bg);
+    padding: var(--as-padding-top-mobile) var(--page-margin) var(--as-padding-bottom-mobile);
+  }
+
+  .article-section__container {
+    max-width: var(--page-width);
+    margin: 0 auto;
+  }
+
+  .article-section__grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .article-section__header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .article-section__divider {
+    width: 60px;
+    height: 1px;
+    background-color: var(--as-divider-color);
+    margin-bottom: 1rem;
+  }
+
+  .article-section__number {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--as-number-color);
+    margin: 0 0 0.75rem;
+  }
+
+  .article-section__title {
+    font-family: var(--font-heading-family), serif;
+    font-size: var(--as-title-size-mobile);
+    font-weight: 400;
+    color: var(--as-title-color);
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  .article-section__content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .article-section__text {
+    font-family: var(--font-heading-family), serif;
+    font-size: var(--as-text-size-mobile);
+    font-weight: 400;
+    color: var(--as-text-color);
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  .article-section__text p {
+    margin: 0 0 1.25em;
+  }
+
+  .article-section__text p:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Drop cap styling */
+  .article-section__text--dropcap p:first-of-type::first-letter,
+  .article-section__text--dropcap > *:first-child::first-letter {
+    font-family: var(--font-heading-family), serif;
+    font-size: var(--as-dropcap-size-mobile);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--as-dropcap-color);
+    float: left;
+    line-height: 0.8;
+    margin-right: 0.15em;
+    margin-top: 0.1em;
+  }
+
+  @media (min-width: 768px) {
+    .article-section {
+      padding: var(--as-padding-top) var(--page-margin) var(--as-padding-bottom);
+    }
+
+    .article-section__grid {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 4rem;
+      align-items: flex-start;
+    }
+
+    .article-section__number {
+      font-size: 11px;
+    }
+
+    .article-section__title {
+      font-size: var(--as-title-size);
+    }
+
+    .article-section__text {
+      font-size: var(--as-text-size);
+    }
+
+    .article-section__text--dropcap p:first-of-type::first-letter,
+    .article-section__text--dropcap > *:first-child::first-letter {
+      font-size: var(--as-dropcap-size);
+      margin-right: 0.2em;
+    }
+
+    .article-section__content {
+      gap: 2rem;
+      max-width: 600px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Article section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Header"
+    },
+    {
+      "type": "text",
+      "id": "section_number",
+      "label": "Section number",
+      "default": "01"
+    },
+    {
+      "type": "text",
+      "id": "section_label",
+      "label": "Section label",
+      "default": "THE PROBLEM"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "The Tyranny of the Grid"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "richtext",
+      "id": "body_text",
+      "label": "Body text (paragraph 1)",
+      "default": "<p>There is a quiet tyranny in the modern ceiling grid. The recessed can light, ubiquitous in construction since the late 1990s, was invented for offices, factories, and hospitals—places of hyper-vigilance, not sanctuaries of rest. It provides what lighting designers call \"general illumination\"—a flat, shadowless wash that ensures you can see the floor, but feel absolutely nothing.</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "body_text_2",
+      "label": "Body text (paragraph 2)",
+      "default": "<p>To reclaim the home, we must reclaim the shadow. We must stop trying to simulate the noon sun inside our living rooms at 8 PM. We must embrace the cave. This is where the philosophy of the \"Layered Home\" begins.</p>"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_dropcap",
+      "label": "Enable drop cap",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "color",
+      "id": "number_color",
+      "label": "Section number color",
+      "default": "#78716C"
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Divider color",
+      "default": "#D6D3D1"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#1C1917"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title size (desktop)",
+      "min": 24,
+      "max": 60,
+      "step": 2,
+      "default": 36,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "title_size_mobile",
+      "label": "Title size (mobile)",
+      "min": 20,
+      "max": 40,
+      "step": 2,
+      "default": 28,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#44403C"
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "label": "Text size (desktop)",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "default": 18,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "text_size_mobile",
+      "label": "Text size (mobile)",
+      "min": 14,
+      "max": 20,
+      "step": 1,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "dropcap_color",
+      "label": "Drop cap color",
+      "default": "#A8A29E"
+    },
+    {
+      "type": "range",
+      "id": "dropcap_size",
+      "label": "Drop cap size (desktop)",
+      "min": 48,
+      "max": 120,
+      "step": 4,
+      "default": 80,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "dropcap_size_mobile",
+      "label": "Drop cap size (mobile)",
+      "min": 40,
+      "max": 80,
+      "step": 4,
+      "default": 56,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Section style"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#FAFAF9"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top (desktop)",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "default": 80,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom (desktop)",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "default": 80,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding top (mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 50,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding bottom (mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 50,
+      "unit": "px"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Article section"
+    }
+  ],
+  "enabled_on": {
+    "templates": ["*"],
+    "groups": ["*"]
+  }
+}
+{% endschema %}

@@ -1,0 +1,187 @@
+{
+  "sections": {
+    "article-hero": {
+      "type": "article-hero",
+      "settings": {
+        "category": "ESSAY — LIGHTING DESIGN",
+        "title_line_1": "Architecture",
+        "title_line_2": "of Shadow",
+        "author": "Julian Vance",
+        "read_time": "6 MIN READ",
+        "category_color": "#D97706",
+        "title_color": "#1C1917",
+        "subtitle_color": "#A8A29E",
+        "meta_color": "#57534E",
+        "divider_color": "#D6D3D1",
+        "background_color": "#FAFAF9",
+        "title_size": 72,
+        "title_size_mobile": 42,
+        "subtitle_size": 72,
+        "subtitle_size_mobile": 42,
+        "padding_top": 80,
+        "padding_bottom": 60,
+        "padding_top_mobile": 60,
+        "padding_bottom_mobile": 40
+      }
+    },
+    "image-text-1": {
+      "type": "article-image-text",
+      "settings": {
+        "caption": "FIG 1.0 — THE CANVAS",
+        "quote": "\"Light is not the absence of dark. It is the carving of space.\"",
+        "image_position": "left",
+        "caption_color": "#78716C",
+        "quote_color": "#D97706",
+        "quote_size": 22,
+        "quote_size_mobile": 18,
+        "background_color": "#FAFAF9",
+        "padding_top": 60,
+        "padding_bottom": 60,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 40
+      }
+    },
+    "section-1": {
+      "type": "article-section",
+      "settings": {
+        "section_number": "01",
+        "section_label": "THE PROBLEM",
+        "title": "The Tyranny of the Grid",
+        "body_text": "<p>There is a quiet tyranny in the modern ceiling grid. The recessed can light, ubiquitous in construction since the late 1990s, was invented for offices, factories, and hospitals—places of hyper-vigilance, not sanctuaries of rest. It provides what lighting designers call \"general illumination\"—a flat, shadowless wash that ensures you can see the floor, but feel absolutely nothing.</p>",
+        "body_text_2": "<p>To reclaim the home, we must reclaim the shadow. We must stop trying to simulate the noon sun inside our living rooms at 8 PM. We must embrace the cave. This is where the philosophy of the \"Layered Home\" begins.</p>",
+        "enable_dropcap": true,
+        "number_color": "#78716C",
+        "divider_color": "#D6D3D1",
+        "title_color": "#1C1917",
+        "text_color": "#44403C",
+        "dropcap_color": "#A8A29E",
+        "title_size": 36,
+        "title_size_mobile": 28,
+        "text_size": 18,
+        "text_size_mobile": 16,
+        "dropcap_size": 80,
+        "dropcap_size_mobile": 56,
+        "background_color": "#FAFAF9",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "padding_top_mobile": 50,
+        "padding_bottom_mobile": 50
+      }
+    },
+    "quote-1": {
+      "type": "article-quote",
+      "settings": {
+        "quote": "\"We guide the eye not to the whole room at once, but to the book in your hand, the drink on the table, the face of a friend.\"",
+        "show_quotation_marks": false,
+        "quote_color": "#A8A29E",
+        "quote_size": 36,
+        "quote_size_mobile": 24,
+        "quotation_mark_color": "#D97706",
+        "background_color": "#FAFAF9",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "padding_top_mobile": 50,
+        "padding_bottom_mobile": 50
+      }
+    },
+    "image-text-2": {
+      "type": "article-image-text",
+      "settings": {
+        "caption": "FIG 1.2 — CIRCADIAN IMPACT",
+        "quote": "By moving light to the perimeter (walls) and lower planes (tables, floors), you expand the perceived size of the room and highlight the texture of your furnishings, while signaling to your body that the day is done.",
+        "image_position": "left",
+        "caption_color": "#78716C",
+        "quote_color": "#44403C",
+        "quote_size": 18,
+        "quote_size_mobile": 16,
+        "background_color": "#FAFAF9",
+        "padding_top": 60,
+        "padding_bottom": 60,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 40
+      }
+    },
+    "section-2": {
+      "type": "article-section",
+      "settings": {
+        "section_number": "02",
+        "section_label": "BIOLOGY",
+        "title": "The Cortisol Connection",
+        "body_text": "<p>It starts with a receptor in your eye called the melanopsin ganglion cell. This receptor is not interested in vision; it is interested in time. When it detects high-intensity, blue-spectrum light from above (the angle of the sun at noon), it suppresses melatonin and spikes cortisol.</p>",
+        "body_text_2": "<p>By moving light to the perimeter (walls) and lower planes (tables, floors), you expand the perceived size of the room and highlight the texture of your furnishings, while signaling to your body that the day is done.</p>",
+        "enable_dropcap": true,
+        "number_color": "#78716C",
+        "divider_color": "#D6D3D1",
+        "title_color": "#1C1917",
+        "text_color": "#44403C",
+        "dropcap_color": "#A8A29E",
+        "title_size": 36,
+        "title_size_mobile": 28,
+        "text_size": 18,
+        "text_size_mobile": 16,
+        "dropcap_size": 80,
+        "dropcap_size_mobile": 56,
+        "background_color": "#FAFAF9",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "padding_top_mobile": 50,
+        "padding_bottom_mobile": 50
+      }
+    },
+    "products": {
+      "type": "article-products",
+      "settings": {
+        "label": "THE TOOLKIT",
+        "title": "Build Your Layers",
+        "subtitle": "The essential kit for a shadow-rich home.",
+        "link_text": "Shop the Collection",
+        "products_count": 3,
+        "title_color": "#1C1917",
+        "title_size": 32,
+        "title_size_mobile": 26,
+        "subtitle_color": "#78716C",
+        "link_color": "#1C1917",
+        "label_color": "#78716C",
+        "product_title_color": "#1C1917",
+        "price_color": "#57534E",
+        "background_color": "#F5F5F4",
+        "card_background": "#FFFFFF",
+        "padding_top": 60,
+        "padding_bottom": 60,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 40
+      }
+    },
+    "closing": {
+      "type": "article-closing",
+      "settings": {
+        "quote": "\"Shadow is not the enemy. It is the context. Without it, our homes are just brightly lit boxes. With it, they become stages for life.\"",
+        "show_quotation_marks": true,
+        "footer_text": "OUTLIGHT JOURNAL © 2026",
+        "quotation_mark_color": "#D6D3D1",
+        "quotation_mark_size": 80,
+        "quotation_mark_size_mobile": 50,
+        "quote_color": "#44403C",
+        "quote_size": 26,
+        "quote_size_mobile": 20,
+        "divider_color": "#D6D3D1",
+        "footer_color": "#A8A29E",
+        "background_color": "#FAFAF9",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "padding_top_mobile": 50,
+        "padding_bottom_mobile": 50
+      }
+    }
+  },
+  "order": [
+    "article-hero",
+    "image-text-1",
+    "section-1",
+    "quote-1",
+    "image-text-2",
+    "section-2",
+    "products",
+    "closing"
+  ]
+}

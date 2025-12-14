@@ -1,0 +1,221 @@
+{% comment %}
+  Article Pull Quote Section
+  Large decorative pull quote with optional quotation marks
+{% endcomment %}
+
+<section
+  class="article-quote"
+  style="
+    --aq-bg: {{ section.settings.background_color }};
+    --aq-quote-color: {{ section.settings.quote_color }};
+    --aq-quote-size: {{ section.settings.quote_size }}px;
+    --aq-quote-size-mobile: {{ section.settings.quote_size_mobile }}px;
+    --aq-mark-color: {{ section.settings.quotation_mark_color }};
+    --aq-mark-size: {{ section.settings.quotation_mark_size }}px;
+    --aq-mark-size-mobile: {{ section.settings.quotation_mark_size_mobile }}px;
+    --aq-padding-top: {{ section.settings.padding_top }}px;
+    --aq-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --aq-padding-top-mobile: {{ section.settings.padding_top_mobile }}px;
+    --aq-padding-bottom-mobile: {{ section.settings.padding_bottom_mobile }}px;
+  "
+>
+  <div class="article-quote__container">
+    {%- if section.settings.show_quotation_marks -%}
+      <span class="article-quote__mark">"</span>
+    {%- endif -%}
+
+    <blockquote class="article-quote__text">
+      {{ section.settings.quote }}
+    </blockquote>
+  </div>
+</section>
+
+{% stylesheet %}
+  .article-quote {
+    background-color: var(--aq-bg);
+    padding: var(--aq-padding-top-mobile) var(--page-margin) var(--aq-padding-bottom-mobile);
+  }
+
+  .article-quote__container {
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+    position: relative;
+  }
+
+  .article-quote__mark {
+    display: block;
+    font-family: var(--font-heading-family), serif;
+    font-size: var(--aq-mark-size-mobile);
+    font-weight: 400;
+    color: var(--aq-mark-color);
+    line-height: 0.8;
+    margin-bottom: 0.5rem;
+    opacity: 0.4;
+  }
+
+  .article-quote__text {
+    font-family: var(--font-heading-family), serif;
+    font-size: var(--aq-quote-size-mobile);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--aq-quote-color);
+    line-height: 1.4;
+    margin: 0;
+  }
+
+  @media (min-width: 768px) {
+    .article-quote {
+      padding: var(--aq-padding-top) var(--page-margin) var(--aq-padding-bottom);
+    }
+
+    .article-quote__mark {
+      font-size: var(--aq-mark-size);
+      margin-bottom: 1rem;
+    }
+
+    .article-quote__text {
+      font-size: var(--aq-quote-size);
+      line-height: 1.5;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Article quote",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "textarea",
+      "id": "quote",
+      "label": "Quote text",
+      "default": "\"We guide the eye not to the whole room at once, but to the book in your hand, the drink on the table, the face of a friend.\""
+    },
+    {
+      "type": "checkbox",
+      "id": "show_quotation_marks",
+      "label": "Show decorative quotation marks",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "color",
+      "id": "quote_color",
+      "label": "Quote color",
+      "default": "#A8A29E"
+    },
+    {
+      "type": "range",
+      "id": "quote_size",
+      "label": "Quote size (desktop)",
+      "min": 20,
+      "max": 60,
+      "step": 2,
+      "default": 36,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "quote_size_mobile",
+      "label": "Quote size (mobile)",
+      "min": 18,
+      "max": 36,
+      "step": 2,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "quotation_mark_color",
+      "label": "Quotation mark color",
+      "default": "#D97706"
+    },
+    {
+      "type": "range",
+      "id": "quotation_mark_size",
+      "label": "Quotation mark size (desktop)",
+      "min": 40,
+      "max": 120,
+      "step": 5,
+      "default": 80,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "quotation_mark_size_mobile",
+      "label": "Quotation mark size (mobile)",
+      "min": 30,
+      "max": 80,
+      "step": 5,
+      "default": 50,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Section style"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#FAFAF9"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top (desktop)",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "default": 80,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom (desktop)",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "default": 80,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding top (mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 50,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding bottom (mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 50,
+      "unit": "px"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Article quote"
+    }
+  ],
+  "enabled_on": {
+    "templates": ["*"],
+    "groups": ["*"]
+  }
+}
+{% endschema %}

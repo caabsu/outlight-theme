@@ -1,0 +1,505 @@
+{% comment %}
+  Article Products Section
+  Product showcase grid with editorial styling
+{% endcomment %}
+
+{%- assign collection = collections[section.settings.collection] -%}
+
+<section
+  class="article-products"
+  style="
+    --ap-bg: {{ section.settings.background_color }};
+    --ap-card-bg: {{ section.settings.card_background }};
+    --ap-title-color: {{ section.settings.title_color }};
+    --ap-title-size: {{ section.settings.title_size }}px;
+    --ap-title-size-mobile: {{ section.settings.title_size_mobile }}px;
+    --ap-subtitle-color: {{ section.settings.subtitle_color }};
+    --ap-link-color: {{ section.settings.link_color }};
+    --ap-label-color: {{ section.settings.label_color }};
+    --ap-product-title-color: {{ section.settings.product_title_color }};
+    --ap-price-color: {{ section.settings.price_color }};
+    --ap-padding-top: {{ section.settings.padding_top }}px;
+    --ap-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --ap-padding-top-mobile: {{ section.settings.padding_top_mobile }}px;
+    --ap-padding-bottom-mobile: {{ section.settings.padding_bottom_mobile }}px;
+  "
+>
+  <div class="article-products__container">
+    <div class="article-products__header">
+      <div class="article-products__header-left">
+        {%- if section.settings.label != blank -%}
+          <span class="article-products__label">{{ section.settings.label | upcase }}</span>
+        {%- endif -%}
+        {%- if section.settings.title != blank -%}
+          <h2 class="article-products__title">{{ section.settings.title }}</h2>
+        {%- endif -%}
+        {%- if section.settings.subtitle != blank -%}
+          <p class="article-products__subtitle">{{ section.settings.subtitle }}</p>
+        {%- endif -%}
+      </div>
+      {%- if section.settings.link_text != blank and collection != blank -%}
+        <a href="{{ collection.url }}" class="article-products__link">{{ section.settings.link_text | upcase }}</a>
+      {%- endif -%}
+    </div>
+
+    <div class="article-products__grid">
+      {%- if collection != blank -%}
+        {%- for product in collection.products limit: section.settings.products_count -%}
+          <div class="article-products__card">
+            <a href="{{ product.url }}" class="article-products__card-link">
+              <div class="article-products__card-image">
+                {%- if product.featured_image != blank -%}
+                  {{ product.featured_image | image_url: width: 600 | image_tag: loading: 'lazy' }}
+                {%- else -%}
+                  {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                {%- endif -%}
+              </div>
+              <div class="article-products__card-info">
+                <div class="article-products__card-meta">
+                  <span class="article-products__card-label">LAYER {{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+                  <span class="article-products__card-price">{{ product.price | money }}</span>
+                </div>
+                <h3 class="article-products__card-title">{{ product.title }}</h3>
+              </div>
+            </a>
+            <button class="article-products__add-to-cart" data-product-id="{{ product.variants.first.id }}">
+              ADD TO CART
+            </button>
+          </div>
+        {%- endfor -%}
+      {%- else -%}
+        {%- for i in (1..3) -%}
+          <div class="article-products__card">
+            <div class="article-products__card-link">
+              <div class="article-products__card-image">
+                {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+              </div>
+              <div class="article-products__card-info">
+                <div class="article-products__card-meta">
+                  <span class="article-products__card-label">LAYER 0{{ i }}</span>
+                  <span class="article-products__card-price">$240</span>
+                </div>
+                <h3 class="article-products__card-title">Product Title</h3>
+              </div>
+            </div>
+            <button class="article-products__add-to-cart">ADD TO CART</button>
+          </div>
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .article-products {
+    background-color: var(--ap-bg);
+    padding: var(--ap-padding-top-mobile) var(--page-margin) var(--ap-padding-bottom-mobile);
+  }
+
+  .article-products__container {
+    max-width: var(--page-width);
+    margin: 0 auto;
+  }
+
+  .article-products__header {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  .article-products__header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .article-products__label {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    color: var(--ap-link-color);
+  }
+
+  .article-products__title {
+    font-family: var(--font-heading-family), serif;
+    font-size: var(--ap-title-size-mobile);
+    font-weight: 400;
+    color: var(--ap-title-color);
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  .article-products__subtitle {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--ap-subtitle-color);
+    margin: 0;
+  }
+
+  .article-products__link {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    color: var(--ap-link-color);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: opacity 0.2s ease;
+  }
+
+  .article-products__link:hover {
+    opacity: 0.7;
+  }
+
+  /* Mobile: Single column with carousel-style */
+  .article-products__grid {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .article-products__card {
+    background-color: var(--ap-card-bg);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .article-products__card-link {
+    text-decoration: none;
+    display: block;
+  }
+
+  .article-products__card-image {
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    background-color: #f5f5f5;
+  }
+
+  .article-products__card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .article-products__card:hover .article-products__card-image img {
+    transform: scale(1.03);
+  }
+
+  .article-products__card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .article-products__card-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .article-products__card-label {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    color: var(--ap-label-color);
+  }
+
+  .article-products__card-price {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--ap-price-color);
+  }
+
+  .article-products__card-title {
+    font-family: var(--font-heading-family), serif;
+    font-size: 18px;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--ap-product-title-color);
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  .article-products__add-to-cart {
+    margin-top: 1rem;
+    padding: 0.875rem 1.5rem;
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ap-title-color);
+    background: transparent;
+    border: 1px solid var(--ap-title-color);
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  .article-products__add-to-cart:hover {
+    background-color: var(--ap-title-color);
+    color: #fff;
+  }
+
+  @media (min-width: 768px) {
+    .article-products {
+      padding: var(--ap-padding-top) var(--page-margin) var(--ap-padding-bottom);
+    }
+
+    .article-products__header {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-end;
+      text-align: left;
+      margin-bottom: 2.5rem;
+    }
+
+    .article-products__title {
+      font-size: var(--ap-title-size);
+    }
+
+    .article-products__grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .article-products__card {
+      padding: 2rem;
+    }
+
+    /* Hide add to cart on desktop - show on hover */
+    .article-products__add-to-cart {
+      display: none;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  // Add to cart functionality
+  document.querySelectorAll('.article-products__add-to-cart').forEach(button => {
+    button.addEventListener('click', async function() {
+      const variantId = this.dataset.productId;
+      if (!variantId) return;
+
+      this.textContent = 'ADDING...';
+      this.disabled = true;
+
+      try {
+        const response = await fetch('/cart/add.js', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            id: variantId,
+            quantity: 1
+          })
+        });
+
+        if (response.ok) {
+          this.textContent = 'ADDED!';
+          setTimeout(() => {
+            this.textContent = 'ADD TO CART';
+            this.disabled = false;
+          }, 2000);
+        } else {
+          this.textContent = 'ERROR';
+          setTimeout(() => {
+            this.textContent = 'ADD TO CART';
+            this.disabled = false;
+          }, 2000);
+        }
+      } catch (error) {
+        this.textContent = 'ERROR';
+        setTimeout(() => {
+          this.textContent = 'ADD TO CART';
+          this.disabled = false;
+        }, 2000);
+      }
+    });
+  });
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Article products",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Section label",
+      "default": "THE TOOLKIT"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Build Your Layers"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "The essential kit for a shadow-rich home."
+    },
+    {
+      "type": "text",
+      "id": "link_text",
+      "label": "Link text",
+      "default": "Shop the Collection"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_count",
+      "label": "Products to show",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#1C1917"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title size (desktop)",
+      "min": 24,
+      "max": 48,
+      "step": 2,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "title_size_mobile",
+      "label": "Title size (mobile)",
+      "min": 20,
+      "max": 36,
+      "step": 2,
+      "default": 26,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle color",
+      "default": "#78716C"
+    },
+    {
+      "type": "color",
+      "id": "link_color",
+      "label": "Link color",
+      "default": "#1C1917"
+    },
+    {
+      "type": "color",
+      "id": "label_color",
+      "label": "Product label color",
+      "default": "#78716C"
+    },
+    {
+      "type": "color",
+      "id": "product_title_color",
+      "label": "Product title color",
+      "default": "#1C1917"
+    },
+    {
+      "type": "color",
+      "id": "price_color",
+      "label": "Price color",
+      "default": "#57534E"
+    },
+    {
+      "type": "header",
+      "content": "Section style"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#F5F5F4"
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "Card background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top (desktop)",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "default": 60,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom (desktop)",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "default": 60,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding top (mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding bottom (mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 40,
+      "unit": "px"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Article products"
+    }
+  ],
+  "enabled_on": {
+    "templates": ["*"],
+    "groups": ["*"]
+  }
+}
+{% endschema %}

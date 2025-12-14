@@ -426,27 +426,28 @@
 
   .header-wrapper--transparent:not(.is-scrolled) {
     background-color: transparent;
-    position: absolute;
+    position: fixed;
     top: var(--announcement-bar-height, 0px);
     left: 0;
     right: 0;
   }
 
   .header-wrapper--transparent.header-wrapper--sticky:not(.is-scrolled) {
-    position: absolute;
+    position: fixed;
     top: var(--announcement-bar-height, 0px);
   }
 
   .header-wrapper--transparent.header-wrapper--sticky.is-scrolled {
     position: fixed;
-    top: 0;
+    top: var(--announcement-bar-height, 0px);
     left: 0;
     right: 0;
   }
 
-  /* When mega menu is open but not actually scrolled, keep header in original position */
-  .header-wrapper--transparent.mega-menu-open:not(.actually-scrolled) {
-    position: absolute;
+  /* When mega menu is open but not actually scrolled, keep header below announcement bar */
+  .header-wrapper--transparent.mega-menu-open:not(.actually-scrolled),
+  .header-wrapper--transparent.header-wrapper--sticky.mega-menu-open:not(.actually-scrolled) {
+    position: fixed;
     top: var(--announcement-bar-height, 0px);
   }
 
@@ -1576,6 +1577,18 @@
   const scrollThreshold = 1;
   let megaMenuOpen = false;
 
+  // Position header below announcement bar
+  function positionHeader() {
+    const announcementBar = document.querySelector('.announcement-bar:not(.is-hidden)');
+    if (announcementBar && headerWrapper) {
+      const barRect = announcementBar.getBoundingClientRect();
+      const topOffset = barRect.bottom;
+      headerWrapper.style.top = topOffset + 'px';
+    } else if (headerWrapper) {
+      headerWrapper.style.top = '0px';
+    }
+  }
+
   // Header scroll behavior
   if (isTransparent) {
     function updateHeader() {
@@ -1594,9 +1607,16 @@
       } else {
         headerWrapper.classList.remove('is-scrolled');
       }
+
+      // Update header position
+      positionHeader();
     }
 
     window.addEventListener('scroll', updateHeader, { passive: true });
+    window.addEventListener('resize', positionHeader);
+
+    // Initial positioning
+    positionHeader();
     updateHeader();
   }
 
@@ -1619,6 +1639,16 @@
     });
   }
 
+  // Position mega menu below header
+  function positionMegaMenu() {
+    if (!headerWrapper) return;
+    const headerRect = headerWrapper.getBoundingClientRect();
+    const megaMenus = document.querySelectorAll('.mega-menu');
+    megaMenus.forEach(menu => {
+      menu.style.top = headerRect.bottom + 'px';
+    });
+  }
+
   // Mega menu hover behavior (desktop)
   const megaMenuItems = document.querySelectorAll('[data-mega-menu]');
 
@@ -1633,8 +1663,10 @@
         headerWrapper.classList.add('mega-menu-open');
         if (isTransparent) {
           headerWrapper.classList.add('is-scrolled');
+          positionHeader();
         }
       }
+      positionMegaMenu();
     });
 
     item.addEventListener('mouseleave', () => {

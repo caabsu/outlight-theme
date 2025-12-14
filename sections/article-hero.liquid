@@ -1,0 +1,374 @@
+{% comment %}
+  Article Hero Section
+  Editorial-style hero with category, title, author, and featured image
+{% endcomment %}
+
+<section
+  class="article-hero"
+  style="
+    --ah-bg: {{ section.settings.background_color }};
+    --ah-category-color: {{ section.settings.category_color }};
+    --ah-category-size: {{ section.settings.category_size }}px;
+    --ah-title-color: {{ section.settings.title_color }};
+    --ah-title-size: {{ section.settings.title_size }}px;
+    --ah-title-size-mobile: {{ section.settings.title_size_mobile }}px;
+    --ah-subtitle-color: {{ section.settings.subtitle_color }};
+    --ah-subtitle-size: {{ section.settings.subtitle_size }}px;
+    --ah-subtitle-size-mobile: {{ section.settings.subtitle_size_mobile }}px;
+    --ah-meta-color: {{ section.settings.meta_color }};
+    --ah-divider-color: {{ section.settings.divider_color }};
+    --ah-padding-top: {{ section.settings.padding_top }}px;
+    --ah-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --ah-padding-top-mobile: {{ section.settings.padding_top_mobile }}px;
+    --ah-padding-bottom-mobile: {{ section.settings.padding_bottom_mobile }}px;
+  "
+>
+  <div class="article-hero__container">
+    <div class="article-hero__header">
+      {%- if section.settings.category != blank -%}
+        <span class="article-hero__category">{{ section.settings.category }}</span>
+      {%- endif -%}
+
+      <h1 class="article-hero__title">
+        {%- if section.settings.title_line_1 != blank -%}
+          <span class="article-hero__title-main">{{ section.settings.title_line_1 }}</span>
+        {%- endif -%}
+        {%- if section.settings.title_line_2 != blank -%}
+          <span class="article-hero__title-script">{{ section.settings.title_line_2 }}</span>
+        {%- endif -%}
+      </h1>
+
+      <div class="article-hero__divider"></div>
+
+      <div class="article-hero__meta">
+        {%- if section.settings.author != blank -%}
+          <span class="article-hero__author">BY {{ section.settings.author | upcase }}</span>
+        {%- endif -%}
+        {%- if section.settings.read_time != blank -%}
+          <span class="article-hero__separator">&bull;</span>
+          <span class="article-hero__time">{{ section.settings.read_time }}</span>
+        {%- endif -%}
+      </div>
+    </div>
+
+    {%- if section.settings.featured_image != blank -%}
+      <div class="article-hero__image">
+        {{ section.settings.featured_image | image_url: width: 1800 | image_tag: loading: 'eager', class: 'article-hero__img' }}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .article-hero {
+    background-color: var(--ah-bg);
+    padding: var(--ah-padding-top-mobile) var(--page-margin) var(--ah-padding-bottom-mobile);
+  }
+
+  .article-hero__container {
+    max-width: var(--page-width);
+    margin: 0 auto;
+  }
+
+  .article-hero__header {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+
+  .article-hero__category {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ah-category-color);
+    margin-bottom: 1.5rem;
+  }
+
+  .article-hero__title {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    line-height: 1.1;
+  }
+
+  .article-hero__title-main {
+    font-family: var(--font-heading-family), serif;
+    font-size: var(--ah-title-size-mobile);
+    font-weight: 400;
+    color: var(--ah-title-color);
+    display: block;
+  }
+
+  .article-hero__title-script {
+    font-family: var(--font-heading-family), serif;
+    font-size: var(--ah-subtitle-size-mobile);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--ah-subtitle-color);
+    display: block;
+    margin-top: -0.1em;
+  }
+
+  .article-hero__divider {
+    width: 1px;
+    height: 60px;
+    background-color: var(--ah-divider-color);
+    margin: 2rem 0;
+  }
+
+  .article-hero__meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ah-meta-color);
+  }
+
+  .article-hero__separator {
+    opacity: 0.5;
+  }
+
+  .article-hero__image {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .article-hero__img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  @media (min-width: 768px) {
+    .article-hero {
+      padding: var(--ah-padding-top) var(--page-margin) var(--ah-padding-bottom);
+    }
+
+    .article-hero__category {
+      font-size: var(--ah-category-size);
+      margin-bottom: 2rem;
+    }
+
+    .article-hero__title-main {
+      font-size: var(--ah-title-size);
+    }
+
+    .article-hero__title-script {
+      font-size: var(--ah-subtitle-size);
+    }
+
+    .article-hero__divider {
+      height: 80px;
+      margin: 2.5rem 0;
+    }
+
+    .article-hero__meta {
+      font-size: 13px;
+    }
+
+    .article-hero__header {
+      margin-bottom: 3rem;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Article hero",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "category",
+      "label": "Category",
+      "default": "ESSAY — LIGHTING DESIGN"
+    },
+    {
+      "type": "text",
+      "id": "title_line_1",
+      "label": "Title (line 1)",
+      "default": "Architecture"
+    },
+    {
+      "type": "text",
+      "id": "title_line_2",
+      "label": "Title (line 2 - italic)",
+      "default": "of Shadow"
+    },
+    {
+      "type": "text",
+      "id": "author",
+      "label": "Author name",
+      "default": "Julian Vance"
+    },
+    {
+      "type": "text",
+      "id": "read_time",
+      "label": "Read time",
+      "default": "6 MIN READ"
+    },
+    {
+      "type": "image_picker",
+      "id": "featured_image",
+      "label": "Featured image"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "color",
+      "id": "category_color",
+      "label": "Category color",
+      "default": "#D97706"
+    },
+    {
+      "type": "range",
+      "id": "category_size",
+      "label": "Category size",
+      "min": 10,
+      "max": 16,
+      "step": 1,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#1C1917"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title size (desktop)",
+      "min": 36,
+      "max": 120,
+      "step": 2,
+      "default": 72,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "title_size_mobile",
+      "label": "Title size (mobile)",
+      "min": 28,
+      "max": 72,
+      "step": 2,
+      "default": 42,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle (italic) color",
+      "default": "#A8A29E"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size",
+      "label": "Subtitle size (desktop)",
+      "min": 36,
+      "max": 120,
+      "step": 2,
+      "default": 72,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size_mobile",
+      "label": "Subtitle size (mobile)",
+      "min": 28,
+      "max": 72,
+      "step": 2,
+      "default": 42,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "meta_color",
+      "label": "Meta text color",
+      "default": "#57534E"
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Divider color",
+      "default": "#D6D3D1"
+    },
+    {
+      "type": "header",
+      "content": "Section style"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#FAFAF9"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top (desktop)",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "default": 80,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom (desktop)",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "default": 60,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding top (mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 60,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding bottom (mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 40,
+      "unit": "px"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Article hero"
+    }
+  ],
+  "enabled_on": {
+    "templates": ["*"],
+    "groups": ["*"]
+  }
+}
+{% endschema %}

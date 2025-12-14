@@ -1,0 +1,279 @@
+{% comment %}
+  Article Image with Text Section
+  Image with figure caption alongside quote or text
+{% endcomment %}
+
+<section
+  class="article-image-text"
+  style="
+    --ait-bg: {{ section.settings.background_color }};
+    --ait-caption-color: {{ section.settings.caption_color }};
+    --ait-quote-color: {{ section.settings.quote_color }};
+    --ait-quote-size: {{ section.settings.quote_size }}px;
+    --ait-quote-size-mobile: {{ section.settings.quote_size_mobile }}px;
+    --ait-padding-top: {{ section.settings.padding_top }}px;
+    --ait-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --ait-padding-top-mobile: {{ section.settings.padding_top_mobile }}px;
+    --ait-padding-bottom-mobile: {{ section.settings.padding_bottom_mobile }}px;
+  "
+>
+  <div class="article-image-text__container">
+    <div class="article-image-text__grid {% if section.settings.image_position == 'right' %}article-image-text__grid--reverse{% endif %}">
+      {%- if section.settings.image != blank -%}
+        <div class="article-image-text__image-wrapper">
+          <div class="article-image-text__image">
+            {{ section.settings.image | image_url: width: 1200 | image_tag: loading: 'lazy' }}
+          </div>
+          {%- if section.settings.caption != blank -%}
+            <p class="article-image-text__caption">{{ section.settings.caption }}</p>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      <div class="article-image-text__content">
+        {%- if section.settings.quote != blank -%}
+          <blockquote class="article-image-text__quote">
+            {{ section.settings.quote }}
+          </blockquote>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .article-image-text {
+    background-color: var(--ait-bg);
+    padding: var(--ait-padding-top-mobile) var(--page-margin) var(--ait-padding-bottom-mobile);
+  }
+
+  .article-image-text__container {
+    max-width: var(--page-width);
+    margin: 0 auto;
+  }
+
+  .article-image-text__grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .article-image-text__image-wrapper {
+    width: 100%;
+  }
+
+  .article-image-text__image {
+    width: 100%;
+  }
+
+  .article-image-text__image img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .article-image-text__caption {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ait-caption-color);
+    margin: 1rem 0 0;
+  }
+
+  .article-image-text__content {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+  }
+
+  .article-image-text__quote {
+    font-family: var(--font-heading-family), serif;
+    font-size: var(--ait-quote-size-mobile);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--ait-quote-color);
+    line-height: 1.4;
+    margin: 0;
+    text-align: center;
+  }
+
+  @media (min-width: 768px) {
+    .article-image-text {
+      padding: var(--ait-padding-top) var(--page-margin) var(--ait-padding-bottom);
+    }
+
+    .article-image-text__grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: flex-start;
+    }
+
+    .article-image-text__grid--reverse {
+      direction: rtl;
+    }
+
+    .article-image-text__grid--reverse > * {
+      direction: ltr;
+    }
+
+    .article-image-text__image-wrapper {
+      max-width: 500px;
+    }
+
+    .article-image-text__caption {
+      font-size: 11px;
+      margin-top: 1.25rem;
+    }
+
+    .article-image-text__content {
+      padding-top: 1rem;
+    }
+
+    .article-image-text__quote {
+      font-size: var(--ait-quote-size);
+      text-align: left;
+      max-width: 400px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Article image + text",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "caption",
+      "label": "Figure caption",
+      "default": "FIG 1.0 — THE CANVAS"
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Image position (desktop)",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "header",
+      "content": "Quote"
+    },
+    {
+      "type": "textarea",
+      "id": "quote",
+      "label": "Quote text",
+      "default": "\"Light is not the absence of dark. It is the carving of space.\""
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "color",
+      "id": "caption_color",
+      "label": "Caption color",
+      "default": "#78716C"
+    },
+    {
+      "type": "color",
+      "id": "quote_color",
+      "label": "Quote color",
+      "default": "#D97706"
+    },
+    {
+      "type": "range",
+      "id": "quote_size",
+      "label": "Quote size (desktop)",
+      "min": 16,
+      "max": 36,
+      "step": 1,
+      "default": 22,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "quote_size_mobile",
+      "label": "Quote size (mobile)",
+      "min": 14,
+      "max": 28,
+      "step": 1,
+      "default": 18,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Section style"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#FAFAF9"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top (desktop)",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "default": 60,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom (desktop)",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "default": 60,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding top (mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding bottom (mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 40,
+      "unit": "px"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Article image + text"
+    }
+  ],
+  "enabled_on": {
+    "templates": ["*"],
+    "groups": ["*"]
+  }
+}
+{% endschema %}

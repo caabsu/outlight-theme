@@ -1,0 +1,289 @@
+{% comment %}
+  Article Closing Section
+  Closing quote with decorative marks and footer
+{% endcomment %}
+
+<section
+  class="article-closing"
+  style="
+    --ac-bg: {{ section.settings.background_color }};
+    --ac-mark-color: {{ section.settings.quotation_mark_color }};
+    --ac-mark-size: {{ section.settings.quotation_mark_size }}px;
+    --ac-mark-size-mobile: {{ section.settings.quotation_mark_size_mobile }}px;
+    --ac-quote-color: {{ section.settings.quote_color }};
+    --ac-quote-size: {{ section.settings.quote_size }}px;
+    --ac-quote-size-mobile: {{ section.settings.quote_size_mobile }}px;
+    --ac-divider-color: {{ section.settings.divider_color }};
+    --ac-footer-color: {{ section.settings.footer_color }};
+    --ac-padding-top: {{ section.settings.padding_top }}px;
+    --ac-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --ac-padding-top-mobile: {{ section.settings.padding_top_mobile }}px;
+    --ac-padding-bottom-mobile: {{ section.settings.padding_bottom_mobile }}px;
+  "
+>
+  <div class="article-closing__container">
+    {%- if section.settings.quote != blank -%}
+      <div class="article-closing__quote-wrapper">
+        {%- if section.settings.show_quotation_marks -%}
+          <span class="article-closing__mark">"</span>
+        {%- endif -%}
+
+        <blockquote class="article-closing__quote">
+          {{ section.settings.quote }}
+        </blockquote>
+      </div>
+    {%- endif -%}
+
+    <div class="article-closing__divider"></div>
+
+    {%- if section.settings.footer_text != blank -%}
+      <p class="article-closing__footer">{{ section.settings.footer_text }}</p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .article-closing {
+    background-color: var(--ac-bg);
+    padding: var(--ac-padding-top-mobile) var(--page-margin) var(--ac-padding-bottom-mobile);
+  }
+
+  .article-closing__container {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .article-closing__quote-wrapper {
+    position: relative;
+    margin-bottom: 2rem;
+  }
+
+  .article-closing__mark {
+    display: block;
+    font-family: var(--font-heading-family), serif;
+    font-size: var(--ac-mark-size-mobile);
+    font-weight: 400;
+    color: var(--ac-mark-color);
+    line-height: 0.7;
+    margin-bottom: 0.75rem;
+    opacity: 0.3;
+  }
+
+  .article-closing__quote {
+    font-family: var(--font-heading-family), serif;
+    font-size: var(--ac-quote-size-mobile);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--ac-quote-color);
+    line-height: 1.4;
+    margin: 0;
+    max-width: 600px;
+  }
+
+  .article-closing__divider {
+    width: 1px;
+    height: 50px;
+    background-color: var(--ac-divider-color);
+    margin: 2rem 0;
+  }
+
+  .article-closing__footer {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ac-footer-color);
+    margin: 0;
+  }
+
+  @media (min-width: 768px) {
+    .article-closing {
+      padding: var(--ac-padding-top) var(--page-margin) var(--ac-padding-bottom);
+    }
+
+    .article-closing__mark {
+      font-size: var(--ac-mark-size);
+      margin-bottom: 1rem;
+    }
+
+    .article-closing__quote {
+      font-size: var(--ac-quote-size);
+      line-height: 1.5;
+    }
+
+    .article-closing__divider {
+      height: 60px;
+      margin: 2.5rem 0;
+    }
+
+    .article-closing__footer {
+      font-size: 12px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Article closing",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Quote"
+    },
+    {
+      "type": "textarea",
+      "id": "quote",
+      "label": "Closing quote",
+      "default": "\"Shadow is not the enemy. It is the context. Without it, our homes are just brightly lit boxes. With it, they become stages for life.\""
+    },
+    {
+      "type": "checkbox",
+      "id": "show_quotation_marks",
+      "label": "Show decorative quotation marks",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Footer"
+    },
+    {
+      "type": "text",
+      "id": "footer_text",
+      "label": "Footer text",
+      "default": "OUTLIGHT JOURNAL © 2026"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "color",
+      "id": "quotation_mark_color",
+      "label": "Quotation mark color",
+      "default": "#D6D3D1"
+    },
+    {
+      "type": "range",
+      "id": "quotation_mark_size",
+      "label": "Quotation mark size (desktop)",
+      "min": 40,
+      "max": 120,
+      "step": 5,
+      "default": 80,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "quotation_mark_size_mobile",
+      "label": "Quotation mark size (mobile)",
+      "min": 30,
+      "max": 80,
+      "step": 5,
+      "default": 50,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "quote_color",
+      "label": "Quote color",
+      "default": "#44403C"
+    },
+    {
+      "type": "range",
+      "id": "quote_size",
+      "label": "Quote size (desktop)",
+      "min": 18,
+      "max": 40,
+      "step": 2,
+      "default": 26,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "quote_size_mobile",
+      "label": "Quote size (mobile)",
+      "min": 16,
+      "max": 28,
+      "step": 2,
+      "default": 20,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Divider color",
+      "default": "#D6D3D1"
+    },
+    {
+      "type": "color",
+      "id": "footer_color",
+      "label": "Footer text color",
+      "default": "#A8A29E"
+    },
+    {
+      "type": "header",
+      "content": "Section style"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#FAFAF9"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top (desktop)",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "default": 80,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom (desktop)",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "default": 80,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding top (mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 50,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding bottom (mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 50,
+      "unit": "px"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Article closing"
+    }
+  ],
+  "enabled_on": {
+    "templates": ["*"],
+    "groups": ["*"]
+  }
+}
+{% endschema %}

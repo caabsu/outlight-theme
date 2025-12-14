@@ -268,7 +268,7 @@
       position: relative;
     }
 
-    /* Show nav arrows on desktop - overlayed on track */
+    /* Show nav arrows on desktop - minimal overlay style */
     .collection-carousel__nav {
       display: flex;
       align-items: center;
@@ -277,27 +277,30 @@
       top: 50%;
       transform: translateY(-50%);
       z-index: 2;
-      width: 40px;
-      height: 40px;
-      background: rgba(255, 255, 255, 0.85);
+      width: 36px;
+      height: 36px;
+      background: transparent;
       color: var(--cc-nav-color);
-      border: 1px solid var(--cc-nav-color);
+      border: none;
       border-radius: 0;
       cursor: pointer;
-      transition: opacity 0.2s ease, background 0.2s ease;
+      transition: opacity 0.2s ease;
+    }
+
+    .collection-carousel__nav svg {
+      filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
     }
 
     .collection-carousel__nav--prev {
-      left: 12px;
+      left: 8px;
     }
 
     .collection-carousel__nav--next {
-      right: 12px;
+      right: 8px;
     }
 
     .collection-carousel__nav:hover {
-      background: var(--cc-nav-color);
-      color: #fff;
+      opacity: 0.7;
     }
 
     .collection-carousel__nav:disabled {
