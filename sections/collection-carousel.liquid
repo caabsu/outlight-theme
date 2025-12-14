@@ -1,28 +1,32 @@
 <div
   class="collection-carousel full-width"
   style="
-    --section-bg: {{ section.settings.section_bg }};
-    --section-padding-top: {{ section.settings.padding_top }}px;
-    --section-padding-bottom: {{ section.settings.padding_bottom }}px;
-    --title-color: {{ section.settings.title_color }};
-    --title-size-desktop: {{ section.settings.title_size_desktop }}px;
-    --title-size-mobile: {{ section.settings.title_size_mobile }}px;
-    --title-weight: {{ section.settings.title_weight }};
-    --card-info-bg: {{ section.settings.card_info_bg }};
-    --card-info-opacity: {{ section.settings.card_info_opacity | divided_by: 100.0 }};
-    --product-name-color: {{ section.settings.product_name_color }};
-    --product-name-size-desktop: {{ section.settings.product_name_size_desktop }}px;
-    --product-name-size-mobile: {{ section.settings.product_name_size_mobile }}px;
-    --product-name-weight: {{ section.settings.product_name_weight }};
-    --product-subtitle-color: {{ section.settings.product_subtitle_color }};
-    --product-subtitle-size: {{ section.settings.product_subtitle_size }}px;
-    --product-subtitle-weight: {{ section.settings.product_subtitle_weight }};
-    --price-color: {{ section.settings.price_color }};
-    --price-size-desktop: {{ section.settings.price_size_desktop }}px;
-    --price-size-mobile: {{ section.settings.price_size_mobile }}px;
-    --price-weight: {{ section.settings.price_weight }};
-    --mobile-name-color: {{ section.settings.mobile_name_color }};
-    --mobile-price-color: {{ section.settings.mobile_price_color }};
+    --cc-bg: {{ section.settings.section_bg }};
+    --cc-padding-top: {{ section.settings.padding_top }}px;
+    --cc-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --cc-padding-top-mobile: {{ section.settings.padding_top_mobile }}px;
+    --cc-padding-bottom-mobile: {{ section.settings.padding_bottom_mobile }}px;
+    --cc-title-color: {{ section.settings.title_color }};
+    --cc-title-size: {{ section.settings.title_size }}px;
+    --cc-title-size-mobile: {{ section.settings.title_size_mobile }}px;
+    --cc-title-weight: {{ section.settings.title_weight }};
+    --cc-name-color: {{ section.settings.product_name_color }};
+    --cc-name-size: {{ section.settings.product_name_size }}px;
+    --cc-name-size-mobile: {{ section.settings.product_name_size_mobile }}px;
+    --cc-name-weight: {{ section.settings.product_name_weight }};
+    --cc-price-color: {{ section.settings.price_color }};
+    --cc-price-size: {{ section.settings.price_size }}px;
+    --cc-price-size-mobile: {{ section.settings.price_size_mobile }}px;
+    --cc-price-weight: {{ section.settings.price_weight }};
+    --cc-text-bg: {{ section.settings.text_overlay_bg }};
+    --cc-products-mobile: {{ section.settings.products_per_row_mobile }};
+    --cc-gap-mobile: {{ section.settings.grid_gap_mobile }}px;
+    --cc-gap-desktop: {{ section.settings.grid_gap_desktop }}px;
+    --cc-nav-color: {{ section.settings.nav_color }};
+    --cc-nav-bg: {{ section.settings.nav_bg }};
+    --cc-btn-color: {{ section.settings.view_all_color }};
+    --cc-btn-size: {{ section.settings.view_all_size }}px;
+    --cc-btn-weight: {{ section.settings.view_all_weight }};
   "
 >
   <div class="collection-carousel__container">
@@ -32,78 +36,65 @@
 
     <div class="collection-carousel__wrapper">
       <button class="collection-carousel__nav collection-carousel__nav--prev" data-carousel-prev aria-label="Previous">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12.5 15L7.5 10L12.5 5"/>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 18L9 12L15 6"/>
         </svg>
       </button>
 
       <div class="collection-carousel__track" data-carousel-track>
-      {%- assign collection = collections[section.settings.collection] -%}
-      {%- if collection != blank and collection.products.size > 0 -%}
-        {%- for product in collection.products limit: section.settings.products_limit -%}
-          <a href="{{ product.url }}" class="collection-carousel__card">
-            <div class="collection-carousel__image">
-              {%- if product.featured_image != blank -%}
-                {{ product.featured_image | image_url: width: 800 | image_tag: loading: 'lazy' }}
-              {%- else -%}
-                {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
-              {%- endif -%}
-            </div>
-            <div class="collection-carousel__info">
-              <div class="collection-carousel__details">
-                <h3 class="collection-carousel__name">{{ product.title }}</h3>
-                {%- if product.metafields.descriptors.subtitle != blank -%}
-                  <p class="collection-carousel__subtitle">{{ product.metafields.descriptors.subtitle }}</p>
-                {%- elsif product.type != blank -%}
-                  <p class="collection-carousel__subtitle">{{ product.type }}</p>
+        {%- assign collection = collections[section.settings.collection] -%}
+        {%- if collection != blank and collection.products.size > 0 -%}
+          {%- for product in collection.products limit: section.settings.products_limit -%}
+            <a href="{{ product.url }}" class="collection-carousel__card">
+              <div class="collection-carousel__image">
+                {%- if product.featured_image != blank -%}
+                  {{ product.featured_image | image_url: width: 800 | image_tag: loading: 'lazy' }}
+                {%- else -%}
+                  {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
                 {%- endif -%}
+                <div class="collection-carousel__overlay">
+                  <span class="collection-carousel__name">{{ product.title }}</span>
+                  <span class="collection-carousel__price">{{ product.price | money }}</span>
+                </div>
               </div>
-              <div class="collection-carousel__price">
-                {{ product.price | money }}
+            </a>
+          {%- endfor -%}
+        {%- else -%}
+          {%- for i in (1..4) -%}
+            <div class="collection-carousel__card">
+              <div class="collection-carousel__image">
+                {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                <div class="collection-carousel__overlay">
+                  <span class="collection-carousel__name">Product Title</span>
+                  <span class="collection-carousel__price">$0.00</span>
+                </div>
               </div>
             </div>
-            <!-- Mobile overlay info -->
-            <div class="collection-carousel__info-mobile">
-              <h3 class="collection-carousel__name-mobile">{{ product.title }}</h3>
-              <p class="collection-carousel__price-mobile">{{ product.price | money }}</p>
-            </div>
-          </a>
-        {%- endfor -%}
-      {%- else -%}
-        {%- for i in (1..4) -%}
-          <div class="collection-carousel__card">
-            <div class="collection-carousel__image">
-              {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
-            </div>
-            <div class="collection-carousel__info">
-              <div class="collection-carousel__details">
-                <h3 class="collection-carousel__name">Product Title</h3>
-                <p class="collection-carousel__subtitle">Subtitle</p>
-              </div>
-              <div class="collection-carousel__price">$0.00</div>
-            </div>
-            <div class="collection-carousel__info-mobile">
-              <h3 class="collection-carousel__name-mobile">Product Title</h3>
-              <p class="collection-carousel__price-mobile">$0.00</p>
-            </div>
-          </div>
-        {%- endfor -%}
-      {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
       </div>
 
       <button class="collection-carousel__nav collection-carousel__nav--next" data-carousel-next aria-label="Next">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M7.5 15L12.5 10L7.5 5"/>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 18L15 12L9 6"/>
         </svg>
       </button>
     </div>
+
+    {%- if section.settings.show_view_all and collection != blank -%}
+      <div class="collection-carousel__footer">
+        <a href="{{ collection.url }}" class="collection-carousel__view-all">
+          {{ section.settings.view_all_text }}
+        </a>
+      </div>
+    {%- endif -%}
   </div>
 </div>
 
 {% stylesheet %}
   .collection-carousel {
-    background: var(--section-bg);
-    padding: var(--section-padding-top) 0 var(--section-padding-bottom);
+    background: var(--cc-bg);
+    padding: var(--cc-padding-top-mobile) 0 var(--cc-padding-bottom-mobile);
   }
 
   .collection-carousel__container {
@@ -113,11 +104,11 @@
   }
 
   .collection-carousel__title {
-    font-size: var(--title-size-mobile);
-    font-weight: var(--title-weight);
-    font-style: normal;
-    color: var(--title-color);
-    margin: 0 0 24px;
+    font-family: var(--font-heading-family), serif;
+    font-size: var(--cc-title-size-mobile);
+    font-weight: var(--cc-title-weight);
+    color: var(--cc-title-color);
+    margin: 0 0 1.5rem;
     text-align: center;
   }
 
@@ -125,65 +116,26 @@
     position: relative;
   }
 
+  /* Hide nav arrows on mobile */
   .collection-carousel__nav {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 40px;
-    height: 40px;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    z-index: 10;
-    transition: opacity 0.2s ease;
-    color: #1C1917;
-  }
-
-  .collection-carousel__nav:hover {
-    opacity: 0.6;
-  }
-
-  .collection-carousel__nav--prev {
-    left: 4px;
-  }
-
-  .collection-carousel__nav--next {
-    right: 4px;
-  }
-
-  .collection-carousel__nav:disabled {
-    opacity: 0.2;
-    cursor: not-allowed;
-  }
-
-  .collection-carousel__track {
-    display: flex;
-    gap: 16px;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-    margin: 0;
-    padding: 0;
-  }
-
-  .collection-carousel__track::-webkit-scrollbar {
     display: none;
   }
 
+  /* Mobile: Grid layout */
+  .collection-carousel__track {
+    display: grid;
+    grid-template-columns: repeat(var(--cc-products-mobile), 1fr);
+    gap: var(--cc-gap-mobile);
+  }
+
   .collection-carousel__card {
-    flex: 0 0 280px;
-    scroll-snap-align: start;
-    overflow: hidden;
     text-decoration: none;
-    position: relative;
     display: block;
+    overflow: hidden;
   }
 
   .collection-carousel__image {
+    position: relative;
     aspect-ratio: 1 / 1;
     overflow: hidden;
     background: #f5f5f5;
@@ -193,166 +145,209 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.3s ease;
   }
 
-  /* Desktop info - hidden on mobile */
-  .collection-carousel__info {
-    display: none;
+  .collection-carousel__card:hover .collection-carousel__image img {
+    transform: scale(1.05);
   }
 
-  /* Mobile overlay info */
-  .collection-carousel__info-mobile {
+  .collection-carousel__overlay {
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
-    padding: 60px 16px 16px;
-    background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    background: var(--cc-text-bg);
+    gap: 0.5rem;
   }
 
-  .collection-carousel__name-mobile {
-    font-family: var(--font-heading-family), serif;
-    font-size: var(--product-name-size-mobile);
-    font-weight: 400;
-    color: var(--mobile-name-color);
-    margin: 0 0 4px;
+  .collection-carousel__name {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: var(--cc-name-size-mobile);
+    font-weight: var(--cc-name-weight);
+    color: var(--cc-name-color);
+    line-height: 1.3;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
-  .collection-carousel__price-mobile {
-    font-size: var(--price-size-mobile);
-    font-weight: var(--price-weight);
-    color: var(--mobile-price-color);
-    margin: 0;
+  .collection-carousel__price {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: var(--cc-price-size-mobile);
+    font-weight: var(--cc-price-weight);
+    color: var(--cc-price-color);
+    white-space: nowrap;
+    flex-shrink: 0;
   }
 
-  /* Desktop styles */
+  .collection-carousel__footer {
+    text-align: center;
+    margin-top: 1.5rem;
+  }
+
+  .collection-carousel__view-all {
+    display: inline-block;
+    font-family: var(--font-body-family), sans-serif;
+    font-size: var(--cc-btn-size);
+    font-weight: var(--cc-btn-weight);
+    color: var(--cc-btn-color);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: opacity 0.2s ease;
+  }
+
+  .collection-carousel__view-all:hover {
+    opacity: 0.7;
+  }
+
+  /* Desktop styles - horizontal carousel */
   @media (min-width: 768px) {
-    .collection-carousel__container {
-      padding: 0 var(--page-margin);
+    .collection-carousel {
+      padding: var(--cc-padding-top) 0 var(--cc-padding-bottom);
     }
 
     .collection-carousel__title {
-      font-size: var(--title-size-desktop);
-      font-style: italic;
-      margin: 0 0 32px;
+      font-size: var(--cc-title-size);
+      margin-bottom: 2rem;
     }
 
-    .collection-carousel__track {
-      margin: 0 -24px;
-      padding: 0 24px;
-      gap: 24px;
-      scroll-snap-type: x mandatory;
-      scroll-padding-left: 24px;
+    .collection-carousel__wrapper {
+      position: relative;
     }
 
-    .collection-carousel__card {
-      flex: 0 0 calc(33.333% - 16px);
-      min-width: 300px;
-      scroll-snap-align: start;
-    }
-
-    /* Hide mobile overlay, show desktop info */
-    .collection-carousel__info-mobile {
-      display: none;
-    }
-
-    .collection-carousel__info {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      padding: 16px 20px;
-      position: absolute;
-      bottom: 16px;
-      left: 16px;
-      right: 16px;
-      isolation: isolate;
-    }
-
-    .collection-carousel__info::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: var(--card-info-bg);
-      opacity: var(--card-info-opacity);
-      z-index: -1;
-    }
-
-    .collection-carousel__details {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .collection-carousel__name {
-      font-family: var(--font-heading-family), serif;
-      font-size: var(--product-name-size-desktop);
-      font-weight: 400;
-      color: var(--product-name-color);
-      margin: 0 0 4px;
-    }
-
-    .collection-carousel__subtitle {
-      font-size: var(--product-subtitle-size);
-      font-weight: var(--product-subtitle-weight);
-      color: var(--product-subtitle-color);
-      margin: 0;
-    }
-
-    .collection-carousel__price {
-      font-size: var(--price-size-desktop);
-      font-weight: var(--price-weight);
-      color: var(--price-color);
-      flex-shrink: 0;
-      margin-left: 16px;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .collection-carousel__track {
-      gap: 32px;
-    }
-
-    .collection-carousel__card {
-      flex: 0 0 calc(33.333% - 22px);
-    }
-
+    /* Show nav arrows on desktop */
     .collection-carousel__nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
       width: 48px;
       height: 48px;
+      background: var(--cc-nav-bg);
+      color: var(--cc-nav-color);
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 10;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .collection-carousel__nav:hover {
+      transform: translateY(-50%) scale(1.05);
+    }
+
+    .collection-carousel__nav:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
     }
 
     .collection-carousel__nav--prev {
-      left: 16px;
+      left: -24px;
     }
 
     .collection-carousel__nav--next {
-      right: 16px;
+      right: -24px;
+    }
+
+    /* Desktop: Horizontal scroll */
+    .collection-carousel__track {
+      display: flex;
+      gap: var(--cc-gap-desktop);
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 4px;
+    }
+
+    .collection-carousel__track::-webkit-scrollbar {
+      display: none;
+    }
+
+    .collection-carousel__card {
+      flex: 0 0 calc(25% - var(--cc-gap-desktop) * 0.75);
+      min-width: 220px;
+      scroll-snap-align: start;
+    }
+
+    .collection-carousel__overlay {
+      padding: 1rem 1.25rem;
+    }
+
+    .collection-carousel__name {
+      font-size: var(--cc-name-size);
+    }
+
+    .collection-carousel__price {
+      font-size: var(--cc-price-size);
+    }
+
+    .collection-carousel__footer {
+      margin-top: 2rem;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .collection-carousel__nav--prev {
+      left: -28px;
+    }
+
+    .collection-carousel__nav--next {
+      right: -28px;
+    }
+
+    .collection-carousel__card {
+      flex: 0 0 calc(20% - var(--cc-gap-desktop) * 0.8);
     }
   }
 {% endstylesheet %}
 
 {% javascript %}
-  const carouselTrack = document.querySelector('[data-carousel-track]');
-  const prevBtn = document.querySelector('[data-carousel-prev]');
-  const nextBtn = document.querySelector('[data-carousel-next]');
+  const carouselSection = document.querySelector('.collection-carousel');
+  if (carouselSection) {
+    const track = carouselSection.querySelector('[data-carousel-track]');
+    const prevBtn = carouselSection.querySelector('[data-carousel-prev]');
+    const nextBtn = carouselSection.querySelector('[data-carousel-next]');
 
-  if (carouselTrack && prevBtn && nextBtn) {
-    const scrollAmount = () => {
-      const card = carouselTrack.querySelector('.collection-carousel__card');
-      if (card) {
-        const style = window.getComputedStyle(carouselTrack);
-        const gap = parseInt(style.gap) || 32;
-        return card.offsetWidth + gap;
-      }
-      return 300;
-    };
+    if (track && prevBtn && nextBtn) {
+      const getScrollAmount = () => {
+        const card = track.querySelector('.collection-carousel__card');
+        if (card) {
+          const style = window.getComputedStyle(track);
+          const gap = parseInt(style.gap) || 20;
+          return card.offsetWidth + gap;
+        }
+        return 260;
+      };
 
-    prevBtn.addEventListener('click', () => {
-      carouselTrack.scrollBy({ left: -scrollAmount(), behavior: 'smooth' });
-    });
+      const updateNavState = () => {
+        const isAtStart = track.scrollLeft <= 1;
+        const isAtEnd = track.scrollLeft >= track.scrollWidth - track.clientWidth - 1;
 
-    nextBtn.addEventListener('click', () => {
-      carouselTrack.scrollBy({ left: scrollAmount(), behavior: 'smooth' });
-    });
+        prevBtn.disabled = isAtStart;
+        nextBtn.disabled = isAtEnd;
+      };
+
+      prevBtn.addEventListener('click', () => {
+        track.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' });
+      });
+
+      nextBtn.addEventListener('click', () => {
+        track.scrollBy({ left: getScrollAmount(), behavior: 'smooth' });
+      });
+
+      track.addEventListener('scroll', updateNavState, { passive: true });
+      updateNavState();
+    }
   }
 {% endjavascript %}
 
@@ -368,7 +363,7 @@
       "type": "text",
       "id": "title",
       "label": "Title",
-      "default": "Glass Collection"
+      "default": "Shop the Collection"
     },
     {
       "type": "collection",
@@ -378,11 +373,44 @@
     {
       "type": "range",
       "id": "products_limit",
-      "label": "Products to show",
-      "min": 3,
+      "label": "Max products to show",
+      "min": 2,
       "max": 12,
       "step": 1,
       "default": 6
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "products_per_row_mobile",
+      "label": "Products per row (mobile)",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "grid_gap_mobile",
+      "label": "Gap (mobile)",
+      "min": 4,
+      "max": 24,
+      "step": 4,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "grid_gap_desktop",
+      "label": "Gap (desktop)",
+      "min": 8,
+      "max": 40,
+      "step": 4,
+      "default": 20,
+      "unit": "px"
     },
     {
       "type": "header",
@@ -392,12 +420,12 @@
       "type": "color",
       "id": "section_bg",
       "label": "Background color",
-      "default": "#F5F5F5"
+      "default": "#f7f5f0"
     },
     {
       "type": "range",
       "id": "padding_top",
-      "label": "Padding top",
+      "label": "Padding top (desktop)",
       "min": 0,
       "max": 100,
       "step": 4,
@@ -407,7 +435,7 @@
     {
       "type": "range",
       "id": "padding_bottom",
-      "label": "Padding bottom",
+      "label": "Padding bottom (desktop)",
       "min": 0,
       "max": 100,
       "step": 4,
@@ -415,33 +443,53 @@
       "unit": "px"
     },
     {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding top (mobile)",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding bottom (mobile)",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "default": 32,
+      "unit": "px"
+    },
+    {
       "type": "header",
-      "content": "Section title"
+      "content": "Title"
     },
     {
       "type": "color",
       "id": "title_color",
       "label": "Color",
-      "default": "#1a1a1a"
+      "default": "#1C1917"
     },
     {
       "type": "range",
-      "id": "title_size_desktop",
+      "id": "title_size",
       "label": "Size (desktop)",
-      "min": 24,
-      "max": 64,
-      "step": 2,
-      "default": 42,
+      "min": 18,
+      "max": 48,
+      "step": 1,
+      "default": 28,
       "unit": "px"
     },
     {
       "type": "range",
       "id": "title_size_mobile",
       "label": "Size (mobile)",
-      "min": 20,
-      "max": 40,
-      "step": 2,
-      "default": 28,
+      "min": 16,
+      "max": 32,
+      "step": 1,
+      "default": 22,
       "unit": "px"
     },
     {
@@ -449,7 +497,6 @@
       "id": "title_weight",
       "label": "Weight",
       "options": [
-        { "value": "300", "label": "Light" },
         { "value": "400", "label": "Regular" },
         { "value": "500", "label": "Medium" },
         { "value": "600", "label": "Semibold" },
@@ -459,42 +506,32 @@
     },
     {
       "type": "header",
-      "content": "Desktop info box"
-    },
-    {
-      "type": "color",
-      "id": "card_info_bg",
-      "label": "Background color",
-      "default": "#ffffff"
-    },
-    {
-      "type": "range",
-      "id": "card_info_opacity",
-      "label": "Opacity",
-      "min": 50,
-      "max": 100,
-      "step": 5,
-      "default": 100,
-      "unit": "%"
-    },
-    {
-      "type": "header",
-      "content": "Desktop - Product name"
+      "content": "Product name"
     },
     {
       "type": "color",
       "id": "product_name_color",
       "label": "Color",
-      "default": "#1a1a1a"
+      "default": "#ffffff"
     },
     {
       "type": "range",
-      "id": "product_name_size_desktop",
-      "label": "Size",
-      "min": 14,
-      "max": 24,
+      "id": "product_name_size",
+      "label": "Size (desktop)",
+      "min": 11,
+      "max": 20,
       "step": 1,
-      "default": 18,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "product_name_size_mobile",
+      "label": "Size (mobile)",
+      "min": 10,
+      "max": 16,
+      "step": 1,
+      "default": 12,
       "unit": "px"
     },
     {
@@ -507,57 +544,36 @@
         { "value": "600", "label": "Semibold" },
         { "value": "700", "label": "Bold" }
       ],
-      "default": "600"
+      "default": "500"
     },
     {
       "type": "header",
-      "content": "Desktop - Subtitle"
-    },
-    {
-      "type": "color",
-      "id": "product_subtitle_color",
-      "label": "Color",
-      "default": "#6b7280"
-    },
-    {
-      "type": "range",
-      "id": "product_subtitle_size",
-      "label": "Size",
-      "min": 12,
-      "max": 18,
-      "step": 1,
-      "default": 14,
-      "unit": "px"
-    },
-    {
-      "type": "select",
-      "id": "product_subtitle_weight",
-      "label": "Weight",
-      "options": [
-        { "value": "300", "label": "Light" },
-        { "value": "400", "label": "Regular" },
-        { "value": "500", "label": "Medium" }
-      ],
-      "default": "400"
-    },
-    {
-      "type": "header",
-      "content": "Desktop - Price"
+      "content": "Price"
     },
     {
       "type": "color",
       "id": "price_color",
       "label": "Color",
-      "default": "#c97a3a"
+      "default": "#ffffff"
     },
     {
       "type": "range",
-      "id": "price_size_desktop",
-      "label": "Size",
-      "min": 14,
-      "max": 24,
+      "id": "price_size",
+      "label": "Size (desktop)",
+      "min": 11,
+      "max": 20,
       "step": 1,
-      "default": 18,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "price_size_mobile",
+      "label": "Size (mobile)",
+      "min": 10,
+      "max": 16,
+      "step": 1,
+      "default": 12,
       "unit": "px"
     },
     {
@@ -570,47 +586,77 @@
         { "value": "600", "label": "Semibold" },
         { "value": "700", "label": "Bold" }
       ],
-      "default": "500"
+      "default": "400"
     },
     {
       "type": "header",
-      "content": "Mobile - Product name"
+      "content": "Text overlay"
     },
     {
-      "type": "color",
-      "id": "mobile_name_color",
-      "label": "Color",
-      "default": "#ffffff"
-    },
-    {
-      "type": "range",
-      "id": "product_name_size_mobile",
-      "label": "Size",
-      "min": 14,
-      "max": 24,
-      "step": 1,
-      "default": 18,
-      "unit": "px"
+      "type": "color_background",
+      "id": "text_overlay_bg",
+      "label": "Background",
+      "default": "linear-gradient(to top, rgba(0,0,0,0.5), rgba(0,0,0,0))"
     },
     {
       "type": "header",
-      "content": "Mobile - Price"
+      "content": "Navigation arrows"
     },
     {
       "type": "color",
-      "id": "mobile_price_color",
-      "label": "Color",
+      "id": "nav_bg",
+      "label": "Background",
       "default": "#ffffff"
     },
     {
+      "type": "color",
+      "id": "nav_color",
+      "label": "Color",
+      "default": "#1C1917"
+    },
+    {
+      "type": "header",
+      "content": "View all button"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "label": "Show 'View all' link",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "view_all_text",
+      "label": "Button text",
+      "default": "View All"
+    },
+    {
+      "type": "color",
+      "id": "view_all_color",
+      "label": "Color",
+      "default": "#1C1917"
+    },
+    {
       "type": "range",
-      "id": "price_size_mobile",
+      "id": "view_all_size",
       "label": "Size",
       "min": 12,
-      "max": 20,
+      "max": 18,
       "step": 1,
-      "default": 15,
+      "default": 14,
       "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "view_all_weight",
+      "label": "Weight",
+      "options": [
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "500"
     }
   ],
   "presets": [
