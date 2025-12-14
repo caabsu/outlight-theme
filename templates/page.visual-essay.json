@@ -38,6 +38,7 @@
       "type": "article-image-text",
       "settings": {
         "image": "shopify://shop_images/custom_nano-banana-pro_1765702780853.jpg",
+        "image_mobile": "shopify://shop_images/custom_nano-banana-pro_1765702780853.png",
         "caption": "FIG 1.0 — THE CANVAS",
         "quote": "\"Light is not the absence of dark. It is the carving of space.\"",
         "caption_color": "#78716c",
