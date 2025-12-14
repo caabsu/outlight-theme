@@ -15,19 +15,22 @@
         "category_1": {
           "type": "category",
           "settings": {
-            "title": "Culture"
+            "title": "Culture",
+            "url": ""
           }
         },
         "category_2": {
           "type": "category",
           "settings": {
-            "title": "Design"
+            "title": "Design",
+            "url": ""
           }
         },
         "category_3": {
           "type": "category",
           "settings": {
-            "title": "Interviews"
+            "title": "Interviews",
+            "url": ""
           }
         }
       },
