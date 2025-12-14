@@ -15,7 +15,7 @@
         "hero_image": "shopify://shop_images/custom_nano-banana-pro_1765671842338.png",
         "hero_height_mobile": 300,
         "hero_height_desktop": 450,
-        "overlay_opacity": 30,
+        "overlay_opacity": 20,
         "show_filter_bar": true,
         "filter_bar_bg": "#f7f5f0",
         "filter_bar_border_color": "#1c1917",
