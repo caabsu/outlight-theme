@@ -444,6 +444,17 @@
     right: 0;
   }
 
+  /* When mega menu is open, account for announcement bar */
+  .header-wrapper--transparent.header-wrapper--sticky.is-scrolled.mega-menu-open {
+    top: var(--announcement-bar-height, 0px);
+  }
+
+  /* Non-sticky transparent header with mega menu open should stay in place */
+  .header-wrapper--transparent.is-scrolled.mega-menu-open:not(.header-wrapper--sticky) {
+    position: absolute;
+    top: var(--announcement-bar-height, 0px);
+  }
+
   .header-wrapper--transparent.is-scrolled {
     background-color: var(--header-bg);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -1610,6 +1621,7 @@
       megaMenuOpen = true;
       if (isTransparent && headerWrapper) {
         headerWrapper.classList.add('is-scrolled');
+        headerWrapper.classList.add('mega-menu-open');
       }
     });
 
@@ -1617,6 +1629,9 @@
       timeout = setTimeout(() => {
         item.classList.remove('is-open');
         megaMenuOpen = false;
+        if (headerWrapper) {
+          headerWrapper.classList.remove('mega-menu-open');
+        }
         // Only remove is-scrolled if not actually scrolled
         if (isTransparent && headerWrapper && window.scrollY <= scrollThreshold) {
           headerWrapper.classList.remove('is-scrolled');
