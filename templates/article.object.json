@@ -1,0 +1,317 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "article-hero": {
+      "type": "article-hero",
+      "settings": {
+        "category": "ESSAY — VOL. 05",
+        "title_line_1": "The Object",
+        "title_line_2": "in the Room",
+        "author": "Julian Vance",
+        "read_time": "4 MIN",
+        "category_color": "#d97706",
+        "category_size": 12,
+        "title_color": "#1c1917",
+        "title_size": 72,
+        "title_size_mobile": 42,
+        "subtitle_color": "#a8a29e",
+        "subtitle_size": 72,
+        "subtitle_size_mobile": 42,
+        "meta_color": "#a8a29e",
+        "divider_color": "#d6d3d1",
+        "background_color": "#f7f5f0",
+        "padding_top": 80,
+        "padding_bottom": 40,
+        "padding_top_mobile": 60,
+        "padding_bottom_mobile": 20
+      }
+    },
+    "image-hero": {
+      "type": "article-image-text",
+      "settings": {
+        "caption": "",
+        "quote": "",
+        "caption_color": "#78716c",
+        "quote_color": "#1c1917",
+        "quote_size": 22,
+        "quote_size_mobile": 18,
+        "background_color": "#f7f5f0",
+        "text_background": "#f7f5f0",
+        "padding_top": 0,
+        "padding_bottom": 0,
+        "padding_top_mobile": 0,
+        "padding_bottom_mobile": 0
+      }
+    },
+    "featured-product": {
+      "type": "article-featured-product",
+      "settings": {
+        "subtitle": "Solid Brass",
+        "button_text": "Collect This Piece",
+        "title_color": "#1c1917",
+        "title_size": 32,
+        "title_size_mobile": 26,
+        "subtitle_color": "#a8a29e",
+        "price_color": "#1c1917",
+        "button_background": "#292524",
+        "button_text_color": "#ffffff",
+        "button_hover_background": "#1c1917",
+        "button_hover_text": "#ffffff",
+        "background_color": "#f7f5f0",
+        "card_background": "#ffffff",
+        "padding_top": 40,
+        "padding_bottom": 0,
+        "padding_top_mobile": 30,
+        "padding_bottom_mobile": 0
+      }
+    },
+    "caption-1": {
+      "type": "article-image-text",
+      "settings": {
+        "caption": "FIG 1.0 — THE TOTEM",
+        "quote": "",
+        "caption_color": "#78716c",
+        "quote_color": "#1c1917",
+        "quote_size": 22,
+        "quote_size_mobile": 18,
+        "background_color": "#f7f5f0",
+        "text_background": "#f7f5f0",
+        "padding_top": 20,
+        "padding_bottom": 40,
+        "padding_top_mobile": 15,
+        "padding_bottom_mobile": 30
+      }
+    },
+    "section-1": {
+      "type": "article-section",
+      "settings": {
+        "section_number": "01",
+        "section_label": "PHILOSOPHY",
+        "title": "The Unlit Test",
+        "caption": "",
+        "body_text": "<p>Most lighting is purchased for what it does when the switch is flipped on. We believe the true test of a fixture is what it does when the switch is off.</p>",
+        "body_text_2": "<p>In the daylight, a lamp is not a utility—it is a statue. If it looks like 'dead technology', it doesn't belong in your sanctuary. We design 'Sculptural Statements'.</p>",
+        "enable_dropcap": true,
+        "number_color": "#78716c",
+        "divider_color": "#d6d3d1",
+        "caption_color": "#78716c",
+        "title_color": "#1c1917",
+        "title_size": 48,
+        "title_size_mobile": 32,
+        "text_color": "#44403c",
+        "text_size": 18,
+        "text_size_mobile": 16,
+        "dropcap_color": "#d97706",
+        "dropcap_size": 80,
+        "dropcap_size_mobile": 56,
+        "background_color": "#f7f5f0",
+        "padding_top": 60,
+        "padding_bottom": 60,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 40
+      }
+    },
+    "section-2": {
+      "type": "article-section",
+      "settings": {
+        "section_number": "02",
+        "section_label": "MATERIALITY",
+        "title": "Honest Contrast",
+        "caption": "",
+        "body_text": "<p>We believe in the physics of tension. The grounding force of a heavy base supporting the delicate flight of a slender stem. Whether it is the coolness of stone or the warmth of metal.</p>",
+        "body_text_2": "",
+        "enable_dropcap": false,
+        "number_color": "#78716c",
+        "divider_color": "#d6d3d1",
+        "caption_color": "#78716c",
+        "title_color": "#1c1917",
+        "title_size": 48,
+        "title_size_mobile": 32,
+        "text_color": "#44403c",
+        "text_size": 18,
+        "text_size_mobile": 16,
+        "dropcap_color": "#d97706",
+        "dropcap_size": 80,
+        "dropcap_size_mobile": 56,
+        "background_color": "#f7f5f0",
+        "padding_top": 0,
+        "padding_bottom": 0,
+        "padding_top_mobile": 0,
+        "padding_bottom_mobile": 30
+      }
+    },
+    "materials": {
+      "type": "article-materials",
+      "blocks": {
+        "material_1": {
+          "type": "material",
+          "settings": {
+            "text": "Unlacquered Brass"
+          }
+        },
+        "material_2": {
+          "type": "material",
+          "settings": {
+            "text": "Honed Carrara"
+          }
+        },
+        "material_3": {
+          "type": "material",
+          "settings": {
+            "text": "Mouth-Blown Glass"
+          }
+        }
+      },
+      "block_order": [
+        "material_1",
+        "material_2",
+        "material_3"
+      ],
+      "settings": {
+        "text_color": "#78716c",
+        "text_size": 13,
+        "text_size_mobile": 12,
+        "accent_color": "#d97706",
+        "background_color": "#f7f5f0",
+        "padding_top": 30,
+        "padding_bottom": 60,
+        "padding_top_mobile": 20,
+        "padding_bottom_mobile": 40
+      }
+    },
+    "section-3": {
+      "type": "article-section",
+      "settings": {
+        "section_number": "03",
+        "section_label": "THE EFFECT",
+        "title": "Painting with Shadow",
+        "caption": "",
+        "body_text": "<p>Sculptural light is not about beaming brightness directly at you. Instead, these fixtures are designed for 'Indirect Wash.' They direct light back toward the wall or ceiling, creating a glowing eclipse.</p>",
+        "body_text_2": "",
+        "enable_dropcap": false,
+        "number_color": "#78716c",
+        "divider_color": "#d6d3d1",
+        "caption_color": "#78716c",
+        "title_color": "#1c1917",
+        "title_size": 48,
+        "title_size_mobile": 32,
+        "text_color": "#44403c",
+        "text_size": 18,
+        "text_size_mobile": 16,
+        "dropcap_color": "#d97706",
+        "dropcap_size": 80,
+        "dropcap_size_mobile": 56,
+        "background_color": "#f7f5f0",
+        "padding_top": 0,
+        "padding_bottom": 60,
+        "padding_top_mobile": 0,
+        "padding_bottom_mobile": 40
+      }
+    },
+    "products": {
+      "type": "article-products",
+      "blocks": {
+        "product_1": {
+          "type": "product",
+          "settings": {
+            "custom_title": "",
+            "custom_label": ""
+          }
+        },
+        "product_2": {
+          "type": "product",
+          "settings": {
+            "custom_title": "",
+            "custom_label": ""
+          }
+        },
+        "product_3": {
+          "type": "product",
+          "settings": {
+            "custom_title": "",
+            "custom_label": ""
+          }
+        }
+      },
+      "block_order": [
+        "product_1",
+        "product_2",
+        "product_3"
+      ],
+      "settings": {
+        "label": "THE COLLECTION",
+        "title": "Gallery Walk",
+        "subtitle": "",
+        "link_text": "",
+        "link_url": "",
+        "button_text": "Add to Cart",
+        "button_color": "#1c1917",
+        "button_text_color": "#1c1917",
+        "button_hover_bg": "#1c1917",
+        "button_hover_text": "#ffffff",
+        "label_color": "#d97706",
+        "title_color": "#1c1917",
+        "title_size": 40,
+        "title_size_mobile": 32,
+        "subtitle_color": "#78716c",
+        "link_color": "#1c1917",
+        "product_label_color": "#78716c",
+        "product_label_size": 10,
+        "product_label_size_mobile": 10,
+        "product_title_color": "#1c1917",
+        "product_title_size": 24,
+        "product_title_size_mobile": 20,
+        "price_color": "#57534e",
+        "price_size": 14,
+        "price_size_mobile": 14,
+        "background_color": "#f7f5f0",
+        "card_background": "#ffffff",
+        "padding_top": 60,
+        "padding_bottom": 60,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 40
+      }
+    },
+    "closing": {
+      "type": "article-closing",
+      "settings": {
+        "quote": "\"It is the jewelry of the room: it doesn't just light the space; it adorns it.\"",
+        "show_quotation_marks": true,
+        "footer_text": "",
+        "quotation_mark_color": "#a8a29e",
+        "quotation_mark_size": 80,
+        "quotation_mark_size_mobile": 50,
+        "quote_color": "#78716c",
+        "quote_size": 28,
+        "quote_size_mobile": 22,
+        "divider_color": "#d6d3d1",
+        "footer_color": "#a8a29e",
+        "background_color": "#f7f5f0",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "padding_top_mobile": 60,
+        "padding_bottom_mobile": 60
+      }
+    }
+  },
+  "order": [
+    "article-hero",
+    "image-hero",
+    "featured-product",
+    "caption-1",
+    "section-1",
+    "section-2",
+    "materials",
+    "section-3",
+    "products",
+    "closing"
+  ]
+}
