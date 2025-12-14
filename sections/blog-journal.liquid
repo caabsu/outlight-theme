@@ -7,10 +7,6 @@
   class="blog-journal"
   style="
     --bj-bg: {{ section.settings.background_color }};
-    --bj-header-color: {{ section.settings.header_color }};
-    --bj-header-size: {{ section.settings.header_size }}px;
-    --bj-header-size-mobile: {{ section.settings.header_size_mobile }}px;
-    --bj-nav-color: {{ section.settings.nav_color }};
     --bj-label-color: {{ section.settings.label_color }};
     --bj-title-color: {{ section.settings.title_color }};
     --bj-featured-title-size: {{ section.settings.featured_title_size }}px;
@@ -26,22 +22,6 @@
   "
 >
   <div class="blog-journal__container">
-    {%- comment -%} Header {%- endcomment -%}
-    <header class="blog-journal__header">
-      <a href="{{ blog.url }}" class="blog-journal__logo">
-        {{ section.settings.journal_title | default: 'outlight journal' }}
-      </a>
-      <nav class="blog-journal__nav">
-        {%- for block in section.blocks -%}
-          {%- if block.type == 'category' -%}
-            <a href="{{ block.settings.url }}" class="blog-journal__nav-link" {{ block.shopify_attributes }}>
-              {{ block.settings.title | upcase }}
-            </a>
-          {%- endif -%}
-        {%- endfor -%}
-      </nav>
-    </header>
-
     {%- comment -%} Featured Article {%- endcomment -%}
     {%- assign featured_article = blog.articles.first -%}
     {%- if featured_article -%}
@@ -140,47 +120,12 @@
 {% stylesheet %}
   .blog-journal {
     background-color: var(--bj-bg);
-    padding: var(--bj-padding-top-mobile) 16px var(--bj-padding-bottom-mobile);
+    padding: var(--bj-padding-top-mobile) 12px var(--bj-padding-bottom-mobile);
   }
 
   .blog-journal__container {
     max-width: 1400px;
     margin: 0 auto;
-  }
-
-  /* Header */
-  .blog-journal__header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 2rem;
-  }
-
-  .blog-journal__logo {
-    font-family: var(--font-heading-family), serif;
-    font-size: var(--bj-header-size-mobile);
-    font-weight: 400;
-    font-style: italic;
-    color: var(--bj-header-color);
-    text-decoration: none;
-  }
-
-  .blog-journal__nav {
-    display: none;
-  }
-
-  .blog-journal__nav-link {
-    font-family: var(--font-body-family), sans-serif;
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    color: var(--bj-nav-color);
-    text-decoration: none;
-    transition: opacity 0.2s ease;
-  }
-
-  .blog-journal__nav-link:hover {
-    opacity: 0.7;
   }
 
   /* Featured - Desktop (hidden on mobile) */
@@ -309,21 +254,7 @@
   /* Desktop Styles */
   @media (min-width: 768px) {
     .blog-journal {
-      padding: var(--bj-padding-top) 40px var(--bj-padding-bottom);
-    }
-
-    .blog-journal__header {
-      justify-content: space-between;
-      margin-bottom: 3rem;
-    }
-
-    .blog-journal__logo {
-      font-size: var(--bj-header-size);
-    }
-
-    .blog-journal__nav {
-      display: flex;
-      gap: 2rem;
+      padding: var(--bj-padding-top) 24px var(--bj-padding-bottom);
     }
 
     /* Featured - Desktop */
@@ -462,13 +393,7 @@
   "settings": [
     {
       "type": "header",
-      "content": "Header"
-    },
-    {
-      "type": "text",
-      "id": "journal_title",
-      "label": "Journal title",
-      "default": "outlight journal"
+      "content": "Featured article"
     },
     {
       "type": "text",
@@ -491,38 +416,6 @@
     {
       "type": "header",
       "content": "Typography"
-    },
-    {
-      "type": "color",
-      "id": "header_color",
-      "label": "Header color",
-      "default": "#1C1917"
-    },
-    {
-      "type": "range",
-      "id": "header_size",
-      "label": "Header size (desktop)",
-      "min": 20,
-      "max": 48,
-      "step": 2,
-      "default": 28,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "header_size_mobile",
-      "label": "Header size (mobile)",
-      "min": 18,
-      "max": 32,
-      "step": 2,
-      "default": 22,
-      "unit": "px"
-    },
-    {
-      "type": "color",
-      "id": "nav_color",
-      "label": "Navigation color",
-      "default": "#1C1917"
     },
     {
       "type": "color",
@@ -639,33 +532,9 @@
       "unit": "px"
     }
   ],
-  "blocks": [
-    {
-      "type": "category",
-      "name": "Category link",
-      "settings": [
-        {
-          "type": "text",
-          "id": "title",
-          "label": "Title",
-          "default": "Culture"
-        },
-        {
-          "type": "url",
-          "id": "url",
-          "label": "URL"
-        }
-      ]
-    }
-  ],
   "presets": [
     {
-      "name": "Blog journal",
-      "blocks": [
-        { "type": "category", "settings": { "title": "Culture" } },
-        { "type": "category", "settings": { "title": "Design" } },
-        { "type": "category", "settings": { "title": "Interviews" } }
-      ]
+      "name": "Blog journal"
     }
   ]
 }
