@@ -99,24 +99,6 @@
         "padding_bottom_mobile": 35
       }
     },
-    "image-text-2": {
-      "type": "article-image-text",
-      "settings": {
-        "image": "shopify://shop_images/Fenra_8R.png",
-        "caption": "FIG 1.2 — CIRCADIAN IMPACT",
-        "quote": "",
-        "caption_color": "#78716c",
-        "quote_color": "#44403c",
-        "quote_size": 18,
-        "quote_size_mobile": 16,
-        "background_color": "#f7f5f0",
-        "text_background": "#f7f5f0",
-        "padding_top": 60,
-        "padding_bottom": 60,
-        "padding_top_mobile": 40,
-        "padding_bottom_mobile": 0
-      }
-    },
     "section-2": {
       "type": "article-section",
       "settings": {
@@ -241,7 +223,6 @@
     "image-text-1",
     "section-1",
     "quote-1",
-    "image-text-2",
     "section-2",
     "products",
     "closing"
