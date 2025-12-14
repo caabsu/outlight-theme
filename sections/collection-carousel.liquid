@@ -265,20 +265,21 @@
     }
 
     .collection-carousel__wrapper {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
+      position: relative;
     }
 
-    /* Show nav arrows on desktop */
+    /* Show nav arrows on desktop - overlayed on track */
     .collection-carousel__nav {
       display: flex;
       align-items: center;
       justify-content: center;
-      flex-shrink: 0;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 2;
       width: 40px;
       height: 40px;
-      background: var(--cc-nav-bg);
+      background: rgba(255, 255, 255, 0.85);
       color: var(--cc-nav-color);
       border: 1px solid var(--cc-nav-color);
       border-radius: 0;
@@ -286,22 +287,25 @@
       transition: opacity 0.2s ease, background 0.2s ease;
     }
 
+    .collection-carousel__nav--prev {
+      left: 12px;
+    }
+
+    .collection-carousel__nav--next {
+      right: 12px;
+    }
+
     .collection-carousel__nav:hover {
       background: var(--cc-nav-color);
-      color: var(--cc-nav-bg);
+      color: #fff;
     }
 
     .collection-carousel__nav:disabled {
-      opacity: 0.3;
-      cursor: not-allowed;
+      opacity: 0;
+      pointer-events: none;
     }
 
-    .collection-carousel__nav:disabled:hover {
-      background: var(--cc-nav-bg);
-      color: var(--cc-nav-color);
-    }
-
-    /* Desktop: Horizontal scroll */
+    /* Desktop: Horizontal scroll - full width */
     .collection-carousel__track {
       display: flex;
       gap: var(--cc-gap-desktop);
@@ -309,7 +313,7 @@
       scroll-snap-type: x mandatory;
       scrollbar-width: none;
       -webkit-overflow-scrolling: touch;
-      flex: 1;
+      width: 100%;
       justify-content: flex-start;
     }
 
