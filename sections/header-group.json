@@ -14,10 +14,10 @@
     "announcement-bar": {
       "type": "announcement-bar",
       "settings": {
-        "text": "COMPLIMENTARY SHIPPING ON ALL ORDERS OVER $250.",
+        "text": "HOLIDAY SALE : 30% OFF ALL LIGHTS",
         "link_text": "SHOP NOW",
         "link_url": "/collections/all",
-        "text_mobile": "FREE SHIPPING OVER $250.",
+        "text_mobile": "HOLIDAY SALE : 30% OFF ALL LIGHTS",
         "link_text_mobile": "SHOP COLLECTION",
         "bg_color": "#1c1917",
         "text_color": "#ffffff",
