@@ -1967,32 +1967,30 @@
     .product-media-gallery {
       flex: 1;
       display: flex;
+      flex-direction: column;
       gap: 15px;
       background: transparent;
-      align-items: flex-start;
+      align-items: stretch;
     }
 
-    /* Desktop Thumbnails Wrapper - fixed width, height synced via JS */
+    /* Desktop Thumbnails Wrapper - below main image */
     .product-media-thumbnails-wrapper {
       position: relative;
       overflow: hidden;
-      width: 115px;
+      width: 100%;
+      order: 2;
       flex-shrink: 0;
     }
 
-    /* Desktop Thumbnails - absolute positioned within wrapper */
+    /* Desktop Thumbnails - horizontal layout */
     .product-media-thumbnails {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
       gap: 10px;
-      overflow-y: auto;
-      overflow-x: hidden;
+      overflow-x: auto;
+      overflow-y: hidden;
       scrollbar-width: none;
+      padding-bottom: 5px;
     }
 
     .product-media-thumbnails::-webkit-scrollbar {
@@ -2001,7 +1999,8 @@
 
     .product-media-thumbnail {
       flex-shrink: 0;
-      width: 100%;
+      width: 80px;
+      height: 80px;
       aspect-ratio: 1 / 1;
       border: 2px solid transparent;
       border-radius: 0;
@@ -2026,15 +2025,15 @@
       border-color: #1a1a1a;
     }
 
-    /* Desktop Main Image */
+    /* Desktop Main Image - full width */
     .product-media-main {
       position: relative;
       border-radius: 0;
       overflow: hidden;
       background: #f5f5f5;
       aspect-ratio: 1 / 1;
-      flex: 1 1 0;
-      min-width: 0;
+      width: 100%;
+      order: 1;
       max-height: none;
       height: auto;
     }
@@ -2131,20 +2130,6 @@
     const options = { weekday: 'long', month: 'short', day: 'numeric' };
     deliveryDateEl.textContent = deliveryDate.toLocaleDateString('en-US', options);
   }
-
-  // Sync thumbnail wrapper height with main image (desktop)
-  const mainImage = document.querySelector('.product-media-main');
-  const thumbWrapper = document.querySelector('.product-media-thumbnails-wrapper');
-
-  function syncThumbnailHeight() {
-    if (mainImage && thumbWrapper && window.innerWidth >= 768) {
-      thumbWrapper.style.height = mainImage.offsetHeight + 'px';
-    }
-  }
-
-  syncThumbnailHeight();
-  window.addEventListener('resize', syncThumbnailHeight);
-  window.addEventListener('load', syncThumbnailHeight);
 
   // Gallery navigation
   const galleryTrack = document.querySelector('[data-gallery-track]');
