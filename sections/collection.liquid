@@ -951,7 +951,8 @@
     // State
     let selectedCategories = new Set();
     let currentSearchTerm = '';
-    let allCollectionProducts = null;
+    let mainCollectionProducts = null;
+    let categoryProductsCache = {};
     let isFiltering = false;
     let priceMinValue = null;
     let priceMaxValue = null;
@@ -964,21 +965,18 @@
       return match ? match[1] : null;
     };
 
-    // Fetch all products from collection (with caching)
-    const fetchAllProducts = async () => {
-      if (allCollectionProducts !== null) return allCollectionProducts;
-
-      const handle = getCollectionHandle();
+    // Fetch all products from a specific collection
+    const fetchCollectionProducts = async (handle) => {
       if (!handle) return [];
+
+      // Check cache first
+      if (categoryProductsCache[handle]) {
+        return categoryProductsCache[handle];
+      }
 
       let products = [];
       let page = 1;
       let hasMore = true;
-
-      // Show loading state
-      if (productsGrid) {
-        productsGrid.innerHTML = '<div class="collection-loading">Loading products...</div>';
-      }
 
       while (hasMore) {
         try {
@@ -993,13 +991,23 @@
             hasMore = false;
           }
         } catch (e) {
-          console.error('Error fetching products:', e);
+          console.error('Error fetching products from', handle, e);
           hasMore = false;
         }
       }
 
-      allCollectionProducts = products;
+      // Cache it
+      categoryProductsCache[handle] = products;
       return products;
+    };
+
+    // Fetch main collection products
+    const fetchMainCollectionProducts = async () => {
+      if (mainCollectionProducts !== null) return mainCollectionProducts;
+
+      const handle = getCollectionHandle();
+      mainCollectionProducts = await fetchCollectionProducts(handle);
+      return mainCollectionProducts;
     };
 
     // Render filtered products
@@ -1019,11 +1027,8 @@
           ? parseFloat(product.variants[0].price).toLocaleString('en-US', { style: 'currency', currency: 'USD' })
           : '';
 
-        // Get collection handles for this product
-        const collectionHandles = (product.collections || []).map(c => c.handle || c).join(',');
-
         return `
-          <a href="/products/${product.handle}" class="collection-product" data-product data-collections="${collectionHandles}">
+          <a href="/products/${product.handle}" class="collection-product" data-product>
             <div class="collection-product__image-wrapper">
               ${imageUrl ? `<img src="${imageUrl}" alt="${product.title}" class="collection-product__image" loading="lazy">` : '<div class="collection-product__placeholder"></div>'}
             </div>
@@ -1059,61 +1064,63 @@
       isFiltering = true;
       if (pagination) pagination.style.display = 'none';
 
-      // Fetch ALL products from collection
-      const allProducts = await fetchAllProducts();
+      // Show loading state
+      if (productsGrid) {
+        productsGrid.innerHTML = '<div class="collection-loading">Loading products...</div>';
+      }
 
-      // Apply filters
-      const filtered = allProducts.filter(product => {
-        // Search filter
-        if (currentSearchTerm) {
-          const searchLower = currentSearchTerm.toLowerCase();
-          const matchesSearch =
-            product.title.toLowerCase().includes(searchLower) ||
-            (product.product_type && product.product_type.toLowerCase().includes(searchLower)) ||
-            (product.vendor && product.vendor.toLowerCase().includes(searchLower)) ||
-            (product.tags && product.tags.some(tag => tag.toLowerCase().includes(searchLower)));
-          if (!matchesSearch) return false;
-        }
+      // Fetch main collection products
+      const mainProducts = await fetchMainCollectionProducts();
 
-        // Category filter - product must be in ALL selected collections (AND logic)
-        if (selectedCategories.size > 0) {
-          // Get all collection handles for this product
-          const productCollectionHandles = [];
+      // Create a Set of main collection product IDs for quick lookup
+      const mainProductIds = new Set(mainProducts.map(p => p.id));
 
-          // products.json returns collections as array of objects with handle
-          if (product.collections) {
-            product.collections.forEach(col => {
-              if (col.handle) productCollectionHandles.push(col.handle);
-              else if (typeof col === 'string') productCollectionHandles.push(col);
-            });
-          }
+      // Start with main collection products
+      let filteredProducts = [...mainProducts];
 
-          // Also check product_type as a fallback category match
-          if (product.product_type) {
-            productCollectionHandles.push(product.product_type.toLowerCase().replace(/\s+/g, '-'));
-          }
+      // Category filter: find products that are in ALL selected category collections
+      if (selectedCategories.size > 0) {
+        const categories = [...selectedCategories];
 
-          // Check if product matches all selected categories
-          const matchesAllCategories = [...selectedCategories].every(cat =>
-            productCollectionHandles.includes(cat)
-          );
-          if (!matchesAllCategories) return false;
-        }
+        // Fetch products from each selected category collection
+        const categoryProductSets = await Promise.all(
+          categories.map(async (cat) => {
+            const products = await fetchCollectionProducts(cat);
+            return new Set(products.map(p => p.id));
+          })
+        );
 
-        // Price filter
-        if (priceMinValue !== null || priceMaxValue !== null) {
+        // Filter: product must be in main collection AND in ALL selected category collections
+        filteredProducts = mainProducts.filter(product => {
+          return categoryProductSets.every(catSet => catSet.has(product.id));
+        });
+      }
+
+      // Apply search filter
+      if (currentSearchTerm) {
+        const searchLower = currentSearchTerm.toLowerCase();
+        filteredProducts = filteredProducts.filter(product => {
+          return product.title.toLowerCase().includes(searchLower) ||
+                 (product.product_type && product.product_type.toLowerCase().includes(searchLower)) ||
+                 (product.vendor && product.vendor.toLowerCase().includes(searchLower)) ||
+                 (product.tags && product.tags.some(tag => tag.toLowerCase().includes(searchLower)));
+        });
+      }
+
+      // Apply price filter
+      if (priceMinValue !== null || priceMaxValue !== null) {
+        filteredProducts = filteredProducts.filter(product => {
           const productPrice = product.variants && product.variants[0]
             ? parseFloat(product.variants[0].price)
             : 0;
 
           if (priceMinValue !== null && productPrice < priceMinValue) return false;
           if (priceMaxValue !== null && productPrice > priceMaxValue) return false;
-        }
+          return true;
+        });
+      }
 
-        return true;
-      });
-
-      renderProducts(filtered);
+      renderProducts(filteredProducts);
     };
 
     // Reset all filters and restore original page
