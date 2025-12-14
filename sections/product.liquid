@@ -73,6 +73,11 @@
     {%- comment -%} Desktop Thumbnails {%- endcomment -%}
     {%- if product.media.size > 1 -%}
       <div class="product-media-thumbnails-wrapper">
+        <button class="product-thumbnails-nav product-thumbnails-nav--prev" data-thumbnails-prev aria-label="Previous thumbnails">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 18L9 12L15 6"/>
+          </svg>
+        </button>
         <div class="product-media-thumbnails" data-gallery-thumbnails>
           {%- for media in product.media -%}
             <button
@@ -88,6 +93,11 @@
             </button>
           {%- endfor -%}
         </div>
+        <button class="product-thumbnails-nav product-thumbnails-nav--next" data-thumbnails-next aria-label="Next thumbnails">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 18L15 12L9 6"/>
+          </svg>
+        </button>
       </div>
     {%- endif -%}
 
@@ -2059,12 +2069,44 @@
 
     /* Desktop Thumbnails Wrapper - below main image */
     .product-media-thumbnails-wrapper {
-      display: block;
+      display: flex;
+      align-items: center;
+      gap: 10px;
       position: relative;
-      overflow: hidden;
       width: 100%;
       order: 2;
       flex-shrink: 0;
+    }
+
+    /* Thumbnail navigation arrows */
+    .product-thumbnails-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      background: #fff;
+      color: #1a1a1a;
+      border: 1px solid #1a1a1a;
+      border-radius: 0;
+      cursor: pointer;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .product-thumbnails-nav:hover {
+      background: #1a1a1a;
+      color: #fff;
+    }
+
+    .product-thumbnails-nav:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .product-thumbnails-nav:disabled:hover {
+      background: #fff;
+      color: #1a1a1a;
     }
 
     /* Desktop Thumbnails - horizontal layout */
@@ -2075,7 +2117,8 @@
       overflow-x: auto;
       overflow-y: hidden;
       scrollbar-width: none;
-      padding-bottom: 5px;
+      flex: 1;
+      scroll-behavior: smooth;
     }
 
     .product-media-thumbnails::-webkit-scrollbar {
@@ -2084,8 +2127,8 @@
 
     .product-media-thumbnail {
       flex-shrink: 0;
-      width: 80px;
-      height: 80px;
+      width: 100px;
+      height: 100px;
       aspect-ratio: 1 / 1;
       border: 2px solid transparent;
       border-radius: 0;
@@ -2283,6 +2326,65 @@
       updateActiveStates(index);
     });
   });
+
+  // Thumbnail navigation arrows
+  const thumbnailsContainer = document.querySelector('[data-gallery-thumbnails]');
+  const thumbPrevBtn = document.querySelector('[data-thumbnails-prev]');
+  const thumbNextBtn = document.querySelector('[data-thumbnails-next]');
+
+  function scrollThumbnailIntoView(index) {
+    if (!thumbnailsContainer || !thumbnails[index]) return;
+    const thumb = thumbnails[index];
+    const container = thumbnailsContainer;
+    const thumbLeft = thumb.offsetLeft;
+    const thumbWidth = thumb.offsetWidth;
+    const containerWidth = container.clientWidth;
+    const scrollLeft = container.scrollLeft;
+
+    // If thumbnail is not fully visible, scroll to it
+    if (thumbLeft < scrollLeft) {
+      container.scrollTo({ left: thumbLeft - 10, behavior: 'smooth' });
+    } else if (thumbLeft + thumbWidth > scrollLeft + containerWidth) {
+      container.scrollTo({ left: thumbLeft + thumbWidth - containerWidth + 10, behavior: 'smooth' });
+    }
+  }
+
+  function updateThumbnailNavState() {
+    if (!thumbnailsContainer || !thumbPrevBtn || !thumbNextBtn) return;
+    const isAtStart = thumbnailsContainer.scrollLeft <= 1;
+    const isAtEnd = thumbnailsContainer.scrollLeft >= thumbnailsContainer.scrollWidth - thumbnailsContainer.clientWidth - 1;
+    thumbPrevBtn.disabled = isAtStart;
+    thumbNextBtn.disabled = isAtEnd;
+  }
+
+  if (thumbPrevBtn) {
+    thumbPrevBtn.addEventListener('click', () => {
+      if (!thumbnailsContainer) return;
+      const scrollAmount = 220; // ~2 thumbnails
+      thumbnailsContainer.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+    });
+  }
+
+  if (thumbNextBtn) {
+    thumbNextBtn.addEventListener('click', () => {
+      if (!thumbnailsContainer) return;
+      const scrollAmount = 220; // ~2 thumbnails
+      thumbnailsContainer.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    });
+  }
+
+  if (thumbnailsContainer) {
+    thumbnailsContainer.addEventListener('scroll', updateThumbnailNavState, { passive: true });
+    updateThumbnailNavState();
+  }
+
+  // Update updateActiveStates to also scroll thumbnail into view
+  const originalUpdateActiveStates = updateActiveStates;
+  updateActiveStates = function(index) {
+    originalUpdateActiveStates(index);
+    scrollThumbnailIntoView(index);
+    updateThumbnailNavState();
+  };
 
   // Lightbox functionality
   const lightbox = document.querySelector('[data-lightbox]');
