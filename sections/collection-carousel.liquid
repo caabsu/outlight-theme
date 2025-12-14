@@ -1,13 +1,15 @@
 {%- assign products_mobile = section.settings.products_limit_mobile -%}
 {%- assign products_desktop = section.settings.products_limit_desktop -%}
 {%- assign max_products = products_mobile | at_least: products_desktop -%}
+{%- assign fetch_limit = max_products | plus: 1 -%}
 {%- assign collection = collections[section.settings.collection] -%}
+{%- assign current_product_id = product.id -%}
 
 {%- comment -%} Count products excluding current product if on PDP {%- endcomment -%}
 {%- assign visible_count = 0 -%}
 {%- if collection != blank -%}
-  {%- for col_product in collection.products limit: max_products | plus: 1 -%}
-    {%- unless col_product.id == product.id -%}
+  {%- for col_product in collection.products limit: fetch_limit -%}
+    {%- unless col_product.id == current_product_id -%}
       {%- if visible_count < max_products -%}
         {%- assign visible_count = visible_count | plus: 1 -%}
       {%- endif -%}
@@ -65,9 +67,8 @@
       <div class="collection-carousel__track" data-carousel-track>
         {%- if collection != blank and collection.products.size > 0 -%}
           {%- assign product_index = 0 -%}
-          {%- assign fetch_limit = max_products | plus: 1 -%}
           {%- for col_product in collection.products limit: fetch_limit -%}
-            {%- unless col_product.id == product.id -%}
+            {%- unless col_product.id == current_product_id -%}
               {%- if product_index < max_products -%}
                 {%- assign product_index = product_index | plus: 1 -%}
                 <a href="{{ col_product.url }}" class="collection-carousel__card" data-index="{{ product_index }}">
