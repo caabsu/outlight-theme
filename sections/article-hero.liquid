@@ -50,13 +50,13 @@
         {%- endif -%}
       </div>
     </div>
-
-    {%- if section.settings.featured_image != blank -%}
-      <div class="article-hero__image">
-        {{ section.settings.featured_image | image_url: width: 1800 | image_tag: loading: 'eager', class: 'article-hero__img' }}
-      </div>
-    {%- endif -%}
   </div>
+
+  {%- if section.settings.featured_image != blank -%}
+    <div class="article-hero__image">
+      {{ section.settings.featured_image | image_url: width: 1800 | image_tag: loading: 'eager', class: 'article-hero__img' }}
+    </div>
+  {%- endif -%}
 </section>
 
 {% stylesheet %}
