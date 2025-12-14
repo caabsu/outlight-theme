@@ -444,15 +444,10 @@
     right: 0;
   }
 
-  /* When mega menu is open, account for announcement bar */
-  .header-wrapper--transparent.header-wrapper--sticky.is-scrolled.mega-menu-open {
-    top: var(--announcement-bar-height, 0px);
-  }
-
-  /* Non-sticky transparent header with mega menu open should stay in place */
-  .header-wrapper--transparent.is-scrolled.mega-menu-open:not(.header-wrapper--sticky) {
+  /* When mega menu is open but not actually scrolled, keep header in original position */
+  .header-wrapper--transparent.mega-menu-open:not(.actually-scrolled) {
     position: absolute;
-    top: var(--announcement-bar-height, 0px);
+    top: 0;
   }
 
   .header-wrapper--transparent.is-scrolled {
@@ -1579,7 +1574,17 @@
   // Header scroll behavior
   if (isTransparent) {
     function updateHeader() {
-      if (window.scrollY > scrollThreshold || megaMenuOpen) {
+      const isActuallyScrolled = window.scrollY > scrollThreshold;
+
+      // Track actual scroll state separately
+      if (isActuallyScrolled) {
+        headerWrapper.classList.add('actually-scrolled');
+      } else {
+        headerWrapper.classList.remove('actually-scrolled');
+      }
+
+      // Add is-scrolled for styling (background color) when scrolled OR mega menu open
+      if (isActuallyScrolled || megaMenuOpen) {
         headerWrapper.classList.add('is-scrolled');
       } else {
         headerWrapper.classList.remove('is-scrolled');
@@ -1619,9 +1624,11 @@
       clearTimeout(timeout);
       item.classList.add('is-open');
       megaMenuOpen = true;
-      if (isTransparent && headerWrapper) {
-        headerWrapper.classList.add('is-scrolled');
+      if (headerWrapper) {
         headerWrapper.classList.add('mega-menu-open');
+        if (isTransparent) {
+          headerWrapper.classList.add('is-scrolled');
+        }
       }
     });
 
@@ -1631,10 +1638,10 @@
         megaMenuOpen = false;
         if (headerWrapper) {
           headerWrapper.classList.remove('mega-menu-open');
-        }
-        // Only remove is-scrolled if not actually scrolled
-        if (isTransparent && headerWrapper && window.scrollY <= scrollThreshold) {
-          headerWrapper.classList.remove('is-scrolled');
+          // Only remove is-scrolled if not actually scrolled
+          if (isTransparent && window.scrollY <= scrollThreshold) {
+            headerWrapper.classList.remove('is-scrolled');
+          }
         }
       }, 100);
     });
