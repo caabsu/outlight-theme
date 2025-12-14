@@ -216,12 +216,79 @@
         "padding_top": 60,
         "padding_bottom": 60
       }
+    },
+    "testimonials_9LfYQR": {
+      "type": "testimonials",
+      "blocks": {
+        "testimonial_6PwGdN": {
+          "type": "testimonial",
+          "settings": {
+            "quote_desktop": "It's rare to find an object that feels both ancient and modern. The texture of the raw ceramic brings so much character to my stark white desk.",
+            "author_desktop": "JAMES L.",
+            "subtitle_desktop": "VERIFIED BUYER",
+            "quote_mobile": "The light quality is unmatched. It's warm, soft, and completely changes the mood of my evenings.",
+            "author_mobile": "SARAH M.",
+            "subtitle_mobile": ""
+          }
+        },
+        "testimonial_GjEF7R": {
+          "type": "testimonial",
+          "settings": {
+            "quote_desktop": "The craftsmanship is impeccable. Every detail has been thoughtfully considered, from the weight of the base to the quality of the shade.",
+            "author_desktop": "MICHAEL R.",
+            "subtitle_desktop": "VERIFIED BUYER",
+            "quote_mobile": "Beautiful design, excellent quality. Exceeded my expectations.",
+            "author_mobile": "MICHAEL R.",
+            "subtitle_mobile": ""
+          }
+        },
+        "testimonial_gdReE8": {
+          "type": "testimonial",
+          "settings": {
+            "quote_desktop": "I've received so many compliments on this piece. It truly elevates the entire room and creates such a warm, inviting atmosphere.",
+            "author_desktop": "EMMA S.",
+            "subtitle_desktop": "VERIFIED BUYER",
+            "quote_mobile": "So many compliments! Creates a warm, inviting atmosphere.",
+            "author_mobile": "EMMA S.",
+            "subtitle_mobile": ""
+          }
+        }
+      },
+      "block_order": [
+        "testimonial_6PwGdN",
+        "testimonial_GjEF7R",
+        "testimonial_gdReE8"
+      ],
+      "name": "Testimonials",
+      "settings": {
+        "padding_top": 40,
+        "padding_bottom": 40,
+        "section_bg": "#ffffff",
+        "card_bg": "#F7F5F0",
+        "card_padding_desktop": 60,
+        "card_padding_mobile": 32,
+        "card_radius": 8,
+        "star_color": "#D97706",
+        "quote_size_desktop": 28,
+        "quote_size_mobile": 18,
+        "quote_color": "#1C1917",
+        "quote_weight": "400",
+        "quote_line_height": "1.5",
+        "author_size_desktop": 13,
+        "author_size_mobile": 12,
+        "author_color": "#57534E",
+        "author_weight": "500",
+        "nav_color": "#1C1917",
+        "dot_color": "#D6D3D1",
+        "dot_active_color": "#1C1917"
+      }
     }
   },
   "order": [
     "hero_banner_MERtpM",
     "search_bar_FbyPxV",
     "collections_bento_PrXpLn",
-    "featured_collection_fBjcht"
+    "featured_collection_fBjcht",
+    "testimonials_9LfYQR"
   ]
 }
