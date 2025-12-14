@@ -254,21 +254,21 @@
   /* Desktop Styles */
   @media (min-width: 768px) {
     .blog-journal {
-      padding: var(--bj-padding-top) 24px var(--bj-padding-bottom);
+      padding: var(--bj-padding-top) 60px var(--bj-padding-bottom);
     }
 
     /* Featured - Desktop */
     .blog-journal__featured {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 4rem;
+      gap: 5rem;
       align-items: center;
-      margin-bottom: 4rem;
+      margin-bottom: 5rem;
     }
 
     .blog-journal__featured-image {
       display: block;
-      aspect-ratio: 4 / 3;
+      aspect-ratio: 1 / 1;
       overflow: hidden;
     }
 
@@ -286,16 +286,17 @@
     .blog-journal__featured-content {
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      gap: 1.25rem;
     }
 
     .blog-journal__featured-title {
       font-family: var(--font-heading-family), serif;
       font-size: var(--bj-featured-title-size);
       font-weight: 400;
+      font-style: italic;
       color: var(--bj-title-color);
       margin: 0;
-      line-height: 1.15;
+      line-height: 1.1;
     }
 
     .blog-journal__featured-title a {
@@ -304,11 +305,11 @@
     }
 
     .blog-journal__featured-excerpt {
-      font-family: var(--font-heading-family), serif;
+      font-family: var(--font-body-family), sans-serif;
       font-size: 17px;
       font-weight: 400;
       color: var(--bj-excerpt-color);
-      line-height: 1.6;
+      line-height: 1.7;
       margin: 0;
     }
 
@@ -325,12 +326,12 @@
     .blog-journal__grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 2rem;
+      gap: 1.5rem;
     }
 
     .blog-journal__card-image {
       display: block;
-      aspect-ratio: 4 / 3;
+      aspect-ratio: 1 / 1;
       overflow: hidden;
       margin-bottom: 1rem;
     }
@@ -381,8 +382,16 @@
   }
 
   @media (min-width: 1200px) {
+    .blog-journal {
+      padding: var(--bj-padding-top) 80px var(--bj-padding-bottom);
+    }
+
     .blog-journal__featured {
       gap: 6rem;
+    }
+
+    .blog-journal__grid {
+      gap: 2rem;
     }
   }
 {% endstylesheet %}
