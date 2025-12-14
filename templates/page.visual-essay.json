@@ -153,14 +153,32 @@
         "product_MkTDNy": {
           "type": "product",
           "settings": {
-            "product": "aria",
+            "product": "fable",
+            "custom_title": "",
+            "custom_label": ""
+          }
+        },
+        "product_CCYtHz": {
+          "type": "product",
+          "settings": {
+            "product": "gael",
+            "custom_title": "",
+            "custom_label": ""
+          }
+        },
+        "product_PVzdEC": {
+          "type": "product",
+          "settings": {
+            "product": "evren",
             "custom_title": "",
             "custom_label": ""
           }
         }
       },
       "block_order": [
-        "product_MkTDNy"
+        "product_MkTDNy",
+        "product_CCYtHz",
+        "product_PVzdEC"
       ],
       "settings": {
         "label": "THE TOOLKIT",
