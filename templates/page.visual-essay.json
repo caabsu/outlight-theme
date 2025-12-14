@@ -38,6 +38,7 @@
     "image-text-1": {
       "type": "article-image-text",
       "settings": {
+        "image": "shopify://shop_images/Oris_4.png",
         "caption": "FIG 1.0 — THE CANVAS",
         "image_position": "left",
         "quote": "\"Light is not the absence of dark. It is the carving of space.\"",
