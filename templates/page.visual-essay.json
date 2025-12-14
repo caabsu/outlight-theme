@@ -88,15 +88,15 @@
         "show_quotation_marks": false,
         "quote_color": "#a8a29e",
         "quote_size": 36,
-        "quote_size_mobile": 24,
+        "quote_size_mobile": 26,
         "quotation_mark_color": "#d97706",
         "quotation_mark_size": 80,
         "quotation_mark_size_mobile": 50,
         "background_color": "#f7f5f0",
         "padding_top": 80,
         "padding_bottom": 80,
-        "padding_top_mobile": 50,
-        "padding_bottom_mobile": 0
+        "padding_top_mobile": 30,
+        "padding_bottom_mobile": 35
       }
     },
     "image-text-2": {
