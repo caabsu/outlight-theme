@@ -1,10 +1,16 @@
 {% comment %}
   Article Text Section
   Numbered section with title and body text with drop cap
+  Optional image support with different layouts
 {% endcomment %}
 
+{%- assign has_image = false -%}
+{%- if section.settings.image != blank -%}
+  {%- assign has_image = true -%}
+{%- endif -%}
+
 <section
-  class="article-section"
+  class="article-section {% if has_image %}article-section--has-image{% endif %}"
   style="
     --as-bg: {{ section.settings.background_color }};
     --as-number-color: {{ section.settings.number_color }};
@@ -18,6 +24,7 @@
     --as-dropcap-size: {{ section.settings.dropcap_size }}px;
     --as-dropcap-size-mobile: {{ section.settings.dropcap_size_mobile }}px;
     --as-divider-color: {{ section.settings.divider_color }};
+    --as-caption-color: {{ section.settings.caption_color }};
     --as-padding-top: {{ section.settings.padding_top }}px;
     --as-padding-bottom: {{ section.settings.padding_bottom }}px;
     --as-padding-top-mobile: {{ section.settings.padding_top_mobile }}px;
@@ -25,37 +32,130 @@
   "
 >
   <div class="article-section__container">
-    <div class="article-section__grid">
-      <div class="article-section__header">
-        <div class="article-section__divider"></div>
-        {%- if section.settings.section_number != blank or section.settings.section_label != blank -%}
-          <p class="article-section__number">
-            {%- if section.settings.section_number != blank -%}
-              {{ section.settings.section_number }}.
-            {%- endif -%}
-            {%- if section.settings.section_label != blank -%}
-              {{ section.settings.section_label | upcase }}
-            {%- endif -%}
-          </p>
-        {%- endif -%}
-        {%- if section.settings.title != blank -%}
-          <h2 class="article-section__title">{{ section.settings.title }}</h2>
-        {%- endif -%}
+    {%- if has_image -%}
+      {%- comment -%} Layout WITH image {%- endcomment -%}
+
+      {%- comment -%} Mobile layout {%- endcomment -%}
+      <div class="article-section__mobile">
+        <div class="article-section__header">
+          <div class="article-section__divider"></div>
+          {%- if section.settings.section_number != blank or section.settings.section_label != blank -%}
+            <p class="article-section__number">
+              {%- if section.settings.section_number != blank -%}
+                {{ section.settings.section_number }}.
+              {%- endif -%}
+              {%- if section.settings.section_label != blank -%}
+                {{ section.settings.section_label | upcase }}
+              {%- endif -%}
+            </p>
+          {%- endif -%}
+          {%- if section.settings.title != blank -%}
+            <h2 class="article-section__title">{{ section.settings.title }}</h2>
+          {%- endif -%}
+        </div>
+
+        <div class="article-section__image-wrapper">
+          <div class="article-section__image">
+            {{ section.settings.image | image_url: width: 1200 | image_tag: loading: 'lazy' }}
+          </div>
+          {%- if section.settings.caption != blank -%}
+            <p class="article-section__caption">{{ section.settings.caption }}</p>
+          {%- endif -%}
+        </div>
+
+        <div class="article-section__content">
+          {%- if section.settings.body_text != blank -%}
+            <div class="article-section__text {% if section.settings.enable_dropcap %}article-section__text--dropcap{% endif %}">
+              {{ section.settings.body_text }}
+            </div>
+          {%- endif -%}
+          {%- if section.settings.body_text_2 != blank -%}
+            <div class="article-section__text article-section__text--secondary">
+              {{ section.settings.body_text_2 }}
+            </div>
+          {%- endif -%}
+        </div>
       </div>
 
-      <div class="article-section__content">
-        {%- if section.settings.body_text != blank -%}
-          <div class="article-section__text {% if section.settings.enable_dropcap %}article-section__text--dropcap{% endif %}">
-            {{ section.settings.body_text }}
+      {%- comment -%} Desktop layout {%- endcomment -%}
+      <div class="article-section__desktop">
+        <div class="article-section__grid-image">
+          <div class="article-section__image-wrapper">
+            <div class="article-section__image">
+              {{ section.settings.image | image_url: width: 1200 | image_tag: loading: 'lazy' }}
+            </div>
+            {%- if section.settings.caption != blank -%}
+              <p class="article-section__caption">{{ section.settings.caption }}</p>
+            {%- endif -%}
           </div>
-        {%- endif -%}
-        {%- if section.settings.body_text_2 != blank -%}
-          <div class="article-section__text article-section__text--secondary">
-            {{ section.settings.body_text_2 }}
+
+          <div class="article-section__right">
+            <div class="article-section__header">
+              {%- if section.settings.section_number != blank or section.settings.section_label != blank -%}
+                <p class="article-section__number">
+                  {%- if section.settings.section_number != blank -%}
+                    {{ section.settings.section_number }}.
+                  {%- endif -%}
+                  {%- if section.settings.section_label != blank -%}
+                    {{ section.settings.section_label | upcase }}
+                  {%- endif -%}
+                </p>
+              {%- endif -%}
+              {%- if section.settings.title != blank -%}
+                <h2 class="article-section__title">{{ section.settings.title }}</h2>
+              {%- endif -%}
+            </div>
+
+            <div class="article-section__content">
+              {%- if section.settings.body_text != blank -%}
+                <div class="article-section__text {% if section.settings.enable_dropcap %}article-section__text--dropcap{% endif %}">
+                  {{ section.settings.body_text }}
+                </div>
+              {%- endif -%}
+              {%- if section.settings.body_text_2 != blank -%}
+                <div class="article-section__text article-section__text--secondary">
+                  {{ section.settings.body_text_2 }}
+                </div>
+              {%- endif -%}
+            </div>
           </div>
-        {%- endif -%}
+        </div>
       </div>
-    </div>
+
+    {%- else -%}
+      {%- comment -%} Layout WITHOUT image (original) {%- endcomment -%}
+      <div class="article-section__grid">
+        <div class="article-section__header">
+          <div class="article-section__divider"></div>
+          {%- if section.settings.section_number != blank or section.settings.section_label != blank -%}
+            <p class="article-section__number">
+              {%- if section.settings.section_number != blank -%}
+                {{ section.settings.section_number }}.
+              {%- endif -%}
+              {%- if section.settings.section_label != blank -%}
+                {{ section.settings.section_label | upcase }}
+              {%- endif -%}
+            </p>
+          {%- endif -%}
+          {%- if section.settings.title != blank -%}
+            <h2 class="article-section__title">{{ section.settings.title }}</h2>
+          {%- endif -%}
+        </div>
+
+        <div class="article-section__content">
+          {%- if section.settings.body_text != blank -%}
+            <div class="article-section__text {% if section.settings.enable_dropcap %}article-section__text--dropcap{% endif %}">
+              {{ section.settings.body_text }}
+            </div>
+          {%- endif -%}
+          {%- if section.settings.body_text_2 != blank -%}
+            <div class="article-section__text article-section__text--secondary">
+              {{ section.settings.body_text_2 }}
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endif -%}
   </div>
 </section>
 
@@ -70,6 +170,9 @@
     margin: 0 auto;
   }
 
+  /* ===================== */
+  /* Layout WITHOUT image  */
+  /* ===================== */
   .article-section__grid {
     display: flex;
     flex-direction: column;
@@ -145,11 +248,54 @@
     margin-top: 0.1em;
   }
 
+  /* ===================== */
+  /* Layout WITH image     */
+  /* ===================== */
+  .article-section--has-image .article-section__desktop {
+    display: none;
+  }
+
+  .article-section--has-image .article-section__mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .article-section__image-wrapper {
+    width: 100%;
+  }
+
+  .article-section__image {
+    width: 100%;
+  }
+
+  .article-section__image img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .article-section__caption {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--as-caption-color);
+    margin: 1rem 0 0;
+  }
+
+  /* Hide divider in image layout mobile */
+  .article-section--has-image .article-section__mobile .article-section__divider {
+    display: none;
+  }
+
   @media (min-width: 768px) {
     .article-section {
       padding: var(--as-padding-top) var(--page-margin) var(--as-padding-bottom);
     }
 
+    /* Desktop WITHOUT image */
     .article-section__grid {
       display: grid;
       grid-template-columns: 1fr 1.5fr;
@@ -179,6 +325,49 @@
       gap: 2rem;
       max-width: 600px;
     }
+
+    /* Desktop WITH image */
+    .article-section--has-image .article-section__mobile {
+      display: none;
+    }
+
+    .article-section--has-image .article-section__desktop {
+      display: block;
+    }
+
+    .article-section__grid-image {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: flex-start;
+    }
+
+    .article-section__grid-image .article-section__image-wrapper {
+      max-width: 100%;
+    }
+
+    .article-section__grid-image .article-section__caption {
+      font-size: 11px;
+      margin-top: 1.25rem;
+    }
+
+    .article-section__right {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .article-section__right .article-section__header {
+      /* No divider in image layout desktop */
+    }
+
+    .article-section__right .article-section__divider {
+      display: none;
+    }
+
+    .article-section__right .article-section__content {
+      max-width: 100%;
+    }
   }
 {% endstylesheet %}
 
@@ -207,6 +396,21 @@
       "id": "title",
       "label": "Title",
       "default": "The Tyranny of the Grid"
+    },
+    {
+      "type": "header",
+      "content": "Image (optional)"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "caption",
+      "label": "Image caption",
+      "default": "FIG 1.0 — THE CANVAS"
     },
     {
       "type": "header",
@@ -245,6 +449,12 @@
       "id": "divider_color",
       "label": "Divider color",
       "default": "#D6D3D1"
+    },
+    {
+      "type": "color",
+      "id": "caption_color",
+      "label": "Caption color",
+      "default": "#78716C"
     },
     {
       "type": "color",
