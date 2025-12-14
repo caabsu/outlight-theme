@@ -1,5 +1,6 @@
 <div
   class="collection-carousel full-width"
+  data-product-count="{{ collections[section.settings.collection].products.size | at_most: section.settings.products_limit }}"
   style="
     --cc-bg: {{ section.settings.section_bg }};
     --cc-padding-top: {{ section.settings.padding_top }}px;
@@ -22,6 +23,7 @@
     --cc-products-mobile: {{ section.settings.products_per_row_mobile }};
     --cc-gap-mobile: {{ section.settings.grid_gap_mobile }}px;
     --cc-gap-desktop: {{ section.settings.grid_gap_desktop }}px;
+    --cc-card-width: {{ section.settings.card_width }}px;
     --cc-nav-color: {{ section.settings.nav_color }};
     --cc-nav-bg: {{ section.settings.nav_bg }};
     --cc-btn-color: {{ section.settings.view_all_color }};
@@ -36,7 +38,7 @@
 
     <div class="collection-carousel__wrapper">
       <button class="collection-carousel__nav collection-carousel__nav--prev" data-carousel-prev aria-label="Previous">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M15 18L9 12L15 6"/>
         </svg>
       </button>
@@ -75,7 +77,7 @@
       </div>
 
       <button class="collection-carousel__nav collection-carousel__nav--next" data-carousel-next aria-label="Next">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M9 18L15 12L9 6"/>
         </svg>
       </button>
@@ -218,7 +220,9 @@
     }
 
     .collection-carousel__wrapper {
-      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
     }
 
     /* Show nav arrows on desktop */
@@ -226,23 +230,20 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 48px;
-      height: 48px;
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
       background: var(--cc-nav-bg);
       color: var(--cc-nav-color);
-      border: none;
-      border-radius: 50%;
+      border: 1px solid var(--cc-nav-color);
+      border-radius: 0;
       cursor: pointer;
-      z-index: 10;
-      transition: opacity 0.2s ease, transform 0.2s ease;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      transition: opacity 0.2s ease, background 0.2s ease;
     }
 
     .collection-carousel__nav:hover {
-      transform: translateY(-50%) scale(1.05);
+      background: var(--cc-nav-color);
+      color: var(--cc-nav-bg);
     }
 
     .collection-carousel__nav:disabled {
@@ -250,12 +251,9 @@
       cursor: not-allowed;
     }
 
-    .collection-carousel__nav--prev {
-      left: -24px;
-    }
-
-    .collection-carousel__nav--next {
-      right: -24px;
+    .collection-carousel__nav:disabled:hover {
+      background: var(--cc-nav-bg);
+      color: var(--cc-nav-color);
     }
 
     /* Desktop: Horizontal scroll */
@@ -266,7 +264,7 @@
       scroll-snap-type: x mandatory;
       scrollbar-width: none;
       -webkit-overflow-scrolling: touch;
-      padding-bottom: 4px;
+      flex: 1;
     }
 
     .collection-carousel__track::-webkit-scrollbar {
@@ -274,9 +272,15 @@
     }
 
     .collection-carousel__card {
-      flex: 0 0 calc(25% - var(--cc-gap-desktop) * 0.75);
-      min-width: 220px;
+      flex: 0 0 var(--cc-card-width);
       scroll-snap-align: start;
+    }
+
+    /* Center products when less than 4 */
+    .collection-carousel[data-product-count="1"] .collection-carousel__track,
+    .collection-carousel[data-product-count="2"] .collection-carousel__track,
+    .collection-carousel[data-product-count="3"] .collection-carousel__track {
+      justify-content: center;
     }
 
     .collection-carousel__overlay {
@@ -295,60 +299,48 @@
       margin-top: 2rem;
     }
   }
-
-  @media (min-width: 1200px) {
-    .collection-carousel__nav--prev {
-      left: -28px;
-    }
-
-    .collection-carousel__nav--next {
-      right: -28px;
-    }
-
-    .collection-carousel__card {
-      flex: 0 0 calc(20% - var(--cc-gap-desktop) * 0.8);
-    }
-  }
 {% endstylesheet %}
 
 {% javascript %}
-  const carouselSection = document.querySelector('.collection-carousel');
-  if (carouselSection) {
-    const track = carouselSection.querySelector('[data-carousel-track]');
-    const prevBtn = carouselSection.querySelector('[data-carousel-prev]');
-    const nextBtn = carouselSection.querySelector('[data-carousel-next]');
+  (function() {
+    const section = document.querySelector('.collection-carousel');
+    if (!section) return;
 
-    if (track && prevBtn && nextBtn) {
-      const getScrollAmount = () => {
-        const card = track.querySelector('.collection-carousel__card');
-        if (card) {
-          const style = window.getComputedStyle(track);
-          const gap = parseInt(style.gap) || 20;
-          return card.offsetWidth + gap;
-        }
-        return 260;
-      };
+    const track = section.querySelector('[data-carousel-track]');
+    const prevBtn = section.querySelector('[data-carousel-prev]');
+    const nextBtn = section.querySelector('[data-carousel-next]');
 
-      const updateNavState = () => {
-        const isAtStart = track.scrollLeft <= 1;
-        const isAtEnd = track.scrollLeft >= track.scrollWidth - track.clientWidth - 1;
+    if (!track || !prevBtn || !nextBtn) return;
 
-        prevBtn.disabled = isAtStart;
-        nextBtn.disabled = isAtEnd;
-      };
+    const getScrollAmount = () => {
+      const card = track.querySelector('.collection-carousel__card');
+      if (card) {
+        const style = window.getComputedStyle(track);
+        const gap = parseInt(style.gap) || 20;
+        return card.offsetWidth + gap;
+      }
+      return 260;
+    };
 
-      prevBtn.addEventListener('click', () => {
-        track.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' });
-      });
+    const updateNavState = () => {
+      const isAtStart = track.scrollLeft <= 1;
+      const isAtEnd = track.scrollLeft >= track.scrollWidth - track.clientWidth - 1;
 
-      nextBtn.addEventListener('click', () => {
-        track.scrollBy({ left: getScrollAmount(), behavior: 'smooth' });
-      });
+      prevBtn.disabled = isAtStart;
+      nextBtn.disabled = isAtEnd;
+    };
 
-      track.addEventListener('scroll', updateNavState, { passive: true });
-      updateNavState();
-    }
-  }
+    prevBtn.addEventListener('click', () => {
+      track.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' });
+    });
+
+    nextBtn.addEventListener('click', () => {
+      track.scrollBy({ left: getScrollAmount(), behavior: 'smooth' });
+    });
+
+    track.addEventListener('scroll', updateNavState, { passive: true });
+    updateNavState();
+  })();
 {% endjavascript %}
 
 {% schema %}
@@ -391,6 +383,16 @@
       "max": 3,
       "step": 1,
       "default": 2
+    },
+    {
+      "type": "range",
+      "id": "card_width",
+      "label": "Card width (desktop)",
+      "min": 150,
+      "max": 350,
+      "step": 10,
+      "default": 240,
+      "unit": "px"
     },
     {
       "type": "range",
@@ -476,8 +478,8 @@
       "type": "range",
       "id": "title_size",
       "label": "Size (desktop)",
-      "min": 18,
-      "max": 48,
+      "min": 12,
+      "max": 60,
       "step": 1,
       "default": 28,
       "unit": "px"
@@ -486,8 +488,8 @@
       "type": "range",
       "id": "title_size_mobile",
       "label": "Size (mobile)",
-      "min": 16,
-      "max": 32,
+      "min": 12,
+      "max": 48,
       "step": 1,
       "default": 22,
       "unit": "px"
@@ -518,8 +520,8 @@
       "type": "range",
       "id": "product_name_size",
       "label": "Size (desktop)",
-      "min": 11,
-      "max": 20,
+      "min": 8,
+      "max": 32,
       "step": 1,
       "default": 14,
       "unit": "px"
@@ -528,8 +530,8 @@
       "type": "range",
       "id": "product_name_size_mobile",
       "label": "Size (mobile)",
-      "min": 10,
-      "max": 20,
+      "min": 8,
+      "max": 24,
       "step": 1,
       "default": 12,
       "unit": "px"
@@ -560,8 +562,8 @@
       "type": "range",
       "id": "price_size",
       "label": "Size (desktop)",
-      "min": 11,
-      "max": 20,
+      "min": 8,
+      "max": 32,
       "step": 1,
       "default": 14,
       "unit": "px"
@@ -570,8 +572,8 @@
       "type": "range",
       "id": "price_size_mobile",
       "label": "Size (mobile)",
-      "min": 10,
-      "max": 20,
+      "min": 8,
+      "max": 24,
       "step": 1,
       "default": 12,
       "unit": "px"
@@ -640,8 +642,8 @@
       "type": "range",
       "id": "view_all_size",
       "label": "Size",
-      "min": 12,
-      "max": 18,
+      "min": 10,
+      "max": 24,
       "step": 1,
       "default": 14,
       "unit": "px"
