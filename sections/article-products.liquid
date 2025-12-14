@@ -1,9 +1,8 @@
 {% comment %}
   Article Products Section
   Product showcase grid with editorial styling
+  Individual product selection with custom title overrides
 {% endcomment %}
-
-{%- assign collection = collections[section.settings.collection] -%}
 
 <section
   class="article-products"
@@ -14,10 +13,15 @@
     --ap-title-size: {{ section.settings.title_size }}px;
     --ap-title-size-mobile: {{ section.settings.title_size_mobile }}px;
     --ap-subtitle-color: {{ section.settings.subtitle_color }};
-    --ap-link-color: {{ section.settings.link_color }};
     --ap-label-color: {{ section.settings.label_color }};
+    --ap-link-color: {{ section.settings.link_color }};
+    --ap-product-label-color: {{ section.settings.product_label_color }};
     --ap-product-title-color: {{ section.settings.product_title_color }};
     --ap-price-color: {{ section.settings.price_color }};
+    --ap-button-color: {{ section.settings.button_color }};
+    --ap-button-text-color: {{ section.settings.button_text_color }};
+    --ap-button-hover-bg: {{ section.settings.button_hover_bg }};
+    --ap-button-hover-text: {{ section.settings.button_hover_text }};
     --ap-padding-top: {{ section.settings.padding_top }}px;
     --ap-padding-bottom: {{ section.settings.padding_bottom }}px;
     --ap-padding-top-mobile: {{ section.settings.padding_top_mobile }}px;
@@ -37,15 +41,16 @@
           <p class="article-products__subtitle">{{ section.settings.subtitle }}</p>
         {%- endif -%}
       </div>
-      {%- if section.settings.link_text != blank and collection != blank -%}
-        <a href="{{ collection.url }}" class="article-products__link">{{ section.settings.link_text | upcase }}</a>
+      {%- if section.settings.link_text != blank and section.settings.link_url != blank -%}
+        <a href="{{ section.settings.link_url }}" class="article-products__link">{{ section.settings.link_text | upcase }}</a>
       {%- endif -%}
     </div>
 
     <div class="article-products__grid">
-      {%- if collection != blank -%}
-        {%- for product in collection.products limit: section.settings.products_count -%}
-          <div class="article-products__card">
+      {%- for block in section.blocks -%}
+        {%- assign product = block.settings.product -%}
+        {%- if product != blank -%}
+          <div class="article-products__card" {{ block.shopify_attributes }}>
             <a href="{{ product.url }}" class="article-products__card-link">
               <div class="article-products__card-image">
                 {%- if product.featured_image != blank -%}
@@ -56,18 +61,63 @@
               </div>
               <div class="article-products__card-info">
                 <div class="article-products__card-meta">
-                  <span class="article-products__card-label">LAYER {{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+                  <span class="article-products__card-label">
+                    {%- if block.settings.custom_label != blank -%}
+                      {{ block.settings.custom_label | upcase }}
+                    {%- else -%}
+                      LAYER {{ forloop.index | prepend: '0' | slice: -2, 2 }}
+                    {%- endif -%}
+                  </span>
                   <span class="article-products__card-price">{{ product.price | money }}</span>
                 </div>
-                <h3 class="article-products__card-title">{{ product.title }}</h3>
+                <h3 class="article-products__card-title">
+                  {%- if block.settings.custom_title != blank -%}
+                    {{ block.settings.custom_title }}
+                  {%- else -%}
+                    {{ product.title }}
+                  {%- endif -%}
+                </h3>
               </div>
             </a>
             <button class="article-products__add-to-cart" data-product-id="{{ product.variants.first.id }}">
-              ADD TO CART
+              {{ section.settings.button_text | default: 'ADD TO CART' | upcase }}
             </button>
           </div>
-        {%- endfor -%}
-      {%- else -%}
+        {%- else -%}
+          {%- comment -%} Placeholder when no product selected {%- endcomment -%}
+          <div class="article-products__card" {{ block.shopify_attributes }}>
+            <div class="article-products__card-link">
+              <div class="article-products__card-image">
+                {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+              </div>
+              <div class="article-products__card-info">
+                <div class="article-products__card-meta">
+                  <span class="article-products__card-label">
+                    {%- if block.settings.custom_label != blank -%}
+                      {{ block.settings.custom_label | upcase }}
+                    {%- else -%}
+                      LAYER {{ forloop.index | prepend: '0' | slice: -2, 2 }}
+                    {%- endif -%}
+                  </span>
+                  <span class="article-products__card-price">$0.00</span>
+                </div>
+                <h3 class="article-products__card-title">
+                  {%- if block.settings.custom_title != blank -%}
+                    {{ block.settings.custom_title }}
+                  {%- else -%}
+                    Select a product
+                  {%- endif -%}
+                </h3>
+              </div>
+            </div>
+            <button class="article-products__add-to-cart" disabled>
+              {{ section.settings.button_text | default: 'ADD TO CART' | upcase }}
+            </button>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+
+      {%- if section.blocks.size == 0 -%}
         {%- for i in (1..3) -%}
           <div class="article-products__card">
             <div class="article-products__card-link">
@@ -120,7 +170,7 @@
     font-size: 11px;
     font-weight: 500;
     letter-spacing: 0.15em;
-    color: var(--ap-link-color);
+    color: var(--ap-label-color);
   }
 
   .article-products__title {
@@ -229,7 +279,7 @@
     font-size: 10px;
     font-weight: 500;
     letter-spacing: 0.1em;
-    color: var(--ap-label-color);
+    color: var(--ap-product-label-color);
   }
 
   .article-products__card-price {
@@ -257,16 +307,22 @@
     font-weight: 500;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--ap-title-color);
+    color: var(--ap-button-text-color);
     background: transparent;
-    border: 1px solid var(--ap-title-color);
+    border: 1px solid var(--ap-button-color);
     cursor: pointer;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
   }
 
   .article-products__add-to-cart:hover {
-    background-color: var(--ap-title-color);
-    color: #fff;
+    background-color: var(--ap-button-hover-bg);
+    color: var(--ap-button-hover-text);
+    border-color: var(--ap-button-hover-bg);
+  }
+
+  .article-products__add-to-cart:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 
   @media (min-width: 768px) {
@@ -290,10 +346,16 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 1.5rem;
+      overflow-x: visible;
+      margin-left: 0;
+      margin-right: 0;
+      padding-left: 0;
+      padding-right: 0;
     }
 
     .article-products__card {
       padding: 2rem;
+      flex: none;
     }
 
     /* Hide add to cart on desktop - show on hover */
@@ -310,6 +372,7 @@
       const variantId = this.dataset.productId;
       if (!variantId) return;
 
+      const originalText = this.textContent;
       this.textContent = 'ADDING...';
       this.disabled = true;
 
@@ -328,20 +391,20 @@
         if (response.ok) {
           this.textContent = 'ADDED!';
           setTimeout(() => {
-            this.textContent = 'ADD TO CART';
+            this.textContent = originalText;
             this.disabled = false;
           }, 2000);
         } else {
           this.textContent = 'ERROR';
           setTimeout(() => {
-            this.textContent = 'ADD TO CART';
+            this.textContent = originalText;
             this.disabled = false;
           }, 2000);
         }
       } catch (error) {
         this.textContent = 'ERROR';
         setTimeout(() => {
-          this.textContent = 'ADD TO CART';
+          this.textContent = originalText;
           this.disabled = false;
         }, 2000);
       }
@@ -355,7 +418,7 @@
   "settings": [
     {
       "type": "header",
-      "content": "Content"
+      "content": "Header"
     },
     {
       "type": "text",
@@ -382,22 +445,53 @@
       "default": "Shop the Collection"
     },
     {
-      "type": "collection",
-      "id": "collection",
-      "label": "Collection"
-    },
-    {
-      "type": "range",
-      "id": "products_count",
-      "label": "Products to show",
-      "min": 1,
-      "max": 6,
-      "step": 1,
-      "default": 3
+      "type": "url",
+      "id": "link_url",
+      "label": "Link URL"
     },
     {
       "type": "header",
-      "content": "Typography"
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Add to Cart"
+    },
+    {
+      "type": "color",
+      "id": "button_color",
+      "label": "Button border color",
+      "default": "#1C1917"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text color",
+      "default": "#1C1917"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_bg",
+      "label": "Button hover background",
+      "default": "#1C1917"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_text",
+      "label": "Button hover text color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "header",
+      "content": "Header typography"
+    },
+    {
+      "type": "color",
+      "id": "label_color",
+      "label": "Section label color",
+      "default": "#78716C"
     },
     {
       "type": "color",
@@ -438,8 +532,12 @@
       "default": "#1C1917"
     },
     {
+      "type": "header",
+      "content": "Product card typography"
+    },
+    {
       "type": "color",
-      "id": "label_color",
+      "id": "product_label_color",
       "label": "Product label color",
       "default": "#78716C"
     },
@@ -512,9 +610,39 @@
       "unit": "px"
     }
   ],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Product",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product"
+        },
+        {
+          "type": "text",
+          "id": "custom_title",
+          "label": "Custom title",
+          "info": "Leave blank to use product title"
+        },
+        {
+          "type": "text",
+          "id": "custom_label",
+          "label": "Custom label",
+          "info": "Leave blank for auto-generated (LAYER 01, etc.)"
+        }
+      ]
+    }
+  ],
   "presets": [
     {
-      "name": "Article products"
+      "name": "Article products",
+      "blocks": [
+        { "type": "product" },
+        { "type": "product" },
+        { "type": "product" }
+      ]
     }
   ],
   "enabled_on": {
