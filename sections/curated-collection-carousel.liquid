@@ -25,11 +25,14 @@
 -%}
 
 {%- if matched_collection != blank -%}
+{%- assign products_mobile = section.settings.products_limit_mobile -%}
+{%- assign products_desktop = section.settings.products_limit_desktop -%}
+{%- assign max_products = products_mobile | at_least: products_desktop -%}
+{%- assign fetch_limit = max_products | plus: 1 -%}
 {%- assign product_count = 0 -%}
-{%- assign fetch_limit = section.settings.products_limit | plus: 1 -%}
 {%- for col_product in matched_collection.products limit: fetch_limit -%}
   {%- unless col_product.id == product.id -%}
-    {%- if product_count < section.settings.products_limit -%}
+    {%- if product_count < max_products -%}
       {%- assign product_count = product_count | plus: 1 -%}
     {%- endif -%}
   {%- endunless -%}
@@ -58,6 +61,8 @@
     --cc-price-weight: {{ section.settings.price_weight }};
     --cc-text-bg: {{ section.settings.text_overlay_bg }};
     --cc-products-mobile: {{ section.settings.products_per_row_mobile }};
+    --cc-limit-mobile: {{ section.settings.products_limit_mobile }};
+    --cc-limit-desktop: {{ section.settings.products_limit_desktop }};
     --cc-gap-mobile: {{ section.settings.grid_gap_mobile }}px;
     --cc-gap-desktop: {{ section.settings.grid_gap }}px;
     --cc-card-width: {{ section.settings.card_width }}px;
@@ -87,12 +92,12 @@
       </button>
 
       <div class="curated-carousel__track" data-carousel-track>
-        {%- assign product_count = 0 -%}
+        {%- assign product_index = 0 -%}
         {%- for col_product in matched_collection.products limit: fetch_limit -%}
           {%- unless col_product.id == product.id -%}
-            {%- if product_count < section.settings.products_limit -%}
-              {%- assign product_count = product_count | plus: 1 -%}
-              <a href="{{ col_product.url }}" class="curated-carousel__card">
+            {%- if product_index < max_products -%}
+              {%- assign product_index = product_index | plus: 1 -%}
+              <a href="{{ col_product.url }}" class="curated-carousel__card" data-index="{{ product_index }}">
                 <div class="curated-carousel__image">
                   {%- if col_product.featured_image != blank -%}
                     {{ col_product.featured_image | image_url: width: 800 | image_tag: loading: 'lazy' }}
@@ -127,6 +132,25 @@
   </div>
 </div>
 {%- endif -%}
+
+<style>
+  /* Hide products beyond mobile limit on mobile */
+  @media (max-width: 767px) {
+    {%- for i in (1..12) -%}
+      {%- if i > products_mobile -%}
+    .curated-carousel__card[data-index="{{ i }}"] { display: none; }
+      {%- endif -%}
+    {%- endfor -%}
+  }
+  /* Hide products beyond desktop limit on desktop */
+  @media (min-width: 768px) {
+    {%- for i in (1..12) -%}
+      {%- if i > products_desktop -%}
+    .curated-carousel__card[data-index="{{ i }}"] { display: none; }
+      {%- endif -%}
+    {%- endfor -%}
+  }
+</style>
 
 {% stylesheet %}
   .curated-carousel {
@@ -389,12 +413,21 @@
     },
     {
       "type": "range",
-      "id": "products_limit",
-      "label": "Max products to show",
+      "id": "products_limit_mobile",
+      "label": "Products to show (mobile)",
       "min": 2,
       "max": 12,
       "step": 1,
       "default": 4
+    },
+    {
+      "type": "range",
+      "id": "products_limit_desktop",
+      "label": "Products to show (desktop)",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "default": 6
     },
     {
       "type": "header",

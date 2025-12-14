@@ -1,6 +1,23 @@
+{%- assign products_mobile = section.settings.products_limit_mobile -%}
+{%- assign products_desktop = section.settings.products_limit_desktop -%}
+{%- assign max_products = products_mobile | at_least: products_desktop -%}
+{%- assign collection = collections[section.settings.collection] -%}
+
+{%- comment -%} Count products excluding current product if on PDP {%- endcomment -%}
+{%- assign visible_count = 0 -%}
+{%- if collection != blank -%}
+  {%- for col_product in collection.products limit: max_products | plus: 1 -%}
+    {%- unless col_product.id == product.id -%}
+      {%- if visible_count < max_products -%}
+        {%- assign visible_count = visible_count | plus: 1 -%}
+      {%- endif -%}
+    {%- endunless -%}
+  {%- endfor -%}
+{%- endif -%}
+
 <div
   class="collection-carousel full-width"
-  data-product-count="{{ collections[section.settings.collection].products.size | at_most: section.settings.products_limit }}"
+  data-product-count="{{ visible_count }}"
   style="
     --cc-bg: {{ section.settings.section_bg }};
     --cc-padding-top: {{ section.settings.padding_top }}px;
@@ -21,6 +38,8 @@
     --cc-price-weight: {{ section.settings.price_weight }};
     --cc-text-bg: {{ section.settings.text_overlay_bg }};
     --cc-products-mobile: {{ section.settings.products_per_row_mobile }};
+    --cc-limit-mobile: {{ section.settings.products_limit_mobile }};
+    --cc-limit-desktop: {{ section.settings.products_limit_desktop }};
     --cc-gap-mobile: {{ section.settings.grid_gap_mobile }}px;
     --cc-gap-desktop: {{ section.settings.grid_gap_desktop }}px;
     --cc-card-width: {{ section.settings.card_width }}px;
@@ -44,26 +63,32 @@
       </button>
 
       <div class="collection-carousel__track" data-carousel-track>
-        {%- assign collection = collections[section.settings.collection] -%}
         {%- if collection != blank and collection.products.size > 0 -%}
-          {%- for product in collection.products limit: section.settings.products_limit -%}
-            <a href="{{ product.url }}" class="collection-carousel__card">
-              <div class="collection-carousel__image">
-                {%- if product.featured_image != blank -%}
-                  {{ product.featured_image | image_url: width: 800 | image_tag: loading: 'lazy' }}
-                {%- else -%}
-                  {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
-                {%- endif -%}
-                <div class="collection-carousel__overlay">
-                  <span class="collection-carousel__name">{{ product.title }}</span>
-                  <span class="collection-carousel__price">{{ product.price | money }}</span>
-                </div>
-              </div>
-            </a>
+          {%- assign product_index = 0 -%}
+          {%- assign fetch_limit = max_products | plus: 1 -%}
+          {%- for col_product in collection.products limit: fetch_limit -%}
+            {%- unless col_product.id == product.id -%}
+              {%- if product_index < max_products -%}
+                {%- assign product_index = product_index | plus: 1 -%}
+                <a href="{{ col_product.url }}" class="collection-carousel__card" data-index="{{ product_index }}">
+                  <div class="collection-carousel__image">
+                    {%- if col_product.featured_image != blank -%}
+                      {{ col_product.featured_image | image_url: width: 800 | image_tag: loading: 'lazy' }}
+                    {%- else -%}
+                      {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                    {%- endif -%}
+                    <div class="collection-carousel__overlay">
+                      <span class="collection-carousel__name">{{ col_product.title }}</span>
+                      <span class="collection-carousel__price">{{ col_product.price | money }}</span>
+                    </div>
+                  </div>
+                </a>
+              {%- endif -%}
+            {%- endunless -%}
           {%- endfor -%}
         {%- else -%}
           {%- for i in (1..4) -%}
-            <div class="collection-carousel__card">
+            <div class="collection-carousel__card" data-index="{{ i }}">
               <div class="collection-carousel__image">
                 {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
                 <div class="collection-carousel__overlay">
@@ -92,6 +117,25 @@
     {%- endif -%}
   </div>
 </div>
+
+<style>
+  /* Hide products beyond mobile limit on mobile */
+  @media (max-width: 767px) {
+    {%- for i in (1..12) -%}
+      {%- if i > products_mobile -%}
+    .collection-carousel__card[data-index="{{ i }}"] { display: none; }
+      {%- endif -%}
+    {%- endfor -%}
+  }
+  /* Hide products beyond desktop limit on desktop */
+  @media (min-width: 768px) {
+    {%- for i in (1..12) -%}
+      {%- if i > products_desktop -%}
+    .collection-carousel__card[data-index="{{ i }}"] { display: none; }
+      {%- endif -%}
+    {%- endfor -%}
+  }
+</style>
 
 {% stylesheet %}
   .collection-carousel {
@@ -358,8 +402,17 @@
     },
     {
       "type": "range",
-      "id": "products_limit",
-      "label": "Max products to show",
+      "id": "products_limit_mobile",
+      "label": "Products to show (mobile)",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "products_limit_desktop",
+      "label": "Products to show (desktop)",
       "min": 2,
       "max": 12,
       "step": 1,
