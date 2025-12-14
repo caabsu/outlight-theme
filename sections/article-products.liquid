@@ -93,11 +93,11 @@
 {% stylesheet %}
   .article-products {
     background-color: var(--ap-bg);
-    padding: var(--ap-padding-top-mobile) var(--page-margin) var(--ap-padding-bottom-mobile);
+    padding: var(--ap-padding-top-mobile) 20px var(--ap-padding-bottom-mobile);
   }
 
   .article-products__container {
-    max-width: var(--page-width);
+    max-width: 1400px;
     margin: 0 auto;
   }
 
@@ -164,10 +164,10 @@
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
     padding-bottom: 1rem;
-    margin-left: calc(-1 * var(--page-margin));
-    margin-right: calc(-1 * var(--page-margin));
-    padding-left: var(--page-margin);
-    padding-right: var(--page-margin);
+    margin-left: -20px;
+    margin-right: -20px;
+    padding-left: 20px;
+    padding-right: 20px;
   }
 
   /* Hide scrollbar but keep functionality */
@@ -271,7 +271,7 @@
 
   @media (min-width: 768px) {
     .article-products {
-      padding: var(--ap-padding-top) var(--page-margin) var(--ap-padding-bottom);
+      padding: var(--ap-padding-top) 40px var(--ap-padding-bottom);
     }
 
     .article-products__header {
