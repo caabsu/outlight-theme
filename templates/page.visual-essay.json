@@ -31,7 +31,7 @@
         "padding_top": 80,
         "padding_bottom": 60,
         "padding_top_mobile": 60,
-        "padding_bottom_mobile": 40
+        "padding_bottom_mobile": 0
       }
     },
     "image-text-1": {
@@ -93,7 +93,7 @@
         "padding_top": 80,
         "padding_bottom": 80,
         "padding_top_mobile": 50,
-        "padding_bottom_mobile": 50
+        "padding_bottom_mobile": 0
       }
     },
     "image-text-2": {
@@ -101,7 +101,7 @@
       "settings": {
         "image": "shopify://shop_images/Fenra_8R.png",
         "caption": "FIG 1.2 — CIRCADIAN IMPACT",
-        "quote": "By moving light to the perimeter (walls) and lower planes (tables, floors), you expand the perceived size of the room and highlight the texture of your furnishings, while signaling to your body that the day is done.",
+        "quote": "",
         "caption_color": "#78716c",
         "quote_color": "#44403c",
         "quote_size": 18,
@@ -110,7 +110,7 @@
         "padding_top": 60,
         "padding_bottom": 60,
         "padding_top_mobile": 40,
-        "padding_bottom_mobile": 40
+        "padding_bottom_mobile": 0
       }
     },
     "section-2": {
