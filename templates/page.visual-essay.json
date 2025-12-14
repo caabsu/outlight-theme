@@ -149,6 +149,19 @@
     },
     "products": {
       "type": "article-products",
+      "blocks": {
+        "product_MkTDNy": {
+          "type": "product",
+          "settings": {
+            "product": "aria",
+            "custom_title": "",
+            "custom_label": ""
+          }
+        }
+      },
+      "block_order": [
+        "product_MkTDNy"
+      ],
       "settings": {
         "label": "THE TOOLKIT",
         "title": "Build Your Layers",
@@ -170,7 +183,7 @@
         "product_title_color": "#1C1917",
         "price_color": "#1C1917",
         "background_color": "#f7f5f0",
-        "card_background": "#EBE8E0",
+        "card_background": "#FBFAF9",
         "padding_top": 60,
         "padding_bottom": 60,
         "padding_top_mobile": 40,
