@@ -34,26 +34,10 @@
         "padding_bottom_mobile": 20
       }
     },
-    "image-hero": {
-      "type": "article-image-text",
-      "settings": {
-        "caption": "",
-        "quote": "",
-        "caption_color": "#78716c",
-        "quote_color": "#1c1917",
-        "quote_size": 22,
-        "quote_size_mobile": 18,
-        "background_color": "#f7f5f0",
-        "text_background": "#f7f5f0",
-        "padding_top": 0,
-        "padding_bottom": 0,
-        "padding_top_mobile": 0,
-        "padding_bottom_mobile": 0
-      }
-    },
     "caption-1": {
       "type": "article-image-text",
       "settings": {
+        "image": "shopify://shop_images/custom_nano-banana-pro_1765712127604.png",
         "caption": "FIG 1.0 — THE TOTEM",
         "quote": "",
         "caption_color": "#78716c",
@@ -194,27 +178,6 @@
         "padding_bottom_mobile": 40
       }
     },
-    "closing": {
-      "type": "article-closing",
-      "settings": {
-        "quote": "\"It is the jewelry of the room: it doesn't just light the space; it adorns it.\"",
-        "show_quotation_marks": true,
-        "footer_text": "",
-        "quotation_mark_color": "#a8a29e",
-        "quotation_mark_size": 80,
-        "quotation_mark_size_mobile": 50,
-        "quote_color": "#78716c",
-        "quote_size": 28,
-        "quote_size_mobile": 22,
-        "divider_color": "#d6d3d1",
-        "footer_color": "#a8a29e",
-        "background_color": "#f7f5f0",
-        "padding_top": 80,
-        "padding_bottom": 80,
-        "padding_top_mobile": 60,
-        "padding_bottom_mobile": 60
-      }
-    },
     "featured-product": {
       "type": "article-featured-product",
       "settings": {
@@ -238,11 +201,31 @@
         "padding_top_mobile": 30,
         "padding_bottom_mobile": 0
       }
+    },
+    "closing": {
+      "type": "article-closing",
+      "settings": {
+        "quote": "\"It is the jewelry of the room: it doesn't just light the space; it adorns it.\"",
+        "show_quotation_marks": true,
+        "footer_text": "",
+        "quotation_mark_color": "#a8a29e",
+        "quotation_mark_size": 80,
+        "quotation_mark_size_mobile": 50,
+        "quote_color": "#78716c",
+        "quote_size": 28,
+        "quote_size_mobile": 22,
+        "divider_color": "#d6d3d1",
+        "footer_color": "#a8a29e",
+        "background_color": "#f7f5f0",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "padding_top_mobile": 60,
+        "padding_bottom_mobile": 60
+      }
     }
   },
   "order": [
     "article-hero",
-    "image-hero",
     "caption-1",
     "section-1",
     "section-2",
