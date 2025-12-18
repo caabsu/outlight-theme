@@ -178,14 +178,39 @@
     },
     "featured-product": {
       "type": "article-featured-product",
+      "blocks": {
+        "product_1": {
+          "type": "product",
+          "settings": {
+            "product": "",
+            "subtitle": "Solid Brass"
+          }
+        },
+        "product_2": {
+          "type": "product",
+          "settings": {
+            "product": "",
+            "subtitle": "Honed Marble"
+          }
+        },
+        "product_3": {
+          "type": "product",
+          "settings": {
+            "product": "",
+            "subtitle": "Mouth-Blown Glass"
+          }
+        }
+      },
+      "block_order": [
+        "product_1",
+        "product_2",
+        "product_3"
+      ],
       "settings": {
-        "product": "",
-        "custom_title": "",
-        "subtitle": "Solid Brass",
-        "button_text": "Collect This Piece",
+        "button_text": "Add to Cart",
         "title_color": "#1c1917",
-        "title_size": 32,
-        "title_size_mobile": 26,
+        "title_size": 24,
+        "title_size_mobile": 20,
         "subtitle_color": "#a8a29e",
         "price_color": "#1c1917",
         "button_background": "#292524",
