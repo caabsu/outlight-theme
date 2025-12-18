@@ -31,10 +31,20 @@
     <div class="article-section-dark__grid{% if section.settings.reverse_layout %} article-section-dark__grid--reverse{% endif %}">
       {%- comment -%} Image Column {%- endcomment -%}
       <div class="article-section-dark__image-col">
-        {%- if section.settings.image != blank -%}
-          <div class="article-section-dark__image">
-            {{ section.settings.image | image_url: width: 800 | image_tag: loading: 'lazy' }}
-          </div>
+        {%- if section.settings.image != blank or section.settings.image_mobile != blank -%}
+          {%- comment -%} Desktop Image {%- endcomment -%}
+          {%- if section.settings.image != blank -%}
+            <div class="article-section-dark__image article-section-dark__image--desktop">
+              {{ section.settings.image | image_url: width: 800 | image_tag: loading: 'lazy' }}
+            </div>
+          {%- endif -%}
+          {%- comment -%} Mobile Image {%- endcomment -%}
+          {%- assign mobile_image = section.settings.image_mobile | default: section.settings.image -%}
+          {%- if mobile_image != blank -%}
+            <div class="article-section-dark__image article-section-dark__image--mobile">
+              {{ mobile_image | image_url: width: 600 | image_tag: loading: 'lazy' }}
+            </div>
+          {%- endif -%}
         {%- endif -%}
       </div>
 
@@ -131,6 +141,14 @@
   .article-section-dark__image {
     aspect-ratio: 4 / 3;
     overflow: hidden;
+  }
+
+  .article-section-dark__image--desktop {
+    display: none;
+  }
+
+  .article-section-dark__image--mobile {
+    display: block;
   }
 
   .article-section-dark__image img {
@@ -274,6 +292,14 @@
       aspect-ratio: 3 / 4;
     }
 
+    .article-section-dark__image--desktop {
+      display: block;
+    }
+
+    .article-section-dark__image--mobile {
+      display: none;
+    }
+
     .article-section-dark__content-col {
       flex: 1;
     }
@@ -351,7 +377,13 @@
     {
       "type": "image_picker",
       "id": "image",
-      "label": "Image"
+      "label": "Image (desktop)"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_mobile",
+      "label": "Image (mobile)",
+      "info": "Optional. Falls back to desktop image if not set."
     },
     {
       "type": "checkbox",
