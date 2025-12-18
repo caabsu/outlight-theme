@@ -58,6 +58,8 @@
         "section_number": "01",
         "section_label": "PHILOSOPHY",
         "title": "The Unlit Test",
+        "show_top_divider": true,
+        "reverse_layout": false,
         "caption": "",
         "body_text": "<p>Most lighting is purchased for what it does when the switch is flipped on. We believe the true test of a fixture is what it does when the switch is off.</p>",
         "body_text_2": "<p>In the daylight, a lamp is not a utility—it is a statue. If it looks like 'dead technology', it doesn't belong in your sanctuary. We design 'Sculptural Statements'.</p>",
@@ -182,22 +184,25 @@
         "product_1": {
           "type": "product",
           "settings": {
-            "product": "",
+            "product": "azura",
+            "custom_title": "",
             "subtitle": "Solid Brass"
           }
         },
         "product_2": {
           "type": "product",
           "settings": {
-            "product": "",
-            "subtitle": "Honed Marble"
+            "product": "caia",
+            "custom_title": "",
+            "subtitle": "High Quality Iron"
           }
         },
         "product_3": {
           "type": "product",
           "settings": {
-            "product": "",
-            "subtitle": "Mouth-Blown Glass"
+            "product": "elya",
+            "custom_title": "",
+            "subtitle": "Iron & Aluminum"
           }
         }
       },
