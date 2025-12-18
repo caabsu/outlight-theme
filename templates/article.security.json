@@ -15,7 +15,7 @@
         "category": "ESSAY — CONCEPT A",
         "title_line_1": "Security Through",
         "title_line_2": "Softness",
-        "author": "THE ANTI-FLOODLIGHT MANIFESTO",
+        "author": "JULIAN VANCE",
         "read_time": "5 MIN READ",
         "category_color": "#d97706",
         "category_size": 12,
@@ -37,6 +37,7 @@
     "image-text-hero": {
       "type": "article-image-text",
       "settings": {
+        "image": "shopify://shop_images/lumiscene_ai_generated_4_1__1.png",
         "caption": "FIG 1.0 — THE \"PERIMETER GLOW\"",
         "quote": "\"Reclaiming the night from the tyranny of the floodlight.\"",
         "caption_color": "#78716c",
@@ -79,7 +80,9 @@
         "padding_top": 60,
         "padding_bottom": 60,
         "padding_top_mobile": 40,
-        "padding_bottom_mobile": 40
+        "padding_bottom_mobile": 40,
+        "materials_accent_color": "#d97706",
+        "materials_text_color": "#78716c"
       }
     },
     "comparison": {
@@ -134,7 +137,9 @@
         "padding_top": 60,
         "padding_bottom": 60,
         "padding_top_mobile": 40,
-        "padding_bottom_mobile": 40
+        "padding_bottom_mobile": 40,
+        "materials_accent_color": "#d97706",
+        "materials_text_color": "#78716c"
       }
     },
     "section-dark": {
@@ -162,7 +167,7 @@
         "text_highlight_color": "#d4a574",
         "text_size": 18,
         "text_size_mobile": 16,
-        "button_background": "transparent",
+        "button_background": "rgba(0,0,0,0)",
         "button_border_color": "#44403c",
         "button_text_color": "#78716c",
         "button_active_background": "#292524",
@@ -181,6 +186,7 @@
           "type": "product",
           "settings": {
             "product": "",
+            "custom_title": "",
             "subtitle": "MATTE BLACK"
           }
         },
@@ -188,6 +194,7 @@
           "type": "product",
           "settings": {
             "product": "",
+            "custom_title": "",
             "subtitle": "SOLID BRASS"
           }
         },
@@ -195,6 +202,7 @@
           "type": "product",
           "settings": {
             "product": "",
+            "custom_title": "",
             "subtitle": "WEATHERED BRONZE"
           }
         }
