@@ -190,25 +190,25 @@
         "product_1": {
           "type": "product",
           "settings": {
-            "product": "",
+            "product": "mira",
             "custom_title": "",
-            "subtitle": "MATTE BLACK"
+            "subtitle": ""
           }
         },
         "product_2": {
           "type": "product",
           "settings": {
-            "product": "",
+            "product": "aurevo",
             "custom_title": "",
-            "subtitle": "SOLID BRASS"
+            "subtitle": ""
           }
         },
         "product_3": {
           "type": "product",
           "settings": {
-            "product": "",
+            "product": "keria",
             "custom_title": "",
-            "subtitle": "WEATHERED BRONZE"
+            "subtitle": ""
           }
         }
       },
