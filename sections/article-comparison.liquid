@@ -1,0 +1,444 @@
+{% comment %}
+  Article Comparison Section
+  Side-by-side image comparison with overlays (e.g., Blast vs Wash)
+{% endcomment %}
+
+<section
+  class="article-comparison"
+  style="
+    --acomp-bg: {{ section.settings.background_color }};
+    --acomp-title-color: {{ section.settings.title_color }};
+    --acomp-title-size: {{ section.settings.title_size }}px;
+    --acomp-title-size-mobile: {{ section.settings.title_size_mobile }}px;
+    --acomp-subtitle-color: {{ section.settings.subtitle_color }};
+    --acomp-left-accent: {{ section.settings.left_accent_color }};
+    --acomp-right-accent: {{ section.settings.right_accent_color }};
+    --acomp-overlay-title-color: {{ section.settings.overlay_title_color }};
+    --acomp-overlay-text-color: {{ section.settings.overlay_text_color }};
+    --acomp-padding-top: {{ section.settings.padding_top }}px;
+    --acomp-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --acomp-padding-top-mobile: {{ section.settings.padding_top_mobile }}px;
+    --acomp-padding-bottom-mobile: {{ section.settings.padding_bottom_mobile }}px;
+  "
+>
+  <div class="article-comparison__container">
+    {%- if section.settings.title != blank or section.settings.subtitle != blank -%}
+      <div class="article-comparison__header">
+        {%- if section.settings.title != blank -%}
+          <h2 class="article-comparison__title">{{ section.settings.title }}</h2>
+        {%- endif -%}
+        {%- if section.settings.subtitle != blank -%}
+          <p class="article-comparison__subtitle">{{ section.settings.subtitle }}</p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <div class="article-comparison__grid">
+      {%- comment -%} Left Image {%- endcomment -%}
+      <div class="article-comparison__item article-comparison__item--left">
+        <div class="article-comparison__image">
+          {%- if section.settings.left_image != blank -%}
+            {{ section.settings.left_image | image_url: width: 800 | image_tag: loading: 'lazy' }}
+          {%- else -%}
+            {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
+          {%- endif -%}
+          <div class="article-comparison__overlay">
+            <div class="article-comparison__overlay-content">
+              <span class="article-comparison__overlay-accent article-comparison__overlay-accent--left"></span>
+              <div class="article-comparison__overlay-text">
+                {%- if section.settings.left_title != blank -%}
+                  <h3 class="article-comparison__overlay-title">{{ section.settings.left_title }}</h3>
+                {%- endif -%}
+                {%- if section.settings.left_description != blank -%}
+                  <p class="article-comparison__overlay-desc">{{ section.settings.left_description }}</p>
+                {%- endif -%}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {%- comment -%} Right Image {%- endcomment -%}
+      <div class="article-comparison__item article-comparison__item--right">
+        <div class="article-comparison__image">
+          {%- if section.settings.right_image != blank -%}
+            {{ section.settings.right_image | image_url: width: 800 | image_tag: loading: 'lazy' }}
+          {%- else -%}
+            {{ 'lifestyle-2' | placeholder_svg_tag: 'placeholder-svg' }}
+          {%- endif -%}
+          <div class="article-comparison__overlay">
+            <div class="article-comparison__overlay-content">
+              <span class="article-comparison__overlay-accent article-comparison__overlay-accent--right"></span>
+              <div class="article-comparison__overlay-text">
+                {%- if section.settings.right_title != blank -%}
+                  <h3 class="article-comparison__overlay-title">{{ section.settings.right_title }}</h3>
+                {%- endif -%}
+                {%- if section.settings.right_description != blank -%}
+                  <p class="article-comparison__overlay-desc">{{ section.settings.right_description }}</p>
+                {%- endif -%}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .article-comparison {
+    background-color: var(--acomp-bg);
+    padding: var(--acomp-padding-top-mobile) 16px var(--acomp-padding-bottom-mobile);
+  }
+
+  .article-comparison__container {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .article-comparison__header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .article-comparison__title {
+    font-family: var(--font-heading-family), serif;
+    font-size: var(--acomp-title-size-mobile);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--acomp-title-color);
+    margin: 0 0 0.5rem;
+    line-height: 1.2;
+  }
+
+  .article-comparison__subtitle {
+    font-family: var(--font-heading-family), serif;
+    font-size: 14px;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--acomp-subtitle-color);
+    margin: 0;
+  }
+
+  .article-comparison__grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .article-comparison__item {
+    width: 100%;
+  }
+
+  .article-comparison__image {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+  }
+
+  .article-comparison__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .article-comparison__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 1.5rem;
+  }
+
+  .article-comparison__overlay-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .article-comparison__overlay-accent {
+    width: 3px;
+    min-height: 50px;
+    flex-shrink: 0;
+  }
+
+  .article-comparison__overlay-accent--left {
+    background-color: var(--acomp-left-accent);
+  }
+
+  .article-comparison__overlay-accent--right {
+    background-color: var(--acomp-right-accent);
+  }
+
+  .article-comparison__overlay-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .article-comparison__overlay-title {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--acomp-overlay-title-color);
+    margin: 0;
+    text-transform: uppercase;
+  }
+
+  .article-comparison__overlay-desc {
+    font-family: var(--font-heading-family), serif;
+    font-size: 16px;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--acomp-overlay-text-color);
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  @media (min-width: 768px) {
+    .article-comparison {
+      padding: var(--acomp-padding-top) 40px var(--acomp-padding-bottom);
+    }
+
+    .article-comparison__header {
+      margin-bottom: 3rem;
+    }
+
+    .article-comparison__title {
+      font-size: var(--acomp-title-size);
+    }
+
+    .article-comparison__subtitle {
+      font-size: 16px;
+    }
+
+    .article-comparison__grid {
+      flex-direction: row;
+      gap: 1.5rem;
+    }
+
+    .article-comparison__item {
+      flex: 1;
+    }
+
+    .article-comparison__image {
+      aspect-ratio: 1 / 1.2;
+    }
+
+    .article-comparison__overlay {
+      padding: 2rem;
+    }
+
+    .article-comparison__overlay-accent {
+      min-height: 60px;
+    }
+
+    .article-comparison__overlay-title {
+      font-size: 14px;
+    }
+
+    .article-comparison__overlay-desc {
+      font-size: 18px;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .article-comparison {
+      padding: var(--acomp-padding-top) 60px var(--acomp-padding-bottom);
+    }
+
+    .article-comparison__grid {
+      gap: 2rem;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Article comparison",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Header"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "The Perimeter Strategy"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Click to compare the \"Blast\" vs. the \"Wash\"."
+    },
+    {
+      "type": "header",
+      "content": "Left image"
+    },
+    {
+      "type": "image_picker",
+      "id": "left_image",
+      "label": "Left image"
+    },
+    {
+      "type": "text",
+      "id": "left_title",
+      "label": "Left title",
+      "default": "THE \"BLAST\""
+    },
+    {
+      "type": "textarea",
+      "id": "left_description",
+      "label": "Left description",
+      "default": "High contrast, blinding glare, deep shadows. An anxious environment."
+    },
+    {
+      "type": "header",
+      "content": "Right image"
+    },
+    {
+      "type": "image_picker",
+      "id": "right_image",
+      "label": "Right image"
+    },
+    {
+      "type": "text",
+      "id": "right_title",
+      "label": "Right title",
+      "default": "THE \"WASH\""
+    },
+    {
+      "type": "textarea",
+      "id": "right_description",
+      "label": "Right description",
+      "default": "Soft gradients, texture reveal, continuous visibility. A sanctuary."
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#1C1917"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title size (desktop)",
+      "min": 28,
+      "max": 56,
+      "step": 2,
+      "default": 42,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "title_size_mobile",
+      "label": "Title size (mobile)",
+      "min": 24,
+      "max": 40,
+      "step": 2,
+      "default": 28,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle color",
+      "default": "#78716C"
+    },
+    {
+      "type": "header",
+      "content": "Overlay style"
+    },
+    {
+      "type": "color",
+      "id": "left_accent_color",
+      "label": "Left accent color",
+      "default": "#DC2626"
+    },
+    {
+      "type": "color",
+      "id": "right_accent_color",
+      "label": "Right accent color",
+      "default": "#16A34A"
+    },
+    {
+      "type": "color",
+      "id": "overlay_title_color",
+      "label": "Overlay title color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "overlay_text_color",
+      "label": "Overlay text color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "header",
+      "content": "Section style"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#F7F5F0"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top (desktop)",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "default": 80,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom (desktop)",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "default": 80,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding top (mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 50,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding bottom (mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 50,
+      "unit": "px"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Article comparison"
+    }
+  ],
+  "enabled_on": {
+    "templates": ["*"],
+    "groups": ["*"]
+  }
+}
+{% endschema %}

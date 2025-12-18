@@ -1,0 +1,577 @@
+{% comment %}
+  Article Section Dark
+  Dark-themed article section with image and optional specification buttons
+{% endcomment %}
+
+<section
+  class="article-section-dark"
+  style="
+    --asd-bg: {{ section.settings.background_color }};
+    --asd-number-color: {{ section.settings.number_color }};
+    --asd-label-color: {{ section.settings.label_color }};
+    --asd-title-color: {{ section.settings.title_color }};
+    --asd-title-size: {{ section.settings.title_size }}px;
+    --asd-title-size-mobile: {{ section.settings.title_size_mobile }}px;
+    --asd-text-color: {{ section.settings.text_color }};
+    --asd-text-highlight-color: {{ section.settings.text_highlight_color }};
+    --asd-text-size: {{ section.settings.text_size }}px;
+    --asd-text-size-mobile: {{ section.settings.text_size_mobile }}px;
+    --asd-button-bg: {{ section.settings.button_background }};
+    --asd-button-border: {{ section.settings.button_border_color }};
+    --asd-button-text: {{ section.settings.button_text_color }};
+    --asd-button-active-bg: {{ section.settings.button_active_background }};
+    --asd-button-active-text: {{ section.settings.button_active_text_color }};
+    --asd-padding-top: {{ section.settings.padding_top }}px;
+    --asd-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --asd-padding-top-mobile: {{ section.settings.padding_top_mobile }}px;
+    --asd-padding-bottom-mobile: {{ section.settings.padding_bottom_mobile }}px;
+  "
+>
+  <div class="article-section-dark__container">
+    <div class="article-section-dark__grid{% if section.settings.reverse_layout %} article-section-dark__grid--reverse{% endif %}">
+      {%- comment -%} Image Column {%- endcomment -%}
+      <div class="article-section-dark__image-col">
+        {%- if section.settings.image != blank -%}
+          <div class="article-section-dark__image">
+            {{ section.settings.image | image_url: width: 800 | image_tag: loading: 'lazy' }}
+          </div>
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} Content Column {%- endcomment -%}
+      <div class="article-section-dark__content-col">
+        <div class="article-section-dark__content">
+          {%- if section.settings.section_number != blank or section.settings.section_label != blank -%}
+            <div class="article-section-dark__meta">
+              {%- if section.settings.section_number != blank -%}
+                <span class="article-section-dark__number">{{ section.settings.section_number }}.</span>
+              {%- endif -%}
+              {%- if section.settings.section_label != blank -%}
+                <span class="article-section-dark__label">{{ section.settings.section_label | upcase }}</span>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+
+          {%- if section.settings.title != blank -%}
+            <h2 class="article-section-dark__title">{{ section.settings.title }}</h2>
+          {%- endif -%}
+
+          {%- if section.settings.body_text != blank -%}
+            <div class="article-section-dark__body article-section-dark__body--highlight">
+              {{ section.settings.body_text }}
+            </div>
+          {%- endif -%}
+
+          {%- if section.settings.body_text_2 != blank -%}
+            <div class="article-section-dark__body">
+              {{ section.settings.body_text_2 }}
+            </div>
+          {%- endif -%}
+
+          {%- comment -%} Specification Buttons {%- endcomment -%}
+          {%- if section.settings.show_buttons -%}
+            <div class="article-section-dark__buttons">
+              {%- if section.settings.button_1_value != blank -%}
+                <div class="article-section-dark__button{% if section.settings.button_1_active %} article-section-dark__button--active{% endif %}">
+                  <span class="article-section-dark__button-value">{{ section.settings.button_1_value }}</span>
+                  {%- if section.settings.button_1_label != blank -%}
+                    <span class="article-section-dark__button-label">{{ section.settings.button_1_label | upcase }}</span>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+              {%- if section.settings.button_2_value != blank -%}
+                <div class="article-section-dark__button{% if section.settings.button_2_active %} article-section-dark__button--active{% endif %}">
+                  <span class="article-section-dark__button-value">{{ section.settings.button_2_value }}</span>
+                  {%- if section.settings.button_2_label != blank -%}
+                    <span class="article-section-dark__button-label">{{ section.settings.button_2_label | upcase }}</span>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .article-section-dark {
+    background-color: var(--asd-bg);
+    padding: var(--asd-padding-top-mobile) 16px var(--asd-padding-bottom-mobile);
+  }
+
+  .article-section-dark__container {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .article-section-dark__grid {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .article-section-dark__image-col {
+    width: 100%;
+  }
+
+  .article-section-dark__image {
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+  }
+
+  .article-section-dark__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .article-section-dark__content-col {
+    width: 100%;
+  }
+
+  .article-section-dark__content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .article-section-dark__meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .article-section-dark__number {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    color: var(--asd-number-color);
+  }
+
+  .article-section-dark__label {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: var(--asd-label-color);
+  }
+
+  .article-section-dark__title {
+    font-family: var(--font-heading-family), serif;
+    font-size: var(--asd-title-size-mobile);
+    font-weight: 400;
+    color: var(--asd-title-color);
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  .article-section-dark__body {
+    font-family: var(--font-heading-family), serif;
+    font-size: var(--asd-text-size-mobile);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--asd-text-color);
+    line-height: 1.6;
+  }
+
+  .article-section-dark__body--highlight {
+    color: var(--asd-text-highlight-color);
+  }
+
+  .article-section-dark__body p {
+    margin: 0 0 1rem;
+  }
+
+  .article-section-dark__body p:last-child {
+    margin-bottom: 0;
+  }
+
+  .article-section-dark__body strong {
+    font-weight: 600;
+    font-style: normal;
+  }
+
+  .article-section-dark__buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .article-section-dark__button {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background-color: var(--asd-button-bg);
+    border: 1px solid var(--asd-button-border);
+    text-align: center;
+    gap: 0.25rem;
+  }
+
+  .article-section-dark__button--active {
+    background-color: var(--asd-button-active-bg);
+    border-color: var(--asd-button-active-bg);
+  }
+
+  .article-section-dark__button--active .article-section-dark__button-value,
+  .article-section-dark__button--active .article-section-dark__button-label {
+    color: var(--asd-button-active-text);
+  }
+
+  .article-section-dark__button-value {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--asd-button-text);
+  }
+
+  .article-section-dark__button-label {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    color: var(--asd-button-text);
+    opacity: 0.7;
+  }
+
+  @media (min-width: 768px) {
+    .article-section-dark {
+      padding: var(--asd-padding-top) 40px var(--asd-padding-bottom);
+    }
+
+    .article-section-dark__grid {
+      flex-direction: row;
+      align-items: center;
+      gap: 4rem;
+    }
+
+    .article-section-dark__grid--reverse {
+      flex-direction: row-reverse;
+    }
+
+    .article-section-dark__image-col {
+      flex: 1;
+    }
+
+    .article-section-dark__image {
+      aspect-ratio: 3 / 4;
+    }
+
+    .article-section-dark__content-col {
+      flex: 1;
+    }
+
+    .article-section-dark__content {
+      gap: 1.25rem;
+    }
+
+    .article-section-dark__title {
+      font-size: var(--asd-title-size);
+    }
+
+    .article-section-dark__body {
+      font-size: var(--asd-text-size);
+    }
+
+    .article-section-dark__buttons {
+      margin-top: 1.5rem;
+    }
+
+    .article-section-dark__button {
+      padding: 1.25rem 1.5rem;
+    }
+
+    .article-section-dark__button-value {
+      font-size: 22px;
+    }
+
+    .article-section-dark__button-label {
+      font-size: 11px;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .article-section-dark {
+      padding: var(--asd-padding-top) 60px var(--asd-padding-bottom);
+    }
+
+    .article-section-dark__grid {
+      gap: 5rem;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Article section (dark)",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section header"
+    },
+    {
+      "type": "text",
+      "id": "section_number",
+      "label": "Section number",
+      "default": "04"
+    },
+    {
+      "type": "text",
+      "id": "section_label",
+      "label": "Section label",
+      "default": "COLOR THEORY"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "The \"Sandstone\" Rule"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "checkbox",
+      "id": "reverse_layout",
+      "label": "Reverse layout (image right)",
+      "default": false
+    },
+    {
+      "type": "richtext",
+      "id": "body_text",
+      "label": "Body text (highlighted)",
+      "default": "<p>Blue-spectrum light (cool white) mimics the noon sun. At night, this creates a sterile, \"medical\" look. It feels anxious.</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "body_text_2",
+      "label": "Body text 2",
+      "default": "<p>At Outlight, we adhere to the <strong>2700K</strong> standard. This warm, amber-toned light mimics the glow of a fire. It signals \"shelter\" and renders the browns of brick and the greens of foliage naturally.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Specification buttons"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_buttons",
+      "label": "Show buttons",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "button_1_value",
+      "label": "Button 1 value",
+      "default": "2700K"
+    },
+    {
+      "type": "text",
+      "id": "button_1_label",
+      "label": "Button 1 label",
+      "default": "Sandstone (Approved)"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_1_active",
+      "label": "Button 1 active",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "button_2_value",
+      "label": "Button 2 value",
+      "default": "5000K"
+    },
+    {
+      "type": "text",
+      "id": "button_2_label",
+      "label": "Button 2 label",
+      "default": "Daylight (Avoid)"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_2_active",
+      "label": "Button 2 active",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "color",
+      "id": "number_color",
+      "label": "Number color",
+      "default": "#78716C"
+    },
+    {
+      "type": "color",
+      "id": "label_color",
+      "label": "Label color",
+      "default": "#D97706"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title size (desktop)",
+      "min": 28,
+      "max": 56,
+      "step": 2,
+      "default": 42,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "title_size_mobile",
+      "label": "Title size (mobile)",
+      "min": 24,
+      "max": 40,
+      "step": 2,
+      "default": 28,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#A8A29E"
+    },
+    {
+      "type": "color",
+      "id": "text_highlight_color",
+      "label": "Highlighted text color",
+      "default": "#D4A574"
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "label": "Text size (desktop)",
+      "min": 16,
+      "max": 24,
+      "step": 1,
+      "default": 18,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "text_size_mobile",
+      "label": "Text size (mobile)",
+      "min": 14,
+      "max": 20,
+      "step": 1,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Button style"
+    },
+    {
+      "type": "color",
+      "id": "button_background",
+      "label": "Button background",
+      "default": "transparent"
+    },
+    {
+      "type": "color",
+      "id": "button_border_color",
+      "label": "Button border color",
+      "default": "#44403C"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text color",
+      "default": "#78716C"
+    },
+    {
+      "type": "color",
+      "id": "button_active_background",
+      "label": "Active button background",
+      "default": "#292524"
+    },
+    {
+      "type": "color",
+      "id": "button_active_text_color",
+      "label": "Active button text color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "header",
+      "content": "Section style"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#1C1917"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top (desktop)",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "default": 80,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom (desktop)",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "default": 80,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding top (mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 50,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding bottom (mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 50,
+      "unit": "px"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Article section (dark)"
+    }
+  ],
+  "enabled_on": {
+    "templates": ["*"],
+    "groups": ["*"]
+  }
+}
+{% endschema %}
