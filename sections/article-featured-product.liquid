@@ -22,9 +22,23 @@
     --afp-padding-top-mobile: {{ section.settings.padding_top_mobile }}px;
     --afp-padding-bottom-mobile: {{ section.settings.padding_bottom_mobile }}px;
     --afp-product-count: {{ section.blocks.size | at_least: 1 }};
+    --afp-header-label-color: {{ section.settings.header_label_color }};
+    --afp-header-title-color: {{ section.settings.header_title_color }};
+    --afp-header-title-size: {{ section.settings.header_title_size }}px;
+    --afp-header-title-size-mobile: {{ section.settings.header_title_size_mobile }}px;
   "
 >
   <div class="article-featured-products__container">
+    {%- if section.settings.header_label != blank or section.settings.header_title != blank -%}
+      <div class="article-featured-products__header">
+        {%- if section.settings.header_label != blank -%}
+          <p class="article-featured-products__header-label">{{ section.settings.header_label | upcase }}</p>
+        {%- endif -%}
+        {%- if section.settings.header_title != blank -%}
+          <h2 class="article-featured-products__header-title">{{ section.settings.header_title }}</h2>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
     <div class="article-featured-products__grid">
       {%- for block in section.blocks -%}
         {%- assign product = all_products[block.settings.product] -%}
@@ -109,6 +123,31 @@
   .article-featured-products__container {
     max-width: 1400px;
     margin: 0 auto;
+  }
+
+  /* Header */
+  .article-featured-products__header {
+    text-align: center;
+    padding: 0 16px 2rem;
+  }
+
+  .article-featured-products__header-label {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: var(--afp-header-label-color);
+    margin: 0 0 0.5rem;
+  }
+
+  .article-featured-products__header-title {
+    font-family: var(--font-heading-family), serif;
+    font-size: var(--afp-header-title-size-mobile);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--afp-header-title-color);
+    margin: 0;
+    line-height: 1.2;
   }
 
   /* Mobile: Horizontal scroll */
@@ -225,6 +264,19 @@
       padding: var(--afp-padding-top) 40px var(--afp-padding-bottom);
     }
 
+    .article-featured-products__header {
+      padding: 0 0 3rem;
+    }
+
+    .article-featured-products__header-label {
+      font-size: 12px;
+      margin-bottom: 0.75rem;
+    }
+
+    .article-featured-products__header-title {
+      font-size: var(--afp-header-title-size);
+    }
+
     .article-featured-products__grid {
       display: grid;
       grid-template-columns: repeat(var(--afp-product-count), 1fr);
@@ -326,6 +378,53 @@
   "name": "Article featured products",
   "max_blocks": 3,
   "settings": [
+    {
+      "type": "header",
+      "content": "Section header"
+    },
+    {
+      "type": "text",
+      "id": "header_label",
+      "label": "Header label",
+      "info": "Small text above the title"
+    },
+    {
+      "type": "text",
+      "id": "header_title",
+      "label": "Header title"
+    },
+    {
+      "type": "color",
+      "id": "header_label_color",
+      "label": "Header label color",
+      "default": "#D97706"
+    },
+    {
+      "type": "color",
+      "id": "header_title_color",
+      "label": "Header title color",
+      "default": "#1C1917"
+    },
+    {
+      "type": "range",
+      "id": "header_title_size",
+      "label": "Header title size (desktop)",
+      "min": 28,
+      "max": 56,
+      "step": 2,
+      "default": 42,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "header_title_size_mobile",
+      "label": "Header title size (mobile)",
+      "min": 22,
+      "max": 40,
+      "step": 2,
+      "default": 28,
+      "unit": "px"
+    },
     {
       "type": "header",
       "content": "Button"

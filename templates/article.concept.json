@@ -1,0 +1,233 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "article-hero": {
+      "type": "article-hero",
+      "settings": {
+        "category": "ESSAY — CONCEPT A",
+        "title_line_1": "Lighting",
+        "title_line_2": "the Boundaries",
+        "author": "Julian Vance",
+        "read_time": "5 MIN READ",
+        "category_color": "#d97706",
+        "category_size": 12,
+        "title_color": "#1c1917",
+        "title_size": 72,
+        "title_size_mobile": 42,
+        "subtitle_color": "#a8a29e",
+        "subtitle_size": 72,
+        "subtitle_size_mobile": 42,
+        "meta_color": "#a8a29e",
+        "divider_color": "#d6d3d1",
+        "background_color": "#f7f5f0",
+        "padding_top": 80,
+        "padding_bottom": 60,
+        "padding_top_mobile": 60,
+        "padding_bottom_mobile": 40
+      }
+    },
+    "image-text-hero": {
+      "type": "article-image-text",
+      "settings": {
+        "caption": "FIG 1.0 — VISUAL SOFTNESS",
+        "quote": "\"Instead of pushing light down, we push light against the vertical surfaces.\"",
+        "caption_color": "#78716c",
+        "quote_color": "#1c1917",
+        "quote_size": 22,
+        "quote_size_mobile": 18,
+        "background_color": "#f7f5f0",
+        "text_background": "#ffffff",
+        "padding_top": 0,
+        "padding_bottom": 60,
+        "padding_top_mobile": 0,
+        "padding_bottom_mobile": 40
+      }
+    },
+    "section-1": {
+      "type": "article-section",
+      "settings": {
+        "section_number": "01",
+        "section_label": "PHILOSOPHY",
+        "title": "Physics of Softness",
+        "show_top_divider": false,
+        "reverse_layout": false,
+        "caption": "",
+        "body_text": "<p>The most common mistake in residential lighting is attempting to light the \"air\" in the center of the room. This results in the \"interrogation effect\"—harsh overhead shadows and a flat, sterile environment. The professional alternative is <em>Wall Washing</em>.</p>",
+        "body_text_2": "<p>When light bounces off a matte surface like plaster or paint, it scatters. This scattered light is infinitely softer than direct light from a bulb. It creates a glow that flatters the room and the people in it. By washing the wall, the wall becomes the light source, eliminating the glare of a \"naked bulb\".</p>",
+        "enable_dropcap": true,
+        "number_color": "#78716c",
+        "divider_color": "#d6d3d1",
+        "caption_color": "#78716c",
+        "title_color": "#1c1917",
+        "title_size": 48,
+        "title_size_mobile": 32,
+        "text_color": "#44403c",
+        "text_size": 18,
+        "text_size_mobile": 16,
+        "dropcap_color": "#d97706",
+        "dropcap_size": 80,
+        "dropcap_size_mobile": 56,
+        "background_color": "#f7f5f0",
+        "padding_top": 60,
+        "padding_bottom": 60,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 40
+      }
+    },
+    "section-2": {
+      "type": "article-section",
+      "settings": {
+        "section_number": "02",
+        "section_label": "TECHNIQUE",
+        "title": "Grazing vs. Washing",
+        "show_top_divider": true,
+        "reverse_layout": false,
+        "caption": "INTERACTIVE: INSPECT TEXTURE GRAZING",
+        "body_text": "<p><strong>Wall Washing</strong> occurs when the fixture is placed slightly further from the wall, creating a smooth, even gradient. This hides imperfections and turns the wall into a glowing canvas.</p>",
+        "body_text_2": "<p><strong>Wall Grazing</strong> happens when the fixture is placed very close to the wall. The light skims the surface at a steep angle, creating dramatic micro-shadows that highlight texture. Crucial for materials like brick, velvet, or stone.</p>",
+        "enable_dropcap": false,
+        "number_color": "#78716c",
+        "divider_color": "#d6d3d1",
+        "caption_color": "#78716c",
+        "title_color": "#1c1917",
+        "title_size": 48,
+        "title_size_mobile": 32,
+        "text_color": "#44403c",
+        "text_size": 18,
+        "text_size_mobile": 16,
+        "dropcap_color": "#d97706",
+        "dropcap_size": 80,
+        "dropcap_size_mobile": 56,
+        "background_color": "#f7f5f0",
+        "padding_top": 40,
+        "padding_bottom": 60,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 40
+      }
+    },
+    "section-3": {
+      "type": "article-section",
+      "settings": {
+        "section_number": "03",
+        "section_label": "ANATOMY",
+        "title": "The Eclipse Effect",
+        "show_top_divider": true,
+        "reverse_layout": true,
+        "caption": "",
+        "body_text": "<p>For this technique to work, the fixture itself must act as a shield. The viewer sees the beautiful material of the fixture, while the light is forced backward against the architecture.</p>",
+        "body_text_2": "<p>This creates what we call the \"Eclipse Effect\"—a dark, dramatic silhouette surrounded by a halo of soft, ambient light. The fixture becomes both a sculpture and a light source.</p>",
+        "enable_dropcap": false,
+        "number_color": "#78716c",
+        "divider_color": "#d6d3d1",
+        "caption_color": "#78716c",
+        "title_color": "#1c1917",
+        "title_size": 48,
+        "title_size_mobile": 32,
+        "text_color": "#44403c",
+        "text_size": 18,
+        "text_size_mobile": 16,
+        "dropcap_color": "#d97706",
+        "dropcap_size": 80,
+        "dropcap_size_mobile": 56,
+        "background_color": "#f7f5f0",
+        "padding_top": 40,
+        "padding_bottom": 60,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 40
+      }
+    },
+    "featured-products": {
+      "type": "article-featured-product",
+      "blocks": {
+        "product_1": {
+          "type": "product",
+          "settings": {
+            "product": "",
+            "subtitle": "Radial Wash"
+          }
+        },
+        "product_2": {
+          "type": "product",
+          "settings": {
+            "product": "",
+            "subtitle": "Linear Graze"
+          }
+        },
+        "product_3": {
+          "type": "product",
+          "settings": {
+            "product": "",
+            "subtitle": "Ambient Glow"
+          }
+        }
+      },
+      "block_order": [
+        "product_1",
+        "product_2",
+        "product_3"
+      ],
+      "settings": {
+        "header_label": "THE COLLECTION",
+        "header_title": "Sculptural Shields",
+        "header_label_color": "#d97706",
+        "header_title_color": "#1c1917",
+        "header_title_size": 42,
+        "header_title_size_mobile": 28,
+        "button_text": "Collect This Piece",
+        "title_color": "#1c1917",
+        "title_size": 24,
+        "title_size_mobile": 20,
+        "subtitle_color": "#a8a29e",
+        "price_color": "#1c1917",
+        "button_background": "#292524",
+        "button_text_color": "#ffffff",
+        "button_hover_background": "#1c1917",
+        "button_hover_text": "#ffffff",
+        "background_color": "#f7f5f0",
+        "card_background": "#ffffff",
+        "padding_top": 60,
+        "padding_bottom": 60,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 40
+      }
+    },
+    "closing": {
+      "type": "article-closing",
+      "settings": {
+        "quote": "\"True luxury in lighting is when you cannot identify the source of the brightness.\"",
+        "show_quotation_marks": true,
+        "footer_text": "OUTLIGHT JOURNAL © 2026",
+        "quotation_mark_color": "#d6d3d1",
+        "quotation_mark_size": 80,
+        "quotation_mark_size_mobile": 50,
+        "quote_color": "#57534e",
+        "quote_size": 28,
+        "quote_size_mobile": 22,
+        "divider_color": "#d6d3d1",
+        "footer_color": "#a8a29e",
+        "background_color": "#f7f5f0",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "padding_top_mobile": 60,
+        "padding_bottom_mobile": 60
+      }
+    }
+  },
+  "order": [
+    "article-hero",
+    "image-text-hero",
+    "section-1",
+    "section-2",
+    "section-3",
+    "featured-products",
+    "closing"
+  ]
+}
