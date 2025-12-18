@@ -15,7 +15,7 @@
         "category": "ESSAY — CONCEPT A",
         "title_line_1": "Security Through",
         "title_line_2": "Softness",
-        "author": "THE ANTI-FLOODLIGHT MANIFESTO",
+        "author": "JULIAN VANCE",
         "read_time": "5 MIN READ",
         "category_color": "#d97706",
         "category_size": 12,
@@ -37,6 +37,7 @@
     "image-text-hero": {
       "type": "article-image-text",
       "settings": {
+        "image": "shopify://shop_images/lumiscene_ai_generated_4_1__1.png",
         "caption": "FIG 1.0 — THE \"PERIMETER GLOW\"",
         "quote": "\"Reclaiming the night from the tyranny of the floodlight.\"",
         "caption_color": "#78716c",
@@ -79,7 +80,9 @@
         "padding_top": 60,
         "padding_bottom": 60,
         "padding_top_mobile": 40,
-        "padding_bottom_mobile": 40
+        "padding_bottom_mobile": 40,
+        "materials_accent_color": "#d97706",
+        "materials_text_color": "#78716c"
       }
     },
     "comparison": {
@@ -87,8 +90,10 @@
       "settings": {
         "title": "The Perimeter Strategy",
         "subtitle": "Click to compare the \"Blast\" vs. the \"Wash\".",
+        "left_image": "shopify://shop_images/custom_seedream-4-5_1766033801189.png",
         "left_title": "THE \"BLAST\"",
         "left_description": "High contrast, blinding glare, deep shadows. An anxious environment.",
+        "right_image": "shopify://shop_images/Fenra_1.png",
         "right_title": "THE \"WASH\"",
         "right_description": "Soft gradients, texture reveal, continuous visibility. A sanctuary.",
         "title_color": "#1c1917",
@@ -114,6 +119,7 @@
         "title": "Dark Sky Stewardship",
         "show_top_divider": true,
         "reverse_layout": false,
+        "image": "shopify://shop_images/custom_nano-banana-pro_1766042917491.png",
         "caption": "FIG 1.3 — DOWNWARD FOCUS",
         "body_text": "<p>We believe a \"Home Sanctuary\" must exist in harmony with the natural world. Standard floodlights often spill light upward, washing out the stars and disrupting local wildlife.</p>",
         "body_text_2": "<p>We prioritize fixtures with <strong>Fully Enclosed Bulbs</strong> or directional shrouds that cast light downward onto the path and wall. This is often referred to as \"Dark Sky Compliance.\" By cutting off the up-light, you reduce glare significantly and protect the night sky.</p>",
@@ -134,7 +140,9 @@
         "padding_top": 60,
         "padding_bottom": 60,
         "padding_top_mobile": 40,
-        "padding_bottom_mobile": 40
+        "padding_bottom_mobile": 40,
+        "materials_accent_color": "#d97706",
+        "materials_text_color": "#78716c"
       }
     },
     "section-dark": {
@@ -162,7 +170,7 @@
         "text_highlight_color": "#d4a574",
         "text_size": 18,
         "text_size_mobile": 16,
-        "button_background": "transparent",
+        "button_background": "rgba(0,0,0,0)",
         "button_border_color": "#44403c",
         "button_text_color": "#78716c",
         "button_active_background": "#292524",
@@ -181,6 +189,7 @@
           "type": "product",
           "settings": {
             "product": "",
+            "custom_title": "",
             "subtitle": "MATTE BLACK"
           }
         },
@@ -188,6 +197,7 @@
           "type": "product",
           "settings": {
             "product": "",
+            "custom_title": "",
             "subtitle": "SOLID BRASS"
           }
         },
@@ -195,6 +205,7 @@
           "type": "product",
           "settings": {
             "product": "",
+            "custom_title": "",
             "subtitle": "WEATHERED BRONZE"
           }
         }
