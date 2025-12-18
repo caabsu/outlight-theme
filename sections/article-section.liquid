@@ -10,7 +10,7 @@
 {%- endif -%}
 
 <section
-  class="article-section {% if has_image %}article-section--has-image{% endif %}"
+  class="article-section {% if has_image %}article-section--has-image{% endif %} {% if section.settings.reverse_layout %}article-section--reverse{% endif %}"
   style="
     --as-bg: {{ section.settings.background_color }};
     --as-number-color: {{ section.settings.number_color }};
@@ -33,6 +33,9 @@
     --as-materials-color: {{ section.settings.materials_text_color }};
   "
 >
+  {%- if section.settings.show_top_divider -%}
+    <div class="article-section__top-divider"></div>
+  {%- endif -%}
   <div class="article-section__container">
     {%- if has_image -%}
       {%- comment -%} Layout WITH image {%- endcomment -%}
@@ -189,6 +192,14 @@
   .article-section {
     background-color: var(--as-bg);
     padding: var(--as-padding-top-mobile) 16px var(--as-padding-bottom-mobile);
+  }
+
+  /* Full-width top divider */
+  .article-section__top-divider {
+    width: 100%;
+    height: 1px;
+    background-color: var(--as-divider-color);
+    margin-bottom: 2rem;
   }
 
   .article-section__container {
@@ -401,6 +412,15 @@
       align-items: flex-start;
     }
 
+    /* Reverse layout - text left, image right */
+    .article-section--reverse .article-section__grid-image {
+      direction: rtl;
+    }
+
+    .article-section--reverse .article-section__grid-image > * {
+      direction: ltr;
+    }
+
     .article-section__grid-image .article-section__image-wrapper {
       max-width: 100%;
     }
@@ -480,6 +500,23 @@
       "id": "title",
       "label": "Title",
       "default": "The Tyranny of the Grid"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_top_divider",
+      "label": "Show top divider line",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "reverse_layout",
+      "label": "Reverse layout (text left, image right)",
+      "default": false,
+      "info": "On desktop, swap image and text positions"
     },
     {
       "type": "header",
