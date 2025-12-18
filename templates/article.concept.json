@@ -37,6 +37,7 @@
     "image-text-hero": {
       "type": "article-image-text",
       "settings": {
+        "image": "shopify://shop_images/custom_seedream-4-5_1766033723150.png",
         "caption": "FIG 1.0 — VISUAL SOFTNESS",
         "quote": "\"Instead of pushing light down, we push light against the vertical surfaces.\"",
         "caption_color": "#78716c",
@@ -79,7 +80,9 @@
         "padding_top": 60,
         "padding_bottom": 60,
         "padding_top_mobile": 40,
-        "padding_bottom_mobile": 40
+        "padding_bottom_mobile": 40,
+        "materials_accent_color": "#d97706",
+        "materials_text_color": "#78716c"
       }
     },
     "section-2": {
@@ -90,7 +93,8 @@
         "title": "Grazing vs. Washing",
         "show_top_divider": true,
         "reverse_layout": false,
-        "caption": "INTERACTIVE: INSPECT TEXTURE GRAZING",
+        "image": "shopify://shop_images/custom_seedream-4-5_1766033801189.png",
+        "caption": "FIG 2.0 - WALL WASH",
         "body_text": "<p><strong>Wall Washing</strong> occurs when the fixture is placed slightly further from the wall, creating a smooth, even gradient. This hides imperfections and turns the wall into a glowing canvas.</p>",
         "body_text_2": "<p><strong>Wall Grazing</strong> happens when the fixture is placed very close to the wall. The light skims the surface at a steep angle, creating dramatic micro-shadows that highlight texture. Crucial for materials like brick, velvet, or stone.</p>",
         "enable_dropcap": false,
@@ -110,7 +114,9 @@
         "padding_top": 40,
         "padding_bottom": 60,
         "padding_top_mobile": 40,
-        "padding_bottom_mobile": 40
+        "padding_bottom_mobile": 40,
+        "materials_accent_color": "#d97706",
+        "materials_text_color": "#78716c"
       }
     },
     "section-3": {
@@ -121,6 +127,7 @@
         "title": "The Eclipse Effect",
         "show_top_divider": true,
         "reverse_layout": true,
+        "image": "shopify://shop_images/c7d8754a-7ef0-479e-bb8c-38af3f0051ed.png",
         "caption": "",
         "body_text": "<p>For this technique to work, the fixture itself must act as a shield. The viewer sees the beautiful material of the fixture, while the light is forced backward against the architecture.</p>",
         "body_text_2": "<p>This creates what we call the \"Eclipse Effect\"—a dark, dramatic silhouette surrounded by a halo of soft, ambient light. The fixture becomes both a sculpture and a light source.</p>",
@@ -141,7 +148,9 @@
         "padding_top": 40,
         "padding_bottom": 60,
         "padding_top_mobile": 40,
-        "padding_bottom_mobile": 40
+        "padding_bottom_mobile": 40,
+        "materials_accent_color": "#d97706",
+        "materials_text_color": "#78716c"
       }
     },
     "featured-products": {
@@ -150,21 +159,24 @@
         "product_1": {
           "type": "product",
           "settings": {
-            "product": "",
+            "product": "gael",
+            "custom_title": "",
             "subtitle": "Radial Wash"
           }
         },
         "product_2": {
           "type": "product",
           "settings": {
-            "product": "",
+            "product": "evren",
+            "custom_title": "",
             "subtitle": "Linear Graze"
           }
         },
         "product_3": {
           "type": "product",
           "settings": {
-            "product": "",
+            "product": "elm",
+            "custom_title": "",
             "subtitle": "Ambient Glow"
           }
         }
