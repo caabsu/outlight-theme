@@ -29,6 +29,8 @@
     --as-padding-bottom: {{ section.settings.padding_bottom }}px;
     --as-padding-top-mobile: {{ section.settings.padding_top_mobile }}px;
     --as-padding-bottom-mobile: {{ section.settings.padding_bottom_mobile }}px;
+    --as-materials-accent: {{ section.settings.materials_accent_color }};
+    --as-materials-color: {{ section.settings.materials_text_color }};
   "
 >
   <div class="article-section__container">
@@ -79,6 +81,16 @@
             </div>
           {%- endif -%}
         </div>
+
+        {%- if section.blocks.size > 0 -%}
+          <ul class="article-section__materials article-section__materials--mobile">
+            {%- for block in section.blocks -%}
+              <li class="article-section__materials-item" {{ block.shopify_attributes }}>
+                {{ block.settings.text | upcase }}
+              </li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
       </div>
 
       {%- comment -%} Desktop layout {%- endcomment -%}
@@ -122,6 +134,16 @@
                 </div>
               {%- endif -%}
             </div>
+
+            {%- if section.blocks.size > 0 -%}
+              <ul class="article-section__materials">
+                {%- for block in section.blocks -%}
+                  <li class="article-section__materials-item" {{ block.shopify_attributes }}>
+                    {{ block.settings.text | upcase }}
+                  </li>
+                {%- endfor -%}
+              </ul>
+            {%- endif -%}
           </div>
         </div>
       </div>
@@ -257,6 +279,26 @@
     margin-top: 0.1em;
   }
 
+  /* Materials list - mobile */
+  .article-section__materials--mobile {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0 1rem;
+    border-left: 2px solid var(--as-materials-accent, #D97706);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .article-section__materials-item {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    color: var(--as-materials-color, #78716C);
+    line-height: 1.6;
+  }
+
   /* ===================== */
   /* Layout WITH image     */
   /* ===================== */
@@ -389,6 +431,26 @@
 
     .article-section__right .article-section__content {
       max-width: 100%;
+    }
+
+    /* Hide mobile materials on desktop */
+    .article-section__materials--mobile {
+      display: none;
+    }
+
+    /* Materials list - desktop only */
+    .article-section__materials:not(.article-section__materials--mobile) {
+      list-style: none;
+      margin: 1rem 0 0;
+      padding: 0 0 0 1.25rem;
+      border-left: 2px solid var(--as-materials-accent, #D97706);
+      display: flex;
+      flex-direction: column;
+      gap: 0.625rem;
+    }
+
+    .article-section__materials:not(.article-section__materials--mobile) .article-section__materials-item {
+      font-size: 13px;
     }
   }
 {% endstylesheet %}
@@ -611,6 +673,36 @@
       "step": 5,
       "default": 50,
       "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Materials list (desktop only)"
+    },
+    {
+      "type": "color",
+      "id": "materials_accent_color",
+      "label": "Accent border color",
+      "default": "#D97706"
+    },
+    {
+      "type": "color",
+      "id": "materials_text_color",
+      "label": "Materials text color",
+      "default": "#78716C"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "material",
+      "name": "Material",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Material name",
+          "default": "Unlacquered Brass"
+        }
+      ]
     }
   ],
   "presets": [
