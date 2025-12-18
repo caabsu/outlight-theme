@@ -78,7 +78,9 @@
         "padding_top": 60,
         "padding_bottom": 60,
         "padding_top_mobile": 40,
-        "padding_bottom_mobile": 40
+        "padding_bottom_mobile": 40,
+        "materials_accent_color": "#d97706",
+        "materials_text_color": "#78716c"
       }
     },
     "section-2": {
@@ -135,7 +137,7 @@
         "padding_top": 40,
         "padding_bottom": 60,
         "padding_top_mobile": 0,
-        "padding_bottom_mobile": 30,
+        "padding_bottom_mobile": 55,
         "materials_accent_color": "#d97706",
         "materials_text_color": "#78716c"
       }
@@ -169,7 +171,9 @@
         "padding_top": 40,
         "padding_bottom": 60,
         "padding_top_mobile": 0,
-        "padding_bottom_mobile": 40
+        "padding_bottom_mobile": 40,
+        "materials_accent_color": "#d97706",
+        "materials_text_color": "#78716c"
       }
     },
     "featured-product": {
