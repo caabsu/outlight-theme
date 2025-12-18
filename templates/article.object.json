@@ -31,29 +31,13 @@
         "padding_top": 80,
         "padding_bottom": 40,
         "padding_top_mobile": 60,
-        "padding_bottom_mobile": 20
-      }
-    },
-    "image-hero": {
-      "type": "article-image-text",
-      "settings": {
-        "caption": "",
-        "quote": "",
-        "caption_color": "#78716c",
-        "quote_color": "#1c1917",
-        "quote_size": 22,
-        "quote_size_mobile": 18,
-        "background_color": "#f7f5f0",
-        "text_background": "#f7f5f0",
-        "padding_top": 0,
-        "padding_bottom": 0,
-        "padding_top_mobile": 0,
         "padding_bottom_mobile": 0
       }
     },
     "caption-1": {
       "type": "article-image-text",
       "settings": {
+        "image": "shopify://shop_images/custom_nano-banana-pro_1765712127604.png",
         "caption": "FIG 1.0 — THE TOTEM",
         "quote": "",
         "caption_color": "#78716c",
@@ -128,9 +112,10 @@
         "section_number": "02",
         "section_label": "MATERIALITY",
         "title": "Honest Contrast",
+        "image": "shopify://shop_images/custom_nano-banana-pro_1766021889686.png",
         "caption": "",
         "body_text": "<p>We believe in the physics of tension. The grounding force of a heavy base supporting the delicate flight of a slender stem. Whether it is the coolness of stone or the warmth of metal.</p>",
-        "body_text_2": "",
+        "body_text_2": "<p>Whether it is the coolness of stone or the warmth of metal, we prioritize \"honest materials\" that age with grace. Raw brass will develop a patina unique to your home's humidity and touch. Honed marble will bear the cool, matte finish of millions of years of compression. These are not fast trends; they are \"forever pieces\" designed to anchor a room with their physical presence.<br/><br/></p>",
         "enable_dropcap": false,
         "number_color": "#78716c",
         "divider_color": "#d6d3d1",
@@ -159,9 +144,10 @@
         "section_number": "03",
         "section_label": "THE EFFECT",
         "title": "Painting with Shadow",
+        "image": "shopify://shop_images/custom_nano-banana-pro_1766022048980.png",
         "caption": "",
         "body_text": "<p>Sculptural light is not about beaming brightness directly at you. Instead, these fixtures are designed for 'Indirect Wash.' They direct light back toward the wall or ceiling, creating a glowing eclipse.</p>",
-        "body_text_2": "",
+        "body_text_2": "<p>This technique turns your walls into a canvas. It highlights the texture of your paint, plaster, or wallpaper, creating a halo effect. By washing the wall behind it, the fixture itself becomes a dark, dramatic silhouette. It outlines the shape you fell in love with, turning the lamp into a glowing eclipse.</p><p>This is the opposite of the \"Big Light.\" It is low-glare, high-atmosphere illumination that softens the edges of the room.</p>",
         "enable_dropcap": false,
         "number_color": "#78716c",
         "divider_color": "#d6d3d1",
@@ -180,27 +166,6 @@
         "padding_bottom": 60,
         "padding_top_mobile": 0,
         "padding_bottom_mobile": 40
-      }
-    },
-    "closing": {
-      "type": "article-closing",
-      "settings": {
-        "quote": "\"It is the jewelry of the room: it doesn't just light the space; it adorns it.\"",
-        "show_quotation_marks": true,
-        "footer_text": "OUTLIGHT JOURNAL © 2026",
-        "quotation_mark_color": "#a8a29e",
-        "quotation_mark_size": 80,
-        "quotation_mark_size_mobile": 50,
-        "quote_color": "#78716c",
-        "quote_size": 28,
-        "quote_size_mobile": 22,
-        "divider_color": "#d6d3d1",
-        "footer_color": "#a8a29e",
-        "background_color": "#f7f5f0",
-        "padding_top": 80,
-        "padding_bottom": 80,
-        "padding_top_mobile": 60,
-        "padding_bottom_mobile": 60
       }
     },
     "featured-product": {
@@ -226,11 +191,31 @@
         "padding_top_mobile": 30,
         "padding_bottom_mobile": 0
       }
+    },
+    "closing": {
+      "type": "article-closing",
+      "settings": {
+        "quote": "\"It is the jewelry of the room: it doesn't just light the space; it adorns it.\"",
+        "show_quotation_marks": true,
+        "footer_text": "OUTLIGHT JOURNAL © 2026",
+        "quotation_mark_color": "#a8a29e",
+        "quotation_mark_size": 80,
+        "quotation_mark_size_mobile": 50,
+        "quote_color": "#78716c",
+        "quote_size": 28,
+        "quote_size_mobile": 22,
+        "divider_color": "#d6d3d1",
+        "footer_color": "#a8a29e",
+        "background_color": "#f7f5f0",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "padding_top_mobile": 60,
+        "padding_bottom_mobile": 60
+      }
     }
   },
   "order": [
     "article-hero",
-    "image-hero",
     "caption-1",
     "section-1",
     "section-2",
