@@ -19,6 +19,9 @@
     --ac-padding-bottom: {{ section.settings.padding_bottom }}px;
     --ac-padding-top-mobile: {{ section.settings.padding_top_mobile }}px;
     --ac-padding-bottom-mobile: {{ section.settings.padding_bottom_mobile }}px;
+    --ac-dropcap-color: {{ section.settings.dropcap_color }};
+    --ac-dropcap-size: {{ section.settings.dropcap_size }}px;
+    --ac-dropcap-size-mobile: {{ section.settings.dropcap_size_mobile }}px;
   "
 >
   <div class="article-closing__container">
@@ -28,8 +31,17 @@
           <span class="article-closing__mark">"</span>
         {%- endif -%}
 
-        <blockquote class="article-closing__quote">
-          {{ section.settings.quote }}
+        <blockquote class="article-closing__quote{% if section.settings.enable_dropcap %} article-closing__quote--dropcap{% endif %}">
+          {%- if section.settings.enable_dropcap -%}
+            {%- assign quote_text = section.settings.quote -%}
+            {%- comment -%} Remove leading quotation marks to find first letter {%- endcomment -%}
+            {%- assign cleaned_quote = quote_text | remove_first: '"' | remove_first: '"' | remove_first: "'" | strip -%}
+            {%- assign first_letter = cleaned_quote | slice: 0 -%}
+            {%- assign rest_of_quote = cleaned_quote | slice: 1, 1000 -%}
+            <span class="article-closing__dropcap">{{ first_letter }}</span>{{ rest_of_quote }}
+          {%- else -%}
+            {{ section.settings.quote }}
+          {%- endif -%}
         </blockquote>
       </div>
     {%- endif -%}
@@ -84,6 +96,22 @@
     max-width: 600px;
   }
 
+  .article-closing__quote--dropcap {
+    text-align: left;
+  }
+
+  .article-closing__dropcap {
+    float: left;
+    font-family: var(--font-heading-family), serif;
+    font-size: var(--ac-dropcap-size-mobile);
+    font-weight: 400;
+    font-style: normal;
+    color: var(--ac-dropcap-color);
+    line-height: 0.8;
+    margin-right: 0.15em;
+    margin-top: 0.05em;
+  }
+
   .article-closing__divider {
     width: 1px;
     height: 50px;
@@ -116,6 +144,10 @@
       line-height: 1.5;
     }
 
+    .article-closing__dropcap {
+      font-size: var(--ac-dropcap-size);
+    }
+
     .article-closing__divider {
       height: 60px;
       margin: 2.5rem 0;
@@ -146,6 +178,38 @@
       "id": "show_quotation_marks",
       "label": "Show decorative quotation marks",
       "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_dropcap",
+      "label": "Enable drop cap",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "dropcap_color",
+      "label": "Drop cap color",
+      "default": "#D97706"
+    },
+    {
+      "type": "range",
+      "id": "dropcap_size",
+      "label": "Drop cap size (desktop)",
+      "min": 40,
+      "max": 100,
+      "step": 5,
+      "default": 70,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "dropcap_size_mobile",
+      "label": "Drop cap size (mobile)",
+      "min": 30,
+      "max": 70,
+      "step": 5,
+      "default": 50,
+      "unit": "px"
     },
     {
       "type": "header",

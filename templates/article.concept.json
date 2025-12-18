@@ -203,7 +203,11 @@
       "type": "article-closing",
       "settings": {
         "quote": "\"True luxury in lighting is when you cannot identify the source of the brightness.\"",
-        "show_quotation_marks": true,
+        "show_quotation_marks": false,
+        "enable_dropcap": true,
+        "dropcap_color": "#d97706",
+        "dropcap_size": 70,
+        "dropcap_size_mobile": 50,
         "footer_text": "OUTLIGHT JOURNAL © 2026",
         "quotation_mark_color": "#d6d3d1",
         "quotation_mark_size": 80,
