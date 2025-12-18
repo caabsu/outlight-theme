@@ -43,7 +43,9 @@
       {%- comment -%} Mobile layout {%- endcomment -%}
       <div class="article-section__mobile">
         <div class="article-section__header">
-          <div class="article-section__divider"></div>
+          {%- unless section.settings.show_top_divider -%}
+            <div class="article-section__divider"></div>
+          {%- endunless -%}
           {%- if section.settings.section_number != blank or section.settings.section_label != blank -%}
             <p class="article-section__number">
               {%- if section.settings.section_number != blank -%}
@@ -155,7 +157,9 @@
       {%- comment -%} Layout WITHOUT image (original) {%- endcomment -%}
       <div class="article-section__grid">
         <div class="article-section__header">
-          <div class="article-section__divider"></div>
+          {%- unless section.settings.show_top_divider -%}
+            <div class="article-section__divider"></div>
+          {%- endunless -%}
           {%- if section.settings.section_number != blank or section.settings.section_label != blank -%}
             <p class="article-section__number">
               {%- if section.settings.section_number != blank -%}
