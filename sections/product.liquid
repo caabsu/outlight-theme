@@ -2196,9 +2196,20 @@
       object-fit: cover;
     }
 
-    .product-media-item.is-active,
-    .product-media-item:first-child {
+    .product-media-item {
+      pointer-events: none;
+    }
+
+    /* Show active item, or first-child as fallback before JS initializes */
+    .product-media-item.is-active {
       opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Fallback: show first image only if no item has is-active class yet (before JS init) */
+    .product-media-track:not(:has(.is-active)) .product-media-item:first-child {
+      opacity: 1;
+      pointer-events: auto;
     }
 
     .product-media-nav {
@@ -2390,6 +2401,11 @@
     updateThumbnailNavState();
   };
 
+  // Initialize first image as active on desktop
+  if (window.innerWidth >= 768 && items.length > 0) {
+    updateActiveStates(0);
+  }
+
   // Lightbox functionality
   const lightbox = document.querySelector('[data-lightbox]');
   const lightboxOverlay = document.querySelector('[data-lightbox-overlay]');
@@ -2483,8 +2499,9 @@
     galleryTrack.addEventListener('click', (e) => {
       const mediaItem = e.target.closest('.product-media-item');
       if (mediaItem) {
-        const index = Array.from(items).indexOf(mediaItem);
-        openLightbox(index >= 0 ? index : 0);
+        // Use currentIndex which tracks the visible image, not the clicked element
+        // This fixes issues on desktop where images are stacked via position:absolute
+        openLightbox(currentIndex);
       }
     });
   }
