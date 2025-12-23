@@ -506,6 +506,125 @@
           }
         }
       }
+    },
+    "shop_the_look": {
+      "name": "Shop the look",
+      "settings": {
+        "header_image": "Image",
+        "image": {
+          "label": "Desktop image"
+        },
+        "image_mobile": {
+          "label": "Mobile image",
+          "info": "Optional. Falls back to desktop image if not set."
+        },
+        "header_content": "Content",
+        "heading": {
+          "label": "Heading"
+        },
+        "subheading": {
+          "label": "Subheading"
+        },
+        "header_typography": "Typography",
+        "heading_size": {
+          "label": "Heading size"
+        },
+        "heading_weight": {
+          "label": "Heading weight"
+        },
+        "subheading_size": {
+          "label": "Subheading size"
+        },
+        "subheading_weight": {
+          "label": "Subheading weight"
+        },
+        "product_title_size": {
+          "label": "Product title size"
+        },
+        "product_title_weight": {
+          "label": "Product title weight"
+        },
+        "product_description_size": {
+          "label": "Product description size"
+        },
+        "price_size": {
+          "label": "Price size"
+        },
+        "price_weight": {
+          "label": "Price weight"
+        },
+        "weight_options": {
+          "light": "Light",
+          "regular": "Regular",
+          "medium": "Medium",
+          "semibold": "Semibold",
+          "bold": "Bold"
+        },
+        "header_hotspots": "Hotspots",
+        "hotspot_color": {
+          "label": "Hotspot color"
+        },
+        "hotspot_size": {
+          "label": "Hotspot size"
+        },
+        "header_colors": "Colors",
+        "background_color": {
+          "label": "Background color"
+        },
+        "text_color": {
+          "label": "Text color"
+        },
+        "card_background": {
+          "label": "Card background"
+        },
+        "card_border_color": {
+          "label": "Card border color"
+        },
+        "button_background": {
+          "label": "Button background"
+        },
+        "button_text_color": {
+          "label": "Button text color"
+        },
+        "header_spacing": "Spacing",
+        "padding_top": {
+          "label": "Padding top"
+        },
+        "padding_bottom": {
+          "label": "Padding bottom"
+        }
+      },
+      "blocks": {
+        "product": {
+          "name": "Product",
+          "settings": {
+            "product": {
+              "label": "Product"
+            },
+            "custom_title": {
+              "label": "Custom title",
+              "info": "Override the product title"
+            },
+            "custom_description": {
+              "label": "Custom description",
+              "info": "Override the product description"
+            },
+            "header_desktop": "Hotspot position (desktop)",
+            "header_mobile": "Hotspot position (mobile)",
+            "hotspot_x": {
+              "label": "Horizontal position"
+            },
+            "hotspot_y": {
+              "label": "Vertical position"
+            }
+          }
+        }
+      },
+      "presets": {
+        "default": {
+          "name": "Shop the look"
+        }
+      }
     }
   }
 }

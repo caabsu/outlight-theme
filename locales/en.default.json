@@ -91,5 +91,14 @@
     "specs": "Specs",
     "add_to_cart": "Add to cart",
     "sold_out": "Sold out"
+  },
+  "sections": {
+    "shop_the_look": {
+      "add": "Add",
+      "add_selected": "Add selected to cart",
+      "add_product": "Add {{ product }} to cart",
+      "view_product": "View product: {{ product }}",
+      "add_error": "Unable to add items to cart. Please try again."
+    }
   }
 }
