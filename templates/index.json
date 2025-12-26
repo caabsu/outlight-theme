@@ -289,11 +289,11 @@
         "product_yLjyJn": {
           "type": "product",
           "settings": {
-            "product": "",
+            "product": "keria",
             "custom_title": "",
             "custom_description": "",
-            "hotspot_x_desktop": 50,
-            "hotspot_y_desktop": 50,
+            "hotspot_x_desktop": 12,
+            "hotspot_y_desktop": 38,
             "hotspot_x_mobile": 50,
             "hotspot_y_mobile": 50
           }
@@ -317,6 +317,7 @@
       ],
       "name": "t:sections.shop_the_look.presets.default.name",
       "settings": {
+        "image": "shopify://shop_images/3f1a633251e3ea150c7f53fc62c2ca6c_1766494871.png",
         "heading": "The Sleep Sanctuary",
         "subheading": "Layer your light for a calmer bedtime routine.",
         "heading_size": 40,
