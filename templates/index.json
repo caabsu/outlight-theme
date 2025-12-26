@@ -301,11 +301,11 @@
         "product_fTcerr": {
           "type": "product",
           "settings": {
-            "product": "",
+            "product": "hue",
             "custom_title": "",
             "custom_description": "",
-            "hotspot_x_desktop": 50,
-            "hotspot_y_desktop": 50,
+            "hotspot_x_desktop": 36,
+            "hotspot_y_desktop": 55,
             "hotspot_x_mobile": 50,
             "hotspot_y_mobile": 50
           }
