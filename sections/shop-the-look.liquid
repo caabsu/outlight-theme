@@ -122,64 +122,47 @@
                   data-price="{{ variant.price }}"
                   {{ block.shopify_attributes }}
                 >
-                  {%- comment -%} Desktop Card Layout {%- endcomment -%}
-                  <div class="shop-the-look__product-desktop">
-                    <div class="shop-the-look__product-info">
-                      <div class="shop-the-look__product-header">
-                        <h3 class="shop-the-look__product-title">
-                          <span class="shop-the-look__product-number">{{ forloop.index }}.</span>
-                          {{ block.settings.custom_title | default: product.title }}
-                        </h3>
-                        <span class="shop-the-look__product-price">{{ variant.price | money }}</span>
-                      </div>
-                    </div>
-
-                    <div class="shop-the-look__product-actions">
-                      <a href="{{ product.url }}" class="shop-the-look__view-btn">
-                        {{ 'sections.shop_the_look.view' | t | default: 'View' }}
-                      </a>
-                      <button
-                        class="shop-the-look__add-btn"
-                        data-stl-add-single
-                        data-variant-id="{{ variant.id }}"
-                        aria-label="{{ 'sections.shop_the_look.add_product' | t: product: product.title }}"
-                      >
-                        {{ 'sections.shop_the_look.add' | t | default: 'Add' }}
-                      </button>
-                    </div>
+                  <div class="shop-the-look__card-header">
+                    <span class="shop-the-look__product-number">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+                    <span class="shop-the-look__stock-badge {% if variant.available %}shop-the-look__stock-badge--in-stock{% else %}shop-the-look__stock-badge--waitlist{% endif %}">
+                      {%- if variant.available -%}
+                        {{ 'sections.shop_the_look.in_stock' | t | default: 'IN STOCK' }}
+                      {%- else -%}
+                        {{ 'sections.shop_the_look.waitlist' | t | default: 'WAITLIST' }}
+                      {%- endif -%}
+                    </span>
                   </div>
 
-                  {%- comment -%} Mobile Card Layout {%- endcomment -%}
-                  <div class="shop-the-look__product-mobile">
-                    <div class="shop-the-look__product-image-wrapper">
+                  <div class="shop-the-look__card-body">
+                    <a href="{{ product.url }}" class="shop-the-look__product-image-wrapper">
                       {%- if product.featured_image != blank -%}
-                        <a href="{{ product.url }}" class="shop-the-look__product-link">
-                          {{ product.featured_image | image_url: width: 200, height: 200, crop: 'center' | image_tag: loading: 'lazy', class: 'shop-the-look__product-image' }}
-                        </a>
+                        {{ product.featured_image | image_url: width: 200, height: 200, crop: 'center' | image_tag: loading: 'lazy', class: 'shop-the-look__product-image' }}
                       {%- endif -%}
-                    </div>
+                    </a>
 
                     <div class="shop-the-look__product-info">
-                      <h3 class="shop-the-look__product-title">
-                        {{ block.settings.custom_title | default: product.title }}
-                      </h3>
+                      <a href="{{ product.url }}" class="shop-the-look__product-title-link">
+                        <h3 class="shop-the-look__product-title">{{ block.settings.custom_title | default: product.title }}</h3>
+                      </a>
+                      {%- if variant.title != 'Default Title' -%}
+                        <span class="shop-the-look__product-variant">{{ variant.title }}</span>
+                      {%- endif -%}
                       <span class="shop-the-look__product-price">{{ variant.price | money }}</span>
                     </div>
-
-                    <div class="shop-the-look__product-actions">
-                      <a href="{{ product.url }}" class="shop-the-look__view-btn">
-                        {{ 'sections.shop_the_look.view' | t | default: 'View' }}
-                      </a>
-                      <button
-                        class="shop-the-look__add-btn"
-                        data-stl-add-single
-                        data-variant-id="{{ variant.id }}"
-                        aria-label="{{ 'sections.shop_the_look.add_product' | t: product: product.title }}"
-                      >
-                        {{ 'sections.shop_the_look.add' | t | default: 'Add' }}
-                      </button>
-                    </div>
                   </div>
+
+                  <button
+                    class="shop-the-look__add-btn"
+                    data-stl-add-single
+                    data-variant-id="{{ variant.id }}"
+                    aria-label="{{ 'sections.shop_the_look.add_product' | t: product: product.title }}"
+                  >
+                    {%- if variant.available -%}
+                      {{ 'sections.shop_the_look.add_to_cart' | t | default: 'ADD TO CART' }}
+                    {%- else -%}
+                      {{ 'sections.shop_the_look.pre_order' | t | default: 'PRE-ORDER' }}
+                    {%- endif -%}
+                  </button>
                 </div>
               {%- endif -%}
             {%- endif -%}
@@ -411,139 +394,107 @@
 
   /* Product Cards */
   .shop-the-look__products {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
   }
 
   @media screen and (min-width: 769px) {
     .shop-the-look__products {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
     }
   }
 
   .shop-the-look__product-card {
     background-color: var(--stl-card-bg);
-    border: 1px solid var(--stl-card-border);
+    border: none;
     border-radius: 0;
     overflow: hidden;
-    transition: border-color 0.2s ease;
-  }
-
-  .shop-the-look__product-card + .shop-the-look__product-card {
-    border-top: none;
-  }
-
-  @media screen and (min-width: 769px) {
-    .shop-the-look__product-card + .shop-the-look__product-card {
-      border-top: 1px solid var(--stl-card-border);
-    }
-  }
-
-  .shop-the-look__product-card:hover {
-    border-color: var(--stl-text-color);
-  }
-
-  /* Desktop Product Layout */
-  .shop-the-look__product-desktop {
-    display: none;
-    padding: 16px;
-    gap: 16px;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  @media screen and (min-width: 769px) {
-    .shop-the-look__product-desktop {
-      display: flex;
-    }
-
-    .shop-the-look__product-mobile {
-      display: none;
-    }
-  }
-
-  /* Mobile Product Layout */
-  .shop-the-look__product-mobile {
     display: flex;
-    flex-wrap: wrap;
-    padding: 12px;
-    gap: 12px;
-    align-items: center;
+    flex-direction: column;
   }
 
-  .shop-the-look__product-mobile .shop-the-look__product-image-wrapper {
-    flex-shrink: 0;
-    width: 60px;
-    height: 60px;
-  }
-
-  .shop-the-look__product-mobile .shop-the-look__product-info {
-    flex: 1;
-    min-width: 120px;
-  }
-
-  .shop-the-look__product-mobile .shop-the-look__product-title {
-    font-size: 14px;
-    font-weight: var(--stl-product-title-weight);
-    margin: 0 0 2px;
-  }
-
-  .shop-the-look__product-mobile .shop-the-look__product-price {
-    font-size: 14px;
-    font-weight: var(--stl-price-weight);
-  }
-
-  .shop-the-look__product-mobile .shop-the-look__product-actions {
-    width: 100%;
-    display: flex;
-    gap: 8px;
-    margin-top: 4px;
-  }
-
-  /* Product Info */
-  .shop-the-look__product-info {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .shop-the-look__product-header {
+  /* Card Header - Number and Stock Badge */
+  .shop-the-look__card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 12px;
+    padding: 12px 0 8px;
   }
 
-  .shop-the-look__product-title {
-    font-size: var(--stl-product-title-size);
-    font-weight: var(--stl-product-title-weight);
-    margin: 0;
-    line-height: 1.3;
+  @media screen and (min-width: 769px) {
+    .shop-the-look__card-header {
+      padding: 16px 0 12px;
+    }
   }
 
   .shop-the-look__product-number {
-    margin-right: 4px;
+    font-family: var(--font-heading-family), serif;
+    font-style: italic;
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--stl-text-color);
   }
 
-  .shop-the-look__product-price {
-    font-size: var(--stl-price-size);
-    font-weight: var(--stl-price-weight);
-    white-space: nowrap;
+  @media screen and (min-width: 769px) {
+    .shop-the-look__product-number {
+      font-size: 22px;
+    }
   }
 
-  /* Product Image */
+  .shop-the-look__stock-badge {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 4px 8px;
+    border-radius: 0;
+  }
+
+  @media screen and (min-width: 769px) {
+    .shop-the-look__stock-badge {
+      font-size: 10px;
+      padding: 5px 10px;
+    }
+  }
+
+  .shop-the-look__stock-badge--in-stock {
+    background-color: #f5f5f4;
+    color: #57534e;
+  }
+
+  .shop-the-look__stock-badge--waitlist {
+    background-color: #1c1917;
+    color: #ffffff;
+  }
+
+  /* Card Body - Image and Info */
+  .shop-the-look__card-body {
+    display: flex;
+    gap: 12px;
+    padding-bottom: 12px;
+  }
+
+  @media screen and (min-width: 769px) {
+    .shop-the-look__card-body {
+      gap: 16px;
+      padding-bottom: 16px;
+    }
+  }
+
   .shop-the-look__product-image-wrapper {
-    width: 60px;
-    height: 60px;
+    width: 80px;
+    height: 80px;
     flex-shrink: 0;
+    display: block;
   }
 
-  .shop-the-look__product-link {
-    display: block;
-    width: 100%;
-    height: 100%;
+  @media screen and (min-width: 769px) {
+    .shop-the-look__product-image-wrapper {
+      width: 100px;
+      height: 100px;
+    }
   }
 
   .shop-the-look__product-image {
@@ -553,39 +504,105 @@
     border-radius: 0;
   }
 
-  /* Product Actions */
-  .shop-the-look__product-actions {
+  .shop-the-look__product-info {
     display: flex;
-    gap: 8px;
-    flex-shrink: 0;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
   }
 
-  .shop-the-look__view-btn,
+  @media screen and (min-width: 769px) {
+    .shop-the-look__product-info {
+      gap: 4px;
+    }
+  }
+
+  .shop-the-look__product-title-link {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .shop-the-look__product-title-link:hover .shop-the-look__product-title {
+    opacity: 0.7;
+  }
+
+  .shop-the-look__product-title {
+    font-family: var(--font-heading-family), serif;
+    font-size: 14px;
+    font-weight: 400;
+    margin: 0;
+    line-height: 1.3;
+    color: var(--stl-text-color);
+  }
+
+  @media screen and (min-width: 769px) {
+    .shop-the-look__product-title {
+      font-size: 20px;
+    }
+  }
+
+  .shop-the-look__product-variant {
+    font-size: 11px;
+    color: #78716c;
+    line-height: 1.3;
+  }
+
+  @media screen and (min-width: 769px) {
+    .shop-the-look__product-variant {
+      font-size: 14px;
+    }
+  }
+
+  .shop-the-look__product-price {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--stl-text-color);
+    margin-top: 4px;
+  }
+
+  @media screen and (min-width: 769px) {
+    .shop-the-look__product-price {
+      font-size: 18px;
+      margin-top: 8px;
+    }
+  }
+
+  /* Add to Cart Button */
   .shop-the-look__add-btn {
-    flex: 1;
+    width: 100%;
     padding: 10px 16px;
-    font-size: 13px;
+    font-size: 11px;
     font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
     cursor: pointer;
     transition: opacity 0.2s ease;
     text-decoration: none;
     border-radius: 0;
     text-align: center;
+    margin-top: auto;
   }
 
-  .shop-the-look__view-btn {
+  @media screen and (min-width: 769px) {
+    .shop-the-look__add-btn {
+      padding: 14px 24px;
+      font-size: 12px;
+    }
+  }
+
+  .shop-the-look__add-btn {
     background-color: transparent;
     color: var(--stl-text-color);
     border: 1px solid var(--stl-text-color);
   }
 
-  .shop-the-look__add-btn {
+  .shop-the-look__stock-badge--waitlist + .shop-the-look__card-body + .shop-the-look__add-btn,
+  .shop-the-look__product-card:has(.shop-the-look__stock-badge--waitlist) .shop-the-look__add-btn {
     background-color: var(--stl-button-bg);
     color: var(--stl-button-text);
     border: none;
   }
 
-  .shop-the-look__view-btn:hover,
   .shop-the-look__add-btn:hover {
     opacity: 0.75;
   }
