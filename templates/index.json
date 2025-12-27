@@ -332,6 +332,7 @@
         "price_weight": "400",
         "hotspot_color": "#000000",
         "hotspot_size": 32,
+        "accent_color": "#d97706",
         "background_color": "#f5f3ef",
         "text_color": "#1a1a1a",
         "card_background": "#ffffff",
