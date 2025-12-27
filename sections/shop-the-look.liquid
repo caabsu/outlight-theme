@@ -195,27 +195,33 @@
   .shop-the-look {
     background-color: var(--stl-bg);
     color: var(--stl-text-color);
-    padding-top: var(--stl-padding-top);
-    padding-bottom: var(--stl-padding-bottom);
+    padding: var(--stl-padding-top) 0 var(--stl-padding-bottom);
+    width: 100%;
   }
 
   .shop-the-look__container {
-    max-width: var(--page-width);
-    margin: 0 auto;
-    padding: 0 var(--page-margin);
+    width: 100%;
   }
 
   .shop-the-look__inner {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 20px;
   }
 
   @media screen and (min-width: 769px) {
+    .shop-the-look {
+      padding: var(--stl-padding-top) 40px var(--stl-padding-bottom);
+    }
+
     .shop-the-look__inner {
-      display: flex;
-      flex-direction: column;
       gap: 32px;
+    }
+  }
+
+  @media screen and (min-width: 1200px) {
+    .shop-the-look {
+      padding: var(--stl-padding-top) 60px var(--stl-padding-bottom);
     }
   }
 
@@ -371,7 +377,15 @@
   .shop-the-look__content {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 16px;
+    padding: 0 16px;
+  }
+
+  @media screen and (min-width: 769px) {
+    .shop-the-look__content {
+      padding: 0;
+      gap: 24px;
+    }
   }
 
   .shop-the-look__header {
@@ -399,13 +413,13 @@
   .shop-the-look__products {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 0;
   }
 
   @media screen and (min-width: 769px) {
     .shop-the-look__products {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 16px;
     }
   }
@@ -416,6 +430,16 @@
     border-radius: 0;
     overflow: hidden;
     transition: border-color 0.2s ease;
+  }
+
+  .shop-the-look__product-card + .shop-the-look__product-card {
+    border-top: none;
+  }
+
+  @media screen and (min-width: 769px) {
+    .shop-the-look__product-card + .shop-the-look__product-card {
+      border-top: 1px solid var(--stl-card-border);
+    }
   }
 
   .shop-the-look__product-card:hover {
@@ -444,6 +468,7 @@
   /* Mobile Product Layout */
   .shop-the-look__product-mobile {
     display: flex;
+    flex-wrap: wrap;
     padding: 12px;
     gap: 12px;
     align-items: center;
@@ -451,27 +476,31 @@
 
   .shop-the-look__product-mobile .shop-the-look__product-image-wrapper {
     flex-shrink: 0;
-    width: 64px;
-    height: 64px;
+    width: 60px;
+    height: 60px;
   }
 
   .shop-the-look__product-mobile .shop-the-look__product-info {
     flex: 1;
-    min-width: 0;
+    min-width: 120px;
   }
 
   .shop-the-look__product-mobile .shop-the-look__product-title {
     font-size: 14px;
     font-weight: var(--stl-product-title-weight);
     margin: 0 0 2px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
 
   .shop-the-look__product-mobile .shop-the-look__product-price {
     font-size: 14px;
     font-weight: var(--stl-price-weight);
+  }
+
+  .shop-the-look__product-mobile .shop-the-look__product-actions {
+    width: 100%;
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
   }
 
   /* Product Info */
@@ -492,9 +521,6 @@
     font-weight: var(--stl-product-title-weight);
     margin: 0;
     line-height: 1.3;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
 
   .shop-the-look__product-number {
@@ -509,8 +535,8 @@
 
   /* Product Image */
   .shop-the-look__product-image-wrapper {
-    width: 64px;
-    height: 64px;
+    width: 60px;
+    height: 60px;
     flex-shrink: 0;
   }
 
@@ -536,7 +562,8 @@
 
   .shop-the-look__view-btn,
   .shop-the-look__add-btn {
-    padding: 8px 16px;
+    flex: 1;
+    padding: 10px 16px;
     font-size: 13px;
     font-weight: 500;
     cursor: pointer;
@@ -561,19 +588,6 @@
   .shop-the-look__view-btn:hover,
   .shop-the-look__add-btn:hover {
     opacity: 0.75;
-  }
-
-  @media screen and (max-width: 768px) {
-    .shop-the-look__product-actions {
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .shop-the-look__view-btn,
-    .shop-the-look__add-btn {
-      padding: 6px 12px;
-      font-size: 12px;
-    }
   }
 {% endstylesheet %}
 
