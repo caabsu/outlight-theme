@@ -95,6 +95,10 @@
   "sections": {
     "shop_the_look": {
       "add": "Add",
+      "add_to_cart": "Add to cart",
+      "pre_order": "Pre-order",
+      "in_stock": "In stock",
+      "waitlist": "Waitlist",
       "add_selected": "Add selected to cart",
       "add_product": "Add {{ product }} to cart",
       "view_product": "View product: {{ product }}",
