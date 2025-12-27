@@ -17,14 +17,18 @@
         <circle cx="9" cy="9" r="6"/>
         <path d="M13.5 13.5L17 17"/>
       </svg>
-      <input
-        type="search"
-        name="q"
-        placeholder="{{ section.settings.placeholder | default: 'What can we help you find?' }}"
-        class="search-bar-section__input"
-        autocomplete="off"
-        data-search-bar-input
-      >
+      <div class="search-bar-section__input-wrapper">
+        <input
+          type="search"
+          name="q"
+          class="search-bar-section__input"
+          autocomplete="off"
+          data-search-bar-input
+        >
+        <span class="search-bar-section__placeholder" data-typing-placeholder data-typing-words="{{ section.settings.typing_words | default: 'floor lamps, mira, outdoor lighting, wall lights, indoor lighting' | escape }}">
+          <span class="search-bar-section__placeholder-static">{{ section.settings.placeholder_prefix | default: 'Search for ' }}</span><span class="search-bar-section__placeholder-typed" data-typed-text></span><span class="search-bar-section__placeholder-cursor" data-typing-cursor>|</span>
+        </span>
+      </div>
     </form>
     <div class="search-bar-section__results" data-search-bar-results></div>
   </div>
@@ -56,8 +60,13 @@
     margin-right: 10px;
   }
 
-  .search-bar-section__input {
+  .search-bar-section__input-wrapper {
     flex: 1;
+    position: relative;
+    width: 100%;
+  }
+
+  .search-bar-section__input {
     width: 100%;
     padding: 6px 0;
     border: none;
@@ -66,10 +75,48 @@
     font-size: 16px;
     color: #1C1917;
     outline: none;
+    position: relative;
+    z-index: 1;
   }
 
   .search-bar-section__input::placeholder {
+    color: transparent;
+  }
+
+  .search-bar-section__placeholder {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 16px;
     color: #A8A29E;
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 0;
+  }
+
+  .search-bar-section__placeholder.is-hidden {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .search-bar-section__placeholder-static {
+    color: #A8A29E;
+  }
+
+  .search-bar-section__placeholder-typed {
+    color: #A8A29E;
+  }
+
+  .search-bar-section__placeholder-cursor {
+    color: #A8A29E;
+    animation: searchBarBlink 1s step-end infinite;
+  }
+
+  @keyframes searchBarBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
   }
 
   .search-bar-section__input::-webkit-search-cancel-button {
@@ -209,11 +256,87 @@
     const input = section.querySelector('[data-search-bar-input]');
     const results = section.querySelector('[data-search-bar-results]');
     const form = section.querySelector('[data-search-bar-form]');
+    const placeholder = section.querySelector('[data-typing-placeholder]');
+    const typedText = section.querySelector('[data-typed-text]');
+    const cursor = section.querySelector('[data-typing-cursor]');
 
     if (!input || !results) return;
 
     let cache = {};
     let debounceTimer = null;
+
+    // Typing animation
+    const wordsString = placeholder?.dataset.typingWords || 'floor lamps, mira, outdoor lighting, wall lights, indoor lighting';
+    const words = wordsString.split(',').map(word => word.trim()).filter(word => word.length > 0);
+    let wordIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+    let typingTimeout = null;
+
+    const typeSpeed = 100;
+    const deleteSpeed = 60;
+    const pauseBeforeDelete = 2000;
+    const pauseBeforeType = 500;
+
+    function typeAnimation() {
+      if (!typedText || !placeholder) return;
+
+      const currentWord = words[wordIndex];
+
+      if (isDeleting) {
+        charIndex--;
+        typedText.textContent = currentWord.substring(0, charIndex);
+
+        if (charIndex === 0) {
+          isDeleting = false;
+          wordIndex = (wordIndex + 1) % words.length;
+          typingTimeout = setTimeout(typeAnimation, pauseBeforeType);
+        } else {
+          typingTimeout = setTimeout(typeAnimation, deleteSpeed);
+        }
+      } else {
+        charIndex++;
+        typedText.textContent = currentWord.substring(0, charIndex);
+
+        if (charIndex === currentWord.length) {
+          isDeleting = true;
+          typingTimeout = setTimeout(typeAnimation, pauseBeforeDelete);
+        } else {
+          typingTimeout = setTimeout(typeAnimation, typeSpeed);
+        }
+      }
+    }
+
+    function startTyping() {
+      if (typingTimeout) clearTimeout(typingTimeout);
+      wordIndex = 0;
+      charIndex = 0;
+      isDeleting = false;
+      if (typedText) typedText.textContent = '';
+      typeAnimation();
+    }
+
+    function stopTyping() {
+      if (typingTimeout) clearTimeout(typingTimeout);
+    }
+
+    function updatePlaceholderVisibility() {
+      if (!placeholder) return;
+      if (input.value.length > 0) {
+        placeholder.classList.add('is-hidden');
+        stopTyping();
+      } else {
+        placeholder.classList.remove('is-hidden');
+        startTyping();
+      }
+    }
+
+    // Start typing animation on load
+    if (input.value.length === 0) {
+      startTyping();
+    } else {
+      if (placeholder) placeholder.classList.add('is-hidden');
+    }
 
     const search = async (query, callback) => {
       if (!query || query.length < 2) {
@@ -321,6 +444,9 @@
     input.addEventListener('input', (e) => {
       const query = e.target.value.trim();
 
+      // Update placeholder visibility
+      updatePlaceholderVisibility();
+
       if (query.length < 2) {
         hideResults();
         return;
@@ -365,9 +491,17 @@
   "settings": [
     {
       "type": "text",
-      "id": "placeholder",
-      "label": "Placeholder text",
-      "default": "What can we help you find?"
+      "id": "placeholder_prefix",
+      "label": "Placeholder prefix",
+      "default": "Search for ",
+      "info": "Text shown before the animated words"
+    },
+    {
+      "type": "textarea",
+      "id": "typing_words",
+      "label": "Animated placeholder words",
+      "default": "floor lamps, mira, outdoor lighting, wall lights, indoor lighting",
+      "info": "Comma-separated list of words to cycle through"
     },
     {
       "type": "header",

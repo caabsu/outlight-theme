@@ -53,8 +53,8 @@
                   aria-label="{{ 'sections.shop_the_look.view_product' | t: product: block.settings.product.title }}"
                   {{ block.shopify_attributes }}
                 >
-                  <span class="shop-the-look__hotspot-pulse"></span>
-                  <span class="shop-the-look__hotspot-number">{{ forloop.index }}</span>
+                  <span class="shop-the-look__hotspot-ring"></span>
+                  <span class="shop-the-look__hotspot-dot"></span>
                 </button>
               {%- endif -%}
             {%- endfor -%}
@@ -82,8 +82,8 @@
                   aria-label="{{ 'sections.shop_the_look.view_product' | t: product: block.settings.product.title }}"
                   {{ block.shopify_attributes }}
                 >
-                  <span class="shop-the-look__hotspot-pulse"></span>
-                  <span class="shop-the-look__hotspot-number">{{ forloop.index }}</span>
+                  <span class="shop-the-look__hotspot-ring"></span>
+                  <span class="shop-the-look__hotspot-dot"></span>
                 </button>
               {%- endif -%}
             {%- endfor -%}
@@ -277,28 +277,32 @@
     background: #f0f0f0;
   }
 
-  /* Hotspots */
+  /* Hotspots - Minimal Modern Design */
   .shop-the-look__hotspot {
     position: absolute;
     left: var(--hotspot-x);
     top: var(--hotspot-y);
     transform: translate(-50%, -50%);
-    width: var(--stl-hotspot-size);
-    height: var(--stl-hotspot-size);
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
-    background-color: var(--stl-hotspot-color);
-    border: 2px solid rgba(255, 255, 255, 0.9);
+    background: transparent;
+    border: none;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 10;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    padding: 0;
   }
 
-  .shop-the-look__hotspot:hover {
-    transform: translate(-50%, -50%) scale(1.1);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  .shop-the-look__hotspot:hover .shop-the-look__hotspot-ring {
+    transform: scale(1.2);
+    opacity: 0.6;
+  }
+
+  .shop-the-look__hotspot:hover .shop-the-look__hotspot-dot {
+    transform: scale(1.15);
   }
 
   .shop-the-look__hotspot--desktop {
@@ -319,33 +323,65 @@
     }
   }
 
-  .shop-the-look__hotspot-pulse {
+  .shop-the-look__hotspot-ring {
     position: absolute;
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    background-color: var(--stl-hotspot-color);
+    border: 1.5px solid var(--stl-hotspot-color);
     opacity: 0.4;
-    animation: stl-pulse 2s ease-out infinite;
+    animation: stl-ring-pulse 2.5s ease-out infinite;
+    transition: transform 0.2s ease, opacity 0.2s ease;
   }
 
-  @keyframes stl-pulse {
+  @keyframes stl-ring-pulse {
     0% {
       transform: scale(1);
       opacity: 0.4;
     }
+    50% {
+      transform: scale(1.4);
+      opacity: 0;
+    }
     100% {
-      transform: scale(2);
+      transform: scale(1.4);
       opacity: 0;
     }
   }
 
-  .shop-the-look__hotspot-number {
+  .shop-the-look__hotspot-dot {
     position: relative;
-    font-size: 12px;
-    font-weight: 600;
-    color: #fff;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--stl-hotspot-color);
     z-index: 1;
+    transition: transform 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  }
+
+  .shop-the-look__hotspot-dot::before,
+  .shop-the-look__hotspot-dot::after {
+    content: '';
+    position: absolute;
+    background-color: #fff;
+    border-radius: 1px;
+  }
+
+  .shop-the-look__hotspot-dot::before {
+    width: 4px;
+    height: 1px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .shop-the-look__hotspot-dot::after {
+    width: 1px;
+    height: 4px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
 
   /* Content */
