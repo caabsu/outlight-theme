@@ -294,8 +294,8 @@
             "custom_description": "",
             "hotspot_x_desktop": 12,
             "hotspot_y_desktop": 38,
-            "hotspot_x_mobile": 50,
-            "hotspot_y_mobile": 50
+            "hotspot_x_mobile": 12,
+            "hotspot_y_mobile": 35
           }
         },
         "product_fTcerr": {
@@ -306,8 +306,8 @@
             "custom_description": "",
             "hotspot_x_desktop": 36,
             "hotspot_y_desktop": 55,
-            "hotspot_x_mobile": 50,
-            "hotspot_y_mobile": 50
+            "hotspot_x_mobile": 37,
+            "hotspot_y_mobile": 56
           }
         }
       },
