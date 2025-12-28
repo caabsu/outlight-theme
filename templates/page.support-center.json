@@ -57,8 +57,8 @@
         "warranty": {
           "type": "tab",
           "settings": {
-            "tab_title": "Warranty & Other",
-            "question_1": "What does the warranty cover?",
+            "tab_title": "about us",
+            "question_1": "",
             "answer_1": "Our 2-year warranty covers manufacturing defects and electrical components.",
             "mobile_label_1": "Coverage",
             "question_2": "",
