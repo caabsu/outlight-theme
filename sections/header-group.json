@@ -16,7 +16,7 @@
       "settings": {
         "text": "HOLIDAY SALE : 30% OFF ALL LIGHTS",
         "link_text": "SHOP NOW",
-        "link_url": "/collections/all",
+        "link_url": "shopify://collections/best-sellers",
         "text_mobile": "HOLIDAY SALE : 30% OFF ALL LIGHTS",
         "link_text_mobile": "SHOP COLLECTION",
         "bg_color": "#1c1917",
@@ -28,7 +28,7 @@
         "padding_top_mobile": 10,
         "padding_bottom_mobile": 10,
         "text_size": 13,
-        "text_size_mobile": 11,
+        "text_size_mobile": 12,
         "text_weight": "600",
         "link_size": 13,
         "link_size_mobile": 11,
