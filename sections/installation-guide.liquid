@@ -15,7 +15,6 @@
   style="
     --section-padding-top: {{ section.settings.section_padding_top }}px;
     --section-padding-bottom: {{ section.settings.section_padding_bottom }}px;
-    --content-max-width: {{ section.settings.content_max_width }}px;
     --top-line-color: {{ section.settings.top_line_color }};
     --top-line-thickness: {{ section.settings.top_line_thickness }}px;
     --divider-line-color: {{ section.settings.divider_line_color }};
@@ -132,7 +131,7 @@
   }
 
   .installation-guide__container {
-    max-width: var(--content-max-width);
+    max-width: var(--page-width);
     margin: 0 auto;
     padding: 0 var(--page-margin);
   }
@@ -456,16 +455,6 @@
       "max": 100,
       "step": 4,
       "default": 40,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "content_max_width",
-      "label": "Content max width",
-      "min": 800,
-      "max": 1600,
-      "step": 20,
-      "default": 1200,
       "unit": "px"
     },
     {
