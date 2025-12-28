@@ -36,8 +36,8 @@
         "product": {
           "type": "tab",
           "settings": {
-            "tab_title": "Product",
-            "question_1": "What materials are used?",
+            "tab_title": "Return & Exchange",
+            "question_1": "What is the return policy?",
             "answer_1": "Our fixtures are made with premium brass, steel, and hand-blown glass components.",
             "mobile_label_1": "Materials",
             "question_2": "",
