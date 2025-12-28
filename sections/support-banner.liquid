@@ -14,8 +14,25 @@
     --btn-secondary-bg: {{ section.settings.btn_secondary_bg }};
     --btn-secondary-color: {{ section.settings.btn_secondary_color }};
     --btn-secondary-border: {{ section.settings.btn_secondary_border }};
+    --bg-opacity-mobile: {{ section.settings.background_opacity_mobile | divided_by: 100.0 }};
+    --bg-opacity-desktop: {{ section.settings.background_opacity_desktop | divided_by: 100.0 }};
   "
 >
+  {%- if section.settings.background_image_mobile != blank or section.settings.background_image_desktop != blank -%}
+    <div class="support-banner__background">
+      {%- if section.settings.background_image_mobile != blank -%}
+        <div class="support-banner__background-mobile">
+          {{ section.settings.background_image_mobile | image_url: width: 800 | image_tag: loading: 'lazy' }}
+        </div>
+      {%- endif -%}
+      {%- if section.settings.background_image_desktop != blank -%}
+        <div class="support-banner__background-desktop">
+          {{ section.settings.background_image_desktop | image_url: width: 2000 | image_tag: loading: 'lazy' }}
+        </div>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
   <div class="support-banner__container">
     <div class="support-banner__card">
       <div class="support-banner__main">
@@ -61,11 +78,59 @@
 
 {% stylesheet %}
   .support-banner {
+    position: relative;
     background: var(--section-bg);
     padding: var(--section-padding-top) 0 var(--section-padding-bottom);
   }
 
+  .support-banner__background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .support-banner__background-mobile,
+  .support-banner__background-desktop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .support-banner__background-mobile img,
+  .support-banner__background-desktop img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .support-banner__background-mobile {
+    opacity: var(--bg-opacity-mobile);
+  }
+
+  .support-banner__background-desktop {
+    display: none;
+    opacity: var(--bg-opacity-desktop);
+  }
+
+  @media (min-width: 768px) {
+    .support-banner__background-mobile {
+      display: none;
+    }
+
+    .support-banner__background-desktop {
+      display: block;
+    }
+  }
+
   .support-banner__container {
+    position: relative;
+    z-index: 1;
     max-width: var(--page-width);
     margin: 0 auto;
     padding: 0 var(--page-margin);
@@ -273,6 +338,44 @@
       "type": "url",
       "id": "btn_secondary_url",
       "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Background image (mobile)"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image_mobile",
+      "label": "Background image"
+    },
+    {
+      "type": "range",
+      "id": "background_opacity_mobile",
+      "label": "Background opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 30,
+      "unit": "%"
+    },
+    {
+      "type": "header",
+      "content": "Background image (desktop)"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image_desktop",
+      "label": "Background image"
+    },
+    {
+      "type": "range",
+      "id": "background_opacity_desktop",
+      "label": "Background opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 30,
+      "unit": "%"
     },
     {
       "type": "header",
