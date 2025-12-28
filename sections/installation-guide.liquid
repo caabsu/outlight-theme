@@ -380,32 +380,31 @@
     .installation-guide__content {
       font-size: var(--text-size-mobile);
       margin-bottom: 20px;
-      width: 100%;
-      max-width: 100%;
-      box-sizing: border-box;
     }
 
     .installation-guide__mobile-content {
-      width: 100%;
-      max-width: 100%;
+      width: 100% !important;
+      max-width: 100% !important;
       box-sizing: border-box;
     }
 
-    .installation-guide__mobile-content .installation-guide__content,
-    .installation-guide__mobile-content .installation-guide__content *,
-    .installation-guide__mobile-content p,
-    .installation-guide__mobile-content div {
-      width: 100%;
-      max-width: 100%;
+    .installation-guide__mobile .installation-guide__content {
+      width: 100% !important;
+      max-width: 100% !important;
       box-sizing: border-box;
     }
 
-    /* Reset metafield output width */
-    .installation-guide__mobile-content .metafield-rich_text_field,
-    .installation-guide__mobile-content .rte,
-    .installation-guide__mobile-content [class*="metafield"] {
-      width: 100%;
-      max-width: 100%;
+    .installation-guide__mobile .installation-guide__content p,
+    .installation-guide__mobile .installation-guide__content div,
+    .installation-guide__mobile .installation-guide__content span,
+    .installation-guide__mobile .installation-guide__content ul,
+    .installation-guide__mobile .installation-guide__content ol,
+    .installation-guide__mobile .installation-guide__content li {
+      width: 100% !important;
+      max-width: 100% !important;
+      box-sizing: border-box;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
     }
 
     .installation-guide__warning {
