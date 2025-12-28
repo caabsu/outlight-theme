@@ -12,7 +12,6 @@
     "main": {
       "type": "collection",
       "settings": {
-        "hero_image": "shopify://shop_images/custom_nano-banana-pro_1765671842338.png",
         "hero_height_mobile": 300,
         "hero_height_desktop": 450,
         "overlay_opacity": 20,
