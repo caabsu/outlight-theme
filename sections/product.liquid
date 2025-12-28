@@ -367,7 +367,21 @@
 
               {%- comment -%} Description Text {%- endcomment -%}
               {%- if product.metafields.custom.description != blank -%}
-                <p class="product-details__description">{{ product.metafields.custom.description }}</p>
+                <div class="product-details__description">
+                  {%- assign desc_metafield = product.metafields.custom.description -%}
+                  {%- if desc_metafield.type == 'rich_text_field' -%}
+                    {{ desc_metafield | metafield_tag }}
+                  {%- elsif desc_metafield.type == 'json' -%}
+                    {%- assign desc_json = desc_metafield.value -%}
+                    {%- if desc_json.description -%}
+                      {{ desc_json.description }}
+                    {%- else -%}
+                      {{ desc_metafield.value }}
+                    {%- endif -%}
+                  {%- else -%}
+                    {{ desc_metafield | metafield_tag }}
+                  {%- endif -%}
+                </div>
               {%- elsif block.settings.description_text != blank -%}
                 <p class="product-details__description">{{ block.settings.description_text }}</p>
               {%- endif -%}
