@@ -65,7 +65,7 @@
         "mobile_button_collection": "new-arrivals",
         "mobile_button_title": "New Arrivals",
         "mobile_button_image": "shopify://shop_images/Jova_11.jpg",
-        "mobile_button_image_opacity": 20,
+        "mobile_button_image_opacity": 30,
         "cta_collection": "",
         "cta_text_desktop": "SHOP BEST SELLERS",
         "cta_size_mobile": 11,
