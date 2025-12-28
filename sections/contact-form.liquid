@@ -116,6 +116,10 @@
           <h2 class="contact-form__title">{{ section.settings.title }}</h2>
         {%- endif -%}
 
+        {%- if section.settings.subtitle != blank -%}
+          <p class="contact-form__subtitle">{{ section.settings.subtitle }}</p>
+        {%- endif -%}
+
         {% form 'contact', class: 'contact-form__form' %}
           {%- if form.posted_successfully? -%}
             <div class="contact-form__success">
