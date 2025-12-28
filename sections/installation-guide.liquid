@@ -1,79 +1,127 @@
+{%- liquid
+  assign installation_text = product.metafields.custom.installation_guide | default: section.settings.fallback_text
+  assign show_electrician_warning = false
+  if installation_text contains 'electrician'
+    assign show_electrician_warning = true
+  endif
+-%}
+
 <div
   class="installation-guide full-width"
   style="
     --section-padding-top: {{ section.settings.section_padding_top }}px;
     --section-padding-bottom: {{ section.settings.section_padding_bottom }}px;
     --section-bg: {{ section.settings.section_bg }};
-    --card-bg: {{ section.settings.card_bg }};
-    --card-radius: {{ section.settings.card_radius }}px;
-    --card-padding-desktop: {{ section.settings.card_padding_desktop }}px;
-    --card-padding-mobile: {{ section.settings.card_padding_mobile }}px;
-    --label-bg: {{ section.settings.label_bg }};
-    --label-color: {{ section.settings.label_color }};
-    --label-size: {{ section.settings.label_size }}px;
-    --desktop-text-size: {{ section.settings.desktop_text_size }}px;
-    --desktop-text-weight: {{ section.settings.desktop_text_weight }};
-    --desktop-text-color: {{ section.settings.desktop_text_color }};
-    --desktop-line-height: {{ section.settings.desktop_line_height }};
-    --mobile-text-size: {{ section.settings.mobile_text_size }}px;
-    --mobile-text-weight: {{ section.settings.mobile_text_weight }};
-    --mobile-text-color: {{ section.settings.mobile_text_color }};
-    --mobile-line-height: {{ section.settings.mobile_line_height }};
-    --mobile-label-size: {{ section.settings.mobile_label_size }}px;
-    --mobile-label-weight: {{ section.settings.mobile_label_weight }};
-    --mobile-label-color: {{ section.settings.mobile_label_color }};
+    --content-max-width: {{ section.settings.content_max_width }}px;
+    --top-line-color: {{ section.settings.top_line_color }};
+    --top-line-thickness: {{ section.settings.top_line_thickness }}px;
+    --divider-line-color: {{ section.settings.divider_line_color }};
+    --title-size-desktop: {{ section.settings.title_size_desktop }}px;
+    --title-size-mobile: {{ section.settings.title_size_mobile }}px;
+    --title-color: {{ section.settings.title_color }};
+    --title-weight: {{ section.settings.title_weight }};
+    --subtitle-size: {{ section.settings.subtitle_size }}px;
+    --subtitle-color: {{ section.settings.subtitle_color }};
+    --text-size-desktop: {{ section.settings.text_size_desktop }}px;
+    --text-size-mobile: {{ section.settings.text_size_mobile }}px;
+    --text-color: {{ section.settings.text_color }};
+    --text-line-height: {{ section.settings.text_line_height }};
+    --warning-bg: {{ section.settings.warning_bg }};
+    --warning-text-color: {{ section.settings.warning_text_color }};
+    --warning-icon-color: {{ section.settings.warning_icon_color }};
+    --warning-text-size-desktop: {{ section.settings.warning_text_size_desktop }}px;
+    --warning-text-size-mobile: {{ section.settings.warning_text_size_mobile }}px;
+    --mobile-card-bg: {{ section.settings.mobile_card_bg }};
+    --mobile-card-border-color: {{ section.settings.mobile_card_border_color }};
+    --mobile-card-border-radius: {{ section.settings.mobile_card_border_radius }}px;
+    --mobile-card-padding: {{ section.settings.mobile_card_padding }}px;
   "
 >
   <div class="installation-guide__container">
-    <!-- Desktop Layout - Collapsible -->
-    <details class="installation-guide__accordion installation-guide__accordion--desktop">
-      <summary class="installation-guide__accordion-header">
-        <span class="installation-guide__accordion-title">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+    <!-- Desktop Layout -->
+    <div class="installation-guide__desktop">
+      <div class="installation-guide__left">
+        <div class="installation-guide__top-line"></div>
+        <div class="installation-guide__icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="5" r="3"/>
+            <path d="M6.5 8a2 2 0 0 0-1.905 1.39L2.4 15.4a2 2 0 0 0 1.905 2.61h15.39a2 2 0 0 0 1.905-2.61l-2.195-6.01A2 2 0 0 0 17.5 8z"/>
+            <circle cx="8" cy="14" r="1"/>
+            <circle cx="12" cy="14" r="1"/>
+            <circle cx="16" cy="14" r="1"/>
           </svg>
-          {{ section.settings.desktop_label }}
-        </span>
-        <span class="installation-guide__accordion-icon">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
-            <line class="installation-guide__icon-h" x1="4" y1="10" x2="16" y2="10"/>
-            <line class="installation-guide__icon-v" x1="10" y1="4" x2="10" y2="16"/>
-          </svg>
-        </span>
-      </summary>
-      <div class="installation-guide__accordion-content">
-        {%- if product.metafields.custom.installation_guide != blank -%}
-          {{ product.metafields.custom.installation_guide | metafield_tag }}
-        {%- else -%}
-          {{ section.settings.fallback_text }}
+        </div>
+        <h2 class="installation-guide__title">{{ section.settings.title }}</h2>
+        {%- if section.settings.subtitle != blank -%}
+          <p class="installation-guide__subtitle">{{ section.settings.subtitle }}</p>
         {%- endif -%}
       </div>
-    </details>
 
-    <!-- Mobile Layout - Collapsible Tab -->
-    <details class="installation-guide__accordion installation-guide__accordion--mobile">
-      <summary class="installation-guide__accordion-header">
-        <span class="installation-guide__accordion-title">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
-          </svg>
-          {{ section.settings.mobile_label }}
-        </span>
-        <span class="installation-guide__accordion-icon">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
-            <line class="installation-guide__icon-h" x1="4" y1="10" x2="16" y2="10"/>
-            <line class="installation-guide__icon-v" x1="10" y1="4" x2="10" y2="16"/>
-          </svg>
-        </span>
-      </summary>
-      <div class="installation-guide__accordion-content">
-        {%- if product.metafields.custom.installation_guide != blank -%}
-          {{ product.metafields.custom.installation_guide | metafield_tag }}
-        {%- else -%}
-          {{ section.settings.fallback_text }}
+      <div class="installation-guide__right">
+        <div class="installation-guide__divider-line"></div>
+        <div class="installation-guide__content">
+          {%- if product.metafields.custom.installation_guide != blank -%}
+            {{ product.metafields.custom.installation_guide | metafield_tag }}
+          {%- else -%}
+            {{ section.settings.fallback_text }}
+          {%- endif -%}
+        </div>
+
+        {%- if show_electrician_warning -%}
+          <div class="installation-guide__warning">
+            <span class="installation-guide__warning-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="16" x2="12" y2="12"/>
+                <line x1="12" y1="8" x2="12.01" y2="8"/>
+              </svg>
+            </span>
+            <span class="installation-guide__warning-text">{{ section.settings.electrician_warning_text }}</span>
+          </div>
         {%- endif -%}
       </div>
-    </details>
+    </div>
+
+    <!-- Mobile Layout -->
+    <div class="installation-guide__mobile">
+      <div class="installation-guide__mobile-card">
+        <div class="installation-guide__top-line"></div>
+
+        <div class="installation-guide__mobile-header">
+          <h2 class="installation-guide__title">{{ section.settings.title }}</h2>
+          <div class="installation-guide__icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="5" r="3"/>
+              <path d="M6.5 8a2 2 0 0 0-1.905 1.39L2.4 15.4a2 2 0 0 0 1.905 2.61h15.39a2 2 0 0 0 1.905-2.61l-2.195-6.01A2 2 0 0 0 17.5 8z"/>
+              <circle cx="8" cy="14" r="1"/>
+              <circle cx="12" cy="14" r="1"/>
+              <circle cx="16" cy="14" r="1"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="installation-guide__content">
+          {%- if product.metafields.custom.installation_guide != blank -%}
+            {{ product.metafields.custom.installation_guide | metafield_tag }}
+          {%- else -%}
+            {{ section.settings.fallback_text }}
+          {%- endif -%}
+        </div>
+
+        {%- if show_electrician_warning -%}
+          <div class="installation-guide__warning">
+            <span class="installation-guide__warning-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="16" x2="12" y2="12"/>
+                <line x1="12" y1="8" x2="12.01" y2="8"/>
+              </svg>
+            </span>
+            <span class="installation-guide__warning-text">{{ section.settings.electrician_warning_text }}</span>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
   </div>
 </div>
 
@@ -84,149 +132,150 @@
   }
 
   .installation-guide__container {
-    max-width: var(--page-width);
+    max-width: var(--content-max-width);
     margin: 0 auto;
     padding: 0 var(--page-margin);
   }
 
-  .installation-guide__card {
-    background: var(--card-bg);
-    border-radius: 0;
-    position: relative;
+  /* Desktop Layout */
+  .installation-guide__desktop {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 60px;
   }
 
-  .installation-guide__card--desktop {
-    display: block;
-    padding: var(--card-padding-desktop);
-    padding-top: calc(var(--card-padding-desktop) + 20px);
-  }
-
-  .installation-guide__card--mobile {
+  .installation-guide__mobile {
     display: none;
   }
 
-  .installation-guide__label {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: var(--label-bg);
-    color: var(--label-color);
-    font-size: var(--label-size);
-    font-weight: 600;
-    letter-spacing: 0.1em;
+  .installation-guide__left {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .installation-guide__top-line {
+    width: 100%;
+    max-width: 300px;
+    height: var(--top-line-thickness);
+    background: var(--top-line-color);
+    margin-bottom: 24px;
+  }
+
+  .installation-guide__icon {
+    color: var(--title-color);
+    margin-bottom: 16px;
+  }
+
+  .installation-guide__title {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: var(--title-size-desktop);
+    font-weight: var(--title-weight);
+    color: var(--title-color);
     text-transform: uppercase;
-    padding: 10px 24px;
-    border-radius: 0;
-    white-space: nowrap;
+    letter-spacing: 0.05em;
+    margin: 0 0 8px;
+  }
+
+  .installation-guide__subtitle {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: var(--subtitle-size);
+    color: var(--subtitle-color);
+    margin: 0;
+  }
+
+  .installation-guide__right {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .installation-guide__divider-line {
+    width: 100%;
+    height: 1px;
+    background: var(--divider-line-color);
+    margin-bottom: 24px;
   }
 
   .installation-guide__content {
-    font-size: var(--desktop-text-size);
-    font-weight: var(--desktop-text-weight);
-    color: var(--desktop-text-color);
-    line-height: var(--desktop-line-height);
-    text-align: center;
+    font-family: var(--font-body-family), sans-serif;
+    font-size: var(--text-size-desktop);
+    color: var(--text-color);
+    line-height: var(--text-line-height);
+    margin-bottom: 24px;
   }
 
-  /* Desktop Accordion */
-  .installation-guide__accordion--desktop {
-    display: block;
-    background: var(--card-bg);
-    border-radius: var(--card-radius);
-  }
-
-  .installation-guide__accordion--mobile {
-    display: none;
-  }
-
-  .installation-guide__accordion-header {
+  .installation-guide__warning {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: var(--card-padding-desktop);
-    cursor: pointer;
-    list-style: none;
+    gap: 12px;
+    background: var(--warning-bg);
+    padding: 16px 20px;
   }
 
-  .installation-guide__accordion-header::-webkit-details-marker {
-    display: none;
-  }
-
-  .installation-guide__accordion-title {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: var(--label-size);
-    font-weight: 600;
-    color: var(--label-color);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
-
-  .installation-guide__accordion-icon {
+  .installation-guide__warning-icon {
     display: flex;
     align-items: center;
     justify-content: center;
+    color: var(--warning-icon-color);
     flex-shrink: 0;
-    color: #999;
   }
 
-  .installation-guide__icon-v {
-    transition: opacity 0.2s ease, transform 0.2s ease;
+  .installation-guide__warning-text {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: var(--warning-text-size-desktop);
+    color: var(--warning-text-color);
   }
 
-  .installation-guide__accordion[open] .installation-guide__icon-v {
-    opacity: 0;
-    transform: scaleY(0);
-  }
-
-  .installation-guide__accordion-content {
-    padding: 0 var(--card-padding-desktop) var(--card-padding-desktop);
-    font-size: var(--desktop-text-size);
-    font-weight: var(--desktop-text-weight);
-    color: var(--desktop-text-color);
-    line-height: var(--desktop-line-height);
-    text-align: center;
-  }
-
+  /* Mobile Layout */
   @media (max-width: 768px) {
-    .installation-guide {
-      padding: var(--section-padding-top) 0 var(--section-padding-bottom) 0;
-    }
-
     .installation-guide__container {
-      padding: 0;
+      padding: 0 var(--page-margin);
     }
 
-    .installation-guide__accordion--desktop {
+    .installation-guide__desktop {
       display: none;
     }
 
-    .installation-guide__accordion--mobile {
+    .installation-guide__mobile {
       display: block;
-      background: var(--card-bg);
     }
 
-    .installation-guide__accordion-header {
-      padding: 16px;
+    .installation-guide__mobile-card {
+      background: var(--mobile-card-bg);
+      border: 2px solid var(--mobile-card-border-color);
+      border-radius: var(--mobile-card-border-radius);
+      padding: var(--mobile-card-padding);
     }
 
-    .installation-guide__accordion-title {
-      font-size: var(--mobile-label-size);
-      font-weight: var(--mobile-label-weight);
-      color: var(--mobile-label-color);
-      letter-spacing: 0;
-      text-transform: none;
+    .installation-guide__top-line {
+      max-width: none;
+      margin-bottom: 20px;
     }
 
-    .installation-guide__accordion-content {
-      padding: 0 16px 16px;
-      font-size: var(--mobile-text-size);
-      font-weight: var(--mobile-text-weight);
-      color: var(--mobile-text-color);
-      line-height: var(--mobile-line-height);
-      text-align: left;
+    .installation-guide__mobile-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .installation-guide__title {
+      font-size: var(--title-size-mobile);
+      margin: 0;
+    }
+
+    .installation-guide__content {
+      font-size: var(--text-size-mobile);
+      margin-bottom: 20px;
+    }
+
+    .installation-guide__warning {
+      padding: 14px 16px;
+      gap: 10px;
+    }
+
+    .installation-guide__warning-text {
+      font-size: var(--warning-text-size-mobile);
     }
   }
 {% endstylesheet %}
@@ -241,26 +290,36 @@
     },
     {
       "type": "text",
-      "id": "desktop_label",
-      "label": "Desktop label",
-      "default": "INSTRUCTIONS"
+      "id": "title",
+      "label": "Title",
+      "default": "INSTALLATION"
     },
     {
       "type": "text",
-      "id": "mobile_label",
-      "label": "Mobile label",
-      "default": "GUIDE"
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Ref: Guide-V1.0"
     },
     {
       "type": "textarea",
       "id": "fallback_text",
       "label": "Fallback text",
       "info": "Shown if metafield is empty",
-      "default": "Installation should be performed by a licensed electrician. Begin by turning off power at the main breaker panel."
+      "default": "Secure the fixture to an exterior wall and connect it to AC power (85–265 V). Use proper weather-sealing at all junctions to maintain water resistance. Installation should be performed by a qualified electrician."
     },
     {
       "type": "header",
-      "content": "Section spacing"
+      "content": "Electrician warning"
+    },
+    {
+      "type": "text",
+      "id": "electrician_warning_text",
+      "label": "Warning text",
+      "default": "Qualified electrician required for safe mounting."
+    },
+    {
+      "type": "header",
+      "content": "Section"
     },
     {
       "type": "range",
@@ -269,7 +328,7 @@
       "min": 0,
       "max": 100,
       "step": 4,
-      "default": 0,
+      "default": 40,
       "unit": "px"
     },
     {
@@ -279,167 +338,131 @@
       "min": 0,
       "max": 100,
       "step": 4,
-      "default": 0,
+      "default": 40,
       "unit": "px"
-    },
-    {
-      "type": "header",
-      "content": "Section colors"
     },
     {
       "type": "color",
       "id": "section_bg",
-      "label": "Section background",
+      "label": "Background color",
       "default": "#F5F5F5"
     },
     {
+      "type": "range",
+      "id": "content_max_width",
+      "label": "Content max width",
+      "min": 800,
+      "max": 1600,
+      "step": 20,
+      "default": 1200,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Lines"
+    },
+    {
       "type": "color",
-      "id": "card_bg",
-      "label": "Card background",
-      "default": "#FAFAF8"
+      "id": "top_line_color",
+      "label": "Top line color",
+      "default": "#1a1a1a"
     },
     {
       "type": "range",
-      "id": "card_radius",
-      "label": "Card border radius",
-      "min": 0,
-      "max": 40,
-      "step": 2,
+      "id": "top_line_thickness",
+      "label": "Top line thickness",
+      "min": 1,
+      "max": 8,
+      "step": 1,
+      "default": 4,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "divider_line_color",
+      "label": "Divider line color (desktop)",
+      "default": "#E5E5E5"
+    },
+    {
+      "type": "header",
+      "content": "Title"
+    },
+    {
+      "type": "range",
+      "id": "title_size_desktop",
+      "label": "Size (desktop)",
+      "min": 14,
+      "max": 32,
+      "step": 1,
+      "default": 18,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "title_size_mobile",
+      "label": "Size (mobile)",
+      "min": 12,
+      "max": 24,
+      "step": 1,
       "default": 16,
       "unit": "px"
     },
     {
-      "type": "range",
-      "id": "card_padding_desktop",
-      "label": "Card padding (desktop)",
-      "min": 20,
-      "max": 80,
-      "step": 4,
-      "default": 48,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "card_padding_mobile",
-      "label": "Card padding (mobile)",
-      "min": 16,
-      "max": 48,
-      "step": 4,
-      "default": 24,
-      "unit": "px"
-    },
-    {
-      "type": "header",
-      "content": "Desktop label"
-    },
-    {
       "type": "color",
-      "id": "label_bg",
-      "label": "Background",
-      "default": "#FFFFFF"
-    },
-    {
-      "type": "color",
-      "id": "label_color",
-      "label": "Text color",
+      "id": "title_color",
+      "label": "Color",
       "default": "#1a1a1a"
     },
     {
-      "type": "range",
-      "id": "label_size",
-      "label": "Font size",
-      "min": 10,
-      "max": 16,
-      "step": 1,
-      "default": 12,
-      "unit": "px"
-    },
-    {
-      "type": "header",
-      "content": "Mobile label"
-    },
-    {
-      "type": "range",
-      "id": "mobile_label_size",
-      "label": "Font size",
-      "min": 12,
-      "max": 20,
-      "step": 1,
-      "default": 15,
-      "unit": "px"
-    },
-    {
       "type": "select",
-      "id": "mobile_label_weight",
-      "label": "Font weight",
+      "id": "title_weight",
+      "label": "Weight",
       "options": [
-        { "value": "300", "label": "Light" },
         { "value": "400", "label": "Regular" },
         { "value": "500", "label": "Medium" },
         { "value": "600", "label": "Semibold" },
         { "value": "700", "label": "Bold" }
       ],
-      "default": "500"
-    },
-    {
-      "type": "color",
-      "id": "mobile_label_color",
-      "label": "Text color",
-      "default": "#1a1a1a"
+      "default": "600"
     },
     {
       "type": "header",
-      "content": "Desktop - Text"
+      "content": "Subtitle"
     },
     {
       "type": "range",
-      "id": "desktop_text_size",
+      "id": "subtitle_size",
       "label": "Size",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "default": 13,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Color",
+      "default": "#888888"
+    },
+    {
+      "type": "header",
+      "content": "Description text"
+    },
+    {
+      "type": "range",
+      "id": "text_size_desktop",
+      "label": "Size (desktop)",
       "min": 14,
       "max": 24,
       "step": 1,
-      "default": 17,
+      "default": 18,
       "unit": "px"
     },
     {
-      "type": "select",
-      "id": "desktop_text_weight",
-      "label": "Weight",
-      "options": [
-        { "value": "300", "label": "Light" },
-        { "value": "400", "label": "Regular" },
-        { "value": "500", "label": "Medium" },
-        { "value": "600", "label": "Semibold" },
-        { "value": "700", "label": "Bold" }
-      ],
-      "default": "400"
-    },
-    {
-      "type": "color",
-      "id": "desktop_text_color",
-      "label": "Color",
-      "default": "#3D3D3D"
-    },
-    {
-      "type": "select",
-      "id": "desktop_line_height",
-      "label": "Line height",
-      "options": [
-        { "value": "1.4", "label": "Tight" },
-        { "value": "1.6", "label": "Normal" },
-        { "value": "1.8", "label": "Relaxed" },
-        { "value": "2", "label": "Loose" }
-      ],
-      "default": "1.8"
-    },
-    {
-      "type": "header",
-      "content": "Mobile - Text"
-    },
-    {
       "type": "range",
-      "id": "mobile_text_size",
-      "label": "Size",
+      "id": "text_size_mobile",
+      "label": "Size (mobile)",
       "min": 12,
       "max": 20,
       "step": 1,
@@ -447,27 +470,14 @@
       "unit": "px"
     },
     {
-      "type": "select",
-      "id": "mobile_text_weight",
-      "label": "Weight",
-      "options": [
-        { "value": "300", "label": "Light" },
-        { "value": "400", "label": "Regular" },
-        { "value": "500", "label": "Medium" },
-        { "value": "600", "label": "Semibold" },
-        { "value": "700", "label": "Bold" }
-      ],
-      "default": "400"
-    },
-    {
       "type": "color",
-      "id": "mobile_text_color",
+      "id": "text_color",
       "label": "Color",
-      "default": "#3D3D3D"
+      "default": "#1a1a1a"
     },
     {
       "type": "select",
-      "id": "mobile_line_height",
+      "id": "text_line_height",
       "label": "Line height",
       "options": [
         { "value": "1.4", "label": "Tight" },
@@ -476,6 +486,84 @@
         { "value": "2", "label": "Loose" }
       ],
       "default": "1.6"
+    },
+    {
+      "type": "header",
+      "content": "Warning box"
+    },
+    {
+      "type": "color",
+      "id": "warning_bg",
+      "label": "Background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "warning_text_color",
+      "label": "Text color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "warning_icon_color",
+      "label": "Icon color",
+      "default": "#D97706"
+    },
+    {
+      "type": "range",
+      "id": "warning_text_size_desktop",
+      "label": "Text size (desktop)",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "default": 15,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "warning_text_size_mobile",
+      "label": "Text size (mobile)",
+      "min": 12,
+      "max": 18,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Mobile card"
+    },
+    {
+      "type": "color",
+      "id": "mobile_card_bg",
+      "label": "Background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "mobile_card_border_color",
+      "label": "Border color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "range",
+      "id": "mobile_card_border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "mobile_card_padding",
+      "label": "Padding",
+      "min": 16,
+      "max": 40,
+      "step": 2,
+      "default": 24,
+      "unit": "px"
     }
   ],
   "presets": [
