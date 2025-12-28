@@ -1,0 +1,589 @@
+<div
+  class="contact-form full-width"
+  style="
+    --section-bg: {{ section.settings.section_bg }};
+    --section-padding-top: {{ section.settings.padding_top }}px;
+    --section-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --title-font-size: {{ section.settings.title_size }}px;
+    --title-color: {{ section.settings.title_color }};
+    --subtitle-font-size: {{ section.settings.subtitle_size }}px;
+    --subtitle-color: {{ section.settings.subtitle_color }};
+    --input-font-size: {{ section.settings.input_size }}px;
+    --input-color: {{ section.settings.input_color }};
+    --input-border-color: {{ section.settings.input_border_color }};
+    --btn-bg: {{ section.settings.btn_bg }};
+    --btn-color: {{ section.settings.btn_color }};
+    --btn-font-size: {{ section.settings.btn_font_size }}px;
+    --form-bg: {{ section.settings.form_bg }};
+  "
+>
+  <div class="contact-form__container">
+    <!-- Desktop Layout -->
+    <div class="contact-form__desktop">
+      <div class="contact-form__image">
+        {%- if section.settings.image != blank -%}
+          {{ section.settings.image | image_url: width: 1200 | image_tag: loading: 'lazy' }}
+        {%- else -%}
+          {{ 'lifestyle-1' | placeholder_svg_tag: 'contact-form__placeholder' }}
+        {%- endif -%}
+      </div>
+
+      <div class="contact-form__content">
+        {%- if section.settings.title != blank -%}
+          <h2 class="contact-form__title">{{ section.settings.title }}</h2>
+        {%- endif -%}
+
+        {%- if section.settings.subtitle != blank -%}
+          <p class="contact-form__subtitle">{{ section.settings.subtitle }}</p>
+        {%- endif -%}
+
+        {% form 'contact', class: 'contact-form__form' %}
+          {%- if form.posted_successfully? -%}
+            <div class="contact-form__success">
+              <p>{{ section.settings.success_message | default: 'Thank you for your message. We will get back to you soon.' }}</p>
+            </div>
+          {%- endif -%}
+
+          {%- if form.errors -%}
+            <div class="contact-form__errors">
+              {{ form.errors | default_errors }}
+            </div>
+          {%- endif -%}
+
+          <div class="contact-form__field">
+            <input
+              type="text"
+              name="contact[name]"
+              id="contact-name"
+              placeholder="{{ section.settings.name_placeholder | default: 'Name' }}"
+              autocomplete="name"
+            >
+          </div>
+
+          <div class="contact-form__field">
+            <input
+              type="email"
+              name="contact[email]"
+              id="contact-email"
+              placeholder="{{ section.settings.email_placeholder | default: 'Email' }} *"
+              required
+              autocomplete="email"
+            >
+          </div>
+
+          <div class="contact-form__field">
+            <input
+              type="tel"
+              name="contact[phone]"
+              id="contact-phone"
+              placeholder="{{ section.settings.phone_placeholder | default: 'Phone' }}"
+              autocomplete="tel"
+            >
+          </div>
+
+          <div class="contact-form__field">
+            <textarea
+              name="contact[body]"
+              id="contact-message"
+              placeholder="{{ section.settings.message_placeholder | default: 'Your Message' }}"
+              rows="4"
+            ></textarea>
+          </div>
+
+          <button type="submit" class="contact-form__submit">
+            {{ section.settings.btn_text | default: 'Submit Now' }}
+          </button>
+        {% endform %}
+      </div>
+    </div>
+
+    <!-- Mobile Layout -->
+    <div class="contact-form__mobile">
+      <div class="contact-form__mobile-image">
+        {%- if section.settings.image_mobile != blank -%}
+          {{ section.settings.image_mobile | image_url: width: 800 | image_tag: loading: 'lazy' }}
+        {%- elsif section.settings.image != blank -%}
+          {{ section.settings.image | image_url: width: 800 | image_tag: loading: 'lazy' }}
+        {%- else -%}
+          {{ 'lifestyle-1' | placeholder_svg_tag: 'contact-form__placeholder' }}
+        {%- endif -%}
+      </div>
+
+      <div class="contact-form__mobile-card">
+        {%- if section.settings.title_mobile != blank -%}
+          <h2 class="contact-form__title">{{ section.settings.title_mobile }}</h2>
+        {%- elsif section.settings.title != blank -%}
+          <h2 class="contact-form__title">{{ section.settings.title }}</h2>
+        {%- endif -%}
+
+        {% form 'contact', class: 'contact-form__form' %}
+          {%- if form.posted_successfully? -%}
+            <div class="contact-form__success">
+              <p>{{ section.settings.success_message | default: 'Thank you for your message. We will get back to you soon.' }}</p>
+            </div>
+          {%- endif -%}
+
+          {%- if form.errors -%}
+            <div class="contact-form__errors">
+              {{ form.errors | default_errors }}
+            </div>
+          {%- endif -%}
+
+          <div class="contact-form__field">
+            <input
+              type="text"
+              name="contact[name]"
+              id="contact-name-mobile"
+              placeholder="{{ section.settings.name_placeholder | default: 'Name' }}"
+              autocomplete="name"
+            >
+          </div>
+
+          <div class="contact-form__field">
+            <input
+              type="email"
+              name="contact[email]"
+              id="contact-email-mobile"
+              placeholder="{{ section.settings.email_placeholder | default: 'Email' }} *"
+              required
+              autocomplete="email"
+            >
+          </div>
+
+          <div class="contact-form__field">
+            <textarea
+              name="contact[body]"
+              id="contact-message-mobile"
+              placeholder="{{ section.settings.message_placeholder | default: 'Your Message' }}"
+              rows="4"
+            ></textarea>
+          </div>
+
+          <button type="submit" class="contact-form__submit">
+            {{ section.settings.btn_text | default: 'Submit Now' | upcase }}
+          </button>
+        {% endform %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .contact-form {
+    background: var(--section-bg);
+    padding: var(--section-padding-top) 0 var(--section-padding-bottom);
+  }
+
+  .contact-form__container {
+    max-width: var(--page-width);
+    margin: 0 auto;
+    padding: 0 var(--page-margin);
+  }
+
+  /* Desktop Layout */
+  .contact-form__desktop {
+    display: none;
+  }
+
+  .contact-form__mobile {
+    display: block;
+  }
+
+  /* Mobile Layout */
+  .contact-form__mobile-image {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+  }
+
+  .contact-form__mobile-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .contact-form__mobile-card {
+    background: var(--form-bg);
+    margin: -40px 16px 0;
+    padding: 32px 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .contact-form__title {
+    font-family: var(--font-heading-family), serif;
+    font-size: var(--title-font-size);
+    font-weight: 400;
+    color: var(--title-color);
+    margin: 0 0 24px;
+    letter-spacing: -0.01em;
+  }
+
+  .contact-form__subtitle {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: var(--subtitle-font-size);
+    font-weight: 500;
+    color: var(--subtitle-color);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin: -16px 0 32px;
+  }
+
+  .contact-form__form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .contact-form__field input,
+  .contact-form__field textarea {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid var(--input-border-color);
+    background: transparent;
+    font-family: var(--font-body-family), sans-serif;
+    font-size: var(--input-font-size);
+    color: var(--input-color);
+    padding: 12px 0;
+    outline: none;
+    transition: border-color 0.2s ease;
+  }
+
+  .contact-form__field input::placeholder,
+  .contact-form__field textarea::placeholder {
+    color: var(--input-color);
+    opacity: 0.6;
+  }
+
+  .contact-form__field input:focus,
+  .contact-form__field textarea:focus {
+    border-bottom-color: var(--title-color);
+  }
+
+  .contact-form__field textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+
+  .contact-form__submit {
+    width: 100%;
+    background: var(--btn-bg);
+    color: var(--btn-color);
+    border: none;
+    padding: 16px 32px;
+    font-family: var(--font-body-family), sans-serif;
+    font-size: var(--btn-font-size);
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+    margin-top: 8px;
+  }
+
+  .contact-form__submit:hover {
+    opacity: 0.9;
+  }
+
+  .contact-form__success {
+    background: #f0fdf4;
+    border: 1px solid #86efac;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+
+  .contact-form__success p {
+    margin: 0;
+    color: #166534;
+    font-size: 14px;
+  }
+
+  .contact-form__errors {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+
+  .contact-form__errors li {
+    color: #991b1b;
+    font-size: 14px;
+  }
+
+  .contact-form__placeholder {
+    width: 100%;
+    height: 100%;
+    background: #f5f5f5;
+  }
+
+  /* Desktop Layout */
+  @media (min-width: 768px) {
+    .contact-form__desktop {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+
+    .contact-form__mobile {
+      display: none;
+    }
+
+    .contact-form__image {
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+    }
+
+    .contact-form__image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .contact-form__content {
+      padding: 40px 0;
+    }
+
+    .contact-form__title {
+      font-size: calc(var(--title-font-size) * 1.2);
+      margin-bottom: 8px;
+    }
+
+    .contact-form__subtitle {
+      margin: 0 0 40px;
+    }
+
+    .contact-form__form {
+      gap: 32px;
+    }
+
+    .contact-form__submit {
+      width: auto;
+      align-self: flex-start;
+      padding: 16px 48px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .contact-form__desktop {
+      gap: 80px;
+    }
+
+    .contact-form__content {
+      padding: 60px 40px 60px 0;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Contact form",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Contact"
+    },
+    {
+      "type": "text",
+      "id": "title_mobile",
+      "label": "Title (mobile)",
+      "default": "Contact Us"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "WE ANSWER WITHIN 24H"
+    },
+    {
+      "type": "text",
+      "id": "success_message",
+      "label": "Success message",
+      "default": "Thank you for your message. We will get back to you soon."
+    },
+    {
+      "type": "header",
+      "content": "Form placeholders"
+    },
+    {
+      "type": "text",
+      "id": "name_placeholder",
+      "label": "Name placeholder",
+      "default": "Name"
+    },
+    {
+      "type": "text",
+      "id": "email_placeholder",
+      "label": "Email placeholder",
+      "default": "Email"
+    },
+    {
+      "type": "text",
+      "id": "phone_placeholder",
+      "label": "Phone placeholder",
+      "default": "Phone"
+    },
+    {
+      "type": "text",
+      "id": "message_placeholder",
+      "label": "Message placeholder",
+      "default": "Your Message"
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "btn_text",
+      "label": "Button text",
+      "default": "Submit Now"
+    },
+    {
+      "type": "color",
+      "id": "btn_bg",
+      "label": "Button background",
+      "default": "#1C1917"
+    },
+    {
+      "type": "color",
+      "id": "btn_color",
+      "label": "Button text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "btn_font_size",
+      "label": "Button font size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Images"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image (desktop)"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_mobile",
+      "label": "Image (mobile)",
+      "info": "Leave blank to use desktop image"
+    },
+    {
+      "type": "header",
+      "content": "Section style"
+    },
+    {
+      "type": "color",
+      "id": "section_bg",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "form_bg",
+      "label": "Form background (mobile)",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title size",
+      "min": 24,
+      "max": 60,
+      "step": 2,
+      "default": 36,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#1C1917"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size",
+      "label": "Subtitle size",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle color",
+      "default": "#78716C"
+    },
+    {
+      "type": "header",
+      "content": "Form fields"
+    },
+    {
+      "type": "range",
+      "id": "input_size",
+      "label": "Input font size",
+      "min": 14,
+      "max": 20,
+      "step": 1,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "input_color",
+      "label": "Input text color",
+      "default": "#1C1917"
+    },
+    {
+      "type": "color",
+      "id": "input_border_color",
+      "label": "Input border color",
+      "default": "#D6D3D1"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contact form"
+    }
+  ]
+}
+{% endschema %}
