@@ -18,23 +18,23 @@
     --bg-opacity-desktop: {{ section.settings.background_opacity_desktop | divided_by: 100.0 }};
   "
 >
-  {%- if section.settings.background_image_mobile != blank or section.settings.background_image_desktop != blank -%}
-    <div class="support-banner__background">
-      {%- if section.settings.background_image_mobile != blank -%}
-        <div class="support-banner__background-mobile">
-          {{ section.settings.background_image_mobile | image_url: width: 800 | image_tag: loading: 'lazy' }}
-        </div>
-      {%- endif -%}
-      {%- if section.settings.background_image_desktop != blank -%}
-        <div class="support-banner__background-desktop">
-          {{ section.settings.background_image_desktop | image_url: width: 2000 | image_tag: loading: 'lazy' }}
-        </div>
-      {%- endif -%}
-    </div>
-  {%- endif -%}
-
   <div class="support-banner__container">
     <div class="support-banner__card">
+      {%- if section.settings.background_image_mobile != blank or section.settings.background_image_desktop != blank -%}
+        <div class="support-banner__background">
+          {%- if section.settings.background_image_mobile != blank -%}
+            <div class="support-banner__background-mobile">
+              {{ section.settings.background_image_mobile | image_url: width: 800 | image_tag: loading: 'lazy' }}
+            </div>
+          {%- endif -%}
+          {%- if section.settings.background_image_desktop != blank -%}
+            <div class="support-banner__background-desktop">
+              {{ section.settings.background_image_desktop | image_url: width: 2000 | image_tag: loading: 'lazy' }}
+            </div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
       <div class="support-banner__main">
         <div class="support-banner__icon">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -78,9 +78,24 @@
 
 {% stylesheet %}
   .support-banner {
-    position: relative;
     background: var(--section-bg);
     padding: var(--section-padding-top) 0 var(--section-padding-bottom);
+  }
+
+  .support-banner__container {
+    max-width: var(--page-width);
+    margin: 0 auto;
+    padding: 0 var(--page-margin);
+  }
+
+  .support-banner__card {
+    position: relative;
+    overflow: hidden;
+    background: var(--card-bg);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
   }
 
   .support-banner__background {
@@ -128,23 +143,9 @@
     }
   }
 
-  .support-banner__container {
+  .support-banner__main {
     position: relative;
     z-index: 1;
-    max-width: var(--page-width);
-    margin: 0 auto;
-    padding: 0 var(--page-margin);
-  }
-
-  .support-banner__card {
-    background: var(--card-bg);
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .support-banner__main {
     display: flex;
     align-items: center;
     gap: 14px;
@@ -191,6 +192,8 @@
   }
 
   .support-banner__buttons {
+    position: relative;
+    z-index: 1;
     display: flex;
     gap: 12px;
     width: 100%;
