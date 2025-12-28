@@ -1,9 +1,18 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "contact-form": {
       "type": "contact-form",
       "settings": {
-        "title": "Contact",
+        "title": "Contact Us",
         "title_mobile": "Contact Us",
         "subtitle": "WE ANSWER WITHIN 24H",
         "success_message": "Thank you for your message. We will get back to you soon.",
@@ -12,20 +21,22 @@
         "phone_placeholder": "Phone",
         "message_placeholder": "Your Message",
         "btn_text": "Submit Now",
-        "btn_bg": "#1C1917",
+        "btn_bg": "#1c1917",
         "btn_color": "#ffffff",
         "btn_font_size": 14,
+        "image": "shopify://shop_images/Hollis_3.png",
+        "image_mobile": "shopify://shop_images/Oris_2.png",
         "section_bg": "#ffffff",
         "form_bg": "#ffffff",
         "padding_top": 0,
         "padding_bottom": 0,
         "title_size": 36,
-        "title_color": "#1C1917",
+        "title_color": "#1c1917",
         "subtitle_size": 12,
-        "subtitle_color": "#78716C",
+        "subtitle_color": "#78716c",
         "input_size": 16,
-        "input_color": "#1C1917",
-        "input_border_color": "#D6D3D1"
+        "input_color": "#1c1917",
+        "input_border_color": "#d6d3d1"
       }
     }
   },
