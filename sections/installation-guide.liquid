@@ -283,11 +283,14 @@
 
     .installation-guide__mobile {
       display: block;
+      width: 100%;
     }
 
     .installation-guide__mobile-header {
       list-style: none;
       cursor: pointer;
+      width: 100%;
+      display: block;
     }
 
     .installation-guide__mobile-header::-webkit-details-marker {
@@ -378,13 +381,29 @@
       font-size: var(--text-size-mobile);
       margin-bottom: 20px;
       width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
     }
 
     .installation-guide__mobile-content {
       width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
     }
 
-    .installation-guide__mobile-content .installation-guide__content {
+    .installation-guide__mobile-content .installation-guide__content,
+    .installation-guide__mobile-content .installation-guide__content *,
+    .installation-guide__mobile-content p,
+    .installation-guide__mobile-content div {
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* Reset metafield output width */
+    .installation-guide__mobile-content .metafield-rich_text_field,
+    .installation-guide__mobile-content .rte,
+    .installation-guide__mobile-content [class*="metafield"] {
       width: 100%;
       max-width: 100%;
     }
