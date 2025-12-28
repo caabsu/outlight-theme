@@ -36,6 +36,7 @@
     --warning-text-size-mobile: {{ section.settings.warning_text_size_mobile }}px;
     --line-spacing-desktop: {{ section.settings.line_spacing_desktop }}px;
     --line-spacing-mobile: {{ section.settings.line_spacing_mobile }}px;
+    --title-spacing-desktop: {{ section.settings.title_spacing_desktop }}px;
     --title-spacing-mobile: {{ section.settings.title_spacing_mobile }}px;
   "
 >
@@ -143,6 +144,7 @@
     grid-template-rows: auto auto;
     column-gap: 60px;
     row-gap: var(--line-spacing-desktop);
+    align-items: start;
   }
 
   .installation-guide__mobile {
@@ -170,16 +172,13 @@
   .installation-guide__left {
     grid-column: 1;
     grid-row: 2;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+    align-self: start;
   }
 
   .installation-guide__right {
     grid-column: 2;
     grid-row: 2;
-    display: flex;
-    flex-direction: column;
+    align-self: start;
   }
 
   .installation-guide__title {
@@ -189,7 +188,7 @@
     color: var(--title-color);
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    margin: 0 0 8px;
+    margin: 0 0 var(--title-spacing-desktop);
   }
 
   .installation-guide__subtitle {
@@ -512,6 +511,16 @@
         { "value": "700", "label": "Bold" }
       ],
       "default": "600"
+    },
+    {
+      "type": "range",
+      "id": "title_spacing_desktop",
+      "label": "Space below title (desktop)",
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "default": 8,
+      "unit": "px"
     },
     {
       "type": "range",
