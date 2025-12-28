@@ -42,8 +42,10 @@
   <div class="installation-guide__container">
     <!-- Desktop Layout -->
     <div class="installation-guide__desktop">
+      <div class="installation-guide__top-line"></div>
+      <div class="installation-guide__divider-line"></div>
+
       <div class="installation-guide__left">
-        <div class="installation-guide__top-line"></div>
         <h2 class="installation-guide__title">{{ section.settings.title }}</h2>
         {%- if section.settings.subtitle != blank -%}
           <p class="installation-guide__subtitle">{{ section.settings.subtitle }}</p>
@@ -51,7 +53,6 @@
       </div>
 
       <div class="installation-guide__right">
-        <div class="installation-guide__divider-line"></div>
         <div class="installation-guide__content">
           {%- if installation_metafield != blank -%}
             {{ installation_metafield | metafield_tag }}
@@ -139,25 +140,46 @@
   .installation-guide__desktop {
     display: grid;
     grid-template-columns: 1fr 2fr;
-    gap: 60px;
+    grid-template-rows: auto auto;
+    column-gap: 60px;
+    row-gap: var(--line-spacing-desktop);
   }
 
   .installation-guide__mobile {
     display: none;
   }
 
+  .installation-guide__top-line {
+    grid-column: 1;
+    grid-row: 1;
+    width: 100%;
+    max-width: 300px;
+    height: var(--top-line-thickness);
+    background: var(--top-line-color);
+  }
+
+  .installation-guide__divider-line {
+    grid-column: 2;
+    grid-row: 1;
+    width: 100%;
+    height: 1px;
+    background: var(--divider-line-color);
+    align-self: end;
+  }
+
   .installation-guide__left {
+    grid-column: 1;
+    grid-row: 2;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .installation-guide__top-line {
-    width: 100%;
-    max-width: 300px;
-    height: var(--top-line-thickness);
-    background: var(--top-line-color);
-    margin-bottom: var(--line-spacing-desktop);
+  .installation-guide__right {
+    grid-column: 2;
+    grid-row: 2;
+    display: flex;
+    flex-direction: column;
   }
 
   .installation-guide__title {
@@ -175,19 +197,6 @@
     font-size: var(--subtitle-size);
     color: var(--subtitle-color);
     margin: 0;
-  }
-
-  .installation-guide__right {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .installation-guide__divider-line {
-    width: 100%;
-    height: 1px;
-    background: var(--divider-line-color);
-    margin-top: calc(var(--top-line-thickness) - 1px);
-    margin-bottom: var(--line-spacing-desktop);
   }
 
   .installation-guide__content {
@@ -264,6 +273,11 @@
       align-items: center;
       justify-content: center;
       color: var(--title-color);
+      transition: transform 0.3s ease;
+    }
+
+    .installation-guide__toggle svg {
+      transition: transform 0.3s ease;
     }
 
     .installation-guide__toggle-plus {
@@ -284,6 +298,38 @@
 
     .installation-guide__mobile-content {
       margin-top: var(--title-spacing-mobile);
+      overflow: hidden;
+      animation: slideDown 0.3s ease forwards;
+    }
+
+    .installation-guide__mobile:not([open]) .installation-guide__mobile-content {
+      animation: slideUp 0.3s ease forwards;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        max-height: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        max-height: 1000px;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 1;
+        max-height: 1000px;
+        transform: translateY(0);
+      }
+      to {
+        opacity: 0;
+        max-height: 0;
+        transform: translateY(-10px);
+      }
     }
 
     .installation-guide__content {
