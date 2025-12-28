@@ -83,7 +83,18 @@
     <!-- Mobile Layout -->
     <div class="installation-guide__mobile">
       <div class="installation-guide__top-line"></div>
-      <h2 class="installation-guide__title">{{ section.settings.title }}</h2>
+      <div class="installation-guide__mobile-header">
+        <h2 class="installation-guide__title">{{ section.settings.title }}</h2>
+        <div class="installation-guide__icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="5" r="3"/>
+            <path d="M6.5 8a2 2 0 0 0-1.905 1.39L2.4 15.4a2 2 0 0 0 1.905 2.61h15.39a2 2 0 0 0 1.905-2.61l-2.195-6.01A2 2 0 0 0 17.5 8z"/>
+            <circle cx="8" cy="14" r="1"/>
+            <circle cx="12" cy="14" r="1"/>
+            <circle cx="16" cy="14" r="1"/>
+          </svg>
+        </div>
+      </div>
 
       <div class="installation-guide__content">
         {%- if installation_metafield != blank -%}
@@ -224,9 +235,20 @@
       margin-bottom: var(--line-spacing-mobile);
     }
 
+    .installation-guide__mobile-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--title-spacing-mobile);
+    }
+
     .installation-guide__title {
       font-size: var(--title-size-mobile);
-      margin: 0 0 var(--title-spacing-mobile);
+      margin: 0;
+    }
+
+    .installation-guide__icon {
+      color: var(--title-color);
     }
 
     .installation-guide__content {
@@ -408,10 +430,10 @@
       "type": "range",
       "id": "title_spacing_mobile",
       "label": "Space below title (mobile)",
-      "min": 8,
+      "min": 0,
       "max": 32,
       "step": 2,
-      "default": 12,
+      "default": 8,
       "unit": "px"
     },
     {
