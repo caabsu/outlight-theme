@@ -189,6 +189,13 @@
     text-transform: uppercase;
     letter-spacing: 0.05em;
     margin: 0 0 var(--title-spacing-desktop);
+    padding: 0;
+  }
+
+  .installation-guide__left,
+  .installation-guide__right {
+    padding-top: 0;
+    margin-top: 0;
   }
 
   .installation-guide__subtitle {
@@ -204,6 +211,43 @@
     color: var(--text-color);
     line-height: var(--text-line-height);
     margin-bottom: 24px;
+    margin-top: 0;
+    padding-top: 0;
+  }
+
+  .installation-guide__content > * {
+    margin-top: 0;
+  }
+
+  .installation-guide__content > *:first-child,
+  .installation-guide__content p:first-child,
+  .installation-guide__content div:first-child,
+  .installation-guide__content > *:first-child * {
+    margin-top: 0;
+    padding-top: 0;
+  }
+
+  .installation-guide__right .installation-guide__content {
+    margin-top: 0;
+    padding-top: 0;
+  }
+
+  .installation-guide__right .installation-guide__content p,
+  .installation-guide__right .installation-guide__content div {
+    margin-top: 0;
+  }
+
+  .installation-guide__right .installation-guide__content p + p,
+  .installation-guide__right .installation-guide__content div + div {
+    margin-top: 1em;
+  }
+
+  /* Reset for rich text metafield output */
+  .installation-guide__right .rte > *:first-child,
+  .installation-guide__right .metafield-rich_text_field > *:first-child,
+  .installation-guide__right [class*="metafield"] > *:first-child {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
   }
 
   .installation-guide__warning {
