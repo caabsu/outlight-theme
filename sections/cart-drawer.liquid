@@ -78,9 +78,9 @@
       {%- else -%}
         <div class="cart-drawer__empty">
           <p>{{ 'cart.empty' | t }}</p>
-          <a href="{{ routes.all_products_collection_url }}" class="cart-drawer__continue-btn">
+          <button type="button" class="cart-drawer__continue-btn" data-cart-drawer-close>
             {{ 'cart.continue_shopping' | t }}
-          </a>
+          </button>
         </div>
       {%- endif -%}
     </div>
