@@ -1078,7 +1078,7 @@
       // Start with main collection products
       let filteredProducts = [...mainProducts];
 
-      // Category filter: find products that are in ALL selected category collections
+      // Category filter: find products that are in ANY of the selected category collections
       if (selectedCategories.size > 0) {
         const categories = [...selectedCategories];
 
@@ -1090,9 +1090,9 @@
           })
         );
 
-        // Filter: product must be in main collection AND in ALL selected category collections
+        // Filter: product must be in main collection AND in ANY of the selected category collections
         filteredProducts = mainProducts.filter(product => {
-          return categoryProductSets.every(catSet => catSet.has(product.id));
+          return categoryProductSets.some(catSet => catSet.has(product.id));
         });
       }
 
