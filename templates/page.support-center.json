@@ -84,7 +84,7 @@
       "settings": {
         "page_bg_color": "#f7f5f0",
         "header_bg_image": "shopify://shop_images/Talin_closeup.jpg",
-        "header_bg_color": "#1C1917",
+        "header_bg_color": "#1c1917",
         "header_overlay_opacity": 75,
         "heading": "Help Center",
         "title_size": 32,
@@ -105,7 +105,7 @@
         "card_border_radius": 6,
         "category_title_size": 20,
         "category_title_size_mobile": 16,
-        "category_title_color": "#D97706",
+        "category_title_color": "#d97706",
         "category_title_weight": "600",
         "faq_bg_color": "#ebe8e0",
         "faq_alt_bg_color": "#f9f9f8",
@@ -158,7 +158,7 @@
         "button_size": 14,
         "button_size_mobile": 13,
         "button_weight": "500",
-        "note_text": "We typically respond within a day.",
+        "note_text": "We respond within 24 hours.",
         "note_size": 12,
         "note_color": "#ffffffb3"
       }
