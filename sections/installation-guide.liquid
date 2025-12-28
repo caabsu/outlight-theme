@@ -1,7 +1,16 @@
 {%- liquid
-  assign installation_text = product.metafields.custom.installation_guide | default: section.settings.fallback_text
+  assign installation_metafield = product.metafields.custom.installation_guide
+  assign installation_text = ''
+
+  if installation_metafield != blank
+    assign installation_text = installation_metafield.value | default: installation_metafield
+  else
+    assign installation_text = section.settings.fallback_text
+  endif
+
   assign show_electrician_warning = false
-  if installation_text contains 'electrician'
+  assign text_to_check = installation_text | downcase
+  if text_to_check contains 'electrician'
     assign show_electrician_warning = true
   endif
 -%}
@@ -11,7 +20,6 @@
   style="
     --section-padding-top: {{ section.settings.section_padding_top }}px;
     --section-padding-bottom: {{ section.settings.section_padding_bottom }}px;
-    --section-bg: {{ section.settings.section_bg }};
     --content-max-width: {{ section.settings.content_max_width }}px;
     --top-line-color: {{ section.settings.top_line_color }};
     --top-line-thickness: {{ section.settings.top_line_thickness }}px;
@@ -31,10 +39,9 @@
     --warning-icon-color: {{ section.settings.warning_icon_color }};
     --warning-text-size-desktop: {{ section.settings.warning_text_size_desktop }}px;
     --warning-text-size-mobile: {{ section.settings.warning_text_size_mobile }}px;
-    --mobile-card-bg: {{ section.settings.mobile_card_bg }};
-    --mobile-card-border-color: {{ section.settings.mobile_card_border_color }};
-    --mobile-card-border-radius: {{ section.settings.mobile_card_border_radius }}px;
-    --mobile-card-padding: {{ section.settings.mobile_card_padding }}px;
+    --line-spacing-desktop: {{ section.settings.line_spacing_desktop }}px;
+    --line-spacing-mobile: {{ section.settings.line_spacing_mobile }}px;
+    --title-spacing-mobile: {{ section.settings.title_spacing_mobile }}px;
   "
 >
   <div class="installation-guide__container">
@@ -42,15 +49,6 @@
     <div class="installation-guide__desktop">
       <div class="installation-guide__left">
         <div class="installation-guide__top-line"></div>
-        <div class="installation-guide__icon">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="5" r="3"/>
-            <path d="M6.5 8a2 2 0 0 0-1.905 1.39L2.4 15.4a2 2 0 0 0 1.905 2.61h15.39a2 2 0 0 0 1.905-2.61l-2.195-6.01A2 2 0 0 0 17.5 8z"/>
-            <circle cx="8" cy="14" r="1"/>
-            <circle cx="12" cy="14" r="1"/>
-            <circle cx="16" cy="14" r="1"/>
-          </svg>
-        </div>
         <h2 class="installation-guide__title">{{ section.settings.title }}</h2>
         {%- if section.settings.subtitle != blank -%}
           <p class="installation-guide__subtitle">{{ section.settings.subtitle }}</p>
@@ -60,8 +58,8 @@
       <div class="installation-guide__right">
         <div class="installation-guide__divider-line"></div>
         <div class="installation-guide__content">
-          {%- if product.metafields.custom.installation_guide != blank -%}
-            {{ product.metafields.custom.installation_guide | metafield_tag }}
+          {%- if installation_metafield != blank -%}
+            {{ installation_metafield | metafield_tag }}
           {%- else -%}
             {{ section.settings.fallback_text }}
           {%- endif -%}
@@ -84,50 +82,35 @@
 
     <!-- Mobile Layout -->
     <div class="installation-guide__mobile">
-      <div class="installation-guide__mobile-card">
-        <div class="installation-guide__top-line"></div>
+      <div class="installation-guide__top-line"></div>
+      <h2 class="installation-guide__title">{{ section.settings.title }}</h2>
 
-        <div class="installation-guide__mobile-header">
-          <h2 class="installation-guide__title">{{ section.settings.title }}</h2>
-          <div class="installation-guide__icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="5" r="3"/>
-              <path d="M6.5 8a2 2 0 0 0-1.905 1.39L2.4 15.4a2 2 0 0 0 1.905 2.61h15.39a2 2 0 0 0 1.905-2.61l-2.195-6.01A2 2 0 0 0 17.5 8z"/>
-              <circle cx="8" cy="14" r="1"/>
-              <circle cx="12" cy="14" r="1"/>
-              <circle cx="16" cy="14" r="1"/>
-            </svg>
-          </div>
-        </div>
-
-        <div class="installation-guide__content">
-          {%- if product.metafields.custom.installation_guide != blank -%}
-            {{ product.metafields.custom.installation_guide | metafield_tag }}
-          {%- else -%}
-            {{ section.settings.fallback_text }}
-          {%- endif -%}
-        </div>
-
-        {%- if show_electrician_warning -%}
-          <div class="installation-guide__warning">
-            <span class="installation-guide__warning-icon">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"/>
-                <line x1="12" y1="16" x2="12" y2="12"/>
-                <line x1="12" y1="8" x2="12.01" y2="8"/>
-              </svg>
-            </span>
-            <span class="installation-guide__warning-text">{{ section.settings.electrician_warning_text }}</span>
-          </div>
+      <div class="installation-guide__content">
+        {%- if installation_metafield != blank -%}
+          {{ installation_metafield | metafield_tag }}
+        {%- else -%}
+          {{ section.settings.fallback_text }}
         {%- endif -%}
       </div>
+
+      {%- if show_electrician_warning -%}
+        <div class="installation-guide__warning">
+          <span class="installation-guide__warning-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="16" x2="12" y2="12"/>
+              <line x1="12" y1="8" x2="12.01" y2="8"/>
+            </svg>
+          </span>
+          <span class="installation-guide__warning-text">{{ section.settings.electrician_warning_text }}</span>
+        </div>
+      {%- endif -%}
     </div>
   </div>
 </div>
 
 {% stylesheet %}
   .installation-guide {
-    background: var(--section-bg);
     padding: var(--section-padding-top) 0 var(--section-padding-bottom) 0;
   }
 
@@ -159,12 +142,7 @@
     max-width: 300px;
     height: var(--top-line-thickness);
     background: var(--top-line-color);
-    margin-bottom: 24px;
-  }
-
-  .installation-guide__icon {
-    color: var(--title-color);
-    margin-bottom: 16px;
+    margin-bottom: var(--line-spacing-desktop);
   }
 
   .installation-guide__title {
@@ -193,7 +171,7 @@
     width: 100%;
     height: 1px;
     background: var(--divider-line-color);
-    margin-bottom: 24px;
+    margin-bottom: var(--line-spacing-desktop);
   }
 
   .installation-guide__content {
@@ -202,6 +180,7 @@
     color: var(--text-color);
     line-height: var(--text-line-height);
     margin-bottom: 24px;
+    margin-top: -4px;
   }
 
   .installation-guide__warning {
@@ -240,28 +219,14 @@
       display: block;
     }
 
-    .installation-guide__mobile-card {
-      background: var(--mobile-card-bg);
-      border: 2px solid var(--mobile-card-border-color);
-      border-radius: var(--mobile-card-border-radius);
-      padding: var(--mobile-card-padding);
-    }
-
     .installation-guide__top-line {
       max-width: none;
-      margin-bottom: 20px;
-    }
-
-    .installation-guide__mobile-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
+      margin-bottom: var(--line-spacing-mobile);
     }
 
     .installation-guide__title {
       font-size: var(--title-size-mobile);
-      margin: 0;
+      margin: 0 0 var(--title-spacing-mobile);
     }
 
     .installation-guide__content {
@@ -342,12 +307,6 @@
       "unit": "px"
     },
     {
-      "type": "color",
-      "id": "section_bg",
-      "label": "Background color",
-      "default": "#F5F5F5"
-    },
-    {
       "type": "range",
       "id": "content_max_width",
       "label": "Content max width",
@@ -382,6 +341,26 @@
       "id": "divider_line_color",
       "label": "Divider line color (desktop)",
       "default": "#E5E5E5"
+    },
+    {
+      "type": "range",
+      "id": "line_spacing_desktop",
+      "label": "Space below line (desktop)",
+      "min": 8,
+      "max": 40,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "line_spacing_mobile",
+      "label": "Space below line (mobile)",
+      "min": 8,
+      "max": 40,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
     },
     {
       "type": "header",
@@ -424,6 +403,16 @@
         { "value": "700", "label": "Bold" }
       ],
       "default": "600"
+    },
+    {
+      "type": "range",
+      "id": "title_spacing_mobile",
+      "label": "Space below title (mobile)",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
     },
     {
       "type": "header",
@@ -527,42 +516,6 @@
       "max": 18,
       "step": 1,
       "default": 14,
-      "unit": "px"
-    },
-    {
-      "type": "header",
-      "content": "Mobile card"
-    },
-    {
-      "type": "color",
-      "id": "mobile_card_bg",
-      "label": "Background",
-      "default": "#FFFFFF"
-    },
-    {
-      "type": "color",
-      "id": "mobile_card_border_color",
-      "label": "Border color",
-      "default": "#1a1a1a"
-    },
-    {
-      "type": "range",
-      "id": "mobile_card_border_radius",
-      "label": "Border radius",
-      "min": 0,
-      "max": 24,
-      "step": 2,
-      "default": 12,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "mobile_card_padding",
-      "label": "Padding",
-      "min": 16,
-      "max": 40,
-      "step": 2,
-      "default": 24,
       "unit": "px"
     }
   ],
