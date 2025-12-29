@@ -48,6 +48,7 @@
     --gallery-arrow-hover-opacity: {{ section.settings.gallery_arrow_hover_opacity | divided_by: 100.0 }};
     --gallery-counter-size: {{ section.settings.gallery_counter_size }}px;
     --gallery-counter-weight: {{ section.settings.gallery_counter_weight }};
+    --gallery-nav-bottom: {{ section.settings.gallery_nav_bottom }}px;
     --lightbox-bg-color: {{ section.settings.lightbox_bg_color }};
     --button-size: {{ section.settings.button_size }}px;
     --button-size-desktop: {{ section.settings.button_size_desktop }}px;
@@ -815,7 +816,7 @@
   /* Gallery Navigation Overlay - Bottom Centered */
   .product-media-nav-overlay {
     position: absolute;
-    bottom: 6px;
+    bottom: var(--gallery-nav-bottom, 12px);
     left: 50%;
     transform: translateX(-50%);
     display: flex;
@@ -4024,6 +4025,16 @@
         { "value": "600", "label": "Semibold" }
       ],
       "default": "400"
+    },
+    {
+      "type": "range",
+      "id": "gallery_nav_bottom",
+      "label": "Navigation bottom position",
+      "min": 4,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 12
     },
     {
       "type": "header",
