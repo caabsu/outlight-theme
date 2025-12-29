@@ -39,9 +39,10 @@
   --intro-padding-x-mobile: {{ section.settings.padding_x_mobile }}px;
   --intro-padding-x-desktop: {{ section.settings.padding_x_desktop }}px;
 ">
+  {% render 'scroll-animation' %}
   <div class="product-intro__container">
     {%- comment -%} Mobile: Image first {%- endcomment -%}
-    <div class="product-intro__image-col product-intro__image-col--mobile">
+    <div class="product-intro__image-col product-intro__image-col--mobile scroll-animate">
       {% if intro_main_image %}
         <div class="product-intro__main-image">
           {{ intro_main_image | image_url: width: 800 | image_tag: loading: 'lazy' }}
@@ -50,7 +51,7 @@
     </div>
 
     {%- comment -%} Content Column {%- endcomment -%}
-    <div class="product-intro__content-col">
+    <div class="product-intro__content-col scroll-animate">
       {% if intro_strap != blank %}
         <p class="product-intro__strap">{{ intro_strap }}</p>
       {% endif %}
@@ -71,7 +72,7 @@
     </div>
 
     {%- comment -%} Desktop: Image Column {%- endcomment -%}
-    <div class="product-intro__image-col product-intro__image-col--desktop">
+    <div class="product-intro__image-col product-intro__image-col--desktop scroll-animate">
       {% if intro_main_image %}
         <div class="product-intro__main-image">
           {{ intro_main_image | image_url: width: 1200 | image_tag: loading: 'lazy' }}
@@ -96,7 +97,7 @@
 
     {%- comment -%} Mobile: Thumbnails at bottom {%- endcomment -%}
     {% if intro_image1 != blank or intro_image2 != blank %}
-      <div class="product-intro__thumbnails product-intro__thumbnails--mobile">
+      <div class="product-intro__thumbnails product-intro__thumbnails--mobile scroll-animate">
         {% if intro_image1 %}
           <div class="product-intro__thumbnail">
             {{ intro_image1 | image_url: width: 400 | image_tag: loading: 'lazy' }}
