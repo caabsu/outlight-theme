@@ -2312,6 +2312,7 @@
   const galleryCounter = document.querySelector('[data-gallery-counter]');
 
   let currentIndex = 0;
+  let isScrolling = false;
   const items = galleryTrack ? galleryTrack.querySelectorAll('.product-media-item') : [];
   const totalItems = items.length;
 
@@ -2345,25 +2346,28 @@
     if (index >= totalItems) index = 0;
 
     currentIndex = index;
+    updateCounter(currentIndex);
 
     // On mobile, scroll to the slide
     if (window.innerWidth < 768) {
+      isScrolling = true;
       items[currentIndex].scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
-      updateCounter(currentIndex);
+      // Reset flag after scroll animation completes
+      setTimeout(() => { isScrolling = false; }, 500);
     } else {
       // On desktop, update active states
       updateActiveStates(currentIndex);
     }
   }
 
-  // Track current index on scroll (mobile)
+  // Track current index on scroll (mobile) - only for manual swipe
   if (galleryTrack) {
     galleryTrack.addEventListener('scroll', () => {
-      if (window.innerWidth >= 768) return;
+      if (window.innerWidth >= 768 || isScrolling) return;
       const scrollLeft = galleryTrack.scrollLeft;
       const itemWidth = galleryTrack.offsetWidth;
       const newIndex = Math.round(scrollLeft / itemWidth);
-      if (newIndex !== currentIndex) {
+      if (newIndex !== currentIndex && newIndex >= 0 && newIndex < totalItems) {
         currentIndex = newIndex;
         updateCounter(currentIndex);
       }
