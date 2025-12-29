@@ -31,9 +31,10 @@
   --cb-padding-top-mobile: {{ section.settings.padding_top_mobile }}px;
   --cb-padding-bottom-mobile: {{ section.settings.padding_bottom_mobile }}px;
 ">
+  {% render 'scroll-animation' %}
   {%- comment -%} Mobile Title & Subtitle {%- endcomment -%}
   {%- if section.settings.show_section_title_mobile -%}
-    <div class="collections-bento__header collections-bento__header--mobile">
+    <div class="collections-bento__header collections-bento__header--mobile scroll-animate">
       <h2 class="collections-bento__section-title collections-bento__section-title--mobile">{{ section.settings.section_title }}</h2>
       {%- if section.settings.section_subtitle != blank -%}
         <p class="collections-bento__section-subtitle collections-bento__section-subtitle--mobile">{{ section.settings.section_subtitle }}</p>
@@ -43,7 +44,7 @@
 
   {%- comment -%} Desktop Title & Subtitle {%- endcomment -%}
   {%- if section.settings.show_section_title_desktop -%}
-    <div class="collections-bento__header collections-bento__header--desktop">
+    <div class="collections-bento__header collections-bento__header--desktop scroll-animate">
       <h2 class="collections-bento__section-title collections-bento__section-title--desktop">{{ section.settings.section_title }}</h2>
       {%- if section.settings.section_subtitle != blank -%}
         <p class="collections-bento__section-subtitle collections-bento__section-subtitle--desktop">{{ section.settings.section_subtitle }}</p>
@@ -51,7 +52,7 @@
     </div>
   {%- endif -%}
 
-  <div class="collections-bento__grid">
+  <div class="collections-bento__grid scroll-animate">
     {%- comment -%} Collection 1 - Large Left {%- endcomment -%}
     {%- if section.settings.collection_1 != blank -%}
       {%- assign collection_1 = section.settings.collection_1 -%}

@@ -26,8 +26,9 @@
   --dot-color: {{ section.settings.dot_color }};
   --dot-active-color: {{ section.settings.dot_active_color }};
 ">
+  {% render 'scroll-animation' %}
   <div class="testimonials__container">
-    <div class="testimonials__card">
+    <div class="testimonials__card scroll-animate">
       {%- comment -%} Stars {%- endcomment -%}
       <div class="testimonials__stars">
         {% for i in (1..5) %}

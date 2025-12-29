@@ -36,11 +36,12 @@
     --stl-padding-bottom-desktop: {{ section.settings.padding_bottom_desktop }}px;
   "
 >
+  {% render 'scroll-animation' %}
   <div class="shop-the-look__container">
     {%- comment -%} Desktop Layout {%- endcomment -%}
     <div class="shop-the-look__inner">
       {%- comment -%} Image Side with Hotspots {%- endcomment -%}
-      <div class="shop-the-look__image-wrapper">
+      <div class="shop-the-look__image-wrapper scroll-animate">
         {%- if section.settings.image != blank -%}
           <div class="shop-the-look__image shop-the-look__image--desktop">
             {{ section.settings.image | image_url: width: 1200 | image_tag: loading: 'lazy', class: 'shop-the-look__img' }}
@@ -105,7 +106,7 @@
 
       {%- comment -%} Content Side {%- endcomment -%}
       <div class="shop-the-look__content">
-        <div class="shop-the-look__header">
+        <div class="shop-the-look__header scroll-animate">
           {%- if section.settings.heading != blank -%}
             <h2 class="shop-the-look__heading">{{ section.settings.heading }}</h2>
           {%- endif -%}
@@ -115,7 +116,7 @@
           {%- endif -%}
         </div>
 
-        <div class="shop-the-look__products" data-stl-products>
+        <div class="shop-the-look__products scroll-animate" data-stl-products>
           {%- for block in section.blocks -%}
             {%- if block.type == 'product' -%}
               {%- assign product = block.settings.product -%}

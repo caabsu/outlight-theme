@@ -61,8 +61,9 @@
     --cc-divider-opacity: {{ section.settings.divider_opacity | divided_by: 100.0 }};
   "
 >
+  {% render 'scroll-animation' %}
   <div class="collection-carousel__container">
-    <div class="collection-carousel__header">
+    <div class="collection-carousel__header scroll-animate">
       {%- if section.settings.title != blank -%}
         <h2 class="collection-carousel__title">{{ section.settings.title }}</h2>
       {%- endif -%}
@@ -75,7 +76,7 @@
       {%- endif -%}
     </div>
 
-    <div class="collection-carousel__wrapper">
+    <div class="collection-carousel__wrapper scroll-animate">
       <button class="collection-carousel__nav collection-carousel__nav--prev" data-carousel-prev aria-label="Previous">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M15 18L9 12L15 6"/>
@@ -128,7 +129,7 @@
     </div>
 
     {%- if section.settings.show_view_all and collection != blank -%}
-      <div class="collection-carousel__footer">
+      <div class="collection-carousel__footer scroll-animate">
         <a href="{{ collection.url }}" class="collection-carousel__view-all">
           {{ section.settings.view_all_text }}
         </a>

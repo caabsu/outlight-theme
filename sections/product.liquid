@@ -122,16 +122,19 @@
       </div>
 
       {%- if product.media.size > 1 -%}
-        <button class="product-media-nav product-media-nav--prev" data-gallery-prev aria-label="Previous image">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
-        <button class="product-media-nav product-media-nav--next" data-gallery-next aria-label="Next image">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
+        <div class="product-media-nav-overlay" data-gallery-nav-overlay>
+          <button class="product-media-nav product-media-nav--prev" data-gallery-prev aria-label="Previous image">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <span class="product-media-counter" data-gallery-counter>1/{{ product.media.size }}</span>
+          <button class="product-media-nav product-media-nav--next" data-gallery-next aria-label="Next image">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
       {%- endif -%}
     </div>
   </div>
@@ -807,28 +810,36 @@
     opacity: 0.5;
   }
 
-  /* Gallery Navigation Arrows - Minimal */
-  .product-media-nav {
+  /* Gallery Navigation Overlay - Bottom Centered */
+  .product-media-nav-overlay {
     position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: calc(var(--gallery-arrow-size, 24px) + 16px);
-    height: calc(var(--gallery-arrow-size, 24px) + 16px);
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 10;
+  }
+
+  .product-media-nav {
+    width: 28px;
+    height: 28px;
     background: transparent;
     border: none;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--gallery-arrow-color, #000);
+    color: var(--gallery-arrow-color, #fff);
     opacity: var(--gallery-arrow-opacity, 0.7);
-    z-index: 10;
     transition: opacity 0.2s ease;
+    padding: 0;
   }
 
   .product-media-nav svg {
-    width: var(--gallery-arrow-size, 24px);
-    height: var(--gallery-arrow-size, 24px);
+    width: 16px;
+    height: 16px;
   }
 
   .product-media-nav:hover {
@@ -836,15 +847,17 @@
   }
 
   .product-media-nav:active {
-    transform: translateY(-50%) scale(0.95);
+    transform: scale(0.95);
   }
 
-  .product-media-nav--prev {
-    left: 4px;
-  }
-
-  .product-media-nav--next {
-    right: 4px;
+  .product-media-counter {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--gallery-arrow-color, #fff);
+    opacity: var(--gallery-arrow-opacity, 0.7);
+    letter-spacing: 0.02em;
+    min-width: 32px;
+    text-align: center;
   }
 
   /* Thumbnails - Hidden on mobile */
@@ -2293,10 +2306,18 @@
   const prevBtn = document.querySelector('[data-gallery-prev]');
   const nextBtn = document.querySelector('[data-gallery-next]');
   const thumbnails = document.querySelectorAll('[data-thumbnail-index]');
+  const galleryCounter = document.querySelector('[data-gallery-counter]');
 
   let currentIndex = 0;
   const items = galleryTrack ? galleryTrack.querySelectorAll('.product-media-item') : [];
   const totalItems = items.length;
+
+  // Update counter display
+  function updateCounter(index) {
+    if (galleryCounter) {
+      galleryCounter.textContent = `${index + 1}/${totalItems}`;
+    }
+  }
 
   // Update active states for desktop
   function updateActiveStates(index) {
@@ -2308,6 +2329,8 @@
     items.forEach((item, i) => {
       item.classList.toggle('is-active', i === index);
     });
+    // Update counter
+    updateCounter(index);
   }
 
   // Navigate to specific index
@@ -2323,6 +2346,7 @@
     // On mobile, scroll to the slide
     if (window.innerWidth < 768) {
       items[currentIndex].scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+      updateCounter(currentIndex);
     } else {
       // On desktop, update active states
       updateActiveStates(currentIndex);
@@ -2335,7 +2359,11 @@
       if (window.innerWidth >= 768) return;
       const scrollLeft = galleryTrack.scrollLeft;
       const itemWidth = galleryTrack.offsetWidth;
-      currentIndex = Math.round(scrollLeft / itemWidth);
+      const newIndex = Math.round(scrollLeft / itemWidth);
+      if (newIndex !== currentIndex) {
+        currentIndex = newIndex;
+        updateCounter(currentIndex);
+      }
     }, { passive: true });
   }
 
