@@ -46,6 +46,8 @@
     --gallery-arrow-size: {{ section.settings.gallery_arrow_size }}px;
     --gallery-arrow-opacity: {{ section.settings.gallery_arrow_opacity | divided_by: 100.0 }};
     --gallery-arrow-hover-opacity: {{ section.settings.gallery_arrow_hover_opacity | divided_by: 100.0 }};
+    --gallery-counter-size: {{ section.settings.gallery_counter_size }}px;
+    --gallery-counter-weight: {{ section.settings.gallery_counter_weight }};
     --lightbox-bg-color: {{ section.settings.lightbox_bg_color }};
     --button-size: {{ section.settings.button_size }}px;
     --button-size-desktop: {{ section.settings.button_size_desktop }}px;
@@ -838,8 +840,8 @@
   }
 
   .product-media-nav svg {
-    width: 16px;
-    height: 16px;
+    width: var(--gallery-arrow-size, 16px);
+    height: var(--gallery-arrow-size, 16px);
   }
 
   .product-media-nav:hover {
@@ -851,8 +853,8 @@
   }
 
   .product-media-counter {
-    font-size: 13px;
-    font-weight: 400;
+    font-size: var(--gallery-counter-size, 13px);
+    font-weight: var(--gallery-counter-weight, 400);
     color: var(--gallery-arrow-color, #fff);
     opacity: var(--gallery-arrow-opacity, 0.7);
     letter-spacing: 0.02em;
@@ -3975,11 +3977,11 @@
       "type": "range",
       "id": "gallery_arrow_size",
       "label": "Arrow size",
-      "min": 16,
-      "max": 40,
+      "min": 12,
+      "max": 24,
       "step": 2,
       "unit": "px",
-      "default": 24
+      "default": 16
     },
     {
       "type": "range",
@@ -4000,6 +4002,28 @@
       "step": 5,
       "unit": "%",
       "default": 100
+    },
+    {
+      "type": "range",
+      "id": "gallery_counter_size",
+      "label": "Counter size",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "select",
+      "id": "gallery_counter_weight",
+      "label": "Counter weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" }
+      ],
+      "default": "400"
     },
     {
       "type": "header",

@@ -18,8 +18,9 @@
     --bg-opacity-desktop: {{ section.settings.background_opacity_desktop | divided_by: 100.0 }};
   "
 >
+  {% render 'scroll-animation' %}
   <div class="support-banner__container">
-    <div class="support-banner__card">
+    <div class="support-banner__card scroll-animate">
       {%- if section.settings.background_image_mobile != blank or section.settings.background_image_desktop != blank -%}
         <div class="support-banner__background">
           {%- if section.settings.background_image_mobile != blank -%}

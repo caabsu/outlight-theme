@@ -73,6 +73,7 @@
     --cc-btn-weight: {{ section.settings.view_all_weight }};
   "
 >
+  {% render 'scroll-animation' %}
   <div class="curated-carousel__container">
     {%- capture section_title -%}
       {%- if section.settings.title_prefix != blank -%}
@@ -82,9 +83,9 @@
       {%- endif -%}
     {%- endcapture -%}
 
-    <h2 class="curated-carousel__title">{{ section_title }}</h2>
+    <h2 class="curated-carousel__title scroll-animate">{{ section_title }}</h2>
 
-    <div class="curated-carousel__wrapper">
+    <div class="curated-carousel__wrapper scroll-animate">
       <button class="curated-carousel__nav curated-carousel__nav--prev" data-carousel-prev aria-label="Previous">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M15 18L9 12L15 6"/>
@@ -123,7 +124,7 @@
     </div>
 
     {%- if section.settings.show_view_all -%}
-      <div class="curated-carousel__footer">
+      <div class="curated-carousel__footer scroll-animate">
         <a href="{{ matched_collection.url }}" class="curated-carousel__view-all">
           {{ section.settings.view_all_text }}
         </a>

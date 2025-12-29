@@ -39,9 +39,10 @@
     --title-spacing-mobile: {{ section.settings.title_spacing_mobile }}px;
   "
 >
+  {% render 'scroll-animation' %}
   <div class="installation-guide__container">
     <!-- Desktop Layout -->
-    <div class="installation-guide__desktop">
+    <div class="installation-guide__desktop scroll-animate">
       <div class="installation-guide__top-line"></div>
       <div class="installation-guide__divider-line"></div>
 
@@ -77,7 +78,7 @@
     </div>
 
     <!-- Mobile Layout -->
-    <details class="installation-guide__mobile" open>
+    <details class="installation-guide__mobile scroll-animate" open>
       <summary class="installation-guide__mobile-header">
         <div class="installation-guide__top-line"></div>
         <div class="installation-guide__mobile-title-row">
