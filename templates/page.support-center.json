@@ -53,33 +53,11 @@
             "answer_5": "",
             "mobile_label_5": ""
           }
-        },
-        "warranty": {
-          "type": "tab",
-          "settings": {
-            "tab_title": "about us",
-            "question_1": "",
-            "answer_1": "Our 2-year warranty covers manufacturing defects and electrical components.",
-            "mobile_label_1": "Coverage",
-            "question_2": "",
-            "answer_2": "",
-            "mobile_label_2": "",
-            "question_3": "",
-            "answer_3": "",
-            "mobile_label_3": "",
-            "question_4": "",
-            "answer_4": "",
-            "mobile_label_4": "",
-            "question_5": "",
-            "answer_5": "",
-            "mobile_label_5": ""
-          }
         }
       },
       "block_order": [
         "shipping",
-        "product",
-        "warranty"
+        "product"
       ],
       "settings": {
         "page_bg_color": "#f7f5f0",
