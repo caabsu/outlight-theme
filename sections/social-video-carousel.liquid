@@ -1,0 +1,614 @@
+{% comment %}
+  Social Video Carousel Section
+  Horizontal scrolling carousel of vertical videos with autoplay
+{% endcomment %}
+
+<div class="social-video-carousel full-width" style="
+  --section-padding-top: {{ section.settings.padding_top }}px;
+  --section-padding-bottom: {{ section.settings.padding_bottom }}px;
+  --section-bg: {{ section.settings.section_bg }};
+  --title-color: {{ section.settings.title_color }};
+  --subtitle-color: {{ section.settings.subtitle_color }};
+  --card-radius: {{ section.settings.card_radius }}px;
+  --card-gap: {{ section.settings.card_gap }}px;
+  --card-width-desktop: {{ section.settings.card_width_desktop }}px;
+  --card-width-mobile: {{ section.settings.card_width_mobile }}px;
+">
+  {% render 'scroll-animation' %}
+  <div class="social-video-carousel__container">
+    {%- comment -%} Header {%- endcomment -%}
+    <div class="social-video-carousel__header scroll-animate">
+      <div class="social-video-carousel__header-left">
+        <h2 class="social-video-carousel__title">{{ section.settings.title }}</h2>
+        <p class="social-video-carousel__subtitle">{{ section.settings.subtitle }}</p>
+      </div>
+      {%- if section.settings.follow_url != blank -%}
+        <a href="{{ section.settings.follow_url }}" target="_blank" rel="noopener" class="social-video-carousel__follow">
+          {{ section.settings.follow_text }}
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="7" y1="17" x2="17" y2="7"></line>
+            <polyline points="7 7 17 7 17 17"></polyline>
+          </svg>
+        </a>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} Video Carousel {%- endcomment -%}
+    <div class="social-video-carousel__track" data-video-carousel-track>
+      {% for block in section.blocks %}
+        <div class="social-video-carousel__card scroll-animate" {{ block.shopify_attributes }} style="animation-delay: {{ forloop.index | times: 0.1 }}s;">
+          <div class="social-video-carousel__video-wrapper">
+            {%- if block.settings.video != blank -%}
+              <video
+                class="social-video-carousel__video"
+                data-video
+                playsinline
+                muted
+                loop
+                preload="metadata"
+                poster="{{ block.settings.video.preview_image | image_url: width: 600 }}"
+              >
+                {% for source in block.settings.video.sources %}
+                  <source src="{{ source.url }}" type="{{ source.mime_type }}">
+                {% endfor %}
+              </video>
+            {%- elsif block.settings.video_url != blank -%}
+              <video
+                class="social-video-carousel__video"
+                data-video
+                playsinline
+                muted
+                loop
+                preload="metadata"
+                src="{{ block.settings.video_url }}"
+              ></video>
+            {%- else -%}
+              <div class="social-video-carousel__placeholder">
+                {{ 'lifestyle-1' | placeholder_svg_tag }}
+              </div>
+            {%- endif -%}
+
+            {%- comment -%} Mute/Unmute button (top right) {%- endcomment -%}
+            <button type="button" class="social-video-carousel__mute-btn" data-mute-btn aria-label="Toggle sound">
+              <svg class="social-video-carousel__mute-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                <line x1="23" y1="9" x2="17" y2="15"></line>
+                <line x1="17" y1="9" x2="23" y2="15"></line>
+              </svg>
+              <svg class="social-video-carousel__unmute-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+              </svg>
+            </button>
+
+            {%- comment -%} Play/Pause button (bottom right) {%- endcomment -%}
+            <button type="button" class="social-video-carousel__play-btn" data-play-btn aria-label="Toggle play">
+              <svg class="social-video-carousel__play-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="display: none;">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              </svg>
+              <svg class="social-video-carousel__pause-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                <rect x="6" y="4" width="4" height="16"></rect>
+                <rect x="14" y="4" width="4" height="16"></rect>
+              </svg>
+            </button>
+
+            {%- comment -%} Overlay content {%- endcomment -%}
+            <div class="social-video-carousel__overlay">
+              <div class="social-video-carousel__overlay-bottom">
+                {%- if block.settings.creator_handle != blank -%}
+                  <span class="social-video-carousel__creator">@{{ block.settings.creator_handle }}</span>
+                {%- endif -%}
+                {%- if block.settings.hashtag != blank -%}
+                  <span class="social-video-carousel__hashtag">#{{ block.settings.hashtag }}</span>
+                {%- endif -%}
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .social-video-carousel {
+    background: var(--section-bg);
+    padding: var(--section-padding-top) 0 var(--section-padding-bottom);
+    overflow: hidden;
+  }
+
+  .social-video-carousel__container {
+    max-width: var(--page-width);
+    margin: 0 auto;
+    padding: 0 var(--page-margin);
+  }
+
+  .social-video-carousel__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 32px;
+    gap: 24px;
+  }
+
+  .social-video-carousel__header-left {
+    flex: 1;
+  }
+
+  .social-video-carousel__title {
+    font-family: var(--font-heading-family), serif;
+    font-size: 2rem;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--title-color);
+    margin: 0 0 8px;
+    line-height: 1.2;
+  }
+
+  .social-video-carousel__subtitle {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 1rem;
+    color: var(--subtitle-color);
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .social-video-carousel__follow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--title-color);
+    text-decoration: none;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--title-color);
+    transition: opacity 0.2s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .social-video-carousel__follow:hover {
+    opacity: 0.7;
+  }
+
+  .social-video-carousel__track {
+    display: flex;
+    gap: var(--card-gap);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding-bottom: 8px;
+    margin: 0 calc(var(--page-margin) * -1);
+    padding-left: var(--page-margin);
+    padding-right: var(--page-margin);
+  }
+
+  .social-video-carousel__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .social-video-carousel__card {
+    flex-shrink: 0;
+    width: var(--card-width-mobile);
+    scroll-snap-align: start;
+  }
+
+  .social-video-carousel__video-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 9 / 16;
+    border-radius: var(--card-radius);
+    overflow: hidden;
+    background: #1C1917;
+  }
+
+  .social-video-carousel__video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .social-video-carousel__placeholder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f5f5f4;
+  }
+
+  .social-video-carousel__placeholder svg {
+    width: 60%;
+    height: auto;
+    opacity: 0.3;
+  }
+
+  .social-video-carousel__mute-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    z-index: 10;
+  }
+
+  .social-video-carousel__mute-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
+
+  .social-video-carousel__play-btn {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    color: #1C1917;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    z-index: 10;
+  }
+
+  .social-video-carousel__play-btn:hover {
+    background: #ffffff;
+    transform: scale(1.05);
+  }
+
+  .social-video-carousel__play-icon {
+    margin-left: 2px;
+  }
+
+  .social-video-carousel__overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 60px 16px 16px;
+    background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%);
+    pointer-events: none;
+  }
+
+  .social-video-carousel__overlay-bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .social-video-carousel__creator {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .social-video-carousel__hashtag {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #ffffff;
+  }
+
+  /* Desktop */
+  @media (min-width: 768px) {
+    .social-video-carousel__title {
+      font-size: 2.5rem;
+    }
+
+    .social-video-carousel__card {
+      width: var(--card-width-desktop);
+    }
+
+    .social-video-carousel__header {
+      margin-bottom: 40px;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (function() {
+    const track = document.querySelector('[data-video-carousel-track]');
+    if (!track) return;
+
+    const videos = track.querySelectorAll('[data-video]');
+    const playBtns = track.querySelectorAll('[data-play-btn]');
+    const muteBtns = track.querySelectorAll('[data-mute-btn]');
+
+    // Intersection Observer for autoplay
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const video = entry.target;
+        const card = video.closest('.social-video-carousel__card');
+        const playBtn = card.querySelector('[data-play-btn]');
+        const playIcon = playBtn.querySelector('.social-video-carousel__play-icon');
+        const pauseIcon = playBtn.querySelector('.social-video-carousel__pause-icon');
+
+        if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+          video.play().catch(() => {});
+          playIcon.style.display = 'none';
+          pauseIcon.style.display = 'block';
+        } else {
+          video.pause();
+          playIcon.style.display = 'block';
+          pauseIcon.style.display = 'none';
+        }
+      });
+    }, { threshold: 0.5 });
+
+    videos.forEach(video => observer.observe(video));
+
+    // Play/Pause button handler
+    playBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const card = btn.closest('.social-video-carousel__card');
+        const video = card.querySelector('[data-video]');
+        const playIcon = btn.querySelector('.social-video-carousel__play-icon');
+        const pauseIcon = btn.querySelector('.social-video-carousel__pause-icon');
+
+        if (video.paused) {
+          video.play();
+          playIcon.style.display = 'none';
+          pauseIcon.style.display = 'block';
+        } else {
+          video.pause();
+          playIcon.style.display = 'block';
+          pauseIcon.style.display = 'none';
+        }
+      });
+    });
+
+    // Mute/Unmute button handler
+    muteBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const card = btn.closest('.social-video-carousel__card');
+        const video = card.querySelector('[data-video]');
+        const muteIcon = btn.querySelector('.social-video-carousel__mute-icon');
+        const unmuteIcon = btn.querySelector('.social-video-carousel__unmute-icon');
+
+        // Mute all other videos first
+        videos.forEach(v => {
+          if (v !== video) {
+            v.muted = true;
+            const otherCard = v.closest('.social-video-carousel__card');
+            const otherBtn = otherCard.querySelector('[data-mute-btn]');
+            otherBtn.querySelector('.social-video-carousel__mute-icon').style.display = 'block';
+            otherBtn.querySelector('.social-video-carousel__unmute-icon').style.display = 'none';
+          }
+        });
+
+        // Toggle current video
+        video.muted = !video.muted;
+        if (video.muted) {
+          muteIcon.style.display = 'block';
+          unmuteIcon.style.display = 'none';
+        } else {
+          muteIcon.style.display = 'none';
+          unmuteIcon.style.display = 'block';
+        }
+      });
+    });
+  })();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Social video carousel",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Header"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "@outlight_home"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Curating the quiet moments. Join our community."
+    },
+    {
+      "type": "text",
+      "id": "follow_text",
+      "label": "Follow button text",
+      "default": "FOLLOW US"
+    },
+    {
+      "type": "url",
+      "id": "follow_url",
+      "label": "Follow button URL"
+    },
+    {
+      "type": "header",
+      "content": "Section spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "section_bg",
+      "label": "Section background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#1C1917"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle color",
+      "default": "#78716C"
+    },
+    {
+      "type": "header",
+      "content": "Card settings"
+    },
+    {
+      "type": "range",
+      "id": "card_width_desktop",
+      "label": "Card width (desktop)",
+      "min": 200,
+      "max": 400,
+      "step": 10,
+      "unit": "px",
+      "default": 280
+    },
+    {
+      "type": "range",
+      "id": "card_width_mobile",
+      "label": "Card width (mobile)",
+      "min": 150,
+      "max": 300,
+      "step": 10,
+      "unit": "px",
+      "default": 200
+    },
+    {
+      "type": "range",
+      "id": "card_gap",
+      "label": "Gap between cards",
+      "min": 8,
+      "max": 32,
+      "step": 4,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "card_radius",
+      "label": "Card border radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    }
+  ],
+  "blocks": [
+    {
+      "type": "video",
+      "name": "Video",
+      "settings": [
+        {
+          "type": "video",
+          "id": "video",
+          "label": "Video"
+        },
+        {
+          "type": "url",
+          "id": "video_url",
+          "label": "Video URL (alternative)",
+          "info": "Use if not uploading directly to Shopify"
+        },
+        {
+          "type": "text",
+          "id": "hashtag",
+          "label": "Hashtag",
+          "default": "SlowLight",
+          "info": "Without the # symbol"
+        },
+        {
+          "type": "text",
+          "id": "creator_handle",
+          "label": "Creator handle",
+          "default": "creator_name",
+          "info": "Without the @ symbol"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Social video carousel",
+      "blocks": [
+        {
+          "type": "video",
+          "settings": {
+            "hashtag": "SlowLight",
+            "creator_handle": "outlight_home"
+          }
+        },
+        {
+          "type": "video",
+          "settings": {
+            "hashtag": "Unboxing",
+            "creator_handle": "lifestyle_creator"
+          }
+        },
+        {
+          "type": "video",
+          "settings": {
+            "hashtag": "Details",
+            "creator_handle": "design_lover"
+          }
+        },
+        {
+          "type": "video",
+          "settings": {
+            "hashtag": "Sanctuary",
+            "creator_handle": "home_aesthetic"
+          }
+        }
+      ]
+    }
+  ],
+  "enabled_on": {
+    "templates": ["*"],
+    "groups": ["*"]
+  }
+}
+{% endschema %}
