@@ -4,7 +4,10 @@
   Mobile: Dot indicators
 {% endcomment %}
 
-<div class="testimonials full-width" style="
+<div class="testimonials full-width"
+  data-autoplay="{{ section.settings.autoplay }}"
+  data-autoplay-interval="{{ section.settings.autoplay_interval }}"
+  style="
   --section-padding-top: {{ section.settings.padding_top }}px;
   --section-padding-bottom: {{ section.settings.padding_bottom }}px;
   --section-bg: {{ section.settings.section_bg }};
@@ -118,6 +121,12 @@
   .testimonials__track {
     position: relative;
     overflow: hidden;
+    touch-action: pan-y pinch-zoom;
+    cursor: grab;
+  }
+
+  .testimonials__track:active {
+    cursor: grabbing;
   }
 
   .testimonials__slide {
@@ -243,8 +252,9 @@
 
 {% javascript %}
   (function() {
+    const container = document.querySelector('.testimonials');
     const track = document.querySelector('[data-testimonial-track]');
-    if (!track) return;
+    if (!track || !container) return;
 
     const slides = track.querySelectorAll('[data-slide]');
     const prevBtn = document.querySelector('[data-prev]');
@@ -252,6 +262,11 @@
     const dots = document.querySelectorAll('[data-dot]');
     let currentIndex = 0;
     const total = slides.length;
+
+    // Autoplay settings
+    const autoplayEnabled = container.dataset.autoplay === 'true';
+    const autoplayInterval = parseInt(container.dataset.autoplayInterval) || 7000;
+    let autoplayTimer = null;
 
     const goToSlide = (index) => {
       // Wrap around
@@ -269,23 +284,94 @@
       currentIndex = index;
     };
 
+    // Autoplay functions
+    const startAutoplay = () => {
+      if (autoplayEnabled && total > 1) {
+        stopAutoplay();
+        autoplayTimer = setInterval(() => goToSlide(currentIndex + 1), autoplayInterval);
+      }
+    };
+
+    const stopAutoplay = () => {
+      if (autoplayTimer) {
+        clearInterval(autoplayTimer);
+        autoplayTimer = null;
+      }
+    };
+
+    const resetAutoplay = () => {
+      stopAutoplay();
+      startAutoplay();
+    };
+
+    // Navigation buttons
     if (prevBtn) {
-      prevBtn.addEventListener('click', () => goToSlide(currentIndex - 1));
+      prevBtn.addEventListener('click', () => {
+        goToSlide(currentIndex - 1);
+        resetAutoplay();
+      });
     }
 
     if (nextBtn) {
-      nextBtn.addEventListener('click', () => goToSlide(currentIndex + 1));
+      nextBtn.addEventListener('click', () => {
+        goToSlide(currentIndex + 1);
+        resetAutoplay();
+      });
     }
 
+    // Dot navigation
     dots.forEach(dot => {
       dot.addEventListener('click', () => {
         const index = parseInt(dot.dataset.dot);
         goToSlide(index);
+        resetAutoplay();
       });
     });
 
-    // Optional: Auto-advance
-    // setInterval(() => goToSlide(currentIndex + 1), 5000);
+    // Touch/Swipe support
+    let touchStartX = 0;
+    let touchEndX = 0;
+    const swipeThreshold = 50;
+
+    track.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+      stopAutoplay();
+    }, { passive: true });
+
+    track.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+      startAutoplay();
+    }, { passive: true });
+
+    const handleSwipe = () => {
+      const diff = touchStartX - touchEndX;
+      if (Math.abs(diff) > swipeThreshold) {
+        if (diff > 0) {
+          // Swipe left - next slide
+          goToSlide(currentIndex + 1);
+        } else {
+          // Swipe right - previous slide
+          goToSlide(currentIndex - 1);
+        }
+      }
+    };
+
+    // Pause autoplay on hover (desktop)
+    container.addEventListener('mouseenter', stopAutoplay);
+    container.addEventListener('mouseleave', startAutoplay);
+
+    // Pause when not visible
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        stopAutoplay();
+      } else {
+        startAutoplay();
+      }
+    });
+
+    // Start autoplay
+    startAutoplay();
   })();
 {% endjavascript %}
 
@@ -293,6 +379,27 @@
 {
   "name": "Testimonials",
   "settings": [
+    {
+      "type": "header",
+      "content": "Autoplay"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Enable autoplay",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "autoplay_interval",
+      "label": "Autoplay interval",
+      "min": 3000,
+      "max": 15000,
+      "step": 1000,
+      "default": 7000,
+      "unit": "ms",
+      "info": "Time between slides in milliseconds"
+    },
     {
       "type": "header",
       "content": "Section spacing"
