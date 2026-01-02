@@ -218,81 +218,6 @@
         "padding_bottom": 60
       }
     },
-    "testimonials_9LfYQR": {
-      "type": "testimonials",
-      "blocks": {
-        "testimonial_6PwGdN": {
-          "type": "testimonial",
-          "settings": {
-            "quote": "We added Outlight outdoor wall lights during our renovation—huge upgrade. Clean, modern look and a warm glow that makes the entry feel finished.",
-            "author": "ARTHUR M.",
-            "subtitle": "VERIFIED BUYER"
-          }
-        },
-        "testimonial_GjEF7R": {
-          "type": "testimonial",
-          "settings": {
-            "quote": "The lighting changed the mood instantly. Soft, warm, cozy at night—our space finally feels calm and inviting.",
-            "author": "KELLY S.",
-            "subtitle": "VERIFIED BUYER"
-          }
-        },
-        "testimonial_VViq9Y": {
-          "type": "testimonial",
-          "settings": {
-            "quote": "Keria made our hallway feel more elevated. Warm, diffused light and a bold vertical look—clean, modern, premium.",
-            "author": "JESSICA H.",
-            "subtitle": "VERIFIED BUYER"
-          }
-        },
-        "testimonial_j4Qb4f": {
-          "type": "testimonial",
-          "settings": {
-            "quote": "Noa is minimal but striking. The orbs glow evenly with zero glare—perfect for evenings and it always gets compliments.",
-            "author": "CALEB J.",
-            "subtitle": "VERIFIED BUYER"
-          }
-        },
-        "testimonial_gdReE8": {
-          "type": "testimonial",
-          "settings": {
-            "quote": "Aven looks like a sculpture, even off. The twisted wood is beautiful in person, and the ambient light is super relaxing.",
-            "author": "JAMES L.",
-            "subtitle": "VERIFIED BUYER"
-          }
-        }
-      },
-      "block_order": [
-        "testimonial_6PwGdN",
-        "testimonial_GjEF7R",
-        "testimonial_VViq9Y",
-        "testimonial_j4Qb4f",
-        "testimonial_gdReE8"
-      ],
-      "name": "Testimonials",
-      "settings": {
-        "padding_top": 40,
-        "padding_bottom": 40,
-        "section_bg": "#f7f5f0",
-        "card_bg": "#f7f5f0",
-        "card_padding_desktop": 60,
-        "card_padding_mobile": 32,
-        "card_radius": 8,
-        "star_color": "#d97706",
-        "quote_size_desktop": 28,
-        "quote_size_mobile": 18,
-        "quote_color": "#1c1917",
-        "quote_weight": "400",
-        "quote_line_height": "1.5",
-        "author_size_desktop": 13,
-        "author_size_mobile": 12,
-        "author_color": "#57534e",
-        "author_weight": "500",
-        "nav_color": "#1c1917",
-        "dot_color": "#d6d3d1",
-        "dot_active_color": "#1c1917"
-      }
-    },
     "shop_the_look_yEJcYc": {
       "type": "shop-the-look",
       "blocks": {
@@ -405,6 +330,81 @@
         "view_all_size": 14,
         "view_all_weight": "500"
       }
+    },
+    "testimonials_9LfYQR": {
+      "type": "testimonials",
+      "blocks": {
+        "testimonial_6PwGdN": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "We added Outlight outdoor wall lights during our renovation—huge upgrade. Clean, modern look and a warm glow that makes the entry feel finished.",
+            "author": "ARTHUR M.",
+            "subtitle": "VERIFIED BUYER"
+          }
+        },
+        "testimonial_GjEF7R": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "The lighting changed the mood instantly. Soft, warm, cozy at night—our space finally feels calm and inviting.",
+            "author": "KELLY S.",
+            "subtitle": "VERIFIED BUYER"
+          }
+        },
+        "testimonial_VViq9Y": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Keria made our hallway feel more elevated. Warm, diffused light and a bold vertical look—clean, modern, premium.",
+            "author": "JESSICA H.",
+            "subtitle": "VERIFIED BUYER"
+          }
+        },
+        "testimonial_j4Qb4f": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Noa is minimal but striking. The orbs glow evenly with zero glare—perfect for evenings and it always gets compliments.",
+            "author": "CALEB J.",
+            "subtitle": "VERIFIED BUYER"
+          }
+        },
+        "testimonial_gdReE8": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Aven looks like a sculpture, even off. The twisted wood is beautiful in person, and the ambient light is super relaxing.",
+            "author": "JAMES L.",
+            "subtitle": "VERIFIED BUYER"
+          }
+        }
+      },
+      "block_order": [
+        "testimonial_6PwGdN",
+        "testimonial_GjEF7R",
+        "testimonial_VViq9Y",
+        "testimonial_j4Qb4f",
+        "testimonial_gdReE8"
+      ],
+      "name": "Testimonials",
+      "settings": {
+        "padding_top": 40,
+        "padding_bottom": 40,
+        "section_bg": "#f7f5f0",
+        "card_bg": "#f7f5f0",
+        "card_padding_desktop": 60,
+        "card_padding_mobile": 32,
+        "card_radius": 8,
+        "star_color": "#d97706",
+        "quote_size_desktop": 28,
+        "quote_size_mobile": 18,
+        "quote_color": "#1c1917",
+        "quote_weight": "400",
+        "quote_line_height": "1.5",
+        "author_size_desktop": 13,
+        "author_size_mobile": 12,
+        "author_color": "#57534e",
+        "author_weight": "500",
+        "nav_color": "#1c1917",
+        "dot_color": "#d6d3d1",
+        "dot_active_color": "#1c1917"
+      }
     }
   },
   "order": [
@@ -412,8 +412,8 @@
     "search_bar_FbyPxV",
     "collections_bento_PrXpLn",
     "featured_collection_fBjcht",
-    "testimonials_9LfYQR",
     "shop_the_look_yEJcYc",
-    "collection_carousel_qG9NHC"
+    "collection_carousel_qG9NHC",
+    "testimonials_9LfYQR"
   ]
 }
