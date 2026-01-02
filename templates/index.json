@@ -218,6 +218,114 @@
         "padding_bottom": 60
       }
     },
+    "collection_carousel_qG9NHC": {
+      "type": "collection-carousel",
+      "name": "Collection carousel",
+      "settings": {
+        "title": "Collection Of The Month",
+        "collection": "desk-lamp",
+        "products_limit_mobile": 4,
+        "products_limit_desktop": 6,
+        "products_per_row_mobile": 2,
+        "card_width": 240,
+        "grid_gap_mobile": 12,
+        "grid_gap_desktop": 20,
+        "section_bg": "#f7f5f0",
+        "padding_top": 48,
+        "padding_bottom": 48,
+        "padding_top_mobile": 32,
+        "padding_bottom_mobile": 32,
+        "title_color": "#1c1917",
+        "title_size": 28,
+        "title_size_mobile": 28,
+        "title_weight": "400",
+        "subtitle": "desk lamps",
+        "subtitle_color": "#57534e",
+        "subtitle_size": 12,
+        "subtitle_size_mobile": 13,
+        "subtitle_weight": "500",
+        "subtitle_letter_spacing": 0.2,
+        "subtitle_letter_spacing_mobile": 0.1,
+        "divider_color": "#1c1917",
+        "divider_width": 40,
+        "divider_opacity": 20,
+        "product_name_color": "#ffffff",
+        "product_name_size": 14,
+        "product_name_size_mobile": 12,
+        "product_name_weight": "500",
+        "price_color": "#ffffff",
+        "price_size": 14,
+        "price_size_mobile": 12,
+        "price_weight": "400",
+        "text_overlay_bg": "linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0) 100%)",
+        "nav_bg": "#ffffff",
+        "nav_color": "#1c1917",
+        "show_view_all": true,
+        "view_all_text": "View All",
+        "view_all_color": "#1c1917",
+        "view_all_size": 14,
+        "view_all_weight": "500"
+      }
+    },
+    "social_video_carousel_iqwz7G": {
+      "type": "social-video-carousel",
+      "blocks": {
+        "video_BYJ6kp": {
+          "type": "video",
+          "settings": {
+            "video_url": "",
+            "hashtag": "SlowLight",
+            "creator_handle": "outlight_home"
+          }
+        },
+        "video_BJDa9Y": {
+          "type": "video",
+          "settings": {
+            "video_url": "",
+            "hashtag": "Unboxing",
+            "creator_handle": "lifestyle_creator"
+          }
+        },
+        "video_HLUB3i": {
+          "type": "video",
+          "settings": {
+            "video_url": "",
+            "hashtag": "Details",
+            "creator_handle": "design_lover"
+          }
+        },
+        "video_kPfpnL": {
+          "type": "video",
+          "settings": {
+            "video_url": "",
+            "hashtag": "Sanctuary",
+            "creator_handle": "home_aesthetic"
+          }
+        }
+      },
+      "block_order": [
+        "video_BYJ6kp",
+        "video_BJDa9Y",
+        "video_HLUB3i",
+        "video_kPfpnL"
+      ],
+      "name": "Social video carousel",
+      "settings": {
+        "title": "@__outlight",
+        "subtitle": "Curating the quiet moments. Join our community.",
+        "follow_text": "FOLLOW US",
+        "follow_url": "",
+        "padding_top": 60,
+        "padding_bottom": 60,
+        "section_bg": "#F7F5F0",
+        "title_color": "#1C1917",
+        "subtitle_color": "#78716C",
+        "card_width_desktop": 280,
+        "card_width_mobile": 200,
+        "card_gap": 16,
+        "card_radius": 12
+      }
+    },
     "shop_the_look_yEJcYc": {
       "type": "shop-the-look",
       "blocks": {
@@ -280,55 +388,6 @@
         "padding_bottom_mobile": 32,
         "padding_top_desktop": 60,
         "padding_bottom_desktop": 60
-      }
-    },
-    "collection_carousel_qG9NHC": {
-      "type": "collection-carousel",
-      "name": "Collection carousel",
-      "settings": {
-        "title": "Collection Of The Month",
-        "collection": "desk-lamp",
-        "products_limit_mobile": 4,
-        "products_limit_desktop": 6,
-        "products_per_row_mobile": 2,
-        "card_width": 240,
-        "grid_gap_mobile": 12,
-        "grid_gap_desktop": 20,
-        "section_bg": "#f7f5f0",
-        "padding_top": 48,
-        "padding_bottom": 48,
-        "padding_top_mobile": 32,
-        "padding_bottom_mobile": 32,
-        "title_color": "#1c1917",
-        "title_size": 28,
-        "title_size_mobile": 28,
-        "title_weight": "400",
-        "subtitle": "desk lamps",
-        "subtitle_color": "#57534e",
-        "subtitle_size": 12,
-        "subtitle_size_mobile": 13,
-        "subtitle_weight": "500",
-        "subtitle_letter_spacing": 0.2,
-        "subtitle_letter_spacing_mobile": 0.1,
-        "divider_color": "#1c1917",
-        "divider_width": 40,
-        "divider_opacity": 20,
-        "product_name_color": "#ffffff",
-        "product_name_size": 14,
-        "product_name_size_mobile": 12,
-        "product_name_weight": "500",
-        "price_color": "#ffffff",
-        "price_size": 14,
-        "price_size_mobile": 12,
-        "price_weight": "400",
-        "text_overlay_bg": "linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0) 100%)",
-        "nav_bg": "#ffffff",
-        "nav_color": "#1c1917",
-        "show_view_all": true,
-        "view_all_text": "View All",
-        "view_all_color": "#1c1917",
-        "view_all_size": 14,
-        "view_all_weight": "500"
       }
     },
     "testimonials_9LfYQR": {
@@ -412,8 +471,9 @@
     "search_bar_FbyPxV",
     "collections_bento_PrXpLn",
     "featured_collection_fBjcht",
-    "shop_the_look_yEJcYc",
     "collection_carousel_qG9NHC",
+    "social_video_carousel_iqwz7G",
+    "shop_the_look_yEJcYc",
     "testimonials_9LfYQR"
   ]
 }
