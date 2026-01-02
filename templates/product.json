@@ -215,6 +215,23 @@
     "product_social_video_carousel_WfNx4y": {
       "type": "product-social-video-carousel",
       "blocks": {
+        "video_pxkBtE": {
+          "type": "video",
+          "settings": {
+            "video": "shopify://files/videos/1764950212490017.mp4",
+            "video_url": "",
+            "hashtag": "SlowLight",
+            "creator_handle": "mellisa__creator"
+          }
+        },
+        "video_PH4KJJ": {
+          "type": "video",
+          "settings": {
+            "video_url": "",
+            "hashtag": "SlowLight",
+            "creator_handle": "creator_name"
+          }
+        },
         "video_JrBBAN": {
           "type": "video",
           "settings": {
@@ -241,6 +258,8 @@
         }
       },
       "block_order": [
+        "video_pxkBtE",
+        "video_PH4KJJ",
         "video_JrBBAN",
         "video_RiAi7W",
         "video_UbmmLV"
