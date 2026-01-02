@@ -270,15 +270,6 @@
     "social_video_carousel_iqwz7G": {
       "type": "social-video-carousel",
       "blocks": {
-        "video_7qYYiN": {
-          "type": "video",
-          "settings": {
-            "video": "shopify://files/videos/1764950212490017.mp4",
-            "video_url": "",
-            "hashtag": "WarmLight",
-            "creator_handle": "mellisa__creator"
-          }
-        },
         "video_HLUB3i": {
           "type": "video",
           "settings": {
@@ -297,13 +288,13 @@
             "creator_handle": "valeriya_gornos"
           }
         },
-        "video_xJHzVj": {
+        "video_7qYYiN": {
           "type": "video",
           "settings": {
-            "video": "shopify://files/videos/copy_7B2F1006-6399-4F18-8336-C3A69E66935D.mp4",
+            "video": "shopify://files/videos/1764950212490017.mp4",
             "video_url": "",
-            "hashtag": "SlowLight",
-            "creator_handle": "offhourhustle"
+            "hashtag": "WarmLight",
+            "creator_handle": "mellisa__creator"
           }
         },
         "video_kPfpnL": {
@@ -313,6 +304,15 @@
             "video_url": "",
             "hashtag": "Sanctuary",
             "creator_handle": "katecalls"
+          }
+        },
+        "video_xJHzVj": {
+          "type": "video",
+          "settings": {
+            "video": "shopify://files/videos/copy_7B2F1006-6399-4F18-8336-C3A69E66935D.mp4",
+            "video_url": "",
+            "hashtag": "SlowLight",
+            "creator_handle": "offhourhustle"
           }
         },
         "video_BJDa9Y": {
@@ -326,11 +326,11 @@
         }
       },
       "block_order": [
-        "video_7qYYiN",
         "video_HLUB3i",
         "video_BYJ6kp",
-        "video_xJHzVj",
+        "video_7qYYiN",
         "video_kPfpnL",
+        "video_xJHzVj",
         "video_BJDa9Y"
       ],
       "name": "Social video carousel",
