@@ -47,14 +47,8 @@
               <span class="testimonials__quote-mobile">"{{ block.settings.quote_mobile | default: block.settings.quote_desktop }}"</span>
             </blockquote>
             <cite class="testimonials__author">
-              <span class="testimonials__author-desktop">
-                {{ block.settings.author_desktop }}
-                {%- if block.settings.subtitle_desktop != blank %} — {{ block.settings.subtitle_desktop }}{% endif -%}
-              </span>
-              <span class="testimonials__author-mobile">
-                {{ block.settings.author_mobile | default: block.settings.author_desktop }}
-                {%- if block.settings.subtitle_mobile != blank %} — {{ block.settings.subtitle_mobile }}{% endif -%}
-              </span>
+              {{ block.settings.author }}
+              {%- if block.settings.subtitle != blank %} — {{ block.settings.subtitle }}{% endif -%}
             </cite>
           </div>
         {% endfor %}
@@ -172,14 +166,6 @@
     letter-spacing: 0.1em;
   }
 
-  .testimonials__author-desktop {
-    display: none;
-  }
-
-  .testimonials__author-mobile {
-    display: block;
-  }
-
   /* Navigation Arrows - Hidden on mobile */
   .testimonials__nav-arrows {
     display: none;
@@ -257,14 +243,6 @@
 
     .testimonials__author {
       font-size: var(--author-size-desktop);
-    }
-
-    .testimonials__author-desktop {
-      display: block;
-    }
-
-    .testimonials__author-mobile {
-      display: none;
     }
 
     .testimonials__nav-arrows {
@@ -546,30 +524,10 @@
       "name": "Testimonial",
       "settings": [
         {
-          "type": "header",
-          "content": "Desktop"
-        },
-        {
           "type": "textarea",
           "id": "quote_desktop",
           "label": "Quote (desktop)",
           "default": "It's rare to find an object that feels both ancient and modern. The texture of the raw ceramic brings so much character to my stark white desk."
-        },
-        {
-          "type": "text",
-          "id": "author_desktop",
-          "label": "Author (desktop)",
-          "default": "JAMES L."
-        },
-        {
-          "type": "text",
-          "id": "subtitle_desktop",
-          "label": "Subtitle (desktop)",
-          "default": "VERIFIED BUYER"
-        },
-        {
-          "type": "header",
-          "content": "Mobile"
         },
         {
           "type": "textarea",
@@ -579,15 +537,15 @@
         },
         {
           "type": "text",
-          "id": "author_mobile",
-          "label": "Author (mobile)",
-          "info": "Leave blank to use desktop author"
+          "id": "author",
+          "label": "Author",
+          "default": "JAMES L."
         },
         {
           "type": "text",
-          "id": "subtitle_mobile",
-          "label": "Subtitle (mobile)",
-          "info": "Leave blank to hide on mobile"
+          "id": "subtitle",
+          "label": "Subtitle",
+          "default": "VERIFIED BUYER"
         }
       ]
     }
@@ -600,30 +558,27 @@
           "type": "testimonial",
           "settings": {
             "quote_desktop": "It's rare to find an object that feels both ancient and modern. The texture of the raw ceramic brings so much character to my stark white desk.",
-            "author_desktop": "JAMES L.",
-            "subtitle_desktop": "VERIFIED BUYER",
             "quote_mobile": "The light quality is unmatched. It's warm, soft, and completely changes the mood of my evenings.",
-            "author_mobile": "SARAH M."
+            "author": "JAMES L.",
+            "subtitle": "VERIFIED BUYER"
           }
         },
         {
           "type": "testimonial",
           "settings": {
             "quote_desktop": "The craftsmanship is impeccable. Every detail has been thoughtfully considered, from the weight of the base to the quality of the shade.",
-            "author_desktop": "MICHAEL R.",
-            "subtitle_desktop": "VERIFIED BUYER",
             "quote_mobile": "Beautiful design, excellent quality. Exceeded my expectations.",
-            "author_mobile": "MICHAEL R."
+            "author": "MICHAEL R.",
+            "subtitle": "VERIFIED BUYER"
           }
         },
         {
           "type": "testimonial",
           "settings": {
             "quote_desktop": "I've received so many compliments on this piece. It truly elevates the entire room and creates such a warm, inviting atmosphere.",
-            "author_desktop": "EMMA S.",
-            "subtitle_desktop": "VERIFIED BUYER",
             "quote_mobile": "So many compliments! Creates a warm, inviting atmosphere.",
-            "author_mobile": "EMMA S."
+            "author": "EMMA S.",
+            "subtitle": "VERIFIED BUYER"
           }
         }
       ]
