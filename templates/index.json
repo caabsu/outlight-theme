@@ -279,15 +279,6 @@
             "creator_handle": "outlight_home"
           }
         },
-        "video_BJDa9Y": {
-          "type": "video",
-          "settings": {
-            "video": "shopify://files/videos/IMG_9239.mp4",
-            "video_url": "",
-            "hashtag": "Unboxing",
-            "creator_handle": "lifestyle_creator"
-          }
-        },
         "video_HLUB3i": {
           "type": "video",
           "settings": {
@@ -305,13 +296,22 @@
             "hashtag": "Sanctuary",
             "creator_handle": "home_aesthetic"
           }
+        },
+        "video_BJDa9Y": {
+          "type": "video",
+          "settings": {
+            "video": "shopify://files/videos/IMG_9239.mp4",
+            "video_url": "",
+            "hashtag": "Unboxing",
+            "creator_handle": "lifestyle_creator"
+          }
         }
       },
       "block_order": [
         "video_BYJ6kp",
-        "video_BJDa9Y",
         "video_HLUB3i",
-        "video_kPfpnL"
+        "video_kPfpnL",
+        "video_BJDa9Y"
       ],
       "name": "Social video carousel",
       "settings": {
