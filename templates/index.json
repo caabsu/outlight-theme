@@ -273,6 +273,7 @@
         "video_BYJ6kp": {
           "type": "video",
           "settings": {
+            "video": "shopify://files/videos/copy_657AF8EB-5DE9-4183-9001-FCDA062DD1E8_c02170b5-a232-4fe9-a8fb-9bed55eb0823.mp4",
             "video_url": "",
             "hashtag": "SlowLight",
             "creator_handle": "outlight_home"
@@ -281,6 +282,7 @@
         "video_BJDa9Y": {
           "type": "video",
           "settings": {
+            "video": "shopify://files/videos/IMG_9239.mp4",
             "video_url": "",
             "hashtag": "Unboxing",
             "creator_handle": "lifestyle_creator"
@@ -289,6 +291,7 @@
         "video_HLUB3i": {
           "type": "video",
           "settings": {
+            "video": "shopify://files/videos/copy_E5281AEA-5986-4B6E-8AB1-37964F4F71CB.mp4",
             "video_url": "",
             "hashtag": "Details",
             "creator_handle": "design_lover"
@@ -297,6 +300,7 @@
         "video_kPfpnL": {
           "type": "video",
           "settings": {
+            "video": "shopify://files/videos/copy_0A346126-8EDA-4219-A199-CCF4ED3B8BF9_fb56c0ee-dd21-4508-a98e-e2856fbd3c3d.mp4",
             "video_url": "",
             "hashtag": "Sanctuary",
             "creator_handle": "home_aesthetic"
@@ -314,7 +318,7 @@
         "title": "@__outlight",
         "subtitle": "Curating the quiet moments. Join our community.",
         "follow_text": "FOLLOW US",
-        "follow_url": "",
+        "follow_url": "https://stagram.com/__outlight/",
         "padding_top": 60,
         "padding_bottom": 60,
         "section_bg": "#F7F5F0",
