@@ -19,7 +19,6 @@
     --ab-link-size: {{ section.settings.link_size }}px;
     --ab-link-size-mobile: {{ section.settings.link_size_mobile }}px;
     --ab-link-weight: {{ section.settings.link_weight }};
-    --ab-close-color: {{ section.settings.close_color }};
   "
 >
   <div class="announcement-bar__container">
@@ -45,13 +44,6 @@
       </div>
     </div>
 
-    {%- if section.settings.show_close -%}
-      <button class="announcement-bar__close" aria-label="Close announcement" data-announcement-close>
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M12 4L4 12M4 4L12 12"/>
-        </svg>
-      </button>
-    {%- endif -%}
   </div>
 </div>
 
@@ -123,26 +115,6 @@
     opacity: 0.7;
   }
 
-  .announcement-bar__close {
-    position: absolute;
-    right: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    padding: 0.5rem;
-    cursor: pointer;
-    color: var(--ab-close-color);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: opacity 0.2s ease;
-  }
-
-  .announcement-bar__close:hover {
-    opacity: 0.6;
-  }
-
   /* Desktop styles */
   @media (min-width: 768px) {
     .announcement-bar {
@@ -170,21 +142,15 @@
       font-size: var(--ab-link-size);
       margin-left: 0.5rem;
     }
-
-    .announcement-bar__close {
-      right: 2rem;
-    }
   }
 {% endstylesheet %}
 
 {% javascript %}
   (function() {
     const bar = document.querySelector('.announcement-bar');
-    const closeBtn = bar ? bar.querySelector('[data-announcement-close]') : null;
-    const storageKey = 'announcement-bar-closed-' + bar?.id;
 
     function updateHeaderOffset() {
-      if (bar && !bar.classList.contains('is-hidden')) {
+      if (bar) {
         const barHeight = bar.offsetHeight;
         document.documentElement.style.setProperty('--announcement-bar-height', barHeight + 'px');
       } else {
@@ -192,20 +158,8 @@
       }
     }
 
-    if (bar && sessionStorage.getItem(storageKey)) {
-      bar.classList.add('is-hidden');
-    }
-
     updateHeaderOffset();
     window.addEventListener('resize', updateHeaderOffset);
-
-    if (closeBtn) {
-      closeBtn.addEventListener('click', function() {
-        bar.classList.add('is-hidden');
-        sessionStorage.setItem(storageKey, 'true');
-        updateHeaderOffset();
-      });
-    }
   })();
 {% endjavascript %}
 
@@ -272,12 +226,6 @@
       "type": "color",
       "id": "link_color",
       "label": "Link color",
-      "default": "#ffffff"
-    },
-    {
-      "type": "color",
-      "id": "close_color",
-      "label": "Close button color",
       "default": "#ffffff"
     },
     {
@@ -399,17 +347,6 @@
         { "value": "700", "label": "Bold" }
       ],
       "default": "500"
-    },
-    {
-      "type": "header",
-      "content": "Close button"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_close",
-      "label": "Show close button",
-      "default": false,
-      "info": "Dismisses for the session when clicked"
     }
   ],
   "presets": [

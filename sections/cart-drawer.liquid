@@ -129,14 +129,22 @@
         {%- endif -%}
 
         {%- comment -%} Shipping Protection {%- endcomment -%}
-        {%- if section.settings.show_shipping_protection -%}
+        {%- if section.settings.show_shipping_protection and section.settings.protection_product != blank -%}
+          {%- assign protection_product = section.settings.protection_product -%}
+          {%- assign protection_in_cart = false -%}
+          {%- for item in cart.items -%}
+            {%- if item.product.id == protection_product.id -%}
+              {%- assign protection_in_cart = true -%}
+              {%- break -%}
+            {%- endif -%}
+          {%- endfor -%}
           <div class="cart-drawer__protection">
             <div class="cart-drawer__protection-info">
               <span class="cart-drawer__protection-title">{{ section.settings.protection_title | default: 'Shipping Protection' }}</span>
               <span class="cart-drawer__protection-desc">{{ section.settings.protection_description | default: 'Protect your order from damage, loss or theft during shipping' }}</span>
             </div>
             <label class="cart-drawer__protection-toggle">
-              <input type="checkbox" data-protection-toggle {% if section.settings.protection_default_on %}checked{% endif %}>
+              <input type="checkbox" data-protection-toggle data-variant-id="{{ protection_product.first_available_variant.id }}" {% if protection_in_cart %}checked{% endif %}>
               <span class="cart-drawer__protection-slider"></span>
             </label>
           </div>
@@ -820,6 +828,72 @@
         }
       }
     });
+
+    // Protection toggle handler
+    cartDrawer.addEventListener('change', async (e) => {
+      const toggle = e.target.closest('[data-protection-toggle]');
+      if (toggle) {
+        await handleProtectionToggle(toggle);
+      }
+    });
+  }
+
+  // Protection toggle handler
+  async function handleProtectionToggle(toggle) {
+    const variantId = toggle.dataset.variantId;
+    if (!variantId) return;
+
+    toggle.disabled = true;
+
+    try {
+      if (toggle.checked) {
+        // Add protection to cart
+        await fetch('/cart/add.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            items: [{ id: parseInt(variantId), quantity: 1 }]
+          })
+        });
+      } else {
+        // Remove protection from cart
+        const cartResponse = await fetch('/cart.js');
+        const cart = await cartResponse.json();
+        const item = cart.items.find(i => i.variant_id === parseInt(variantId));
+        if (item) {
+          await fetch('/cart/change.js', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: item.key, quantity: 0 })
+          });
+        }
+      }
+
+      // Refresh cart drawer
+      const sectionResponse = await fetch('/?sections=cart-drawer');
+      if (sectionResponse.ok) {
+        const sections = await sectionResponse.json();
+        const cartDrawerHtml = sections['cart-drawer'];
+        if (cartDrawer && cartDrawerHtml) {
+          const temp = document.createElement('div');
+          temp.innerHTML = cartDrawerHtml;
+          const newContent = temp.querySelector('[data-cart-drawer]');
+          if (newContent) {
+            cartDrawer.innerHTML = newContent.innerHTML;
+          }
+        }
+      }
+      // Update header cart count
+      const cartResp = await fetch('/cart.js');
+      if (cartResp.ok) {
+        const cart = await cartResp.json();
+        updateCartCount(cart.item_count);
+      }
+    } catch (error) {
+      console.error('Error toggling protection:', error);
+      toggle.checked = !toggle.checked;
+    }
+    toggle.disabled = false;
   }
 
   // Add gift handler
@@ -1094,6 +1168,11 @@
       "default": false
     },
     {
+      "type": "product",
+      "id": "protection_product",
+      "label": "Protection product"
+    },
+    {
       "type": "text",
       "id": "protection_title",
       "label": "Title",
@@ -1104,12 +1183,6 @@
       "id": "protection_description",
       "label": "Description",
       "default": "Protect your order from damage, loss or theft during shipping"
-    },
-    {
-      "type": "checkbox",
-      "id": "protection_default_on",
-      "label": "Default to on",
-      "default": false
     },
     {
       "type": "color",
