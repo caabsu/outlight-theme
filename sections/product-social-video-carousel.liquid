@@ -78,10 +78,10 @@
 
             {%- comment -%} Play/Pause button (bottom right) {%- endcomment -%}
             <button type="button" class="product-social-video-carousel__play-btn" data-product-play-btn aria-label="Toggle play">
-              <svg class="product-social-video-carousel__play-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="display: none;">
+              <svg class="product-social-video-carousel__play-icon" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="display: none;">
                 <polygon points="5 3 19 12 5 21 5 3"></polygon>
               </svg>
-              <svg class="product-social-video-carousel__pause-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+              <svg class="product-social-video-carousel__pause-icon" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none">
                 <rect x="6" y="4" width="4" height="16"></rect>
                 <rect x="14" y="4" width="4" height="16"></rect>
               </svg>
@@ -246,14 +246,16 @@
 
   .product-social-video-carousel__play-btn {
     position: absolute;
-    bottom: 12px;
-    right: 12px;
-    width: 40px;
-    height: 40px;
+    bottom: 10px;
+    right: 10px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     border: none;
-    color: #1C1917;
+    color: rgba(255, 255, 255, 0.9);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -263,12 +265,11 @@
   }
 
   .product-social-video-carousel__play-btn:hover {
-    background: #ffffff;
-    transform: scale(1.05);
+    background: rgba(0, 0, 0, 0.5);
   }
 
   .product-social-video-carousel__play-icon {
-    margin-left: 2px;
+    margin-left: 1px;
   }
 
   .product-social-video-carousel__overlay {
