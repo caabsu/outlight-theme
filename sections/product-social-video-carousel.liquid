@@ -7,7 +7,7 @@
 {%- if template.name == 'product' and section.settings.product != blank -%}
   {%- if product.id == section.settings.product.id -%}
 
-<div class="social-video-carousel full-width" style="
+<div class="product-social-video-carousel full-width" style="
   --section-padding-top: {{ section.settings.padding_top }}px;
   --section-padding-bottom: {{ section.settings.padding_bottom }}px;
   --section-bg: {{ section.settings.section_bg }};
@@ -23,13 +23,13 @@
   --handle-size-mobile: {{ section.settings.handle_size_mobile }}px;
 ">
   {% render 'scroll-animation' %}
-  <div class="social-video-carousel__container">
+  <div class="product-social-video-carousel__container">
     {%- comment -%} Header {%- endcomment -%}
-    <div class="social-video-carousel__header scroll-animate">
-      <div class="social-video-carousel__header-row">
-        <h2 class="social-video-carousel__title">{{ section.settings.title }}</h2>
+    <div class="product-social-video-carousel__header scroll-animate">
+      <div class="product-social-video-carousel__header-row">
+        <h2 class="product-social-video-carousel__title">{{ section.settings.title }}</h2>
         {%- if section.settings.follow_url != blank -%}
-          <a href="{{ section.settings.follow_url }}" target="_blank" rel="noopener" class="social-video-carousel__follow">
+          <a href="{{ section.settings.follow_url }}" target="_blank" rel="noopener" class="product-social-video-carousel__follow">
             {{ section.settings.follow_text }}
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <line x1="7" y1="17" x2="17" y2="7"></line>
@@ -38,17 +38,17 @@
           </a>
         {%- endif -%}
       </div>
-      <p class="social-video-carousel__subtitle">{{ section.settings.subtitle }}</p>
+      <p class="product-social-video-carousel__subtitle">{{ section.settings.subtitle }}</p>
     </div>
 
     {%- comment -%} Video Carousel {%- endcomment -%}
-    <div class="social-video-carousel__track" data-product-video-carousel-track>
+    <div class="product-social-video-carousel__track" data-product-video-carousel-track>
       {% for block in section.blocks %}
-        <div class="social-video-carousel__card scroll-animate" {{ block.shopify_attributes }} style="animation-delay: {{ forloop.index | times: 0.1 }}s;">
-          <div class="social-video-carousel__video-wrapper">
+        <div class="product-social-video-carousel__card scroll-animate" {{ block.shopify_attributes }} style="animation-delay: {{ forloop.index | times: 0.1 }}s;">
+          <div class="product-social-video-carousel__video-wrapper">
             {%- if block.settings.video != blank -%}
               <video
-                class="social-video-carousel__video"
+                class="product-social-video-carousel__video"
                 data-product-video
                 playsinline
                 muted
@@ -62,7 +62,7 @@
               </video>
             {%- elsif block.settings.video_url != blank -%}
               <video
-                class="social-video-carousel__video"
+                class="product-social-video-carousel__video"
                 data-product-video
                 playsinline
                 muted
@@ -71,30 +71,30 @@
                 src="{{ block.settings.video_url }}"
               ></video>
             {%- else -%}
-              <div class="social-video-carousel__placeholder">
+              <div class="product-social-video-carousel__placeholder">
                 {{ 'lifestyle-1' | placeholder_svg_tag }}
               </div>
             {%- endif -%}
 
             {%- comment -%} Play/Pause button (bottom right) {%- endcomment -%}
-            <button type="button" class="social-video-carousel__play-btn" data-product-play-btn aria-label="Toggle play">
-              <svg class="social-video-carousel__play-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="display: none;">
+            <button type="button" class="product-social-video-carousel__play-btn" data-product-play-btn aria-label="Toggle play">
+              <svg class="product-social-video-carousel__play-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="display: none;">
                 <polygon points="5 3 19 12 5 21 5 3"></polygon>
               </svg>
-              <svg class="social-video-carousel__pause-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+              <svg class="product-social-video-carousel__pause-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none">
                 <rect x="6" y="4" width="4" height="16"></rect>
                 <rect x="14" y="4" width="4" height="16"></rect>
               </svg>
             </button>
 
             {%- comment -%} Overlay content {%- endcomment -%}
-            <div class="social-video-carousel__overlay">
-              <div class="social-video-carousel__overlay-bottom">
+            <div class="product-social-video-carousel__overlay">
+              <div class="product-social-video-carousel__overlay-bottom">
                 {%- if block.settings.creator_handle != blank -%}
-                  <span class="social-video-carousel__creator">@{{ block.settings.creator_handle }}</span>
+                  <span class="product-social-video-carousel__creator">@{{ block.settings.creator_handle }}</span>
                 {%- endif -%}
                 {%- if block.settings.hashtag != blank -%}
-                  <span class="social-video-carousel__hashtag">#{{ block.settings.hashtag }}</span>
+                  <span class="product-social-video-carousel__hashtag">#{{ block.settings.hashtag }}</span>
                 {%- endif -%}
               </div>
             </div>
@@ -105,27 +105,30 @@
   </div>
 </div>
 
+  {%- endif -%}
+{%- endif -%}
+
 {% stylesheet %}
-  .social-video-carousel {
+  .product-social-video-carousel {
     background: var(--section-bg);
     padding: var(--section-padding-top) 0 var(--section-padding-bottom);
     overflow: hidden;
   }
 
-  .social-video-carousel__container {
+  .product-social-video-carousel__container {
     max-width: var(--page-width);
     margin: 0 auto;
     padding: 0 var(--page-margin);
   }
 
-  .social-video-carousel__header {
+  .product-social-video-carousel__header {
     display: flex;
     flex-direction: column;
     margin-bottom: 24px;
     gap: 8px;
   }
 
-  .social-video-carousel__header-row {
+  .product-social-video-carousel__header-row {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -133,7 +136,7 @@
     gap: 16px;
   }
 
-  .social-video-carousel__title {
+  .product-social-video-carousel__title {
     font-family: var(--font-heading-family), serif;
     font-size: 1.5rem;
     font-weight: 400;
@@ -143,7 +146,7 @@
     line-height: 1.2;
   }
 
-  .social-video-carousel__subtitle {
+  .product-social-video-carousel__subtitle {
     font-family: var(--font-body-family), sans-serif;
     font-size: 0.875rem;
     color: var(--subtitle-color);
@@ -151,7 +154,7 @@
     line-height: 1.4;
   }
 
-  .social-video-carousel__follow {
+  .product-social-video-carousel__follow {
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -169,11 +172,11 @@
     flex-shrink: 0;
   }
 
-  .social-video-carousel__follow:hover {
+  .product-social-video-carousel__follow:hover {
     opacity: 0.7;
   }
 
-  .social-video-carousel__track {
+  .product-social-video-carousel__track {
     display: flex;
     gap: var(--card-gap);
     overflow-x: auto;
@@ -191,21 +194,21 @@
     overscroll-behavior-x: contain;
   }
 
-  .social-video-carousel__card:first-child {
+  .product-social-video-carousel__card:first-child {
     margin-left: 0;
   }
 
-  .social-video-carousel__track::-webkit-scrollbar {
+  .product-social-video-carousel__track::-webkit-scrollbar {
     display: none;
   }
 
-  .social-video-carousel__card {
+  .product-social-video-carousel__card {
     flex-shrink: 0;
     width: var(--card-width-mobile);
     scroll-snap-align: start;
   }
 
-  .social-video-carousel__video-wrapper {
+  .product-social-video-carousel__video-wrapper {
     position: relative;
     width: 100%;
     aspect-ratio: 9 / 16;
@@ -214,7 +217,7 @@
     background: #1C1917;
   }
 
-  .social-video-carousel__video {
+  .product-social-video-carousel__video {
     position: absolute;
     top: 0;
     left: 0;
@@ -223,7 +226,7 @@
     object-fit: cover;
   }
 
-  .social-video-carousel__placeholder {
+  .product-social-video-carousel__placeholder {
     position: absolute;
     top: 0;
     left: 0;
@@ -235,13 +238,13 @@
     background: #f5f5f4;
   }
 
-  .social-video-carousel__placeholder svg {
+  .product-social-video-carousel__placeholder svg {
     width: 60%;
     height: auto;
     opacity: 0.3;
   }
 
-  .social-video-carousel__play-btn {
+  .product-social-video-carousel__play-btn {
     position: absolute;
     bottom: 12px;
     right: 12px;
@@ -259,16 +262,16 @@
     z-index: 10;
   }
 
-  .social-video-carousel__play-btn:hover {
+  .product-social-video-carousel__play-btn:hover {
     background: #ffffff;
     transform: scale(1.05);
   }
 
-  .social-video-carousel__play-icon {
+  .product-social-video-carousel__play-icon {
     margin-left: 2px;
   }
 
-  .social-video-carousel__overlay {
+  .product-social-video-carousel__overlay {
     position: absolute;
     bottom: 0;
     left: 0;
@@ -278,20 +281,20 @@
     pointer-events: none;
   }
 
-  .social-video-carousel__overlay-bottom {
+  .product-social-video-carousel__overlay-bottom {
     display: flex;
     flex-direction: column;
     gap: 4px;
   }
 
-  .social-video-carousel__creator {
+  .product-social-video-carousel__creator {
     font-family: var(--font-body-family), sans-serif;
     font-size: var(--handle-size-mobile);
     font-weight: 500;
     color: rgba(255, 255, 255, 0.8);
   }
 
-  .social-video-carousel__hashtag {
+  .product-social-video-carousel__hashtag {
     font-family: var(--font-body-family), sans-serif;
     font-size: var(--hashtag-size-mobile);
     font-weight: 600;
@@ -300,34 +303,34 @@
 
   /* Desktop */
   @media (min-width: 768px) {
-    .social-video-carousel__header {
+    .product-social-video-carousel__header {
       margin-bottom: 40px;
       gap: 12px;
     }
 
-    .social-video-carousel__title {
+    .product-social-video-carousel__title {
       font-size: 2.5rem;
     }
 
-    .social-video-carousel__subtitle {
+    .product-social-video-carousel__subtitle {
       font-size: 1rem;
     }
 
-    .social-video-carousel__follow {
+    .product-social-video-carousel__follow {
       font-size: 0.8125rem;
       gap: 8px;
       padding-bottom: 4px;
     }
 
-    .social-video-carousel__card {
+    .product-social-video-carousel__card {
       width: var(--card-width-desktop);
     }
 
-    .social-video-carousel__creator {
+    .product-social-video-carousel__creator {
       font-size: var(--handle-size-desktop);
     }
 
-    .social-video-carousel__hashtag {
+    .product-social-video-carousel__hashtag {
       font-size: var(--hashtag-size-desktop);
     }
   }
@@ -345,10 +348,10 @@
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         const video = entry.target;
-        const card = video.closest('.social-video-carousel__card');
+        const card = video.closest('.product-social-video-carousel__card');
         const playBtn = card.querySelector('[data-product-play-btn]');
-        const playIcon = playBtn.querySelector('.social-video-carousel__play-icon');
-        const pauseIcon = playBtn.querySelector('.social-video-carousel__pause-icon');
+        const playIcon = playBtn.querySelector('.product-social-video-carousel__play-icon');
+        const pauseIcon = playBtn.querySelector('.product-social-video-carousel__pause-icon');
 
         if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
           video.play().catch(() => {});
@@ -367,10 +370,10 @@
     // Play/Pause button handler
     playBtns.forEach(btn => {
       btn.addEventListener('click', () => {
-        const card = btn.closest('.social-video-carousel__card');
+        const card = btn.closest('.product-social-video-carousel__card');
         const video = card.querySelector('[data-product-video]');
-        const playIcon = btn.querySelector('.social-video-carousel__play-icon');
-        const pauseIcon = btn.querySelector('.social-video-carousel__pause-icon');
+        const playIcon = btn.querySelector('.product-social-video-carousel__play-icon');
+        const pauseIcon = btn.querySelector('.product-social-video-carousel__pause-icon');
 
         if (video.paused) {
           video.play();
@@ -386,9 +389,6 @@
 
   })();
 {% endjavascript %}
-
-  {%- endif -%}
-{%- endif -%}
 
 {% schema %}
 {
