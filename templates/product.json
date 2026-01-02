@@ -117,12 +117,13 @@
         "delivery_date_size": 13,
         "delivery_date_weight": "600",
         "delivery_date_color": "#57534e",
-        "gallery_arrow_color": "#F7F5F0",
+        "gallery_arrow_color": "#f7f5f0",
         "gallery_arrow_size": 20,
         "gallery_arrow_opacity": 70,
         "gallery_arrow_hover_opacity": 100,
         "gallery_counter_size": 13,
         "gallery_counter_weight": "400",
+        "gallery_nav_bottom": 12,
         "lightbox_bg_color": "#000000",
         "ct_background_color": "#0a0a0a",
         "ct_card_background": "#1a1a1a",
@@ -209,6 +210,61 @@
         "padding_desktop": 80,
         "padding_x_mobile": 0,
         "padding_x_desktop": 0
+      }
+    },
+    "product_social_video_carousel_WfNx4y": {
+      "type": "product-social-video-carousel",
+      "blocks": {
+        "video_JrBBAN": {
+          "type": "video",
+          "settings": {
+            "video_url": "",
+            "hashtag": "SlowLight",
+            "creator_handle": "outlight_home"
+          }
+        },
+        "video_RiAi7W": {
+          "type": "video",
+          "settings": {
+            "video_url": "",
+            "hashtag": "Unboxing",
+            "creator_handle": "lifestyle_creator"
+          }
+        },
+        "video_UbmmLV": {
+          "type": "video",
+          "settings": {
+            "video_url": "",
+            "hashtag": "Details",
+            "creator_handle": "design_lover"
+          }
+        }
+      },
+      "block_order": [
+        "video_JrBBAN",
+        "video_RiAi7W",
+        "video_UbmmLV"
+      ],
+      "name": "Product video carousel",
+      "settings": {
+        "product": "aven",
+        "title": "@__outlight",
+        "subtitle": "See Aven In Action",
+        "follow_text": "FOLLOW US",
+        "follow_url": "",
+        "padding_top": 60,
+        "padding_bottom": 60,
+        "section_bg": "#ffffff",
+        "title_color": "#1C1917",
+        "subtitle_color": "#78716C",
+        "card_width_desktop": 280,
+        "card_width_mobile": 200,
+        "card_gap": 16,
+        "card_radius": 12,
+        "hashtag_size_desktop": 16,
+        "hashtag_size_mobile": 14,
+        "handle_size_desktop": 13,
+        "handle_size_mobile": 12
       }
     },
     "testimonial_showcase_V6L66t": {
@@ -459,6 +515,7 @@
     "main",
     "installation_guide_r38tPQ",
     "product_intro_NrLrBk",
+    "product_social_video_carousel_WfNx4y",
     "testimonial_showcase_V6L66t",
     "support_banner_PjaKXH",
     "curated_collection_carousel_DwU4ep",
