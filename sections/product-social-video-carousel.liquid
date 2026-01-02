@@ -17,24 +17,28 @@
   --card-gap: {{ section.settings.card_gap }}px;
   --card-width-desktop: {{ section.settings.card_width_desktop }}px;
   --card-width-mobile: {{ section.settings.card_width_mobile }}px;
+  --hashtag-size-desktop: {{ section.settings.hashtag_size_desktop }}px;
+  --hashtag-size-mobile: {{ section.settings.hashtag_size_mobile }}px;
+  --handle-size-desktop: {{ section.settings.handle_size_desktop }}px;
+  --handle-size-mobile: {{ section.settings.handle_size_mobile }}px;
 ">
   {% render 'scroll-animation' %}
   <div class="social-video-carousel__container">
     {%- comment -%} Header {%- endcomment -%}
     <div class="social-video-carousel__header scroll-animate">
-      <div class="social-video-carousel__header-left">
+      <div class="social-video-carousel__header-row">
         <h2 class="social-video-carousel__title">{{ section.settings.title }}</h2>
-        <p class="social-video-carousel__subtitle">{{ section.settings.subtitle }}</p>
+        {%- if section.settings.follow_url != blank -%}
+          <a href="{{ section.settings.follow_url }}" target="_blank" rel="noopener" class="social-video-carousel__follow">
+            {{ section.settings.follow_text }}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="7" y1="17" x2="17" y2="7"></line>
+              <polyline points="7 7 17 7 17 17"></polyline>
+            </svg>
+          </a>
+        {%- endif -%}
       </div>
-      {%- if section.settings.follow_url != blank -%}
-        <a href="{{ section.settings.follow_url }}" target="_blank" rel="noopener" class="social-video-carousel__follow">
-          {{ section.settings.follow_text }}
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="7" y1="17" x2="17" y2="7"></line>
-            <polyline points="7 7 17 7 17 17"></polyline>
-          </svg>
-        </a>
-      {%- endif -%}
+      <p class="social-video-carousel__subtitle">{{ section.settings.subtitle }}</p>
     </div>
 
     {%- comment -%} Video Carousel {%- endcomment -%}
@@ -71,19 +75,6 @@
                 {{ 'lifestyle-1' | placeholder_svg_tag }}
               </div>
             {%- endif -%}
-
-            {%- comment -%} Mute/Unmute button (top right) {%- endcomment -%}
-            <button type="button" class="social-video-carousel__mute-btn" data-product-mute-btn aria-label="Toggle sound">
-              <svg class="social-video-carousel__mute-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                <line x1="23" y1="9" x2="17" y2="15"></line>
-                <line x1="17" y1="9" x2="23" y2="15"></line>
-              </svg>
-              <svg class="social-video-carousel__unmute-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
-                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-              </svg>
-            </button>
 
             {%- comment -%} Play/Pause button (bottom right) {%- endcomment -%}
             <button type="button" class="social-video-carousel__play-btn" data-product-play-btn aria-label="Toggle play">
@@ -129,16 +120,17 @@
 
   .social-video-carousel__header {
     display: flex;
+    flex-direction: column;
+    margin-bottom: 24px;
+    gap: 8px;
+  }
+
+  .social-video-carousel__header-row {
+    display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 24px;
     gap: 16px;
-  }
-
-  .social-video-carousel__header-left {
-    flex: 1;
-    min-width: 0;
   }
 
   .social-video-carousel__title {
@@ -147,7 +139,7 @@
     font-weight: 400;
     font-style: italic;
     color: var(--title-color);
-    margin: 0 0 4px;
+    margin: 0;
     line-height: 1.2;
   }
 
@@ -175,7 +167,6 @@
     transition: opacity 0.2s ease;
     white-space: nowrap;
     flex-shrink: 0;
-    margin-top: 4px;
   }
 
   .social-video-carousel__follow:hover {
@@ -194,6 +185,11 @@
     margin: 0 calc(var(--page-margin) * -1);
     padding-left: var(--page-margin);
     padding-right: var(--page-margin);
+    scroll-padding-left: var(--page-margin);
+  }
+
+  .social-video-carousel__card:first-child {
+    margin-left: 0;
   }
 
   .social-video-carousel__track::-webkit-scrollbar {
@@ -242,29 +238,6 @@
     opacity: 0.3;
   }
 
-  .social-video-carousel__mute-btn {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: #ffffff;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
-    z-index: 10;
-  }
-
-  .social-video-carousel__mute-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
-  }
-
   .social-video-carousel__play-btn {
     position: absolute;
     bottom: 12px;
@@ -310,14 +283,14 @@
 
   .social-video-carousel__creator {
     font-family: var(--font-body-family), sans-serif;
-    font-size: 0.8125rem;
+    font-size: var(--handle-size-mobile);
     font-weight: 500;
     color: rgba(255, 255, 255, 0.8);
   }
 
   .social-video-carousel__hashtag {
     font-family: var(--font-body-family), sans-serif;
-    font-size: 1rem;
+    font-size: var(--hashtag-size-mobile);
     font-weight: 600;
     color: #ffffff;
   }
@@ -326,12 +299,11 @@
   @media (min-width: 768px) {
     .social-video-carousel__header {
       margin-bottom: 40px;
-      gap: 24px;
+      gap: 12px;
     }
 
     .social-video-carousel__title {
       font-size: 2.5rem;
-      margin-bottom: 8px;
     }
 
     .social-video-carousel__subtitle {
@@ -342,11 +314,18 @@
       font-size: 0.8125rem;
       gap: 8px;
       padding-bottom: 4px;
-      margin-top: 0;
     }
 
     .social-video-carousel__card {
       width: var(--card-width-desktop);
+    }
+
+    .social-video-carousel__creator {
+      font-size: var(--handle-size-desktop);
+    }
+
+    .social-video-carousel__hashtag {
+      font-size: var(--hashtag-size-desktop);
     }
   }
 {% endstylesheet %}
@@ -358,7 +337,6 @@
 
     const videos = track.querySelectorAll('[data-product-video]');
     const playBtns = track.querySelectorAll('[data-product-play-btn]');
-    const muteBtns = track.querySelectorAll('[data-product-mute-btn]');
 
     // Intersection Observer for autoplay
     const observer = new IntersectionObserver((entries) => {
@@ -403,36 +381,6 @@
       });
     });
 
-    // Mute/Unmute button handler
-    muteBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const card = btn.closest('.social-video-carousel__card');
-        const video = card.querySelector('[data-product-video]');
-        const muteIcon = btn.querySelector('.social-video-carousel__mute-icon');
-        const unmuteIcon = btn.querySelector('.social-video-carousel__unmute-icon');
-
-        // Mute all other videos first
-        videos.forEach(v => {
-          if (v !== video) {
-            v.muted = true;
-            const otherCard = v.closest('.social-video-carousel__card');
-            const otherBtn = otherCard.querySelector('[data-product-mute-btn]');
-            otherBtn.querySelector('.social-video-carousel__mute-icon').style.display = 'block';
-            otherBtn.querySelector('.social-video-carousel__unmute-icon').style.display = 'none';
-          }
-        });
-
-        // Toggle current video
-        video.muted = !video.muted;
-        if (video.muted) {
-          muteIcon.style.display = 'block';
-          unmuteIcon.style.display = 'none';
-        } else {
-          muteIcon.style.display = 'none';
-          unmuteIcon.style.display = 'block';
-        }
-      });
-    });
   })();
 {% endjavascript %}
 
@@ -567,6 +515,50 @@
       "min": 0,
       "max": 24,
       "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Overlay text"
+    },
+    {
+      "type": "range",
+      "id": "hashtag_size_desktop",
+      "label": "Hashtag size (desktop)",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "hashtag_size_mobile",
+      "label": "Hashtag size (mobile)",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "handle_size_desktop",
+      "label": "Handle size (desktop)",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "handle_size_mobile",
+      "label": "Handle size (mobile)",
+      "min": 10,
+      "max": 18,
+      "step": 1,
       "unit": "px",
       "default": 12
     }
