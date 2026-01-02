@@ -152,12 +152,16 @@
 
         {%- comment -%} Discount Code {%- endcomment -%}
         {%- if section.settings.show_discount_code -%}
-          <div class="cart-drawer__discount">
+          <div class="cart-drawer__discount" data-discount-wrapper>
             <form class="cart-drawer__discount-form" data-discount-form>
               <input type="text" name="discount" class="cart-drawer__discount-input" placeholder="{{ section.settings.discount_placeholder | default: 'Discount code' }}">
               <button type="submit" class="cart-drawer__discount-btn">{{ section.settings.discount_btn_text | default: 'Apply' }}</button>
             </form>
-            <p class="cart-drawer__discount-note">{{ section.settings.discount_note | default: 'Apply additional discount codes at checkout' }}</p>
+            <p class="cart-drawer__discount-note" data-discount-note>{{ section.settings.discount_note | default: 'Apply additional discount codes at checkout' }}</p>
+            <div class="cart-drawer__discount-applied" data-discount-applied style="display: none;">
+              <span class="cart-drawer__discount-code" data-discount-code-display></span>
+              <button type="button" class="cart-drawer__discount-remove" data-discount-remove>✕</button>
+            </div>
           </div>
         {%- endif -%}
 
@@ -627,6 +631,46 @@
     opacity: 0.8;
   }
 
+  .cart-drawer__discount-applied {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: #ECFDF5;
+    border-radius: 4px;
+  }
+
+  .cart-drawer__discount-code {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #059669;
+    text-transform: uppercase;
+  }
+
+  .cart-drawer__discount-remove {
+    background: none;
+    border: none;
+    color: #059669;
+    cursor: pointer;
+    padding: 0.25rem;
+    font-size: 0.75rem;
+    line-height: 1;
+  }
+
+  .cart-drawer__discount-remove:hover {
+    opacity: 0.7;
+  }
+
+  .cart-drawer__discount.has-code .cart-drawer__discount-form,
+  .cart-drawer__discount.has-code .cart-drawer__discount-note {
+    display: none;
+  }
+
+  .cart-drawer__discount.has-code .cart-drawer__discount-applied {
+    display: flex;
+  }
+
   /* Footer */
   .cart-drawer__footer {
     border-top: 1px solid #f0f0f0;
@@ -823,13 +867,52 @@
         e.preventDefault();
         const input = form.querySelector('input[name="discount"]');
         if (input && input.value.trim()) {
-          // Store discount code and redirect to checkout
-          window.location.href = '/checkout?discount=' + encodeURIComponent(input.value.trim());
+          const code = input.value.trim().toUpperCase();
+          sessionStorage.setItem('cart_discount_code', code);
+          const wrapper = form.closest('[data-discount-wrapper]');
+          const codeDisplay = wrapper.querySelector('[data-discount-code-display]');
+          if (codeDisplay) codeDisplay.textContent = code;
+          wrapper.classList.add('has-code');
+          input.value = '';
+          updateCheckoutLinks(code);
         }
       }
     });
 
-    // Protection toggle handler
+    // Discount remove handler
+    cartDrawer.addEventListener('click', (e) => {
+      const removeBtn = e.target.closest('[data-discount-remove]');
+      if (removeBtn) {
+        sessionStorage.removeItem('cart_discount_code');
+        const wrapper = removeBtn.closest('[data-discount-wrapper]');
+        wrapper.classList.remove('has-code');
+        updateCheckoutLinks('');
+      }
+    });
+
+    // Check for existing discount code on load
+    const savedCode = sessionStorage.getItem('cart_discount_code');
+    if (savedCode) {
+      const wrapper = cartDrawer.querySelector('[data-discount-wrapper]');
+      if (wrapper) {
+        const codeDisplay = wrapper.querySelector('[data-discount-code-display]');
+        if (codeDisplay) codeDisplay.textContent = savedCode;
+        wrapper.classList.add('has-code');
+        updateCheckoutLinks(savedCode);
+      }
+    }
+  }
+
+  function updateCheckoutLinks(code) {
+    const checkoutLinks = document.querySelectorAll('.cart-drawer__checkout-btn');
+    checkoutLinks.forEach(link => {
+      const baseUrl = '/checkout';
+      link.href = code ? baseUrl + '?discount=' + encodeURIComponent(code) : baseUrl;
+    });
+  }
+
+  // Protection toggle handler
+  if (cartDrawer) {
     cartDrawer.addEventListener('change', async (e) => {
       const toggle = e.target.closest('[data-protection-toggle]');
       if (toggle) {
