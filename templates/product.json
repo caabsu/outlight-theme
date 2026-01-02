@@ -215,6 +215,15 @@
     "product_social_video_carousel_WfNx4y": {
       "type": "product-social-video-carousel",
       "blocks": {
+        "video_PH4KJJ": {
+          "type": "video",
+          "settings": {
+            "video": "shopify://files/videos/copy_E5281AEA-5986-4B6E-8AB1-37964F4F71CB.mp4",
+            "video_url": "",
+            "hashtag": "HomeDecor",
+            "creator_handle": "tonyasachika"
+          }
+        },
         "video_pxkBtE": {
           "type": "video",
           "settings": {
@@ -224,17 +233,10 @@
             "creator_handle": "mellisa__creator"
           }
         },
-        "video_PH4KJJ": {
-          "type": "video",
-          "settings": {
-            "video_url": "",
-            "hashtag": "SlowLight",
-            "creator_handle": "creator_name"
-          }
-        },
         "video_JrBBAN": {
           "type": "video",
           "settings": {
+            "video": "shopify://files/videos/copy_7B2F1006-6399-4F18-8336-C3A69E66935D.mp4",
             "video_url": "",
             "hashtag": "SlowLight",
             "creator_handle": "outlight_home"
@@ -258,8 +260,8 @@
         }
       },
       "block_order": [
-        "video_pxkBtE",
         "video_PH4KJJ",
+        "video_pxkBtE",
         "video_JrBBAN",
         "video_RiAi7W",
         "video_UbmmLV"
