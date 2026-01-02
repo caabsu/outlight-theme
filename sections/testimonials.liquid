@@ -43,8 +43,7 @@
         {% for block in section.blocks %}
           <div class="testimonials__slide {% if forloop.first %}is-active{% endif %}" data-slide="{{ forloop.index0 }}" {{ block.shopify_attributes }}>
             <blockquote class="testimonials__quote">
-              <span class="testimonials__quote-desktop">"{{ block.settings.quote_desktop }}"</span>
-              <span class="testimonials__quote-mobile">"{{ block.settings.quote_mobile | default: block.settings.quote_desktop }}"</span>
+              "{{ block.settings.quote }}"
             </blockquote>
             <cite class="testimonials__author">
               {{ block.settings.author }}
@@ -148,14 +147,6 @@
     margin-right: auto;
   }
 
-  .testimonials__quote-desktop {
-    display: none;
-  }
-
-  .testimonials__quote-mobile {
-    display: block;
-  }
-
   .testimonials__author {
     font-family: var(--font-body-family), sans-serif;
     font-size: var(--author-size-mobile);
@@ -231,14 +222,6 @@
     .testimonials__quote {
       font-size: var(--quote-size-desktop);
       margin-bottom: 32px;
-    }
-
-    .testimonials__quote-desktop {
-      display: block;
-    }
-
-    .testimonials__quote-mobile {
-      display: none;
     }
 
     .testimonials__author {
@@ -525,15 +508,9 @@
       "settings": [
         {
           "type": "textarea",
-          "id": "quote_desktop",
-          "label": "Quote (desktop)",
+          "id": "quote",
+          "label": "Quote",
           "default": "It's rare to find an object that feels both ancient and modern. The texture of the raw ceramic brings so much character to my stark white desk."
-        },
-        {
-          "type": "textarea",
-          "id": "quote_mobile",
-          "label": "Quote (mobile)",
-          "info": "Leave blank to use desktop quote"
         },
         {
           "type": "text",
@@ -557,8 +534,7 @@
         {
           "type": "testimonial",
           "settings": {
-            "quote_desktop": "It's rare to find an object that feels both ancient and modern. The texture of the raw ceramic brings so much character to my stark white desk.",
-            "quote_mobile": "The light quality is unmatched. It's warm, soft, and completely changes the mood of my evenings.",
+            "quote": "It's rare to find an object that feels both ancient and modern. The texture of the raw ceramic brings so much character to my stark white desk.",
             "author": "JAMES L.",
             "subtitle": "VERIFIED BUYER"
           }
@@ -566,8 +542,7 @@
         {
           "type": "testimonial",
           "settings": {
-            "quote_desktop": "The craftsmanship is impeccable. Every detail has been thoughtfully considered, from the weight of the base to the quality of the shade.",
-            "quote_mobile": "Beautiful design, excellent quality. Exceeded my expectations.",
+            "quote": "The craftsmanship is impeccable. Every detail has been thoughtfully considered, from the weight of the base to the quality of the shade.",
             "author": "MICHAEL R.",
             "subtitle": "VERIFIED BUYER"
           }
@@ -575,8 +550,7 @@
         {
           "type": "testimonial",
           "settings": {
-            "quote_desktop": "I've received so many compliments on this piece. It truly elevates the entire room and creates such a warm, inviting atmosphere.",
-            "quote_mobile": "So many compliments! Creates a warm, inviting atmosphere.",
+            "quote": "I've received so many compliments on this piece. It truly elevates the entire room and creates such a warm, inviting atmosphere.",
             "author": "EMMA S.",
             "subtitle": "VERIFIED BUYER"
           }
