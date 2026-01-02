@@ -121,12 +121,21 @@
   .testimonials__track {
     position: relative;
     overflow: hidden;
-    touch-action: pan-y pinch-zoom;
+    touch-action: pan-x pan-y;
     cursor: grab;
+    -webkit-user-select: none;
+    user-select: none;
   }
 
   .testimonials__track:active {
     cursor: grabbing;
+  }
+
+  @media (max-width: 767px) {
+    .testimonials__track {
+      touch-action: pan-y;
+      min-height: 120px;
+    }
   }
 
   .testimonials__slide {
@@ -330,24 +339,48 @@
 
     // Touch/Swipe support
     let touchStartX = 0;
+    let touchStartY = 0;
     let touchEndX = 0;
-    const swipeThreshold = 50;
+    let touchEndY = 0;
+    let isSwiping = false;
+    const swipeThreshold = 30;
 
     track.addEventListener('touchstart', (e) => {
-      touchStartX = e.changedTouches[0].screenX;
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+      isSwiping = true;
       stopAutoplay();
     }, { passive: true });
 
+    track.addEventListener('touchmove', (e) => {
+      if (!isSwiping) return;
+      touchEndX = e.touches[0].clientX;
+      touchEndY = e.touches[0].clientY;
+
+      // Check if horizontal swipe is dominant
+      const diffX = Math.abs(touchStartX - touchEndX);
+      const diffY = Math.abs(touchStartY - touchEndY);
+
+      if (diffX > diffY && diffX > 10) {
+        // Horizontal swipe detected - prevent vertical scroll
+        e.preventDefault();
+      }
+    }, { passive: false });
+
     track.addEventListener('touchend', (e) => {
-      touchEndX = e.changedTouches[0].screenX;
+      if (!isSwiping) return;
+      isSwiping = false;
       handleSwipe();
       startAutoplay();
     }, { passive: true });
 
     const handleSwipe = () => {
-      const diff = touchStartX - touchEndX;
-      if (Math.abs(diff) > swipeThreshold) {
-        if (diff > 0) {
+      const diffX = touchStartX - touchEndX;
+      const diffY = Math.abs(touchStartY - touchEndY);
+
+      // Only trigger if horizontal movement is greater than vertical
+      if (Math.abs(diffX) > swipeThreshold && Math.abs(diffX) > diffY) {
+        if (diffX > 0) {
           // Swipe left - next slide
           goToSlide(currentIndex + 1);
         } else {
