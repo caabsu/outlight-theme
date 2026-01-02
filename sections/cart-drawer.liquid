@@ -3,7 +3,19 @@
   Triggered by clicking the cart icon in the header.
 {% endcomment %}
 
-<div class="cart-drawer" data-cart-drawer>
+<div class="cart-drawer" data-cart-drawer style="
+  --variant-size: {{ section.settings.variant_text_size }}px;
+  --discount-bg: {{ section.settings.discount_bg }};
+  --discount-text-color: {{ section.settings.discount_text_color }};
+  --discount-btn-bg: {{ section.settings.discount_btn_bg }};
+  --discount-btn-color: {{ section.settings.discount_btn_color }};
+  --protection-bg: {{ section.settings.protection_bg }};
+  --protection-text-color: {{ section.settings.protection_text_color }};
+  --gift-bg: {{ section.settings.gift_bg }};
+  --gift-text-color: {{ section.settings.gift_text_color }};
+  --gift-btn-bg: {{ section.settings.gift_btn_bg }};
+  --gift-btn-color: {{ section.settings.gift_btn_color }};
+">
   <div class="cart-drawer__overlay" data-cart-drawer-close></div>
   <div class="cart-drawer__panel">
     {%- comment -%} Header - Desktop vs Mobile {%- endcomment -%}
@@ -88,6 +100,59 @@
     {%- comment -%} Footer {%- endcomment -%}
     {%- if cart.item_count > 0 -%}
       <div class="cart-drawer__footer">
+        {%- comment -%} Free Gift Product {%- endcomment -%}
+        {%- if section.settings.show_free_gift and section.settings.gift_product != blank -%}
+          {%- assign gift_product = section.settings.gift_product -%}
+          {%- assign gift_in_cart = false -%}
+          {%- for item in cart.items -%}
+            {%- if item.product.id == gift_product.id -%}
+              {%- assign gift_in_cart = true -%}
+              {%- break -%}
+            {%- endif -%}
+          {%- endfor -%}
+          {%- unless gift_in_cart -%}
+            <div class="cart-drawer__gift">
+              <div class="cart-drawer__gift-image">
+                {%- if gift_product.featured_image -%}
+                  {{ gift_product.featured_image | image_url: width: 120 | image_tag }}
+                {%- endif -%}
+              </div>
+              <div class="cart-drawer__gift-info">
+                <span class="cart-drawer__gift-title">{{ section.settings.gift_title | default: gift_product.title }}</span>
+                <span class="cart-drawer__gift-price">{{ 0 | money }}</span>
+              </div>
+              <button type="button" class="cart-drawer__gift-btn" data-add-gift data-variant-id="{{ gift_product.first_available_variant.id }}">
+                {{ section.settings.gift_btn_text | default: 'Add' }}
+              </button>
+            </div>
+          {%- endunless -%}
+        {%- endif -%}
+
+        {%- comment -%} Shipping Protection {%- endcomment -%}
+        {%- if section.settings.show_shipping_protection -%}
+          <div class="cart-drawer__protection">
+            <div class="cart-drawer__protection-info">
+              <span class="cart-drawer__protection-title">{{ section.settings.protection_title | default: 'Shipping Protection' }}</span>
+              <span class="cart-drawer__protection-desc">{{ section.settings.protection_description | default: 'Protect your order from damage, loss or theft during shipping' }}</span>
+            </div>
+            <label class="cart-drawer__protection-toggle">
+              <input type="checkbox" data-protection-toggle {% if section.settings.protection_default_on %}checked{% endif %}>
+              <span class="cart-drawer__protection-slider"></span>
+            </label>
+          </div>
+        {%- endif -%}
+
+        {%- comment -%} Discount Code {%- endcomment -%}
+        {%- if section.settings.show_discount_code -%}
+          <div class="cart-drawer__discount">
+            <form class="cart-drawer__discount-form" data-discount-form>
+              <input type="text" name="discount" class="cart-drawer__discount-input" placeholder="{{ section.settings.discount_placeholder | default: 'Discount code' }}">
+              <button type="submit" class="cart-drawer__discount-btn">{{ section.settings.discount_btn_text | default: 'Apply' }}</button>
+            </form>
+            <p class="cart-drawer__discount-note">{{ section.settings.discount_note | default: 'Apply additional discount codes at checkout' }}</p>
+          </div>
+        {%- endif -%}
+
         {%- comment -%} Desktop footer {%- endcomment -%}
         <div class="cart-drawer__footer--desktop">
           <div class="cart-drawer__subtotal">
@@ -266,7 +331,7 @@
   }
 
   .cart-drawer__item-variant {
-    font-size: 0.875rem;
+    font-size: var(--variant-size, 0.75rem);
     color: #78716C;
     margin: 0;
   }
@@ -367,6 +432,191 @@
 
   .cart-drawer__continue-btn:hover {
     opacity: 0.9;
+  }
+
+  /* Free Gift */
+  .cart-drawer__gift {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem;
+    background-color: var(--gift-bg, #FFFBEB);
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .cart-drawer__gift-image {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    overflow: hidden;
+    background: #f5f5f5;
+  }
+
+  .cart-drawer__gift-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .cart-drawer__gift-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
+  .cart-drawer__gift-title {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--gift-text-color, #1C1917);
+  }
+
+  .cart-drawer__gift-price {
+    font-size: 0.75rem;
+    color: var(--gift-text-color, #1C1917);
+    opacity: 0.7;
+  }
+
+  .cart-drawer__gift-btn {
+    padding: 0.5rem 1rem;
+    background-color: var(--gift-btn-bg, #1C1917);
+    color: var(--gift-btn-color, #ffffff);
+    border: none;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+  }
+
+  .cart-drawer__gift-btn:hover {
+    opacity: 0.9;
+  }
+
+  /* Shipping Protection */
+  .cart-drawer__protection {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    background-color: var(--protection-bg, #F5F5F4);
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .cart-drawer__protection-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    flex: 1;
+  }
+
+  .cart-drawer__protection-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--protection-text-color, #1C1917);
+  }
+
+  .cart-drawer__protection-desc {
+    font-size: 0.6875rem;
+    color: var(--protection-text-color, #1C1917);
+    opacity: 0.7;
+    line-height: 1.4;
+  }
+
+  .cart-drawer__protection-toggle {
+    position: relative;
+    width: 44px;
+    height: 24px;
+    flex-shrink: 0;
+  }
+
+  .cart-drawer__protection-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .cart-drawer__protection-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #D6D3D1;
+    transition: 0.2s;
+    border-radius: 24px;
+  }
+
+  .cart-drawer__protection-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.2s;
+    border-radius: 50%;
+  }
+
+  .cart-drawer__protection-toggle input:checked + .cart-drawer__protection-slider {
+    background-color: #1C1917;
+  }
+
+  .cart-drawer__protection-toggle input:checked + .cart-drawer__protection-slider:before {
+    transform: translateX(20px);
+  }
+
+  /* Discount Code */
+  .cart-drawer__discount {
+    padding: 1rem 1.5rem;
+    background-color: var(--discount-bg, #ffffff);
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .cart-drawer__discount-form {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .cart-drawer__discount-input {
+    flex: 1;
+    padding: 0.625rem 0.875rem;
+    border: 1px solid #e5e5e5;
+    font-size: 0.8125rem;
+    color: var(--discount-text-color, #1C1917);
+    background: transparent;
+  }
+
+  .cart-drawer__discount-input::placeholder {
+    color: #9CA3AF;
+  }
+
+  .cart-drawer__discount-btn {
+    padding: 0.625rem 1rem;
+    background-color: var(--discount-btn-bg, #1C1917);
+    color: var(--discount-btn-color, #ffffff);
+    border: none;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+  }
+
+  .cart-drawer__discount-btn:hover {
+    opacity: 0.9;
+  }
+
+  .cart-drawer__discount-note {
+    margin: 0.5rem 0 0;
+    font-size: 0.6875rem;
+    color: var(--discount-text-color, #78716C);
+    opacity: 0.8;
   }
 
   /* Footer */
@@ -548,7 +798,91 @@
         await handleRemoveItem(removeBtn);
         return;
       }
+
+      // Add gift handler
+      const giftBtn = e.target.closest('[data-add-gift]');
+      if (giftBtn) {
+        e.preventDefault();
+        await handleAddGift(giftBtn);
+        return;
+      }
     });
+
+    // Discount form handler
+    cartDrawer.addEventListener('submit', async (e) => {
+      const form = e.target.closest('[data-discount-form]');
+      if (form) {
+        e.preventDefault();
+        const input = form.querySelector('input[name="discount"]');
+        if (input && input.value.trim()) {
+          // Store discount code and redirect to checkout
+          window.location.href = '/checkout?discount=' + encodeURIComponent(input.value.trim());
+        }
+      }
+    });
+  }
+
+  // Add gift handler
+  async function handleAddGift(btn) {
+    const variantId = btn.dataset.variantId;
+    if (!variantId) return;
+
+    btn.disabled = true;
+    btn.textContent = '...';
+
+    try {
+      const response = await fetch('/cart/add.js', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          items: [{
+            id: parseInt(variantId),
+            quantity: 1,
+            properties: { '_gift': 'true' }
+          }]
+        })
+      });
+
+      if (response.ok) {
+        // Refresh cart drawer
+        const sectionResponse = await fetch('/?sections=cart-drawer');
+        if (sectionResponse.ok) {
+          const sections = await sectionResponse.json();
+          const cartDrawerHtml = sections['cart-drawer'];
+          if (cartDrawer && cartDrawerHtml) {
+            const temp = document.createElement('div');
+            temp.innerHTML = cartDrawerHtml;
+            const newContent = temp.querySelector('[data-cart-drawer]');
+            if (newContent) {
+              cartDrawer.innerHTML = newContent.innerHTML;
+            }
+          }
+        }
+        // Update header cart count
+        const cartResponse = await fetch('/cart.js');
+        if (cartResponse.ok) {
+          const cart = await cartResponse.json();
+          updateCartCount(cart.item_count);
+        }
+      }
+    } catch (error) {
+      console.error('Error adding gift:', error);
+      btn.disabled = false;
+      btn.textContent = 'Add';
+    }
+  }
+
+  function updateCartCount(count) {
+    const cartCount = document.querySelector('.header__cart-count');
+    if (cartCount) {
+      if (count > 0) {
+        cartCount.textContent = count;
+      } else {
+        cartCount.remove();
+      }
+    }
   }
 
   // Quantity change handler
@@ -683,6 +1017,163 @@
       "id": "drawer_title",
       "label": "Drawer title (desktop)",
       "default": "Your Sanctuary"
+    },
+    {
+      "type": "header",
+      "content": "Variant text"
+    },
+    {
+      "type": "range",
+      "id": "variant_text_size",
+      "label": "Variant text size",
+      "min": 10,
+      "max": 16,
+      "step": 1,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Free gift"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_free_gift",
+      "label": "Show free gift",
+      "default": false
+    },
+    {
+      "type": "product",
+      "id": "gift_product",
+      "label": "Gift product"
+    },
+    {
+      "type": "text",
+      "id": "gift_title",
+      "label": "Gift title",
+      "info": "Leave blank to use product title"
+    },
+    {
+      "type": "text",
+      "id": "gift_btn_text",
+      "label": "Button text",
+      "default": "Add"
+    },
+    {
+      "type": "color",
+      "id": "gift_bg",
+      "label": "Background",
+      "default": "#FFFBEB"
+    },
+    {
+      "type": "color",
+      "id": "gift_text_color",
+      "label": "Text color",
+      "default": "#1C1917"
+    },
+    {
+      "type": "color",
+      "id": "gift_btn_bg",
+      "label": "Button background",
+      "default": "#1C1917"
+    },
+    {
+      "type": "color",
+      "id": "gift_btn_color",
+      "label": "Button text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Shipping protection"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_shipping_protection",
+      "label": "Show shipping protection",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "protection_title",
+      "label": "Title",
+      "default": "Shipping Protection"
+    },
+    {
+      "type": "textarea",
+      "id": "protection_description",
+      "label": "Description",
+      "default": "Protect your order from damage, loss or theft during shipping"
+    },
+    {
+      "type": "checkbox",
+      "id": "protection_default_on",
+      "label": "Default to on",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "protection_bg",
+      "label": "Background",
+      "default": "#F5F5F4"
+    },
+    {
+      "type": "color",
+      "id": "protection_text_color",
+      "label": "Text color",
+      "default": "#1C1917"
+    },
+    {
+      "type": "header",
+      "content": "Discount code"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_discount_code",
+      "label": "Show discount code field",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "discount_placeholder",
+      "label": "Placeholder text",
+      "default": "Discount code"
+    },
+    {
+      "type": "text",
+      "id": "discount_btn_text",
+      "label": "Button text",
+      "default": "Apply"
+    },
+    {
+      "type": "text",
+      "id": "discount_note",
+      "label": "Note text",
+      "default": "Apply additional discount codes at checkout"
+    },
+    {
+      "type": "color",
+      "id": "discount_bg",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "discount_text_color",
+      "label": "Text color",
+      "default": "#1C1917"
+    },
+    {
+      "type": "color",
+      "id": "discount_btn_bg",
+      "label": "Button background",
+      "default": "#1C1917"
+    },
+    {
+      "type": "color",
+      "id": "discount_btn_color",
+      "label": "Button text color",
+      "default": "#ffffff"
     }
   ]
 }
