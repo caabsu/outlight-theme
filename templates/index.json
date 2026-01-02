@@ -224,40 +224,49 @@
         "testimonial_6PwGdN": {
           "type": "testimonial",
           "settings": {
-            "quote_desktop": "It's rare to find an object that feels both ancient and modern. The texture of the raw ceramic brings so much character to my stark white desk.",
-            "author_desktop": "JAMES L.",
-            "subtitle_desktop": "VERIFIED BUYER",
-            "quote_mobile": "The light quality is unmatched. It's warm, soft, and completely changes the mood of my evenings.",
-            "author_mobile": "SARAH M.",
-            "subtitle_mobile": ""
+            "quote": "We added Outlight outdoor wall lights during our renovation—huge upgrade. Clean, modern look and a warm glow that makes the entry feel finished.",
+            "author": "ARTHUR M.",
+            "subtitle": "VERIFIED BUYER"
           }
         },
         "testimonial_GjEF7R": {
           "type": "testimonial",
           "settings": {
-            "quote_desktop": "The craftsmanship is impeccable. Every detail has been thoughtfully considered, from the weight of the base to the quality of the shade.",
-            "author_desktop": "MICHAEL R.",
-            "subtitle_desktop": "VERIFIED BUYER",
-            "quote_mobile": "Beautiful design, excellent quality. Exceeded my expectations.",
-            "author_mobile": "MICHAEL R.",
-            "subtitle_mobile": ""
+            "quote": "The lighting changed the mood instantly. Soft, warm, cozy at night—our space finally feels calm and inviting.",
+            "author": "KELLY S.",
+            "subtitle": "VERIFIED BUYER"
+          }
+        },
+        "testimonial_VViq9Y": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Keria made our hallway feel more elevated. Warm, diffused light and a bold vertical look—clean, modern, premium.",
+            "author": "JESSICA H.",
+            "subtitle": "VERIFIED BUYER"
+          }
+        },
+        "testimonial_j4Qb4f": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Noa is minimal but striking. The orbs glow evenly with zero glare—perfect for evenings and it always gets compliments.",
+            "author": "CALEB J.",
+            "subtitle": "VERIFIED BUYER"
           }
         },
         "testimonial_gdReE8": {
           "type": "testimonial",
           "settings": {
-            "quote_desktop": "I've received so many compliments on this piece. It truly elevates the entire room and creates such a warm, inviting atmosphere.",
-            "author_desktop": "EMMA S.",
-            "subtitle_desktop": "VERIFIED BUYER",
-            "quote_mobile": "So many compliments! Creates a warm, inviting atmosphere.",
-            "author_mobile": "EMMA S.",
-            "subtitle_mobile": ""
+            "quote": "Aven looks like a sculpture, even off. The twisted wood is beautiful in person, and the ambient light is super relaxing.",
+            "author": "JAMES L.",
+            "subtitle": "VERIFIED BUYER"
           }
         }
       },
       "block_order": [
         "testimonial_6PwGdN",
         "testimonial_GjEF7R",
+        "testimonial_VViq9Y",
+        "testimonial_j4Qb4f",
         "testimonial_gdReE8"
       ],
       "name": "Testimonials",
