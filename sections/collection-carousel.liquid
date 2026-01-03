@@ -164,8 +164,7 @@
   }
 
   .collection-carousel__container {
-    max-width: var(--page-width);
-    margin: 0 auto;
+    width: 100%;
     padding: 0 var(--page-margin);
   }
 
@@ -309,6 +308,10 @@
       padding: var(--cc-padding-top) 0 var(--cc-padding-bottom);
     }
 
+    .collection-carousel__container {
+      padding: 0 40px;
+    }
+
     .collection-carousel__header {
       margin-bottom: 2rem;
     }
@@ -409,6 +412,12 @@
 
     .collection-carousel__footer {
       margin-top: 2rem;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .collection-carousel__container {
+      padding: 0 60px;
     }
   }
 {% endstylesheet %}
