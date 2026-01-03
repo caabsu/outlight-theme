@@ -290,8 +290,8 @@
       "name": "Product video carousel",
       "settings": {
         "product": "aven",
-        "title": "@__outlight",
-        "subtitle": "See Aven in Real Homes",
+        "title": "See Aven In Real Homes",
+        "subtitle": "See how Aven looks in natural, lived-in light.",
         "follow_text": "FOLLOW US",
         "follow_url": "",
         "padding_top": 0,
