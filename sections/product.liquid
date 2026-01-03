@@ -766,7 +766,6 @@
               --trust-text-weight: {{ block.settings.text_weight }};
               --trust-btn-color: {{ block.settings.button_text_color }};
               --trust-btn-underline: {{ block.settings.button_underline_color }};
-              --trust-gap: {{ block.settings.badge_gap }}px;
               --trust-padding: {{ block.settings.padding }}px;
             ">
               {%- if block.settings.badge_1_line1 != blank or block.settings.badge_1_line2 != blank -%}
@@ -782,25 +781,37 @@
               {%- endif -%}
 
               {%- if block.settings.badge_2_line1 != blank or block.settings.badge_2_line2 != blank -%}
-                <{% if block.settings.badge_2_url != blank %}a href="{{ block.settings.badge_2_url }}"{% else %}div{% endif %} class="product-trust-badge product-trust-badge--button">
+                <div class="product-trust-badge">
                   <span class="product-trust-badge__icon">
                     {%- render 'trust-badge-icon', icon: block.settings.badge_2_icon -%}
                   </span>
-                  <span class="product-trust-badge__text product-trust-badge__text--button">
-                    {%- if block.settings.badge_2_line1 != blank -%}<span class="trust-btn-text">{{ block.settings.badge_2_line1 }}</span>{%- endif -%}
-                    {%- if block.settings.badge_2_line2 != blank -%}<br><span class="trust-btn-text">{{ block.settings.badge_2_line2 }}</span>{%- endif -%}
+                  <span class="product-trust-badge__text">
+                    {%- if block.settings.badge_2_line1 != blank -%}{{ block.settings.badge_2_line1 }}{%- endif -%}
+                    {%- if block.settings.badge_2_line2 != blank -%}<br>{{ block.settings.badge_2_line2 }}{%- endif -%}
                   </span>
-                </{% if block.settings.badge_2_url != blank %}a{% else %}div{% endif %}>
+                </div>
               {%- endif -%}
 
               {%- if block.settings.badge_3_line1 != blank or block.settings.badge_3_line2 != blank -%}
-                <div class="product-trust-badge">
+                <{% if block.settings.badge_3_url != blank %}a href="{{ block.settings.badge_3_url }}"{% else %}div{% endif %} class="product-trust-badge product-trust-badge--button">
                   <span class="product-trust-badge__icon">
                     {%- render 'trust-badge-icon', icon: block.settings.badge_3_icon -%}
                   </span>
+                  <span class="product-trust-badge__text product-trust-badge__text--button">
+                    {%- if block.settings.badge_3_line1 != blank -%}<span class="trust-btn-text">{{ block.settings.badge_3_line1 }}</span>{%- endif -%}
+                    {%- if block.settings.badge_3_line2 != blank -%}<br><span class="trust-btn-text">{{ block.settings.badge_3_line2 }}</span>{%- endif -%}
+                  </span>
+                </{% if block.settings.badge_3_url != blank %}a{% else %}div{% endif %}>
+              {%- endif -%}
+
+              {%- if block.settings.badge_4_line1 != blank or block.settings.badge_4_line2 != blank -%}
+                <div class="product-trust-badge">
+                  <span class="product-trust-badge__icon">
+                    {%- render 'trust-badge-icon', icon: block.settings.badge_4_icon -%}
+                  </span>
                   <span class="product-trust-badge__text">
-                    {%- if block.settings.badge_3_line1 != blank -%}{{ block.settings.badge_3_line1 }}{%- endif -%}
-                    {%- if block.settings.badge_3_line2 != blank -%}<br>{{ block.settings.badge_3_line2 }}{%- endif -%}
+                    {%- if block.settings.badge_4_line1 != blank -%}{{ block.settings.badge_4_line1 }}{%- endif -%}
+                    {%- if block.settings.badge_4_line2 != blank -%}<br>{{ block.settings.badge_4_line2 }}{%- endif -%}
                   </span>
                 </div>
               {%- endif -%}
@@ -2197,7 +2208,7 @@
   /* Trust Badges */
   .product-trust-badges {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: flex-start;
     width: 100%;
     padding: var(--trust-padding, 16px) 0;
@@ -2210,8 +2221,6 @@
     align-items: center;
     gap: 6px;
     text-decoration: none;
-    flex: 1;
-    max-width: 100px;
   }
 
   .product-trust-badge__icon {
@@ -3387,7 +3396,7 @@
       "settings": [
         {
           "type": "header",
-          "content": "Badge 1"
+          "content": "Badge 1 - Free Shipping"
         },
         {
           "type": "select",
@@ -3417,7 +3426,7 @@
         },
         {
           "type": "header",
-          "content": "Badge 2 (Button)"
+          "content": "Badge 2 - Easy Returns"
         },
         {
           "type": "select",
@@ -3431,28 +3440,23 @@
             { "value": "return", "label": "Return arrow" },
             { "value": "clock", "label": "Clock" }
           ],
-          "default": "location"
+          "default": "return"
         },
         {
           "type": "text",
           "id": "badge_2_line1",
           "label": "Line 1",
-          "default": "TRACK"
+          "default": "EASY"
         },
         {
           "type": "text",
           "id": "badge_2_line2",
           "label": "Line 2",
-          "default": "ORDER"
-        },
-        {
-          "type": "url",
-          "id": "badge_2_url",
-          "label": "Link URL"
+          "default": "RETURNS"
         },
         {
           "type": "header",
-          "content": "Badge 3"
+          "content": "Badge 3 - Track Order (Button)"
         },
         {
           "type": "select",
@@ -3466,17 +3470,52 @@
             { "value": "return", "label": "Return arrow" },
             { "value": "clock", "label": "Clock" }
           ],
-          "default": "headset"
+          "default": "location"
         },
         {
           "type": "text",
           "id": "badge_3_line1",
           "label": "Line 1",
-          "default": "24/7"
+          "default": "TRACK"
         },
         {
           "type": "text",
           "id": "badge_3_line2",
+          "label": "Line 2",
+          "default": "ORDER"
+        },
+        {
+          "type": "url",
+          "id": "badge_3_url",
+          "label": "Link URL"
+        },
+        {
+          "type": "header",
+          "content": "Badge 4 - Support"
+        },
+        {
+          "type": "select",
+          "id": "badge_4_icon",
+          "label": "Icon",
+          "options": [
+            { "value": "shipping", "label": "Shipping truck" },
+            { "value": "location", "label": "Location pin" },
+            { "value": "headset", "label": "Headset/Support" },
+            { "value": "shield", "label": "Shield" },
+            { "value": "return", "label": "Return arrow" },
+            { "value": "clock", "label": "Clock" }
+          ],
+          "default": "headset"
+        },
+        {
+          "type": "text",
+          "id": "badge_4_line1",
+          "label": "Line 1",
+          "default": "24/7"
+        },
+        {
+          "type": "text",
+          "id": "badge_4_line2",
           "label": "Line 2",
           "default": "SUPPORT"
         },
@@ -3547,16 +3586,6 @@
         {
           "type": "header",
           "content": "Layout"
-        },
-        {
-          "type": "range",
-          "id": "badge_gap",
-          "label": "Gap between badges",
-          "min": 20,
-          "max": 80,
-          "step": 5,
-          "unit": "px",
-          "default": 40
         },
         {
           "type": "range",
