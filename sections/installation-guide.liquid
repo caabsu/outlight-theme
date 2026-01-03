@@ -308,6 +308,16 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      width: 100%;
+    }
+
+    /* Ensure mobile content spans full width */
+    .installation-guide__mobile > .installation-guide__mobile-content {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      float: none;
+      clear: both;
     }
 
     .installation-guide__title {
@@ -385,19 +395,24 @@
     }
 
     .installation-guide__mobile-content {
+      display: block !important;
       width: 100% !important;
       max-width: 100% !important;
       box-sizing: border-box;
       padding-right: 0 !important;
+      padding-left: 0 !important;
     }
 
     .installation-guide__mobile .installation-guide__content {
+      display: block !important;
       width: 100% !important;
       max-width: 100% !important;
       box-sizing: border-box;
       padding-right: 0 !important;
+      padding-left: 0 !important;
     }
 
+    .installation-guide__mobile .installation-guide__content *,
     .installation-guide__mobile .installation-guide__content p,
     .installation-guide__mobile .installation-guide__content div,
     .installation-guide__mobile .installation-guide__content span,
@@ -408,7 +423,7 @@
     .installation-guide__mobile .installation-guide__content [class*="metafield"] {
       width: 100% !important;
       max-width: 100% !important;
-      box-sizing: border-box;
+      box-sizing: border-box !important;
       margin-left: 0 !important;
       margin-right: 0 !important;
       padding-left: 0 !important;
