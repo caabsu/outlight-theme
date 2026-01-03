@@ -5,6 +5,7 @@
     --promise-title-color: {{ section.settings.title_color }};
     --promise-text-color: {{ section.settings.text_color }};
     --promise-link-color: {{ section.settings.link_color }};
+    --promise-link-underline-color: {{ section.settings.link_underline_color }};
     --promise-badge-color: {{ section.settings.badge_text_color }};
     --promise-icon-color: {{ section.settings.icon_color }};
     --promise-title-size-mobile: {{ section.settings.title_size_mobile }}px;
@@ -168,7 +169,7 @@
     text-transform: uppercase;
     color: var(--promise-link-color, #1a1a1a);
     text-decoration: none;
-    border-bottom: 1px solid var(--promise-link-color, #1a1a1a);
+    border-bottom: 1px solid var(--promise-link-underline-color, #1a1a1a);
     padding-bottom: 2px;
   }
 
@@ -319,6 +320,12 @@
       "id": "link_color",
       "label": "Link color",
       "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "link_underline_color",
+      "label": "Link underline color",
+      "default": "#c45a32"
     },
     {
       "type": "color",
