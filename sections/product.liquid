@@ -140,6 +140,25 @@
         </div>
       {%- endif -%}
     </div>
+
+    {%- comment -%} Mobile Thumbnails {%- endcomment -%}
+    {%- if product.media.size > 1 -%}
+      <div class="product-media-thumbnails-mobile" data-gallery-thumbnails-mobile>
+        {%- for media in product.media -%}
+          <button
+            class="product-media-thumbnail-mobile {% if forloop.first %}product-media-thumbnail-mobile--active{% endif %}"
+            data-thumbnail-mobile-index="{{ forloop.index0 }}"
+            aria-label="View image {{ forloop.index }}"
+          >
+            {%- if media.media_type == 'image' -%}
+              {{ media | image_url: width: 120 | image_tag: loading: 'lazy' }}
+            {%- else -%}
+              {{ media.preview_image | image_url: width: 120 | image_tag: loading: 'lazy' }}
+            {%- endif -%}
+          </button>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
   </div>
 
   {%- comment -%} Lightbox Modal {%- endcomment -%}
@@ -870,6 +889,55 @@
 
   .product-media-thumbnails {
     display: none;
+  }
+
+  /* Mobile Thumbnails - Visible on mobile only */
+  .product-media-thumbnails-mobile {
+    display: flex;
+    gap: 8px;
+    padding: 12px 16px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    background: transparent;
+  }
+
+  .product-media-thumbnails-mobile::-webkit-scrollbar {
+    display: none;
+  }
+
+  .product-media-thumbnail-mobile {
+    flex-shrink: 0;
+    width: 56px;
+    height: 56px;
+    padding: 0;
+    border: 1.5px solid transparent;
+    border-radius: 6px;
+    background: transparent;
+    cursor: pointer;
+    overflow: hidden;
+    opacity: 0.5;
+    transition: opacity 0.2s ease, border-color 0.2s ease;
+  }
+
+  .product-media-thumbnail-mobile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+
+  .product-media-thumbnail-mobile--active {
+    opacity: 1;
+    border-color: #000;
+  }
+
+  .product-media-thumbnail-mobile:hover {
+    opacity: 0.8;
+  }
+
+  .product-media-thumbnail-mobile--active:hover {
+    opacity: 1;
   }
 
   .product-media-main {
@@ -2097,6 +2165,11 @@
       align-items: stretch;
     }
 
+    /* Hide mobile thumbnails on desktop */
+    .product-media-thumbnails-mobile {
+      display: none;
+    }
+
     /* Desktop Thumbnails Wrapper - below main image */
     .product-media-thumbnails-wrapper {
       display: block;
@@ -2310,6 +2383,8 @@
   const prevBtn = document.querySelector('[data-gallery-prev]');
   const nextBtn = document.querySelector('[data-gallery-next]');
   const thumbnails = document.querySelectorAll('[data-thumbnail-index]');
+  const mobileThumbnails = document.querySelectorAll('[data-thumbnail-mobile-index]');
+  const mobileThumbnailsContainer = document.querySelector('[data-gallery-thumbnails-mobile]');
   const galleryCounter = document.querySelector('[data-gallery-counter]');
 
   let currentIndex = 0;
@@ -2326,9 +2401,13 @@
 
   // Update active states for desktop
   function updateActiveStates(index) {
-    // Update thumbnails
+    // Update desktop thumbnails
     thumbnails.forEach((thumb, i) => {
       thumb.classList.toggle('product-media-thumbnail--active', i === index);
+    });
+    // Update mobile thumbnails
+    mobileThumbnails.forEach((thumb, i) => {
+      thumb.classList.toggle('product-media-thumbnail-mobile--active', i === index);
     });
     // Update main images (for desktop fade effect)
     items.forEach((item, i) => {
@@ -2336,6 +2415,26 @@
     });
     // Update counter
     updateCounter(index);
+    // Scroll mobile thumbnail into view
+    scrollMobileThumbnailIntoView(index);
+  }
+
+  // Scroll mobile thumbnail into view
+  function scrollMobileThumbnailIntoView(index) {
+    if (!mobileThumbnailsContainer || !mobileThumbnails[index]) return;
+    const thumb = mobileThumbnails[index];
+    const container = mobileThumbnailsContainer;
+    const thumbLeft = thumb.offsetLeft;
+    const thumbWidth = thumb.offsetWidth;
+    const containerWidth = container.clientWidth;
+    const scrollLeft = container.scrollLeft;
+    const containerPadding = 16;
+
+    // Center the thumbnail if possible
+    const targetScroll = thumbLeft - (containerWidth / 2) + (thumbWidth / 2);
+    if (Math.abs(scrollLeft - targetScroll) > 10) {
+      container.scrollTo({ left: Math.max(0, targetScroll), behavior: 'smooth' });
+    }
   }
 
   // Navigate to specific index
@@ -2389,6 +2488,15 @@
       const index = parseInt(thumb.dataset.thumbnailIndex);
       currentIndex = index;
       updateActiveStates(index);
+    });
+  });
+
+  // Thumbnail click (mobile)
+  mobileThumbnails.forEach(thumb => {
+    thumb.addEventListener('click', () => {
+      const index = parseInt(thumb.dataset.thumbnailMobileIndex);
+      currentIndex = index;
+      goToSlide(index);
     });
   });
 
