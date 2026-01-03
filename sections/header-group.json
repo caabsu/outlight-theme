@@ -22,7 +22,6 @@
         "bg_color": "#1c1917",
         "text_color": "#ffffff",
         "link_color": "#ffffff",
-        "close_color": "#ffffff",
         "padding_top": 12,
         "padding_bottom": 12,
         "padding_top_mobile": 10,
@@ -32,8 +31,7 @@
         "text_weight": "600",
         "link_size": 13,
         "link_size_mobile": 11,
-        "link_weight": "600",
-        "show_close": true
+        "link_weight": "600"
       }
     },
     "header": {
@@ -55,8 +53,8 @@
             "col1_link_4_url": "shopify://collections/chandeliers",
             "col1_link_5_title": "Pendant Light",
             "col1_link_5_url": "shopify://collections/pendant-lights",
-            "col1_link_6_title": "",
-            "col1_link_6_url": "",
+            "col1_link_6_title": "Ceiling Light",
+            "col1_link_6_url": "shopify://collections/ceiling-lights",
             "column_2_header": "Outdoor Lighting",
             "column_2_url": "shopify://collections/outdoor-lighting",
             "col2_link_1_title": "Wall Light",
