@@ -63,18 +63,24 @@
           "type": "trust_badges",
           "settings": {
             "badge_1_icon": "shipping",
-            "badge_1_text": "FREESHIPPING",
+            "badge_1_line1": "FREE",
+            "badge_1_line2": "SHIPPING",
             "badge_2_icon": "location",
-            "badge_2_text": "TRACKORDER",
+            "badge_2_line1": "TRACK",
+            "badge_2_line2": "ORDER",
             "badge_2_url": "",
             "badge_3_icon": "headset",
-            "badge_3_text": "24/7SUPPORT",
-            "icon_color": "#666666",
-            "text_color": "#666666",
-            "link_color": "#c45a32",
-            "link_underline_color": "#c45a32",
+            "badge_3_line1": "24/7",
+            "badge_3_line2": "SUPPORT",
+            "icon_color": "#1C1917",
+            "text_color": "#1C1917",
+            "button_text_color": "#c45a32",
+            "button_underline_color": "#c45a32",
+            "icon_size": 22,
             "text_size": 9,
-            "text_weight": "700"
+            "text_weight": "700",
+            "badge_gap": 40,
+            "padding": 16
           }
         }
       },
