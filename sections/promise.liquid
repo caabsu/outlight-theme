@@ -1,5 +1,5 @@
 <div
-  class="promise-section"
+  class="promise-section full-width"
   style="
     --promise-bg: {{ section.settings.background_color }};
     --promise-title-color: {{ section.settings.title_color }};
@@ -120,12 +120,12 @@
 {% stylesheet %}
   .promise-section {
     background-color: var(--promise-bg, #f5f3ef);
-    padding: 0 var(--page-margin);
   }
 
   .promise-container {
     max-width: var(--page-width, 1440px);
     margin: 0 auto;
+    padding: 0 var(--page-margin);
   }
 
   /* Desktop Layout - Hidden on mobile */
@@ -174,8 +174,8 @@
 
   /* Desktop Layout */
   @media screen and (min-width: 768px) {
-    .promise-section {
-      padding: 40px 60px;
+    .promise-container {
+      padding: 0 var(--page-margin);
     }
 
     .promise-mobile {
@@ -184,7 +184,7 @@
 
     .promise-desktop {
       display: block;
-      padding: 40px 48px;
+      padding: 40px 0;
     }
 
     .promise-title {
