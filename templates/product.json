@@ -151,34 +151,6 @@
         "ct_cool_mobile_subtitle": "DAYLIGHT"
       }
     },
-    "promise_a7N9JP": {
-      "type": "promise",
-      "name": "Promise",
-      "settings": {
-        "title": "Our Promise",
-        "body_text": "We believe in slow light. Enjoy <strong>free shipping & returns</strong> on every order. Need to check your status?",
-        "mobile_text": "Enjoy <strong>free shipping & returns</strong>. Need help? Our concierge is available <strong>24/7</strong>.",
-        "link_text": "Track Order",
-        "link_url": "shopify://pages/tracking-page",
-        "badge_text": "WE'RE HERE 24/7",
-        "badge_icon": "headset",
-        "background_color": "#f7f5f0",
-        "title_color": "#1c1917",
-        "text_color": "#1c1917",
-        "link_color": "#1c1917",
-        "link_underline_color": "#c45a32",
-        "link_weight": "700",
-        "badge_text_color": "#1c1917",
-        "icon_color": "#1c1917",
-        "title_size_desktop": 28,
-        "text_size_desktop": 17,
-        "badge_size_desktop": 13,
-        "title_size_mobile": 22,
-        "text_size_mobile": 14,
-        "badge_size_mobile": 12,
-        "border_radius": 12
-      }
-    },
     "installation_guide_r38tPQ": {
       "type": "installation-guide",
       "name": "Installation guide",
@@ -562,7 +534,6 @@
   },
   "order": [
     "main",
-    "promise_a7N9JP",
     "installation_guide_r38tPQ",
     "product_intro_NrLrBk",
     "product_social_video_carousel_WfNx4y",
