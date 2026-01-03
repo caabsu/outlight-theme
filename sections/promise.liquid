@@ -1,0 +1,424 @@
+<div
+  class="promise-section"
+  style="
+    --promise-bg: {{ section.settings.background_color }};
+    --promise-title-color: {{ section.settings.title_color }};
+    --promise-text-color: {{ section.settings.text_color }};
+    --promise-link-color: {{ section.settings.link_color }};
+    --promise-badge-color: {{ section.settings.badge_text_color }};
+    --promise-icon-color: {{ section.settings.icon_color }};
+    --promise-title-size-mobile: {{ section.settings.title_size_mobile }}px;
+    --promise-title-size-desktop: {{ section.settings.title_size_desktop }}px;
+    --promise-text-size-mobile: {{ section.settings.text_size_mobile }}px;
+    --promise-text-size-desktop: {{ section.settings.text_size_desktop }}px;
+    --promise-badge-size-mobile: {{ section.settings.badge_size_mobile }}px;
+    --promise-badge-size-desktop: {{ section.settings.badge_size_desktop }}px;
+    --promise-border-radius: {{ section.settings.border_radius }}px;
+  "
+>
+  <div class="promise-container">
+    {%- comment -%} Desktop Layout {%- endcomment -%}
+    <div class="promise-desktop">
+      {%- if section.settings.title != blank -%}
+        <h2 class="promise-title">{{ section.settings.title }}</h2>
+      {%- endif -%}
+
+      <div class="promise-content">
+        {%- if section.settings.body_text != blank -%}
+          <p class="promise-text">
+            {{ section.settings.body_text }}
+            {%- if section.settings.link_text != blank and section.settings.link_url != blank -%}
+              <a href="{{ section.settings.link_url }}" class="promise-link">{{ section.settings.link_text }}</a>
+            {%- endif -%}
+          </p>
+        {%- endif -%}
+      </div>
+
+      {%- if section.settings.badge_text != blank -%}
+        <div class="promise-badge">
+          <span class="promise-badge__icon">
+            {%- if section.settings.badge_icon == 'headset' -%}
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 18v-6a9 9 0 0 1 18 0v6"/>
+                <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
+              </svg>
+            {%- elsif section.settings.badge_icon == 'shipping' -%}
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="1" y="3" width="15" height="13"/>
+                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+                <circle cx="5.5" cy="18.5" r="2.5"/>
+                <circle cx="18.5" cy="18.5" r="2.5"/>
+              </svg>
+            {%- elsif section.settings.badge_icon == 'shield' -%}
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                <polyline points="9 12 11 14 15 10"/>
+              </svg>
+            {%- elsif section.settings.badge_icon == 'gear' -%}
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+              </svg>
+            {%- else -%}
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+            {%- endif -%}
+          </span>
+          <span class="promise-badge__text">{{ section.settings.badge_text }}</span>
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} Mobile Layout {%- endcomment -%}
+    <div class="promise-mobile">
+      <div class="promise-mobile__icon">
+        {%- if section.settings.badge_icon == 'headset' -%}
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 18v-6a9 9 0 0 1 18 0v6"/>
+            <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
+          </svg>
+        {%- elsif section.settings.badge_icon == 'shipping' -%}
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="1" y="3" width="15" height="13"/>
+            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+            <circle cx="5.5" cy="18.5" r="2.5"/>
+            <circle cx="18.5" cy="18.5" r="2.5"/>
+          </svg>
+        {%- elsif section.settings.badge_icon == 'shield' -%}
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <polyline points="9 12 11 14 15 10"/>
+          </svg>
+        {%- elsif section.settings.badge_icon == 'gear' -%}
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        {%- else -%}
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+        {%- endif -%}
+      </div>
+
+      <div class="promise-mobile__content">
+        {%- if section.settings.mobile_text != blank -%}
+          <p class="promise-mobile__text">{{ section.settings.mobile_text }}</p>
+        {%- endif -%}
+
+        {%- if section.settings.link_text != blank and section.settings.link_url != blank -%}
+          <a href="{{ section.settings.link_url }}" class="promise-mobile__link">{{ section.settings.link_text }}</a>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .promise-section {
+    background-color: var(--promise-bg, #f5f3ef);
+    padding: 0 var(--page-margin);
+  }
+
+  .promise-container {
+    max-width: var(--page-width, 1440px);
+    margin: 0 auto;
+  }
+
+  /* Desktop Layout - Hidden on mobile */
+  .promise-desktop {
+    display: none;
+  }
+
+  /* Mobile Layout */
+  .promise-mobile {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 24px 20px;
+    background-color: var(--promise-bg, #f5f3ef);
+    border-radius: var(--promise-border-radius, 12px);
+  }
+
+  .promise-mobile__icon {
+    flex-shrink: 0;
+    color: var(--promise-icon-color, #1a1a1a);
+    opacity: 0.7;
+  }
+
+  .promise-mobile__content {
+    flex: 1;
+  }
+
+  .promise-mobile__text {
+    margin: 0 0 12px 0;
+    font-size: var(--promise-text-size-mobile, 15px);
+    line-height: 1.5;
+    color: var(--promise-text-color, #1a1a1a);
+  }
+
+  .promise-mobile__link {
+    display: inline-block;
+    font-size: var(--promise-badge-size-mobile, 12px);
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--promise-link-color, #1a1a1a);
+    text-decoration: none;
+    border-bottom: 1px solid var(--promise-link-color, #1a1a1a);
+    padding-bottom: 2px;
+  }
+
+  /* Desktop Layout */
+  @media screen and (min-width: 768px) {
+    .promise-section {
+      padding: 40px 60px;
+    }
+
+    .promise-mobile {
+      display: none;
+    }
+
+    .promise-desktop {
+      display: block;
+      padding: 40px 48px;
+    }
+
+    .promise-title {
+      margin: 0 0 16px 0;
+      font-size: var(--promise-title-size-desktop, 28px);
+      font-weight: 400;
+      font-style: italic;
+      font-family: var(--font-heading-family, Georgia, serif);
+      color: var(--promise-title-color, #1a1a1a);
+    }
+
+    .promise-text {
+      margin: 0 0 24px 0;
+      font-size: var(--promise-text-size-desktop, 17px);
+      line-height: 1.6;
+      color: var(--promise-text-color, #1a1a1a);
+      max-width: 600px;
+    }
+
+    .promise-link {
+      color: var(--promise-link-color, #1a1a1a);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .promise-link:hover {
+      opacity: 0.7;
+    }
+
+    .promise-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .promise-badge__icon {
+      color: var(--promise-icon-color, #1a1a1a);
+      display: flex;
+      align-items: center;
+    }
+
+    .promise-badge__text {
+      font-size: var(--promise-badge-size-desktop, 13px);
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--promise-badge-color, #1a1a1a);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Promise",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title (desktop)",
+      "default": "Our Promise"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "body_text",
+      "label": "Body text (desktop)",
+      "default": "We believe in slow light. Enjoy <strong>free shipping & returns</strong> on every order. Need to check your status?"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "mobile_text",
+      "label": "Body text (mobile)",
+      "default": "Enjoy <strong>free shipping & returns</strong>. Need help? Our concierge is available <strong>24/7</strong>."
+    },
+    {
+      "type": "text",
+      "id": "link_text",
+      "label": "Link text",
+      "default": "Track your journey here"
+    },
+    {
+      "type": "url",
+      "id": "link_url",
+      "label": "Link URL"
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Badge text (desktop)",
+      "default": "WE'RE HERE 24/7"
+    },
+    {
+      "type": "select",
+      "id": "badge_icon",
+      "label": "Icon",
+      "options": [
+        { "value": "headset", "label": "Headset" },
+        { "value": "shipping", "label": "Shipping truck" },
+        { "value": "shield", "label": "Shield" },
+        { "value": "gear", "label": "Gear" },
+        { "value": "clock", "label": "Clock" }
+      ],
+      "default": "headset"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#f5f3ef"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "link_color",
+      "label": "Link color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "badge_text_color",
+      "label": "Badge text color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "header",
+      "content": "Typography - Desktop"
+    },
+    {
+      "type": "range",
+      "id": "title_size_desktop",
+      "label": "Title size",
+      "min": 18,
+      "max": 48,
+      "step": 1,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "text_size_desktop",
+      "label": "Body text size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 17
+    },
+    {
+      "type": "range",
+      "id": "badge_size_desktop",
+      "label": "Badge text size",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "header",
+      "content": "Typography - Mobile"
+    },
+    {
+      "type": "range",
+      "id": "title_size_mobile",
+      "label": "Title size",
+      "min": 16,
+      "max": 36,
+      "step": 1,
+      "unit": "px",
+      "default": 22
+    },
+    {
+      "type": "range",
+      "id": "text_size_mobile",
+      "label": "Body text size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "badge_size_mobile",
+      "label": "Link/badge text size",
+      "min": 10,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Border radius (mobile)",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    }
+  ],
+  "presets": [
+    {
+      "name": "Promise"
+    }
+  ]
+}
+{% endschema %}
