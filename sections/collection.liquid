@@ -22,26 +22,35 @@
     --subtitle-weight: {{ section.settings.subtitle_weight }};
   ">
     <div class="collection-hero__image-wrapper">
+      {%- comment -%}
+        Per-collection banner images via metafields:
+        - collection.metafields.custom.banner_desktop (file_reference)
+        - collection.metafields.custom.banner_mobile (file_reference)
+        Fallback: metafield → collection.image → section default → placeholder
+      {%- endcomment -%}
+
       {%- comment -%} Desktop Image {%- endcomment -%}
-      {%- if section.settings.hero_image_desktop != blank -%}
-        {{ section.settings.hero_image_desktop | image_url: width: 1920 | image_tag: class: 'collection-hero__image collection-hero__image--desktop', loading: 'eager' }}
-      {%- elsif section.settings.hero_image != blank -%}
-        {{ section.settings.hero_image | image_url: width: 1920 | image_tag: class: 'collection-hero__image collection-hero__image--desktop', loading: 'eager' }}
+      {%- if collection.metafields.custom.banner_desktop != blank -%}
+        {{ collection.metafields.custom.banner_desktop | image_url: width: 1920 | image_tag: class: 'collection-hero__image collection-hero__image--desktop', loading: 'eager' }}
       {%- elsif collection.image -%}
         {{ collection.image | image_url: width: 1920 | image_tag: class: 'collection-hero__image collection-hero__image--desktop', loading: 'eager' }}
+      {%- elsif section.settings.hero_image_desktop != blank -%}
+        {{ section.settings.hero_image_desktop | image_url: width: 1920 | image_tag: class: 'collection-hero__image collection-hero__image--desktop', loading: 'eager' }}
       {%- else -%}
         <div class="collection-hero__placeholder collection-hero__image--desktop"></div>
       {%- endif -%}
 
       {%- comment -%} Mobile Image {%- endcomment -%}
-      {%- if section.settings.hero_image_mobile != blank -%}
+      {%- if collection.metafields.custom.banner_mobile != blank -%}
+        {{ collection.metafields.custom.banner_mobile | image_url: width: 800 | image_tag: class: 'collection-hero__image collection-hero__image--mobile', loading: 'eager' }}
+      {%- elsif collection.metafields.custom.banner_desktop != blank -%}
+        {{ collection.metafields.custom.banner_desktop | image_url: width: 800 | image_tag: class: 'collection-hero__image collection-hero__image--mobile', loading: 'eager' }}
+      {%- elsif collection.image -%}
+        {{ collection.image | image_url: width: 800 | image_tag: class: 'collection-hero__image collection-hero__image--mobile', loading: 'eager' }}
+      {%- elsif section.settings.hero_image_mobile != blank -%}
         {{ section.settings.hero_image_mobile | image_url: width: 800 | image_tag: class: 'collection-hero__image collection-hero__image--mobile', loading: 'eager' }}
       {%- elsif section.settings.hero_image_desktop != blank -%}
         {{ section.settings.hero_image_desktop | image_url: width: 800 | image_tag: class: 'collection-hero__image collection-hero__image--mobile', loading: 'eager' }}
-      {%- elsif section.settings.hero_image != blank -%}
-        {{ section.settings.hero_image | image_url: width: 800 | image_tag: class: 'collection-hero__image collection-hero__image--mobile', loading: 'eager' }}
-      {%- elsif collection.image -%}
-        {{ collection.image | image_url: width: 800 | image_tag: class: 'collection-hero__image collection-hero__image--mobile', loading: 'eager' }}
       {%- else -%}
         <div class="collection-hero__placeholder collection-hero__image--mobile"></div>
       {%- endif -%}
@@ -1333,22 +1342,20 @@
       "content": "Hero Image"
     },
     {
+      "type": "paragraph",
+      "content": "Set per-collection banners using metafields: custom.banner_desktop and custom.banner_mobile (file_reference type)"
+    },
+    {
       "type": "image_picker",
       "id": "hero_image_desktop",
-      "label": "Desktop banner image",
-      "info": "Uses collection image by default"
+      "label": "Default desktop banner",
+      "info": "Fallback if no collection metafield or image is set"
     },
     {
       "type": "image_picker",
       "id": "hero_image_mobile",
-      "label": "Mobile banner image",
-      "info": "Uses desktop image if not set, then collection image"
-    },
-    {
-      "type": "image_picker",
-      "id": "hero_image",
-      "label": "Legacy hero image (deprecated)",
-      "info": "Use Desktop/Mobile images above instead"
+      "label": "Default mobile banner",
+      "info": "Fallback if no collection metafield is set"
     },
     {
       "type": "range",
