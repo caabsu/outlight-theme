@@ -78,7 +78,7 @@
     </div>
 
     <!-- Mobile Layout -->
-    <details class="installation-guide__mobile scroll-animate" open>
+    <details class="installation-guide__mobile scroll-animate">
       <summary class="installation-guide__mobile-header">
         <div class="installation-guide__top-line"></div>
         <div class="installation-guide__mobile-title-row">
@@ -284,12 +284,14 @@
     .installation-guide__mobile {
       display: block;
       width: 100%;
+      max-width: 100%;
     }
 
     .installation-guide__mobile-header {
       list-style: none;
       cursor: pointer;
       width: 100%;
+      max-width: 100%;
       display: block;
     }
 
@@ -386,12 +388,14 @@
       width: 100% !important;
       max-width: 100% !important;
       box-sizing: border-box;
+      padding-right: 0 !important;
     }
 
     .installation-guide__mobile .installation-guide__content {
       width: 100% !important;
       max-width: 100% !important;
       box-sizing: border-box;
+      padding-right: 0 !important;
     }
 
     .installation-guide__mobile .installation-guide__content p,
@@ -399,12 +403,16 @@
     .installation-guide__mobile .installation-guide__content span,
     .installation-guide__mobile .installation-guide__content ul,
     .installation-guide__mobile .installation-guide__content ol,
-    .installation-guide__mobile .installation-guide__content li {
+    .installation-guide__mobile .installation-guide__content li,
+    .installation-guide__mobile .installation-guide__content .rte,
+    .installation-guide__mobile .installation-guide__content [class*="metafield"] {
       width: 100% !important;
       max-width: 100% !important;
       box-sizing: border-box;
       margin-left: 0 !important;
       margin-right: 0 !important;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
     }
 
     .installation-guide__warning {
