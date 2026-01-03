@@ -22,13 +22,30 @@
     --subtitle-weight: {{ section.settings.subtitle_weight }};
   ">
     <div class="collection-hero__image-wrapper">
-      {%- if section.settings.hero_image != blank -%}
-        {{ section.settings.hero_image | image_url: width: 1920 | image_tag: class: 'collection-hero__image', loading: 'eager' }}
+      {%- comment -%} Desktop Image {%- endcomment -%}
+      {%- if section.settings.hero_image_desktop != blank -%}
+        {{ section.settings.hero_image_desktop | image_url: width: 1920 | image_tag: class: 'collection-hero__image collection-hero__image--desktop', loading: 'eager' }}
+      {%- elsif section.settings.hero_image != blank -%}
+        {{ section.settings.hero_image | image_url: width: 1920 | image_tag: class: 'collection-hero__image collection-hero__image--desktop', loading: 'eager' }}
       {%- elsif collection.image -%}
-        {{ collection.image | image_url: width: 1920 | image_tag: class: 'collection-hero__image', loading: 'eager' }}
+        {{ collection.image | image_url: width: 1920 | image_tag: class: 'collection-hero__image collection-hero__image--desktop', loading: 'eager' }}
       {%- else -%}
-        <div class="collection-hero__placeholder"></div>
+        <div class="collection-hero__placeholder collection-hero__image--desktop"></div>
       {%- endif -%}
+
+      {%- comment -%} Mobile Image {%- endcomment -%}
+      {%- if section.settings.hero_image_mobile != blank -%}
+        {{ section.settings.hero_image_mobile | image_url: width: 800 | image_tag: class: 'collection-hero__image collection-hero__image--mobile', loading: 'eager' }}
+      {%- elsif section.settings.hero_image_desktop != blank -%}
+        {{ section.settings.hero_image_desktop | image_url: width: 800 | image_tag: class: 'collection-hero__image collection-hero__image--mobile', loading: 'eager' }}
+      {%- elsif section.settings.hero_image != blank -%}
+        {{ section.settings.hero_image | image_url: width: 800 | image_tag: class: 'collection-hero__image collection-hero__image--mobile', loading: 'eager' }}
+      {%- elsif collection.image -%}
+        {{ collection.image | image_url: width: 800 | image_tag: class: 'collection-hero__image collection-hero__image--mobile', loading: 'eager' }}
+      {%- else -%}
+        <div class="collection-hero__placeholder collection-hero__image--mobile"></div>
+      {%- endif -%}
+
       <div class="collection-hero__overlay"></div>
     </div>
 
@@ -282,6 +299,14 @@
     object-fit: cover;
   }
 
+  .collection-hero__image--desktop {
+    display: none;
+  }
+
+  .collection-hero__image--mobile {
+    display: block;
+  }
+
   .collection-hero__placeholder {
     width: 100%;
     height: 100%;
@@ -481,6 +506,14 @@
   @media (min-width: 768px) {
     .collection-hero {
       height: var(--hero-height-desktop, 450px);
+    }
+
+    .collection-hero__image--desktop {
+      display: block;
+    }
+
+    .collection-hero__image--mobile {
+      display: none;
     }
 
     .collection-hero__content {
@@ -1301,9 +1334,21 @@
     },
     {
       "type": "image_picker",
+      "id": "hero_image_desktop",
+      "label": "Desktop banner image",
+      "info": "Uses collection image by default"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image_mobile",
+      "label": "Mobile banner image",
+      "info": "Uses desktop image if not set, then collection image"
+    },
+    {
+      "type": "image_picker",
       "id": "hero_image",
-      "label": "Custom hero image",
-      "info": "Uses collection image by default. Set this to override."
+      "label": "Legacy hero image (deprecated)",
+      "info": "Use Desktop/Mobile images above instead"
     },
     {
       "type": "range",
