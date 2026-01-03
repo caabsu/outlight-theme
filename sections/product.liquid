@@ -339,6 +339,53 @@
         {% endform %}
       </div>
 
+      {%- comment -%} Promotion Block - Before Divider {%- endcomment -%}
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'promotion' -%}
+          <div class="product-promotion" {{ block.shopify_attributes }} style="
+            --promo-bg: {{ block.settings.background_color }};
+            --promo-left-bg: {{ block.settings.left_bg_color }};
+            --promo-code-bg: {{ block.settings.code_bg_color }};
+            --promo-code-text-color: {{ block.settings.code_text_color }};
+            --promo-icon-color: {{ block.settings.icon_color }};
+            --promo-line1-color: {{ block.settings.line1_color }};
+            --promo-line1-size: {{ block.settings.line1_size }}px;
+            --promo-line1-weight: {{ block.settings.line1_weight }};
+            --promo-line2-color: {{ block.settings.line2_color }};
+            --promo-line2-size: {{ block.settings.line2_size }}px;
+            --promo-line2-weight: {{ block.settings.line2_weight }};
+            --promo-code-size: {{ block.settings.code_size }}px;
+            --promo-code-weight: {{ block.settings.code_weight }};
+            --promo-padding: {{ block.settings.padding }}px;
+            --promo-radius: {{ block.settings.border_radius }}px;
+          ">
+            <div class="product-promotion__left">
+              <span class="product-promotion__icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
+                  <line x1="7" y1="7" x2="7.01" y2="7"/>
+                </svg>
+              </span>
+              <div class="product-promotion__text">
+                {%- if block.settings.line1_text != blank -%}
+                  <span class="product-promotion__line1">{{ block.settings.line1_text }}</span>
+                {%- endif -%}
+                {%- if block.settings.line2_text != blank -%}
+                  <span class="product-promotion__line2">{{ block.settings.line2_text }}</span>
+                {%- endif -%}
+              </div>
+            </div>
+            {%- if block.settings.code_text != blank -%}
+              <button class="product-promotion__code" data-promo-code="{{ block.settings.code_value }}" onclick="copyPromoCode(this)">
+                <span class="product-promotion__code-label">{{ block.settings.code_text }}</span>
+                <span class="product-promotion__code-value">{{ block.settings.code_value }}</span>
+                <span class="product-promotion__code-copied">Copied!</span>
+              </button>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+
       {%- comment -%} Modern Divider {%- endcomment -%}
       <div class="product-divider"></div>
 
@@ -797,36 +844,6 @@
               </div>
 
               <span class="product-trust-badges__line"></span>
-            </div>
-
-          {%- when 'promotion' -%}
-            <div class="product-promotion" {{ block.shopify_attributes }} style="
-              --promo-bg: {{ block.settings.background_color }};
-              --promo-border-color: {{ block.settings.border_color }};
-              --promo-border-width: {{ block.settings.border_width }}px;
-              --promo-padding-v: {{ block.settings.padding_vertical }}px;
-              --promo-padding-h: {{ block.settings.padding_horizontal }}px;
-              --promo-radius: {{ block.settings.border_radius }}px;
-              --promo-line1-color: {{ block.settings.line1_color }};
-              --promo-line1-size: {{ block.settings.line1_size }}px;
-              --promo-line1-weight: {{ block.settings.line1_weight }};
-              --promo-line2-color: {{ block.settings.line2_color }};
-              --promo-line2-size: {{ block.settings.line2_size }}px;
-              --promo-line2-weight: {{ block.settings.line2_weight }};
-              --promo-line3-color: {{ block.settings.line3_color }};
-              --promo-line3-size: {{ block.settings.line3_size }}px;
-              --promo-line3-weight: {{ block.settings.line3_weight }};
-              --promo-gap: {{ block.settings.line_gap }}px;
-            ">
-              {%- if block.settings.line1_text != blank -%}
-                <span class="product-promotion__line1">{{ block.settings.line1_text }}</span>
-              {%- endif -%}
-              {%- if block.settings.line2_text != blank -%}
-                <span class="product-promotion__line2">{{ block.settings.line2_text }}</span>
-              {%- endif -%}
-              {%- if block.settings.line3_text != blank -%}
-                <span class="product-promotion__line3">{{ block.settings.line3_text }}</span>
-              {%- endif -%}
             </div>
 
         {%- endcase -%}
@@ -2284,40 +2301,111 @@
   /* Promotion Block */
   .product-promotion {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+    align-items: stretch;
+    justify-content: space-between;
     width: 100%;
-    background: var(--promo-bg, #f5f5f5);
-    border: var(--promo-border-width, 1px) solid var(--promo-border-color, #e5e5e5);
-    border-radius: var(--promo-radius, 4px);
-    padding: var(--promo-padding-v, 16px) var(--promo-padding-h, 20px);
-    gap: var(--promo-gap, 4px);
+    background: var(--promo-bg, #fef3e7);
+    border-radius: var(--promo-radius, 6px);
     margin-top: 12px;
     box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .product-promotion__left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: var(--promo-padding, 14px) 16px;
+    background: var(--promo-left-bg, transparent);
+  }
+
+  .product-promotion__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--promo-icon-color, #c45a32);
+    flex-shrink: 0;
+  }
+
+  .product-promotion__icon svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .product-promotion__text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
   }
 
   .product-promotion__line1 {
-    font-size: var(--promo-line1-size, 11px);
+    font-size: var(--promo-line1-size, 10px);
     font-weight: var(--promo-line1-weight, 500);
-    color: var(--promo-line1-color, #666);
+    color: var(--promo-line1-color, #92400e);
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
   }
 
   .product-promotion__line2 {
-    font-size: var(--promo-line2-size, 18px);
+    font-size: var(--promo-line2-size, 15px);
     font-weight: var(--promo-line2-weight, 700);
     color: var(--promo-line2-color, #1a1a1a);
-    letter-spacing: 0.02em;
+    letter-spacing: 0.01em;
   }
 
-  .product-promotion__line3 {
-    font-size: var(--promo-line3-size, 12px);
-    font-weight: var(--promo-line3-weight, 500);
-    color: var(--promo-line3-color, #666);
+  .product-promotion__code {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: var(--promo-padding, 14px) 16px;
+    background: var(--promo-code-bg, #fde9d4);
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+    position: relative;
+  }
+
+  .product-promotion__code:hover {
+    opacity: 0.85;
+  }
+
+  .product-promotion__code-label {
+    font-size: var(--promo-code-size, 11px);
+    font-weight: var(--promo-code-weight, 500);
+    color: var(--promo-code-text-color, #92400e);
+    text-transform: uppercase;
     letter-spacing: 0.05em;
+    white-space: nowrap;
+  }
+
+  .product-promotion__code-value {
+    font-size: var(--promo-code-size, 11px);
+    font-weight: 700;
+    color: var(--promo-code-text-color, #92400e);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+  }
+
+  .product-promotion__code-copied {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--promo-code-text-color, #92400e);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .product-promotion__code.copied .product-promotion__code-label,
+  .product-promotion__code.copied .product-promotion__code-value {
+    opacity: 0;
+  }
+
+  .product-promotion__code.copied .product-promotion__code-copied {
+    opacity: 1;
   }
 
   /* Desktop Layout */
@@ -3336,6 +3424,31 @@
       closeSpecsModal();
     }
   });
+
+  // Copy promo code function
+  window.copyPromoCode = function(button) {
+    const code = button.dataset.promoCode;
+    if (code) {
+      navigator.clipboard.writeText(code).then(() => {
+        button.classList.add('copied');
+        setTimeout(() => {
+          button.classList.remove('copied');
+        }, 1500);
+      }).catch(() => {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = code;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        button.classList.add('copied');
+        setTimeout(() => {
+          button.classList.remove('copied');
+        }, 1500);
+      });
+    }
+  };
 {% endjavascript %}
 
 {% schema %}
@@ -3601,12 +3714,12 @@
       "settings": [
         {
           "type": "header",
-          "content": "Line 1"
+          "content": "Left side - Label"
         },
         {
           "type": "text",
           "id": "line1_text",
-          "label": "Text",
+          "label": "Small text",
           "default": "SPRING SALE"
         },
         {
@@ -3614,16 +3727,16 @@
           "id": "line1_size",
           "label": "Size",
           "min": 8,
-          "max": 16,
+          "max": 14,
           "step": 1,
           "unit": "px",
-          "default": 11
+          "default": 10
         },
         {
           "type": "color",
           "id": "line1_color",
           "label": "Color",
-          "default": "#666666"
+          "default": "#92400e"
         },
         {
           "type": "select",
@@ -3639,12 +3752,12 @@
         },
         {
           "type": "header",
-          "content": "Line 2"
+          "content": "Left side - Main text"
         },
         {
           "type": "text",
           "id": "line2_text",
-          "label": "Text",
+          "label": "Main text",
           "default": "EXTRA 20% OFF"
         },
         {
@@ -3652,10 +3765,10 @@
           "id": "line2_size",
           "label": "Size",
           "min": 12,
-          "max": 28,
+          "max": 22,
           "step": 1,
           "unit": "px",
-          "default": 18
+          "default": 15
         },
         {
           "type": "color",
@@ -3677,34 +3790,34 @@
         },
         {
           "type": "header",
-          "content": "Line 3"
+          "content": "Right side - Promo code"
         },
         {
           "type": "text",
-          "id": "line3_text",
-          "label": "Text",
-          "default": "USE CODE: SPRING20"
+          "id": "code_text",
+          "label": "Label text",
+          "default": "USE CODE:"
+        },
+        {
+          "type": "text",
+          "id": "code_value",
+          "label": "Code (copied on click)",
+          "default": "SPRING20"
         },
         {
           "type": "range",
-          "id": "line3_size",
-          "label": "Size",
-          "min": 8,
-          "max": 16,
+          "id": "code_size",
+          "label": "Text size",
+          "min": 9,
+          "max": 14,
           "step": 1,
           "unit": "px",
-          "default": 12
-        },
-        {
-          "type": "color",
-          "id": "line3_color",
-          "label": "Color",
-          "default": "#666666"
+          "default": 11
         },
         {
           "type": "select",
-          "id": "line3_weight",
-          "label": "Weight",
+          "id": "code_weight",
+          "label": "Label weight",
           "options": [
             { "value": "400", "label": "Regular" },
             { "value": "500", "label": "Medium" },
@@ -3714,30 +3827,52 @@
           "default": "500"
         },
         {
+          "type": "color",
+          "id": "code_text_color",
+          "label": "Text color",
+          "default": "#92400e"
+        },
+        {
+          "type": "color",
+          "id": "code_bg_color",
+          "label": "Background color",
+          "default": "#fde9d4"
+        },
+        {
           "type": "header",
-          "content": "Box styling"
+          "content": "Colors"
         },
         {
           "type": "color",
           "id": "background_color",
-          "label": "Background color",
-          "default": "#f5f5f5"
+          "label": "Main background",
+          "default": "#fef3e7"
         },
         {
           "type": "color",
-          "id": "border_color",
-          "label": "Border color",
-          "default": "#e5e5e5"
+          "id": "left_bg_color",
+          "label": "Left section background",
+          "default": "transparent"
+        },
+        {
+          "type": "color",
+          "id": "icon_color",
+          "label": "Icon color",
+          "default": "#c45a32"
+        },
+        {
+          "type": "header",
+          "content": "Layout"
         },
         {
           "type": "range",
-          "id": "border_width",
-          "label": "Border width",
-          "min": 0,
-          "max": 3,
-          "step": 1,
+          "id": "padding",
+          "label": "Padding",
+          "min": 8,
+          "max": 24,
+          "step": 2,
           "unit": "px",
-          "default": 1
+          "default": 14
         },
         {
           "type": "range",
@@ -3747,41 +3882,7 @@
           "max": 16,
           "step": 1,
           "unit": "px",
-          "default": 4
-        },
-        {
-          "type": "header",
-          "content": "Spacing"
-        },
-        {
-          "type": "range",
-          "id": "padding_vertical",
-          "label": "Vertical padding",
-          "min": 8,
-          "max": 32,
-          "step": 2,
-          "unit": "px",
-          "default": 16
-        },
-        {
-          "type": "range",
-          "id": "padding_horizontal",
-          "label": "Horizontal padding",
-          "min": 8,
-          "max": 40,
-          "step": 2,
-          "unit": "px",
-          "default": 20
-        },
-        {
-          "type": "range",
-          "id": "line_gap",
-          "label": "Gap between lines",
-          "min": 0,
-          "max": 12,
-          "step": 1,
-          "unit": "px",
-          "default": 4
+          "default": 6
         }
       ]
     },
