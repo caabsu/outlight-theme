@@ -58,10 +58,29 @@
             "specs_box_image": "shopify://shop_images/Rivor_closeup.jpg",
             "specs_box_img_opacity": 30
           }
+        },
+        "trust_badges_EnJJJQ": {
+          "type": "trust_badges",
+          "settings": {
+            "badge_1_icon": "shipping",
+            "badge_1_text": "FREESHIPPING",
+            "badge_2_icon": "location",
+            "badge_2_text": "TRACKORDER",
+            "badge_2_url": "",
+            "badge_3_icon": "headset",
+            "badge_3_text": "24/7SUPPORT",
+            "icon_color": "#666666",
+            "text_color": "#666666",
+            "link_color": "#c45a32",
+            "link_underline_color": "#c45a32",
+            "text_size": 11,
+            "text_weight": "500"
+          }
         }
       },
       "block_order": [
-        "product_details_aFigg4"
+        "product_details_aFigg4",
+        "trust_badges_EnJJJQ"
       ],
       "settings": {
         "product_info_bg": "#f7f5f0",
