@@ -6,6 +6,7 @@
     --promise-text-color: {{ section.settings.text_color }};
     --promise-link-color: {{ section.settings.link_color }};
     --promise-link-underline-color: {{ section.settings.link_underline_color }};
+    --promise-link-weight: {{ section.settings.link_weight }};
     --promise-badge-color: {{ section.settings.badge_text_color }};
     --promise-icon-color: {{ section.settings.icon_color }};
     --promise-title-size-mobile: {{ section.settings.title_size_mobile }}px;
@@ -164,7 +165,7 @@
   .promise-mobile__link {
     display: inline-block;
     font-size: var(--promise-badge-size-mobile, 12px);
-    font-weight: 500;
+    font-weight: var(--promise-link-weight, 500);
     letter-spacing: 0.05em;
     text-transform: uppercase;
     color: var(--promise-link-color, #1a1a1a);
@@ -326,6 +327,18 @@
       "id": "link_underline_color",
       "label": "Link underline color",
       "default": "#c45a32"
+    },
+    {
+      "type": "select",
+      "id": "link_weight",
+      "label": "Link font weight",
+      "options": [
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "500"
     },
     {
       "type": "color",
