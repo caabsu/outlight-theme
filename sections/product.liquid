@@ -757,6 +757,121 @@
               {{ block.settings.text }}
             </p>
 
+          {%- when 'trust_badges' -%}
+            <div class="product-trust-badges" {{ block.shopify_attributes }} style="
+              --trust-icon-color: {{ block.settings.icon_color }};
+              --trust-text-color: {{ block.settings.text_color }};
+              --trust-link-color: {{ block.settings.link_color }};
+              --trust-link-underline: {{ block.settings.link_underline_color }};
+              --trust-text-size: {{ block.settings.text_size }}px;
+              --trust-text-weight: {{ block.settings.text_weight }};
+            ">
+              {%- if block.settings.badge_1_text != blank -%}
+                <div class="product-trust-badge">
+                  <span class="product-trust-badge__icon">
+                    {%- if block.settings.badge_1_icon == 'shipping' -%}
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="1" y="3" width="15" height="13"/>
+                        <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+                        <circle cx="5.5" cy="18.5" r="2.5"/>
+                        <circle cx="18.5" cy="18.5" r="2.5"/>
+                      </svg>
+                    {%- elsif block.settings.badge_1_icon == 'location' -%}
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                        <circle cx="12" cy="10" r="3"/>
+                      </svg>
+                    {%- elsif block.settings.badge_1_icon == 'headset' -%}
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 18v-6a9 9 0 0 1 18 0v6"/>
+                        <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
+                      </svg>
+                    {%- elsif block.settings.badge_1_icon == 'shield' -%}
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                      </svg>
+                    {%- elsif block.settings.badge_1_icon == 'return' -%}
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="1 4 1 10 7 10"/>
+                        <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+                      </svg>
+                    {%- endif -%}
+                  </span>
+                  <span class="product-trust-badge__text">{{ block.settings.badge_1_text }}</span>
+                </div>
+              {%- endif -%}
+
+              {%- if block.settings.badge_2_text != blank -%}
+                <{% if block.settings.badge_2_url != blank %}a href="{{ block.settings.badge_2_url }}"{% else %}div{% endif %} class="product-trust-badge {% if block.settings.badge_2_url != blank %}product-trust-badge--link{% endif %}">
+                  <span class="product-trust-badge__icon">
+                    {%- if block.settings.badge_2_icon == 'shipping' -%}
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="1" y="3" width="15" height="13"/>
+                        <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+                        <circle cx="5.5" cy="18.5" r="2.5"/>
+                        <circle cx="18.5" cy="18.5" r="2.5"/>
+                      </svg>
+                    {%- elsif block.settings.badge_2_icon == 'location' -%}
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                        <circle cx="12" cy="10" r="3"/>
+                      </svg>
+                    {%- elsif block.settings.badge_2_icon == 'headset' -%}
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 18v-6a9 9 0 0 1 18 0v6"/>
+                        <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
+                      </svg>
+                    {%- elsif block.settings.badge_2_icon == 'shield' -%}
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                      </svg>
+                    {%- elsif block.settings.badge_2_icon == 'return' -%}
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="1 4 1 10 7 10"/>
+                        <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+                      </svg>
+                    {%- endif -%}
+                  </span>
+                  <span class="product-trust-badge__text">{{ block.settings.badge_2_text }}</span>
+                </{% if block.settings.badge_2_url != blank %}a{% else %}div{% endif %}>
+              {%- endif -%}
+
+              {%- if block.settings.badge_3_text != blank -%}
+                <div class="product-trust-badge">
+                  <span class="product-trust-badge__icon">
+                    {%- if block.settings.badge_3_icon == 'shipping' -%}
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="1" y="3" width="15" height="13"/>
+                        <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+                        <circle cx="5.5" cy="18.5" r="2.5"/>
+                        <circle cx="18.5" cy="18.5" r="2.5"/>
+                      </svg>
+                    {%- elsif block.settings.badge_3_icon == 'location' -%}
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                        <circle cx="12" cy="10" r="3"/>
+                      </svg>
+                    {%- elsif block.settings.badge_3_icon == 'headset' -%}
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 18v-6a9 9 0 0 1 18 0v6"/>
+                        <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
+                      </svg>
+                    {%- elsif block.settings.badge_3_icon == 'shield' -%}
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                      </svg>
+                    {%- elsif block.settings.badge_3_icon == 'return' -%}
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="1 4 1 10 7 10"/>
+                        <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+                      </svg>
+                    {%- endif -%}
+                  </span>
+                  <span class="product-trust-badge__text">{{ block.settings.badge_3_text }}</span>
+                </div>
+              {%- endif -%}
+            </div>
+
         {%- endcase -%}
       {%- endfor -%}
     </div>
@@ -2145,6 +2260,49 @@
     margin: 1rem 0 0;
   }
 
+  /* Trust Badges */
+  .product-trust-badges {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 32px;
+    padding: 24px 0;
+    margin-top: 16px;
+  }
+
+  .product-trust-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+
+  .product-trust-badge__icon {
+    color: var(--trust-icon-color, #666);
+  }
+
+  .product-trust-badge__text {
+    font-size: var(--trust-text-size, 11px);
+    font-weight: var(--trust-text-weight, 500);
+    color: var(--trust-text-color, #666);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-align: center;
+    line-height: 1.4;
+  }
+
+  .product-trust-badge--link .product-trust-badge__text {
+    color: var(--trust-link-color, #c45a32);
+    text-decoration: underline;
+    text-decoration-color: var(--trust-link-underline, #c45a32);
+    text-underline-offset: 3px;
+  }
+
+  .product-trust-badge--link:hover .product-trust-badge__text {
+    opacity: 0.8;
+  }
+
   /* Desktop Layout */
   @media screen and (min-width: 768px) {
     .product-container {
@@ -3262,6 +3420,136 @@
           "id": "text",
           "label": "Text",
           "default": "Free shipping on orders over $200"
+        }
+      ]
+    },
+    {
+      "type": "trust_badges",
+      "name": "Trust badges",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Badge 1"
+        },
+        {
+          "type": "select",
+          "id": "badge_1_icon",
+          "label": "Icon",
+          "options": [
+            { "value": "shipping", "label": "Shipping truck" },
+            { "value": "location", "label": "Location pin" },
+            { "value": "headset", "label": "Headset/Support" },
+            { "value": "shield", "label": "Shield" },
+            { "value": "return", "label": "Return arrow" }
+          ],
+          "default": "shipping"
+        },
+        {
+          "type": "text",
+          "id": "badge_1_text",
+          "label": "Text",
+          "default": "FREE\nSHIPPING"
+        },
+        {
+          "type": "header",
+          "content": "Badge 2 (Link)"
+        },
+        {
+          "type": "select",
+          "id": "badge_2_icon",
+          "label": "Icon",
+          "options": [
+            { "value": "shipping", "label": "Shipping truck" },
+            { "value": "location", "label": "Location pin" },
+            { "value": "headset", "label": "Headset/Support" },
+            { "value": "shield", "label": "Shield" },
+            { "value": "return", "label": "Return arrow" }
+          ],
+          "default": "location"
+        },
+        {
+          "type": "text",
+          "id": "badge_2_text",
+          "label": "Text",
+          "default": "TRACK\nORDER"
+        },
+        {
+          "type": "url",
+          "id": "badge_2_url",
+          "label": "Link URL"
+        },
+        {
+          "type": "header",
+          "content": "Badge 3"
+        },
+        {
+          "type": "select",
+          "id": "badge_3_icon",
+          "label": "Icon",
+          "options": [
+            { "value": "shipping", "label": "Shipping truck" },
+            { "value": "location", "label": "Location pin" },
+            { "value": "headset", "label": "Headset/Support" },
+            { "value": "shield", "label": "Shield" },
+            { "value": "return", "label": "Return arrow" }
+          ],
+          "default": "headset"
+        },
+        {
+          "type": "text",
+          "id": "badge_3_text",
+          "label": "Text",
+          "default": "24/7\nSUPPORT"
+        },
+        {
+          "type": "header",
+          "content": "Styling"
+        },
+        {
+          "type": "color",
+          "id": "icon_color",
+          "label": "Icon color",
+          "default": "#666666"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Text color",
+          "default": "#666666"
+        },
+        {
+          "type": "color",
+          "id": "link_color",
+          "label": "Link text color",
+          "default": "#c45a32"
+        },
+        {
+          "type": "color",
+          "id": "link_underline_color",
+          "label": "Link underline color",
+          "default": "#c45a32"
+        },
+        {
+          "type": "range",
+          "id": "text_size",
+          "label": "Text size",
+          "min": 9,
+          "max": 16,
+          "step": 1,
+          "unit": "px",
+          "default": 11
+        },
+        {
+          "type": "select",
+          "id": "text_weight",
+          "label": "Text weight",
+          "options": [
+            { "value": "400", "label": "Regular" },
+            { "value": "500", "label": "Medium" },
+            { "value": "600", "label": "Semibold" },
+            { "value": "700", "label": "Bold" }
+          ],
+          "default": "500"
         }
       ]
     },
