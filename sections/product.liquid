@@ -344,43 +344,44 @@
         {%- if block.type == 'promotion' -%}
           <div class="product-promotion" {{ block.shopify_attributes }} style="
             --promo-bg: {{ block.settings.background_color }};
-            --promo-left-bg: {{ block.settings.left_bg_color }};
-            --promo-code-bg: {{ block.settings.code_bg_color }};
-            --promo-code-text-color: {{ block.settings.code_text_color }};
+            --promo-border-color: {{ block.settings.border_color }};
             --promo-icon-color: {{ block.settings.icon_color }};
-            --promo-line1-color: {{ block.settings.line1_color }};
-            --promo-line1-size: {{ block.settings.line1_size }}px;
-            --promo-line1-weight: {{ block.settings.line1_weight }};
-            --promo-line2-color: {{ block.settings.line2_color }};
-            --promo-line2-size: {{ block.settings.line2_size }}px;
-            --promo-line2-weight: {{ block.settings.line2_weight }};
-            --promo-code-size: {{ block.settings.code_size }}px;
-            --promo-code-weight: {{ block.settings.code_weight }};
+            --promo-title-color: {{ block.settings.title_color }};
+            --promo-title-size: {{ block.settings.title_size }}px;
+            --promo-code-label-color: {{ block.settings.code_label_color }};
+            --promo-code-label-size: {{ block.settings.code_label_size }}px;
+            --promo-code-value-color: {{ block.settings.code_value_color }};
+            --promo-code-border-color: {{ block.settings.code_border_color }};
+            --promo-badge-bg: {{ block.settings.badge_bg_color }};
+            --promo-badge-color: {{ block.settings.badge_text_color }};
+            --promo-badge-size: {{ block.settings.badge_size }}px;
             --promo-padding: {{ block.settings.padding }}px;
             --promo-radius: {{ block.settings.border_radius }}px;
           ">
-            <div class="product-promotion__left">
-              <span class="product-promotion__icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
-                  <line x1="7" y1="7" x2="7.01" y2="7"/>
-                </svg>
-              </span>
-              <div class="product-promotion__text">
-                {%- if block.settings.line1_text != blank -%}
-                  <span class="product-promotion__line1">{{ block.settings.line1_text }}</span>
+            <span class="product-promotion__icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                <path d="M20 12v10H4V12H2v10c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V12h-2zm-8-8c-1.1 0-2 .9-2 2v2H6c-1.1 0-2 .9-2 2v2h16v-2c0-1.1-.9-2-2-2h-4V6c0-1.1-.9-2-2-2zm0 2c.55 0 1 .45 1 1v2h-2V7c0-.55.45-1 1-1z"/>
+                <rect x="4" y="10" width="16" height="2"/>
+              </svg>
+            </span>
+            <div class="product-promotion__content">
+              {%- if block.settings.title_text != blank -%}
+                <span class="product-promotion__title">{{ block.settings.title_text }}</span>
+              {%- endif -%}
+              <div class="product-promotion__code-row">
+                {%- if block.settings.code_label != blank -%}
+                  <span class="product-promotion__code-label">{{ block.settings.code_label }}</span>
                 {%- endif -%}
-                {%- if block.settings.line2_text != blank -%}
-                  <span class="product-promotion__line2">{{ block.settings.line2_text }}</span>
+                {%- if block.settings.code_value != blank -%}
+                  <button class="product-promotion__code-box" data-promo-code="{{ block.settings.code_value }}" onclick="copyPromoCode(this)">
+                    <span class="product-promotion__code-value">{{ block.settings.code_value }}</span>
+                    <span class="product-promotion__code-copied">Copied!</span>
+                  </button>
                 {%- endif -%}
               </div>
             </div>
-            {%- if block.settings.code_text != blank -%}
-              <button class="product-promotion__code" data-promo-code="{{ block.settings.code_value }}" onclick="copyPromoCode(this)">
-                <span class="product-promotion__code-label">{{ block.settings.code_text }}</span>
-                <span class="product-promotion__code-value">{{ block.settings.code_value }}</span>
-                <span class="product-promotion__code-copied">Copied!</span>
-              </button>
+            {%- if block.settings.badge_text != blank -%}
+              <span class="product-promotion__badge">{{ block.settings.badge_text }}</span>
             {%- endif -%}
           </div>
         {%- endif -%}
@@ -2301,22 +2302,15 @@
   /* Promotion Block */
   .product-promotion {
     display: flex;
-    align-items: stretch;
-    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
     width: 100%;
-    background: var(--promo-bg, #fef3e7);
-    border-radius: var(--promo-radius, 6px);
+    background: var(--promo-bg, #f5f5f5);
+    border: 1px solid var(--promo-border-color, #e5e5e5);
+    border-radius: var(--promo-radius, 8px);
+    padding: var(--promo-padding, 16px) 20px;
     margin-top: 12px;
     box-sizing: border-box;
-    overflow: hidden;
-  }
-
-  .product-promotion__left {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: var(--promo-padding, 14px) 16px;
-    background: var(--promo-left-bg, transparent);
   }
 
   .product-promotion__icon {
@@ -2328,63 +2322,60 @@
   }
 
   .product-promotion__icon svg {
-    width: 22px;
-    height: 22px;
+    width: 28px;
+    height: 28px;
   }
 
-  .product-promotion__text {
+  .product-promotion__content {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 4px;
+    flex: 1;
   }
 
-  .product-promotion__line1 {
-    font-size: var(--promo-line1-size, 10px);
-    font-weight: var(--promo-line1-weight, 500);
-    color: var(--promo-line1-color, #92400e);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
+  .product-promotion__title {
+    font-size: var(--promo-title-size, 18px);
+    font-style: italic;
+    color: var(--promo-title-color, #1a1a1a);
+    line-height: 1.2;
   }
 
-  .product-promotion__line2 {
-    font-size: var(--promo-line2-size, 15px);
-    font-weight: var(--promo-line2-weight, 700);
-    color: var(--promo-line2-color, #1a1a1a);
-    letter-spacing: 0.01em;
-  }
-
-  .product-promotion__code {
+  .product-promotion__code-row {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: var(--promo-padding, 14px) 16px;
-    background: var(--promo-code-bg, #fde9d4);
-    border: none;
-    cursor: pointer;
-    transition: opacity 0.2s ease;
-    position: relative;
-  }
-
-  .product-promotion__code:hover {
-    opacity: 0.85;
+    gap: 8px;
   }
 
   .product-promotion__code-label {
-    font-size: var(--promo-code-size, 11px);
-    font-weight: var(--promo-code-weight, 500);
-    color: var(--promo-code-text-color, #92400e);
+    font-size: var(--promo-code-label-size, 12px);
+    font-weight: 600;
+    color: var(--promo-code-label-color, #666);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    white-space: nowrap;
+    letter-spacing: 0.03em;
+  }
+
+  .product-promotion__code-box {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    background: transparent;
+    border: 1px solid var(--promo-code-border-color, #1a1a1a);
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+  }
+
+  .product-promotion__code-box:hover {
+    background: rgba(0, 0, 0, 0.03);
   }
 
   .product-promotion__code-value {
-    font-size: var(--promo-code-size, 11px);
+    font-size: var(--promo-code-label-size, 12px);
     font-weight: 700;
-    color: var(--promo-code-text-color, #92400e);
+    color: var(--promo-code-value-color, #1a1a1a);
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    white-space: nowrap;
   }
 
   .product-promotion__code-copied {
@@ -2392,20 +2383,34 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 600;
-    color: var(--promo-code-text-color, #92400e);
+    color: var(--promo-code-value-color, #1a1a1a);
     opacity: 0;
     transition: opacity 0.2s ease;
+    white-space: nowrap;
   }
 
-  .product-promotion__code.copied .product-promotion__code-label,
-  .product-promotion__code.copied .product-promotion__code-value {
+  .product-promotion__code-box.copied .product-promotion__code-value {
     opacity: 0;
   }
 
-  .product-promotion__code.copied .product-promotion__code-copied {
+  .product-promotion__code-box.copied .product-promotion__code-copied {
     opacity: 1;
+  }
+
+  .product-promotion__badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 12px;
+    background: var(--promo-badge-bg, #dcfce7);
+    border-radius: 4px;
+    font-size: var(--promo-badge-size, 14px);
+    font-weight: 600;
+    color: var(--promo-badge-color, #16a34a);
+    white-space: nowrap;
+    flex-shrink: 0;
   }
 
   /* Desktop Layout */
@@ -3714,145 +3719,121 @@
       "settings": [
         {
           "type": "header",
-          "content": "Left side - Label"
+          "content": "Title"
         },
         {
           "type": "text",
-          "id": "line1_text",
-          "label": "Small text",
-          "default": "SPRING SALE"
+          "id": "title_text",
+          "label": "Title text (italic)",
+          "default": "New Year's Gift"
         },
         {
           "type": "range",
-          "id": "line1_size",
-          "label": "Size",
-          "min": 8,
-          "max": 14,
+          "id": "title_size",
+          "label": "Title size",
+          "min": 14,
+          "max": 24,
           "step": 1,
           "unit": "px",
-          "default": 10
+          "default": 18
         },
         {
           "type": "color",
-          "id": "line1_color",
-          "label": "Color",
-          "default": "#92400e"
-        },
-        {
-          "type": "select",
-          "id": "line1_weight",
-          "label": "Weight",
-          "options": [
-            { "value": "400", "label": "Regular" },
-            { "value": "500", "label": "Medium" },
-            { "value": "600", "label": "Semibold" },
-            { "value": "700", "label": "Bold" }
-          ],
-          "default": "500"
-        },
-        {
-          "type": "header",
-          "content": "Left side - Main text"
-        },
-        {
-          "type": "text",
-          "id": "line2_text",
-          "label": "Main text",
-          "default": "EXTRA 20% OFF"
-        },
-        {
-          "type": "range",
-          "id": "line2_size",
-          "label": "Size",
-          "min": 12,
-          "max": 22,
-          "step": 1,
-          "unit": "px",
-          "default": 15
-        },
-        {
-          "type": "color",
-          "id": "line2_color",
-          "label": "Color",
+          "id": "title_color",
+          "label": "Title color",
           "default": "#1a1a1a"
         },
         {
-          "type": "select",
-          "id": "line2_weight",
-          "label": "Weight",
-          "options": [
-            { "value": "400", "label": "Regular" },
-            { "value": "500", "label": "Medium" },
-            { "value": "600", "label": "Semibold" },
-            { "value": "700", "label": "Bold" }
-          ],
-          "default": "700"
-        },
-        {
           "type": "header",
-          "content": "Right side - Promo code"
+          "content": "Promo code"
         },
         {
           "type": "text",
-          "id": "code_text",
-          "label": "Label text",
+          "id": "code_label",
+          "label": "Code label",
           "default": "USE CODE:"
         },
         {
           "type": "text",
           "id": "code_value",
-          "label": "Code (copied on click)",
-          "default": "SPRING20"
+          "label": "Code (click to copy)",
+          "default": "NEWYEAR30"
         },
         {
           "type": "range",
-          "id": "code_size",
-          "label": "Text size",
-          "min": 9,
+          "id": "code_label_size",
+          "label": "Code text size",
+          "min": 10,
           "max": 14,
           "step": 1,
           "unit": "px",
-          "default": 11
-        },
-        {
-          "type": "select",
-          "id": "code_weight",
-          "label": "Label weight",
-          "options": [
-            { "value": "400", "label": "Regular" },
-            { "value": "500", "label": "Medium" },
-            { "value": "600", "label": "Semibold" },
-            { "value": "700", "label": "Bold" }
-          ],
-          "default": "500"
+          "default": 12
         },
         {
           "type": "color",
-          "id": "code_text_color",
-          "label": "Text color",
-          "default": "#92400e"
+          "id": "code_label_color",
+          "label": "Label color",
+          "default": "#666666"
         },
         {
           "type": "color",
-          "id": "code_bg_color",
-          "label": "Background color",
-          "default": "#fde9d4"
+          "id": "code_value_color",
+          "label": "Code color",
+          "default": "#1a1a1a"
+        },
+        {
+          "type": "color",
+          "id": "code_border_color",
+          "label": "Code box border",
+          "default": "#1a1a1a"
         },
         {
           "type": "header",
-          "content": "Colors"
+          "content": "Discount badge"
+        },
+        {
+          "type": "text",
+          "id": "badge_text",
+          "label": "Badge text",
+          "default": "-30%"
+        },
+        {
+          "type": "range",
+          "id": "badge_size",
+          "label": "Badge text size",
+          "min": 12,
+          "max": 18,
+          "step": 1,
+          "unit": "px",
+          "default": 14
+        },
+        {
+          "type": "color",
+          "id": "badge_text_color",
+          "label": "Badge text color",
+          "default": "#16a34a"
+        },
+        {
+          "type": "color",
+          "id": "badge_bg_color",
+          "label": "Badge background",
+          "default": "#dcfce7"
+        },
+        {
+          "type": "header",
+          "content": "Box styling"
         },
         {
           "type": "color",
           "id": "background_color",
-          "label": "Main background",
-          "default": "#fef3e7"
+          "label": "Background color",
+          "default": "#f5f5f5"
         },
         {
           "type": "color",
-          "id": "left_bg_color",
-          "label": "Left section background",
-          "default": "transparent"
+          "id": "border_color",
+          "label": "Border color",
+          "default": "#e5e5e5"
         },
         {
           "type": "color",
@@ -3861,18 +3842,14 @@
           "default": "#c45a32"
         },
         {
-          "type": "header",
-          "content": "Layout"
-        },
-        {
           "type": "range",
           "id": "padding",
           "label": "Padding",
-          "min": 8,
+          "min": 12,
           "max": 24,
           "step": 2,
           "unit": "px",
-          "default": 14
+          "default": 16
         },
         {
           "type": "range",
@@ -3882,7 +3859,7 @@
           "max": 16,
           "step": 1,
           "unit": "px",
-          "default": 6
+          "default": 8
         }
       ]
     },
