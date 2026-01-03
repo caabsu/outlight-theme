@@ -799,6 +799,36 @@
               <span class="product-trust-badges__line"></span>
             </div>
 
+          {%- when 'promotion' -%}
+            <div class="product-promotion" {{ block.shopify_attributes }} style="
+              --promo-bg: {{ block.settings.background_color }};
+              --promo-border-color: {{ block.settings.border_color }};
+              --promo-border-width: {{ block.settings.border_width }}px;
+              --promo-padding-v: {{ block.settings.padding_vertical }}px;
+              --promo-padding-h: {{ block.settings.padding_horizontal }}px;
+              --promo-radius: {{ block.settings.border_radius }}px;
+              --promo-line1-color: {{ block.settings.line1_color }};
+              --promo-line1-size: {{ block.settings.line1_size }}px;
+              --promo-line1-weight: {{ block.settings.line1_weight }};
+              --promo-line2-color: {{ block.settings.line2_color }};
+              --promo-line2-size: {{ block.settings.line2_size }}px;
+              --promo-line2-weight: {{ block.settings.line2_weight }};
+              --promo-line3-color: {{ block.settings.line3_color }};
+              --promo-line3-size: {{ block.settings.line3_size }}px;
+              --promo-line3-weight: {{ block.settings.line3_weight }};
+              --promo-gap: {{ block.settings.line_gap }}px;
+            ">
+              {%- if block.settings.line1_text != blank -%}
+                <span class="product-promotion__line1">{{ block.settings.line1_text }}</span>
+              {%- endif -%}
+              {%- if block.settings.line2_text != blank -%}
+                <span class="product-promotion__line2">{{ block.settings.line2_text }}</span>
+              {%- endif -%}
+              {%- if block.settings.line3_text != blank -%}
+                <span class="product-promotion__line3">{{ block.settings.line3_text }}</span>
+              {%- endif -%}
+            </div>
+
         {%- endcase -%}
       {%- endfor -%}
     </div>
@@ -2251,6 +2281,45 @@
     opacity: 0.7;
   }
 
+  /* Promotion Block */
+  .product-promotion {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    background: var(--promo-bg, #f5f5f5);
+    border: var(--promo-border-width, 1px) solid var(--promo-border-color, #e5e5e5);
+    border-radius: var(--promo-radius, 4px);
+    padding: var(--promo-padding-v, 16px) var(--promo-padding-h, 20px);
+    gap: var(--promo-gap, 4px);
+    margin-top: 12px;
+    box-sizing: border-box;
+  }
+
+  .product-promotion__line1 {
+    font-size: var(--promo-line1-size, 11px);
+    font-weight: var(--promo-line1-weight, 500);
+    color: var(--promo-line1-color, #666);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .product-promotion__line2 {
+    font-size: var(--promo-line2-size, 18px);
+    font-weight: var(--promo-line2-weight, 700);
+    color: var(--promo-line2-color, #1a1a1a);
+    letter-spacing: 0.02em;
+  }
+
+  .product-promotion__line3 {
+    font-size: var(--promo-line3-size, 12px);
+    font-weight: var(--promo-line3-weight, 500);
+    color: var(--promo-line3-color, #666);
+    letter-spacing: 0.05em;
+  }
+
   /* Desktop Layout */
   @media screen and (min-width: 768px) {
     .product-container {
@@ -3523,6 +3592,196 @@
           "step": 4,
           "unit": "px",
           "default": 16
+        }
+      ]
+    },
+    {
+      "type": "promotion",
+      "name": "Promotion banner",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Line 1"
+        },
+        {
+          "type": "text",
+          "id": "line1_text",
+          "label": "Text",
+          "default": "SPRING SALE"
+        },
+        {
+          "type": "range",
+          "id": "line1_size",
+          "label": "Size",
+          "min": 8,
+          "max": 16,
+          "step": 1,
+          "unit": "px",
+          "default": 11
+        },
+        {
+          "type": "color",
+          "id": "line1_color",
+          "label": "Color",
+          "default": "#666666"
+        },
+        {
+          "type": "select",
+          "id": "line1_weight",
+          "label": "Weight",
+          "options": [
+            { "value": "400", "label": "Regular" },
+            { "value": "500", "label": "Medium" },
+            { "value": "600", "label": "Semibold" },
+            { "value": "700", "label": "Bold" }
+          ],
+          "default": "500"
+        },
+        {
+          "type": "header",
+          "content": "Line 2"
+        },
+        {
+          "type": "text",
+          "id": "line2_text",
+          "label": "Text",
+          "default": "EXTRA 20% OFF"
+        },
+        {
+          "type": "range",
+          "id": "line2_size",
+          "label": "Size",
+          "min": 12,
+          "max": 28,
+          "step": 1,
+          "unit": "px",
+          "default": 18
+        },
+        {
+          "type": "color",
+          "id": "line2_color",
+          "label": "Color",
+          "default": "#1a1a1a"
+        },
+        {
+          "type": "select",
+          "id": "line2_weight",
+          "label": "Weight",
+          "options": [
+            { "value": "400", "label": "Regular" },
+            { "value": "500", "label": "Medium" },
+            { "value": "600", "label": "Semibold" },
+            { "value": "700", "label": "Bold" }
+          ],
+          "default": "700"
+        },
+        {
+          "type": "header",
+          "content": "Line 3"
+        },
+        {
+          "type": "text",
+          "id": "line3_text",
+          "label": "Text",
+          "default": "USE CODE: SPRING20"
+        },
+        {
+          "type": "range",
+          "id": "line3_size",
+          "label": "Size",
+          "min": 8,
+          "max": 16,
+          "step": 1,
+          "unit": "px",
+          "default": 12
+        },
+        {
+          "type": "color",
+          "id": "line3_color",
+          "label": "Color",
+          "default": "#666666"
+        },
+        {
+          "type": "select",
+          "id": "line3_weight",
+          "label": "Weight",
+          "options": [
+            { "value": "400", "label": "Regular" },
+            { "value": "500", "label": "Medium" },
+            { "value": "600", "label": "Semibold" },
+            { "value": "700", "label": "Bold" }
+          ],
+          "default": "500"
+        },
+        {
+          "type": "header",
+          "content": "Box styling"
+        },
+        {
+          "type": "color",
+          "id": "background_color",
+          "label": "Background color",
+          "default": "#f5f5f5"
+        },
+        {
+          "type": "color",
+          "id": "border_color",
+          "label": "Border color",
+          "default": "#e5e5e5"
+        },
+        {
+          "type": "range",
+          "id": "border_width",
+          "label": "Border width",
+          "min": 0,
+          "max": 3,
+          "step": 1,
+          "unit": "px",
+          "default": 1
+        },
+        {
+          "type": "range",
+          "id": "border_radius",
+          "label": "Border radius",
+          "min": 0,
+          "max": 16,
+          "step": 1,
+          "unit": "px",
+          "default": 4
+        },
+        {
+          "type": "header",
+          "content": "Spacing"
+        },
+        {
+          "type": "range",
+          "id": "padding_vertical",
+          "label": "Vertical padding",
+          "min": 8,
+          "max": 32,
+          "step": 2,
+          "unit": "px",
+          "default": 16
+        },
+        {
+          "type": "range",
+          "id": "padding_horizontal",
+          "label": "Horizontal padding",
+          "min": 8,
+          "max": 40,
+          "step": 2,
+          "unit": "px",
+          "default": 20
+        },
+        {
+          "type": "range",
+          "id": "line_gap",
+          "label": "Gap between lines",
+          "min": 0,
+          "max": 12,
+          "step": 1,
+          "unit": "px",
+          "default": 4
         }
       ]
     },
