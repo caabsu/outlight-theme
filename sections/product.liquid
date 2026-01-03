@@ -300,9 +300,10 @@
           <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}" data-variant-id>
 
           {%- if section.settings.show_delivery_estimate -%}
+            {%- assign delivery_days = product.metafields.custom.delivery_time | default: section.settings.delivery_days -%}
             <div class="product-delivery-estimate">
               <span class="product-delivery-estimate__label">{{ section.settings.delivery_label }}</span>
-              <span class="product-delivery-estimate__date" data-delivery-days="{{ section.settings.delivery_days }}"></span>
+              <span class="product-delivery-estimate__date" data-delivery-days="{{ delivery_days }}"></span>
             </div>
           {%- endif -%}
 
