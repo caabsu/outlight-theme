@@ -759,62 +759,44 @@
 
           {%- when 'trust_badges' -%}
             <div class="product-trust-badges" {{ block.shopify_attributes }} style="
+              --trust-line-color: {{ block.settings.line_color }};
               --trust-icon-color: {{ block.settings.icon_color }};
               --trust-icon-size: {{ block.settings.icon_size }}px;
               --trust-text-color: {{ block.settings.text_color }};
               --trust-text-size: {{ block.settings.text_size }}px;
               --trust-text-weight: {{ block.settings.text_weight }};
-              --trust-btn-color: {{ block.settings.button_text_color }};
-              --trust-btn-underline: {{ block.settings.button_underline_color }};
+              --trust-divider-color: {{ block.settings.divider_color }};
               --trust-padding: {{ block.settings.padding }}px;
             ">
-              {%- if block.settings.badge_1_line1 != blank or block.settings.badge_1_line2 != blank -%}
-                <div class="product-trust-badge">
-                  <span class="product-trust-badge__icon">
-                    {%- render 'trust-badge-icon', icon: block.settings.badge_1_icon -%}
-                  </span>
-                  <span class="product-trust-badge__text">
-                    {%- if block.settings.badge_1_line1 != blank -%}{{ block.settings.badge_1_line1 }}{%- endif -%}
-                    {%- if block.settings.badge_1_line2 != blank -%}<br>{{ block.settings.badge_1_line2 }}{%- endif -%}
-                  </span>
-                </div>
-              {%- endif -%}
+              <span class="product-trust-badges__line"></span>
 
-              {%- if block.settings.badge_2_line1 != blank or block.settings.badge_2_line2 != blank -%}
-                <div class="product-trust-badge">
-                  <span class="product-trust-badge__icon">
-                    {%- render 'trust-badge-icon', icon: block.settings.badge_2_icon -%}
-                  </span>
-                  <span class="product-trust-badge__text">
-                    {%- if block.settings.badge_2_line1 != blank -%}{{ block.settings.badge_2_line1 }}{%- endif -%}
-                    {%- if block.settings.badge_2_line2 != blank -%}<br>{{ block.settings.badge_2_line2 }}{%- endif -%}
-                  </span>
-                </div>
-              {%- endif -%}
+              <div class="product-trust-badges__content">
+                {%- if block.settings.item_1_text != blank -%}
+                  <div class="product-trust-badge">
+                    {%- if block.settings.item_1_show_icon -%}
+                      <span class="product-trust-badge__icon">
+                        {%- render 'trust-badge-icon', icon: block.settings.item_1_icon -%}
+                      </span>
+                    {%- endif -%}
+                    <span class="product-trust-badge__text">{{ block.settings.item_1_text }}</span>
+                  </div>
+                {%- endif -%}
 
-              {%- if block.settings.badge_3_line1 != blank or block.settings.badge_3_line2 != blank -%}
-                <{% if block.settings.badge_3_url != blank %}a href="{{ block.settings.badge_3_url }}"{% else %}div{% endif %} class="product-trust-badge product-trust-badge--button">
-                  <span class="product-trust-badge__icon">
-                    {%- render 'trust-badge-icon', icon: block.settings.badge_3_icon -%}
-                  </span>
-                  <span class="product-trust-badge__text product-trust-badge__text--button">
-                    {%- if block.settings.badge_3_line1 != blank -%}<span class="trust-btn-text">{{ block.settings.badge_3_line1 }}</span>{%- endif -%}
-                    {%- if block.settings.badge_3_line2 != blank -%}<br><span class="trust-btn-text">{{ block.settings.badge_3_line2 }}</span>{%- endif -%}
-                  </span>
-                </{% if block.settings.badge_3_url != blank %}a{% else %}div{% endif %}>
-              {%- endif -%}
+                <span class="product-trust-badges__divider"></span>
 
-              {%- if block.settings.badge_4_line1 != blank or block.settings.badge_4_line2 != blank -%}
-                <div class="product-trust-badge">
-                  <span class="product-trust-badge__icon">
-                    {%- render 'trust-badge-icon', icon: block.settings.badge_4_icon -%}
-                  </span>
-                  <span class="product-trust-badge__text">
-                    {%- if block.settings.badge_4_line1 != blank -%}{{ block.settings.badge_4_line1 }}{%- endif -%}
-                    {%- if block.settings.badge_4_line2 != blank -%}<br>{{ block.settings.badge_4_line2 }}{%- endif -%}
-                  </span>
-                </div>
-              {%- endif -%}
+                {%- if block.settings.item_2_text != blank -%}
+                  <{% if block.settings.item_2_url != blank %}a href="{{ block.settings.item_2_url }}"{% else %}div{% endif %} class="product-trust-badge {% if block.settings.item_2_url != blank %}product-trust-badge--link{% endif %}">
+                    {%- if block.settings.item_2_show_icon -%}
+                      <span class="product-trust-badge__icon">
+                        {%- render 'trust-badge-icon', icon: block.settings.item_2_icon -%}
+                      </span>
+                    {%- endif -%}
+                    <span class="product-trust-badge__text">{{ block.settings.item_2_text }}</span>
+                  </{% if block.settings.item_2_url != blank %}a{% else %}div{% endif %}>
+                {%- endif -%}
+              </div>
+
+              <span class="product-trust-badges__line"></span>
             </div>
 
         {%- endcase -%}
@@ -2205,21 +2187,39 @@
     margin: 1rem 0 0;
   }
 
-  /* Trust Badges */
+  /* Trust Badges - Minimal design with lines */
   .product-trust-badges {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
     width: 100%;
     padding: var(--trust-padding, 16px) 0;
     margin-top: 8px;
+    gap: 16px;
+  }
+
+  .product-trust-badges__line {
+    flex: 1;
+    height: 1px;
+    background-color: var(--trust-line-color, #d4d4d4);
+  }
+
+  .product-trust-badges__content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-shrink: 0;
+  }
+
+  .product-trust-badges__divider {
+    width: 1px;
+    height: 14px;
+    background-color: var(--trust-divider-color, #999);
   }
 
   .product-trust-badge {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     text-decoration: none;
   }
 
@@ -2231,36 +2231,23 @@
   }
 
   .product-trust-badge__icon svg {
-    width: var(--trust-icon-size, 22px);
-    height: var(--trust-icon-size, 22px);
+    width: var(--trust-icon-size, 18px);
+    height: var(--trust-icon-size, 18px);
   }
 
   .product-trust-badge__text {
-    font-size: var(--trust-text-size, 10px);
+    font-size: var(--trust-text-size, 11px);
     font-weight: var(--trust-text-weight, 500);
     color: var(--trust-text-color, #666);
     text-transform: uppercase;
-    letter-spacing: 0.04em;
-    text-align: center;
-    line-height: 1.3;
+    letter-spacing: 0.08em;
   }
 
-  .product-trust-badge--button {
+  .product-trust-badge--link {
     cursor: pointer;
   }
 
-  .product-trust-badge--button .product-trust-badge__icon {
-    color: var(--trust-btn-color, #c45a32);
-  }
-
-  .product-trust-badge__text--button .trust-btn-text {
-    color: var(--trust-btn-color, #c45a32);
-    text-decoration: underline;
-    text-decoration-color: var(--trust-btn-underline, #c45a32);
-    text-underline-offset: 2px;
-  }
-
-  .product-trust-badge--button:hover {
+  .product-trust-badge--link:hover {
     opacity: 0.7;
   }
 
@@ -3396,11 +3383,23 @@
       "settings": [
         {
           "type": "header",
-          "content": "Badge 1 - Free Shipping"
+          "content": "Item 1"
+        },
+        {
+          "type": "text",
+          "id": "item_1_text",
+          "label": "Text",
+          "default": "FREE SHIP"
+        },
+        {
+          "type": "checkbox",
+          "id": "item_1_show_icon",
+          "label": "Show icon",
+          "default": true
         },
         {
           "type": "select",
-          "id": "badge_1_icon",
+          "id": "item_1_icon",
           "label": "Icon",
           "options": [
             { "value": "shipping", "label": "Shipping truck" },
@@ -3413,24 +3412,24 @@
           "default": "shipping"
         },
         {
-          "type": "text",
-          "id": "badge_1_line1",
-          "label": "Line 1",
-          "default": "FREE"
-        },
-        {
-          "type": "text",
-          "id": "badge_1_line2",
-          "label": "Line 2",
-          "default": "SHIPPING"
-        },
-        {
           "type": "header",
-          "content": "Badge 2 - Easy Returns"
+          "content": "Item 2"
+        },
+        {
+          "type": "text",
+          "id": "item_2_text",
+          "label": "Text",
+          "default": "EASY RETURNS"
+        },
+        {
+          "type": "checkbox",
+          "id": "item_2_show_icon",
+          "label": "Show icon",
+          "default": false
         },
         {
           "type": "select",
-          "id": "badge_2_icon",
+          "id": "item_2_icon",
           "label": "Icon",
           "options": [
             { "value": "shipping", "label": "Shipping truck" },
@@ -3443,85 +3442,25 @@
           "default": "return"
         },
         {
-          "type": "text",
-          "id": "badge_2_line1",
-          "label": "Line 1",
-          "default": "EASY"
-        },
-        {
-          "type": "text",
-          "id": "badge_2_line2",
-          "label": "Line 2",
-          "default": "RETURNS"
-        },
-        {
-          "type": "header",
-          "content": "Badge 3 - Track Order (Button)"
-        },
-        {
-          "type": "select",
-          "id": "badge_3_icon",
-          "label": "Icon",
-          "options": [
-            { "value": "shipping", "label": "Shipping truck" },
-            { "value": "location", "label": "Location pin" },
-            { "value": "headset", "label": "Headset/Support" },
-            { "value": "shield", "label": "Shield" },
-            { "value": "return", "label": "Return arrow" },
-            { "value": "clock", "label": "Clock" }
-          ],
-          "default": "location"
-        },
-        {
-          "type": "text",
-          "id": "badge_3_line1",
-          "label": "Line 1",
-          "default": "TRACK"
-        },
-        {
-          "type": "text",
-          "id": "badge_3_line2",
-          "label": "Line 2",
-          "default": "ORDER"
-        },
-        {
           "type": "url",
-          "id": "badge_3_url",
+          "id": "item_2_url",
           "label": "Link URL"
         },
         {
           "type": "header",
-          "content": "Badge 4 - Support"
-        },
-        {
-          "type": "select",
-          "id": "badge_4_icon",
-          "label": "Icon",
-          "options": [
-            { "value": "shipping", "label": "Shipping truck" },
-            { "value": "location", "label": "Location pin" },
-            { "value": "headset", "label": "Headset/Support" },
-            { "value": "shield", "label": "Shield" },
-            { "value": "return", "label": "Return arrow" },
-            { "value": "clock", "label": "Clock" }
-          ],
-          "default": "headset"
-        },
-        {
-          "type": "text",
-          "id": "badge_4_line1",
-          "label": "Line 1",
-          "default": "24/7"
-        },
-        {
-          "type": "text",
-          "id": "badge_4_line2",
-          "label": "Line 2",
-          "default": "SUPPORT"
-        },
-        {
-          "type": "header",
           "content": "Colors"
+        },
+        {
+          "type": "color",
+          "id": "line_color",
+          "label": "Line color",
+          "default": "#d4d4d4"
+        },
+        {
+          "type": "color",
+          "id": "divider_color",
+          "label": "Divider color",
+          "default": "#999999"
         },
         {
           "type": "color",
@@ -3536,18 +3475,6 @@
           "default": "#666666"
         },
         {
-          "type": "color",
-          "id": "button_text_color",
-          "label": "Button text color",
-          "default": "#c45a32"
-        },
-        {
-          "type": "color",
-          "id": "button_underline_color",
-          "label": "Button underline color",
-          "default": "#c45a32"
-        },
-        {
           "type": "header",
           "content": "Typography"
         },
@@ -3555,21 +3482,21 @@
           "type": "range",
           "id": "icon_size",
           "label": "Icon size",
-          "min": 16,
-          "max": 32,
-          "step": 2,
+          "min": 12,
+          "max": 24,
+          "step": 1,
           "unit": "px",
-          "default": 22
+          "default": 18
         },
         {
           "type": "range",
           "id": "text_size",
           "label": "Text size",
-          "min": 8,
+          "min": 9,
           "max": 14,
           "step": 1,
           "unit": "px",
-          "default": 10
+          "default": 11
         },
         {
           "type": "select",
