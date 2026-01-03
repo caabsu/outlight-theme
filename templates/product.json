@@ -189,7 +189,7 @@
           "wall-lights"
         ],
         "electrician_warning_text": "Qualified electrician recommended for safe installation.",
-        "section_padding_top": 36,
+        "section_padding_top": 0,
         "section_padding_bottom": 48,
         "top_line_color": "#1a1a1a",
         "top_line_thickness": 3,
