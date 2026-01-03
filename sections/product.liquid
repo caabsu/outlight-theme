@@ -140,26 +140,26 @@
         </div>
       {%- endif -%}
     </div>
-
-    {%- comment -%} Mobile Thumbnails {%- endcomment -%}
-    {%- if product.media.size > 1 -%}
-      <div class="product-media-thumbnails-mobile" data-gallery-thumbnails-mobile>
-        {%- for media in product.media -%}
-          <button
-            class="product-media-thumbnail-mobile {% if forloop.first %}product-media-thumbnail-mobile--active{% endif %}"
-            data-thumbnail-mobile-index="{{ forloop.index0 }}"
-            aria-label="View image {{ forloop.index }}"
-          >
-            {%- if media.media_type == 'image' -%}
-              {{ media | image_url: width: 120 | image_tag: loading: 'lazy' }}
-            {%- else -%}
-              {{ media.preview_image | image_url: width: 120 | image_tag: loading: 'lazy' }}
-            {%- endif -%}
-          </button>
-        {%- endfor -%}
-      </div>
-    {%- endif -%}
   </div>
+
+  {%- comment -%} Mobile Thumbnails - Outside gallery to avoid overflow:hidden {%- endcomment -%}
+  {%- if product.media.size > 1 -%}
+    <div class="product-media-thumbnails-mobile" data-gallery-thumbnails-mobile>
+      {%- for media in product.media -%}
+        <button
+          class="product-media-thumbnail-mobile {% if forloop.first %}product-media-thumbnail-mobile--active{% endif %}"
+          data-thumbnail-mobile-index="{{ forloop.index0 }}"
+          aria-label="View image {{ forloop.index }}"
+        >
+          {%- if media.media_type == 'image' -%}
+            {{ media | image_url: width: 120 | image_tag: loading: 'lazy' }}
+          {%- else -%}
+            {{ media.preview_image | image_url: width: 120 | image_tag: loading: 'lazy' }}
+          {%- endif -%}
+        </button>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
 
   {%- comment -%} Lightbox Modal {%- endcomment -%}
   <div class="product-lightbox" data-lightbox>
