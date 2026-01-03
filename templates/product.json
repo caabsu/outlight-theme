@@ -73,8 +73,8 @@
             "text_color": "#666666",
             "link_color": "#c45a32",
             "link_underline_color": "#c45a32",
-            "text_size": 11,
-            "text_weight": "500"
+            "text_size": 9,
+            "text_weight": "700"
           }
         }
       },
