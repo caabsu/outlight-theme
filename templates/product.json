@@ -97,7 +97,7 @@
             "icon_color": "#1c1917",
             "text_color": "#1c1917",
             "icon_size": 18,
-            "text_size": 12,
+            "text_size": 11,
             "text_weight": "700",
             "padding": 16
           }
@@ -290,6 +290,7 @@
         "video_RiAi7W": {
           "type": "video",
           "settings": {
+            "video": "shopify://files/videos/IMG_9186_6f7994ed-752f-41e8-aff3-c5253f1fa179.mp4",
             "video_url": "",
             "hashtag": "Unboxing",
             "creator_handle": "lifestyle_creator"
@@ -298,6 +299,7 @@
         "video_UbmmLV": {
           "type": "video",
           "settings": {
+            "video": "shopify://files/videos/copy_657AF8EB-5DE9-4183-9001-FCDA062DD1E8.mp4",
             "video_url": "",
             "hashtag": "Details",
             "creator_handle": "design_lover"
