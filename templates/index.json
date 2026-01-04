@@ -14,10 +14,8 @@
       "name": "t:sections.hero_banner.name",
       "settings": {
         "enable_transparent_header": true,
-        "video_desktop": "shopify://files/videos/Sequence 01_18.mp4",
-        "image_desktop": "shopify://shop_images/custom_seedream-4-5_1765525375401.png",
-        "video_mobile": "shopify://files/videos/Sequence 01_17.mp4",
-        "image_mobile": "shopify://shop_images/Rumi_10.jpg",
+        "image_desktop": "shopify://shop_images/custom_gpt-1-5_1767373326804.png",
+        "image_mobile": "shopify://shop_images/custom_gpt-1-5_1767373462551.png",
         "eyebrow": "limited time promotion",
         "heading": "Holiday Sale",
         "subheading": "Embrace the winter with our warm, modern selection of lighting.",
