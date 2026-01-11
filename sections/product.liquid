@@ -150,6 +150,7 @@
           class="product-media-thumbnail-mobile {% if forloop.first %}product-media-thumbnail-mobile--active{% endif %}"
           data-thumbnail-mobile-index="{{ forloop.index0 }}"
           aria-label="View image {{ forloop.index }}"
+          style="border: none !important; opacity: {% if forloop.first %}1{% else %}0.4{% endif %};"
         >
           {%- if media.media_type == 'image' -%}
             {{ media | image_url: width: 120 | image_tag: loading: 'lazy' }}
@@ -230,13 +231,56 @@
       {%- comment -%} Title Row (with Loox rating widget) {%- endcomment -%}
       <div class="product-title-row">
         <h1 class="product-title {% if section.settings.title_italic %}product-title--italic{% endif %}">{{ product.title }}</h1>
-        <div class="product-title-rating">
-          {%- for block in section.blocks -%}
-            {%- if block.type == '@app' -%}
-              {% render block %}
+        {%- if product.metafields.loox.avg_rating and product.metafields.loox.num_reviews -%}
+          {%- assign rating = product.metafields.loox.avg_rating | plus: 0 -%}
+          {%- assign full_stars = rating | floor -%}
+          {%- assign remainder = rating | minus: full_stars -%}
+          {%- assign has_half_star = false -%}
+          {%- assign show_extra_full = false -%}
+
+          {%- if remainder >= 0.25 -%}
+            {%- if remainder < 0.75 -%}
+              {%- assign has_half_star = true -%}
+            {%- else -%}
+              {%- assign show_extra_full = true -%}
             {%- endif -%}
-          {%- endfor -%}
-        </div>
+          {%- endif -%}
+
+          {%- if show_extra_full -%}
+            {%- assign full_stars = full_stars | plus: 1 -%}
+          {%- endif -%}
+
+          {%- assign total_displayed = full_stars -%}
+          {%- if has_half_star -%}
+            {%- assign total_displayed = total_displayed | plus: 1 -%}
+          {%- endif -%}
+          {%- assign empty_stars = 5 | minus: total_displayed -%}
+
+          <a href="#looxReviews" class="product-title-rating" aria-label="View reviews">
+            <span class="product-rating-stars">
+              {%- for i in (1..full_stars) -%}
+                <svg width="14" height="14" fill="#facc15" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.538 1.118L10 13.347l-2.8 2.034c-.783.57-1.838-.197-1.539-1.118l1.071-3.292a1 1 0 00-.364-1.118L3.568 8.72c-.783-.57-.38-1.81.588-1.81h3.462a1 1 0 00.95-.69l1.07-3.292z"/></svg>
+              {%- endfor -%}
+
+              {%- if has_half_star -%}
+                {%- assign gid = 'half-' | append: section.id -%}
+                <svg width="14" height="14" viewBox="0 0 20 20">
+                  <defs>
+                    <linearGradient id="{{ gid }}">
+                      <stop offset="50%" stop-color="#facc15"/><stop offset="50%" stop-color="#e5e7eb"/>
+                    </linearGradient>
+                  </defs>
+                  <path fill="url(#{{ gid }})" d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.538 1.118L10 13.347l-2.8 2.034c-.783.57-1.838-.197-1.539-1.118l1.071-3.292a1 1 0 00-.364-1.118L3.568 8.72c-.783-.57-.38-1.81.588-1.81h3.462a1 1 0 00.95-.69l1.07-3.292z"/>
+                </svg>
+              {%- endif -%}
+
+              {%- for i in (1..empty_stars) -%}
+                <svg width="14" height="14" fill="#e5e7eb" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.538 1.118L10 13.347l-2.8 2.034c-.783.57-1.838-.197-1.539-1.118l1.071-3.292a1 1 0 00-.364-1.118L3.568 8.72c-.783-.57-.38-1.81.588-1.81h3.462a1 1 0 00.95-.69l1.07-3.292z"/></svg>
+              {%- endfor -%}
+            </span>
+            <span class="product-rating-count">({{ product.metafields.loox.num_reviews }})</span>
+          </a>
+        {%- endif -%}
       </div>
 
       {%- comment -%} Subtitle & Price Row {%- endcomment -%}
@@ -250,12 +294,13 @@
         {%- else -%}
           <p class="product-subtitle"></p>
         {%- endif -%}
-        <div class="product-price">
-          {%- if product.compare_at_price > product.price -%}
-            <span class="product-price-sale">{{ product.price | money }}</span>
-            <s class="product-price-compare">{{ product.compare_at_price | money }}</s>
+        <div class="product-price" data-product-price>
+          {%- assign current_variant = product.selected_or_first_available_variant -%}
+          {%- if current_variant.compare_at_price > current_variant.price -%}
+            <span class="product-price-sale" data-price-sale>{{ current_variant.price | money }}</span>
+            <s class="product-price-compare" data-price-compare>{{ current_variant.compare_at_price | money }}</s>
           {%- else -%}
-            {{ product.price | money }}
+            <span class="product-price-regular" data-price-regular>{{ current_variant.price | money }}</span>
           {%- endif -%}
         </div>
       </div>
@@ -1001,33 +1046,72 @@
     flex-shrink: 0;
     width: 72px;
     height: 72px;
-    padding: 0;
-    border: 1.5px solid transparent;
+    padding: 0 !important;
+    border: none !important;
+    border-width: 0 !important;
+    border-color: transparent !important;
     border-radius: 0;
     background: transparent;
     cursor: pointer;
     overflow: hidden;
-    opacity: 0.5;
-    transition: opacity 0.2s ease, border-color 0.2s ease;
+    opacity: 0.4;
+    transition: opacity 0.25s ease;
+    outline: none !important;
+    box-shadow: none !important;
   }
 
   .product-media-thumbnail-mobile img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    border: none !important;
   }
 
   .product-media-thumbnail-mobile--active {
-    opacity: 1;
-    border-color: #000;
+    opacity: 1 !important;
   }
 
   .product-media-thumbnail-mobile:hover {
-    opacity: 0.8;
+    opacity: 0.7;
   }
 
   .product-media-thumbnail-mobile--active:hover {
-    opacity: 1;
+    opacity: 1 !important;
+  }
+
+  /* Ensure no border inheritance */
+  .product-media-thumbnail-mobile,
+  .product-media-thumbnail-mobile:focus,
+  .product-media-thumbnail-mobile:active {
+    border: none !important;
+    outline: none !important;
+  }
+
+  /* MOBILE ONLY - Force thumbnail styles */
+  @media screen and (max-width: 767px) {
+    .product-media-thumbnail-mobile {
+      border: none !important;
+      border-width: 0 !important;
+      outline: none !important;
+      box-shadow: none !important;
+      opacity: 0.4;
+    }
+    .product-media-thumbnail-mobile--active {
+      opacity: 1 !important;
+    }
+    .product-media-thumbnail-mobile img {
+      border: none !important;
+    }
+    /* Hide desktop thumbnails on mobile */
+    .product-media-thumbnails-wrapper,
+    .product-media-thumbnails,
+    .product-media-thumbnail {
+      display: none !important;
+    }
+    /* Show mobile thumbnails */
+    .product-media-thumbnails-mobile {
+      display: flex !important;
+    }
   }
 
   .product-media-main {
@@ -1256,14 +1340,25 @@
     display: flex;
     align-items: center;
     flex-shrink: 0;
+    gap: 4px;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
   }
 
-  /* Loox widget positioning */
-  .product-title-rating .loox-rating,
-  .product-title-rating [data-loox-aggregate-rating],
-  .product-title-rating .loox-rating-wrapper {
+  .product-title-rating:hover {
+    opacity: 0.8;
+  }
+
+  .product-rating-stars {
     display: flex;
     align-items: center;
+    gap: 1px;
+  }
+
+  .product-rating-count {
+    font-size: 13px;
+    color: #78716C;
+    margin-left: 2px;
   }
 
   /* Title */
@@ -1317,8 +1412,8 @@
   .product-variants {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-    margin-bottom: 1.25rem;
+    gap: 0.625rem;
+    margin-bottom: 1rem;
   }
 
   .product-variant-option {
@@ -1327,12 +1422,12 @@
 
   .product-variant-label {
     position: absolute;
-    top: -8px;
-    left: 12px;
+    top: -7px;
+    left: 10px;
     background: transparent;
-    padding: 0 6px;
+    padding: 0 5px;
     font-family: var(--font-primary-family), sans-serif;
-    font-size: var(--variant-label-size, 11px);
+    font-size: var(--variant-label-size, 10px);
     font-weight: var(--variant-label-weight, 500);
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -1358,8 +1453,8 @@
 
   .product-variant-select {
     width: 100%;
-    padding: 1rem 2.5rem 1rem 1rem;
-    font-size: 1rem;
+    padding: 0.625rem 2.5rem 0.625rem 0.875rem;
+    font-size: 0.9375rem;
     font-family: inherit;
     color: #1C1917;
     background: #fff;
@@ -2653,191 +2748,164 @@
     deliveryDateEl.textContent = deliveryDate.toLocaleDateString('en-US', options);
   }
 
-  // Gallery navigation
-  const galleryTrack = document.querySelector('[data-gallery-track]');
-  const prevBtn = document.querySelector('[data-gallery-prev]');
-  const nextBtn = document.querySelector('[data-gallery-next]');
-  const thumbnails = document.querySelectorAll('[data-thumbnail-index]');
-  const mobileThumbnails = document.querySelectorAll('[data-thumbnail-mobile-index]');
-  const mobileThumbnailsContainer = document.querySelector('[data-gallery-thumbnails-mobile]');
-  const galleryCounter = document.querySelector('[data-gallery-counter]');
+  // Gallery navigation - Mobile swipe and thumbnail sync
+  document.addEventListener('DOMContentLoaded', function() {
+    const galleryTrack = document.querySelector('[data-gallery-track]');
+    if (!galleryTrack) return;
 
-  let currentIndex = 0;
-  let isScrolling = false;
-  const items = galleryTrack ? galleryTrack.querySelectorAll('.product-media-item') : [];
-  const totalItems = items.length;
+    const prevBtn = document.querySelector('[data-gallery-prev]');
+    const nextBtn = document.querySelector('[data-gallery-next]');
+    const desktopThumbs = document.querySelectorAll('[data-thumbnail-index]');
+    const mobileThumbs = document.querySelectorAll('[data-thumbnail-mobile-index]');
+    const mobileThumbsContainer = document.querySelector('[data-gallery-thumbnails-mobile]');
+    const counter = document.querySelector('[data-gallery-counter]');
+    const slides = galleryTrack.querySelectorAll('.product-media-item');
+    const total = slides.length;
 
-  // Update counter display
-  function updateCounter(index) {
-    if (galleryCounter) {
-      galleryCounter.textContent = `${index + 1}/${totalItems}`;
-    }
-  }
+    if (total === 0) return;
 
-  // Update active states for desktop
-  function updateActiveStates(index) {
-    // Update desktop thumbnails
-    thumbnails.forEach((thumb, i) => {
-      thumb.classList.toggle('product-media-thumbnail--active', i === index);
-    });
-    // Update mobile thumbnails
-    mobileThumbnails.forEach((thumb, i) => {
-      thumb.classList.toggle('product-media-thumbnail-mobile--active', i === index);
-    });
-    // Update main images (for desktop fade effect)
-    items.forEach((item, i) => {
-      item.classList.toggle('is-active', i === index);
-    });
-    // Update counter
-    updateCounter(index);
-    // Scroll mobile thumbnail into view
-    scrollMobileThumbnailIntoView(index);
-  }
+    let activeIndex = 0;
 
-  // Scroll mobile thumbnail into view
-  function scrollMobileThumbnailIntoView(index) {
-    if (!mobileThumbnailsContainer || !mobileThumbnails[index]) return;
-    const thumb = mobileThumbnails[index];
-    const container = mobileThumbnailsContainer;
-    const thumbLeft = thumb.offsetLeft;
-    const thumbWidth = thumb.offsetWidth;
-    const containerWidth = container.clientWidth;
-    const scrollLeft = container.scrollLeft;
-    const containerPadding = 16;
+    // Set active thumbnail by index
+    function setActiveThumbnail(idx) {
+      // Update desktop thumbnails (class-based)
+      desktopThumbs.forEach(function(t, i) {
+        if (i === idx) {
+          t.classList.add('product-media-thumbnail--active');
+        } else {
+          t.classList.remove('product-media-thumbnail--active');
+        }
+      });
 
-    // Center the thumbnail if possible
-    const targetScroll = thumbLeft - (containerWidth / 2) + (thumbWidth / 2);
-    if (Math.abs(scrollLeft - targetScroll) > 10) {
-      container.scrollTo({ left: Math.max(0, targetScroll), behavior: 'smooth' });
-    }
-  }
+      // Update mobile thumbnails (both class and inline style for reliability)
+      mobileThumbs.forEach(function(t, i) {
+        if (i === idx) {
+          t.classList.add('product-media-thumbnail-mobile--active');
+          t.style.opacity = '1';
+        } else {
+          t.classList.remove('product-media-thumbnail-mobile--active');
+          t.style.opacity = '0.4';
+        }
+        // Ensure no border
+        t.style.border = 'none';
+      });
 
-  // Navigate to specific index
-  function goToSlide(index) {
-    if (!galleryTrack || totalItems === 0) return;
+      // Update main slides
+      slides.forEach(function(s, i) {
+        if (i === idx) {
+          s.classList.add('is-active');
+        } else {
+          s.classList.remove('is-active');
+        }
+      });
 
-    // Wrap around
-    if (index < 0) index = totalItems - 1;
-    if (index >= totalItems) index = 0;
-
-    currentIndex = index;
-    updateCounter(currentIndex);
-
-    // On mobile, scroll to the slide
-    if (window.innerWidth < 768) {
-      isScrolling = true;
-      items[currentIndex].scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
-      // Reset flag after scroll animation completes
-      setTimeout(() => { isScrolling = false; }, 500);
-    } else {
-      // On desktop, update active states
-      updateActiveStates(currentIndex);
-    }
-  }
-
-  // Track current index on scroll (mobile) - only for manual swipe
-  if (galleryTrack) {
-    galleryTrack.addEventListener('scroll', () => {
-      if (window.innerWidth >= 768 || isScrolling) return;
-      const scrollLeft = galleryTrack.scrollLeft;
-      const itemWidth = galleryTrack.offsetWidth;
-      const newIndex = Math.round(scrollLeft / itemWidth);
-      if (newIndex !== currentIndex && newIndex >= 0 && newIndex < totalItems) {
-        currentIndex = newIndex;
-        updateCounter(currentIndex);
+      // Update counter
+      if (counter) {
+        counter.textContent = (idx + 1) + '/' + total;
       }
-    }, { passive: true });
-  }
 
-  // Arrow navigation
-  if (prevBtn) {
-    prevBtn.addEventListener('click', () => goToSlide(currentIndex - 1));
-  }
-  if (nextBtn) {
-    nextBtn.addEventListener('click', () => goToSlide(currentIndex + 1));
-  }
+      // Scroll mobile thumbnail into view
+      if (mobileThumbsContainer && mobileThumbs[idx]) {
+        var thumb = mobileThumbs[idx];
+        var scrollPos = thumb.offsetLeft - (mobileThumbsContainer.clientWidth / 2) + (thumb.offsetWidth / 2);
+        mobileThumbsContainer.scrollTo({ left: Math.max(0, scrollPos), behavior: 'smooth' });
+      }
 
-  // Thumbnail click (desktop)
-  thumbnails.forEach(thumb => {
-    thumb.addEventListener('click', () => {
-      const index = parseInt(thumb.dataset.thumbnailIndex);
-      currentIndex = index;
-      updateActiveStates(index);
-    });
-  });
-
-  // Thumbnail click (mobile)
-  mobileThumbnails.forEach(thumb => {
-    thumb.addEventListener('click', () => {
-      const index = parseInt(thumb.dataset.thumbnailMobileIndex);
-      currentIndex = index;
-      goToSlide(index);
-    });
-  });
-
-  // Thumbnail navigation arrows
-  const thumbnailsContainer = document.querySelector('[data-gallery-thumbnails]');
-  const thumbPrevBtn = document.querySelector('[data-thumbnails-prev]');
-  const thumbNextBtn = document.querySelector('[data-thumbnails-next]');
-
-  function scrollThumbnailIntoView(index) {
-    if (!thumbnailsContainer || !thumbnails[index]) return;
-    const thumb = thumbnails[index];
-    const container = thumbnailsContainer;
-    const thumbLeft = thumb.offsetLeft;
-    const thumbWidth = thumb.offsetWidth;
-    const containerWidth = container.clientWidth;
-    const scrollLeft = container.scrollLeft;
-
-    // If thumbnail is not fully visible, scroll to it
-    if (thumbLeft < scrollLeft) {
-      container.scrollTo({ left: thumbLeft - 10, behavior: 'smooth' });
-    } else if (thumbLeft + thumbWidth > scrollLeft + containerWidth) {
-      container.scrollTo({ left: thumbLeft + thumbWidth - containerWidth + 10, behavior: 'smooth' });
+      activeIndex = idx;
     }
-  }
 
-  function updateThumbnailNavState() {
-    if (!thumbnailsContainer || !thumbPrevBtn || !thumbNextBtn) return;
-    const isAtStart = thumbnailsContainer.scrollLeft <= 1;
-    const isAtEnd = thumbnailsContainer.scrollLeft >= thumbnailsContainer.scrollWidth - thumbnailsContainer.clientWidth - 1;
-    thumbPrevBtn.disabled = isAtStart;
-    thumbNextBtn.disabled = isAtEnd;
-  }
+    // Calculate which slide is visible
+    function getVisibleSlideIndex() {
+      var scrollLeft = galleryTrack.scrollLeft;
+      var slideWidth = galleryTrack.offsetWidth;
+      if (slideWidth === 0) return 0;
+      return Math.round(scrollLeft / slideWidth);
+    }
 
-  if (thumbPrevBtn) {
-    thumbPrevBtn.addEventListener('click', () => {
-      if (!thumbnailsContainer) return;
-      const scrollAmount = 220; // ~2 thumbnails
-      thumbnailsContainer.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+    // Go to specific slide
+    function goToSlide(idx) {
+      if (idx < 0) idx = total - 1;
+      if (idx >= total) idx = 0;
+      setActiveThumbnail(idx);
+      var targetScroll = idx * galleryTrack.offsetWidth;
+      galleryTrack.scrollTo({ left: targetScroll, behavior: 'smooth' });
+    }
+
+    // Detect scroll/swipe and update thumbnails
+    var scrollTimer = null;
+    galleryTrack.addEventListener('scroll', function() {
+      if (scrollTimer) clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(function() {
+        var visibleIdx = getVisibleSlideIndex();
+        if (visibleIdx !== activeIndex && visibleIdx >= 0 && visibleIdx < total) {
+          setActiveThumbnail(visibleIdx);
+        }
+      }, 50);
     });
-  }
 
-  if (thumbNextBtn) {
-    thumbNextBtn.addEventListener('click', () => {
-      if (!thumbnailsContainer) return;
-      const scrollAmount = 220; // ~2 thumbnails
-      thumbnailsContainer.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    // Arrow buttons
+    if (prevBtn) {
+      prevBtn.addEventListener('click', function() {
+        goToSlide(activeIndex - 1);
+      });
+    }
+    if (nextBtn) {
+      nextBtn.addEventListener('click', function() {
+        goToSlide(activeIndex + 1);
+      });
+    }
+
+    // Desktop thumbnail clicks
+    desktopThumbs.forEach(function(thumb, i) {
+      thumb.addEventListener('click', function() {
+        goToSlide(i);
+      });
     });
-  }
 
-  if (thumbnailsContainer) {
+    // Mobile thumbnail clicks
+    mobileThumbs.forEach(function(thumb, i) {
+      thumb.addEventListener('click', function() {
+        goToSlide(i);
+      });
+    });
+
+    // Initialize
+    setActiveThumbnail(0);
+  });
+
+  // Desktop thumbnail navigation arrows (scroll thumbnails left/right)
+  (function initDesktopThumbnailNav() {
+    const thumbnailsContainer = document.querySelector('[data-gallery-thumbnails]');
+    const thumbPrevBtn = document.querySelector('[data-thumbnails-prev]');
+    const thumbNextBtn = document.querySelector('[data-thumbnails-next]');
+
+    if (!thumbnailsContainer) return;
+
+    function updateThumbnailNavState() {
+      if (!thumbPrevBtn || !thumbNextBtn) return;
+      const isAtStart = thumbnailsContainer.scrollLeft <= 1;
+      const isAtEnd = thumbnailsContainer.scrollLeft >= thumbnailsContainer.scrollWidth - thumbnailsContainer.clientWidth - 1;
+      thumbPrevBtn.disabled = isAtStart;
+      thumbNextBtn.disabled = isAtEnd;
+    }
+
+    if (thumbPrevBtn) {
+      thumbPrevBtn.addEventListener('click', function() {
+        const scrollAmount = 220;
+        thumbnailsContainer.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+      });
+    }
+
+    if (thumbNextBtn) {
+      thumbNextBtn.addEventListener('click', function() {
+        const scrollAmount = 220;
+        thumbnailsContainer.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+      });
+    }
+
     thumbnailsContainer.addEventListener('scroll', updateThumbnailNavState, { passive: true });
     updateThumbnailNavState();
-  }
-
-  // Update updateActiveStates to also scroll thumbnail into view
-  const originalUpdateActiveStates = updateActiveStates;
-  updateActiveStates = function(index) {
-    originalUpdateActiveStates(index);
-    scrollThumbnailIntoView(index);
-    updateThumbnailNavState();
-  };
-
-  // Initialize first image as active on desktop
-  if (window.innerWidth >= 768 && items.length > 0) {
-    updateActiveStates(0);
-  }
+  })();
 
   // Lightbox functionality
   const lightbox = document.querySelector('[data-lightbox]');
@@ -3148,9 +3216,15 @@
       history.replaceState(null, null, newUrl);
 
       // Update price display in header
-      const priceEl = document.querySelector('.product-price');
+      const priceEl = document.querySelector('[data-product-price]');
       if (priceEl && matchingVariant.price !== undefined) {
-        priceEl.innerHTML = formatMoney(matchingVariant.price);
+        const hasComparePrice = matchingVariant.compare_at_price && matchingVariant.compare_at_price > matchingVariant.price;
+        if (hasComparePrice) {
+          priceEl.innerHTML = '<span class="product-price-sale" data-price-sale>' + formatMoney(matchingVariant.price) + '</span>' +
+            '<s class="product-price-compare" data-price-compare>' + formatMoney(matchingVariant.compare_at_price) + '</s>';
+        } else {
+          priceEl.innerHTML = '<span class="product-price-regular" data-price-regular>' + formatMoney(matchingVariant.price) + '</span>';
+        }
       }
 
       // Update base price and recalculate with quantity
