@@ -228,60 +228,60 @@
         <p class="product-eyebrow">{{ section.settings.eyebrow_text }}</p>
       {%- endif -%}
 
-      {%- comment -%} Title Row (with Loox rating widget) {%- endcomment -%}
-      <div class="product-title-row">
-        <h1 class="product-title {% if section.settings.title_italic %}product-title--italic{% endif %}">{{ product.title }}</h1>
-        {%- if product.metafields.loox.avg_rating and product.metafields.loox.num_reviews -%}
-          {%- assign rating = product.metafields.loox.avg_rating | plus: 0 -%}
-          {%- assign full_stars = rating | floor -%}
-          {%- assign remainder = rating | minus: full_stars -%}
-          {%- assign has_half_star = false -%}
-          {%- assign show_extra_full = false -%}
+      {%- comment -%} Title {%- endcomment -%}
+      <h1 class="product-title {% if section.settings.title_italic %}product-title--italic{% endif %}">{{ product.title }}</h1>
 
-          {%- if remainder >= 0.25 -%}
-            {%- if remainder < 0.75 -%}
-              {%- assign has_half_star = true -%}
-            {%- else -%}
-              {%- assign show_extra_full = true -%}
-            {%- endif -%}
+      {%- comment -%} Loox Rating Widget {%- endcomment -%}
+      {%- if product.metafields.loox.avg_rating and product.metafields.loox.num_reviews -%}
+        {%- assign rating = product.metafields.loox.avg_rating | plus: 0 -%}
+        {%- assign full_stars = rating | floor -%}
+        {%- assign remainder = rating | minus: full_stars -%}
+        {%- assign has_half_star = false -%}
+        {%- assign show_extra_full = false -%}
+
+        {%- if remainder >= 0.25 -%}
+          {%- if remainder < 0.75 -%}
+            {%- assign has_half_star = true -%}
+          {%- else -%}
+            {%- assign show_extra_full = true -%}
           {%- endif -%}
-
-          {%- if show_extra_full -%}
-            {%- assign full_stars = full_stars | plus: 1 -%}
-          {%- endif -%}
-
-          {%- assign total_displayed = full_stars -%}
-          {%- if has_half_star -%}
-            {%- assign total_displayed = total_displayed | plus: 1 -%}
-          {%- endif -%}
-          {%- assign empty_stars = 5 | minus: total_displayed -%}
-
-          <a href="#looxReviews" class="product-title-rating" aria-label="View reviews">
-            <span class="product-rating-stars">
-              {%- for i in (1..full_stars) -%}
-                <svg width="14" height="14" fill="#facc15" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.538 1.118L10 13.347l-2.8 2.034c-.783.57-1.838-.197-1.539-1.118l1.071-3.292a1 1 0 00-.364-1.118L3.568 8.72c-.783-.57-.38-1.81.588-1.81h3.462a1 1 0 00.95-.69l1.07-3.292z"/></svg>
-              {%- endfor -%}
-
-              {%- if has_half_star -%}
-                {%- assign gid = 'half-' | append: section.id -%}
-                <svg width="14" height="14" viewBox="0 0 20 20">
-                  <defs>
-                    <linearGradient id="{{ gid }}">
-                      <stop offset="50%" stop-color="#facc15"/><stop offset="50%" stop-color="#e5e7eb"/>
-                    </linearGradient>
-                  </defs>
-                  <path fill="url(#{{ gid }})" d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.538 1.118L10 13.347l-2.8 2.034c-.783.57-1.838-.197-1.539-1.118l1.071-3.292a1 1 0 00-.364-1.118L3.568 8.72c-.783-.57-.38-1.81.588-1.81h3.462a1 1 0 00.95-.69l1.07-3.292z"/>
-                </svg>
-              {%- endif -%}
-
-              {%- for i in (1..empty_stars) -%}
-                <svg width="14" height="14" fill="#e5e7eb" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.538 1.118L10 13.347l-2.8 2.034c-.783.57-1.838-.197-1.539-1.118l1.071-3.292a1 1 0 00-.364-1.118L3.568 8.72c-.783-.57-.38-1.81.588-1.81h3.462a1 1 0 00.95-.69l1.07-3.292z"/></svg>
-              {%- endfor -%}
-            </span>
-            <span class="product-rating-count">({{ product.metafields.loox.num_reviews }})</span>
-          </a>
         {%- endif -%}
-      </div>
+
+        {%- if show_extra_full -%}
+          {%- assign full_stars = full_stars | plus: 1 -%}
+        {%- endif -%}
+
+        {%- assign total_displayed = full_stars -%}
+        {%- if has_half_star -%}
+          {%- assign total_displayed = total_displayed | plus: 1 -%}
+        {%- endif -%}
+        {%- assign empty_stars = 5 | minus: total_displayed -%}
+
+        <a href="#looxReviews" class="product-rating" aria-label="View reviews">
+          <span class="product-rating-stars">
+            {%- for i in (1..full_stars) -%}
+              <svg width="14" height="14" fill="#facc15" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.538 1.118L10 13.347l-2.8 2.034c-.783.57-1.838-.197-1.539-1.118l1.071-3.292a1 1 0 00-.364-1.118L3.568 8.72c-.783-.57-.38-1.81.588-1.81h3.462a1 1 0 00.95-.69l1.07-3.292z"/></svg>
+            {%- endfor -%}
+
+            {%- if has_half_star -%}
+              {%- assign gid = 'half-' | append: section.id -%}
+              <svg width="14" height="14" viewBox="0 0 20 20">
+                <defs>
+                  <linearGradient id="{{ gid }}">
+                    <stop offset="50%" stop-color="#facc15"/><stop offset="50%" stop-color="#e5e7eb"/>
+                  </linearGradient>
+                </defs>
+                <path fill="url(#{{ gid }})" d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.538 1.118L10 13.347l-2.8 2.034c-.783.57-1.838-.197-1.539-1.118l1.071-3.292a1 1 0 00-.364-1.118L3.568 8.72c-.783-.57-.38-1.81.588-1.81h3.462a1 1 0 00.95-.69l1.07-3.292z"/>
+              </svg>
+            {%- endif -%}
+
+            {%- for i in (1..empty_stars) -%}
+              <svg width="14" height="14" fill="#e5e7eb" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.538 1.118L10 13.347l-2.8 2.034c-.783.57-1.838-.197-1.539-1.118l1.071-3.292a1 1 0 00-.364-1.118L3.568 8.72c-.783-.57-.38-1.81.588-1.81h3.462a1 1 0 00.95-.69l1.07-3.292z"/></svg>
+            {%- endfor -%}
+          </span>
+          <span class="product-rating-count">({{ product.metafields.loox.num_reviews }})</span>
+        </a>
+      {%- endif -%}
 
       {%- comment -%} Subtitle & Price Row {%- endcomment -%}
       <div class="product-subtitle-row">
@@ -1327,25 +1327,17 @@
     margin: 0 0 0.5rem;
   }
 
-  /* Title Row */
-  .product-title-row {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-
-  .product-title-rating {
+  /* Rating Widget */
+  .product-rating {
     display: flex;
     align-items: center;
-    flex-shrink: 0;
     gap: 4px;
     text-decoration: none;
     transition: opacity 0.2s ease;
+    margin-bottom: 0.75rem;
   }
 
-  .product-title-rating:hover {
+  .product-rating:hover {
     opacity: 0.8;
   }
 
