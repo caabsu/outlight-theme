@@ -283,17 +283,8 @@
         </a>
       {%- endif -%}
 
-      {%- comment -%} Subtitle & Price Row {%- endcomment -%}
-      <div class="product-subtitle-row">
-        {%- if section.settings.subtitle_text != blank -%}
-          <p class="product-subtitle">{{ section.settings.subtitle_text }}</p>
-        {%- elsif product.has_only_default_variant == false -%}
-          <p class="product-subtitle">{{ product.selected_or_first_available_variant.title }}</p>
-        {%- elsif product.metafields.custom.subtitle -%}
-          <p class="product-subtitle">{{ product.metafields.custom.subtitle }}</p>
-        {%- else -%}
-          <p class="product-subtitle"></p>
-        {%- endif -%}
+      {%- comment -%} Price Row {%- endcomment -%}
+      <div class="product-price-row">
         <div class="product-price" data-product-price>
           {%- assign current_variant = product.selected_or_first_available_variant -%}
           {%- if current_variant.compare_at_price > current_variant.price -%}
@@ -1367,20 +1358,9 @@
     font-style: italic;
   }
 
-  /* Subtitle & Price Row */
-  .product-subtitle-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
+  /* Price Row */
+  .product-price-row {
     margin-bottom: 1rem;
-  }
-
-  .product-subtitle {
-    font-size: var(--subtitle-size, 15px);
-    font-weight: var(--subtitle-weight, 400);
-    color: var(--subtitle-color, #78716C);
-    margin: 0;
   }
 
   .product-price {
@@ -3224,12 +3204,6 @@
         window.updateBasePrice(matchingVariant.price);
       }
 
-      // Update subtitle with variant title
-      const subtitleEl = document.querySelector('.product-subtitle');
-      if (subtitleEl && matchingVariant.title && matchingVariant.title !== 'Default Title') {
-        subtitleEl.textContent = matchingVariant.title;
-      }
-
       // Update variant pills in product details
       const variantPills = document.querySelectorAll('[data-variant-pill]');
       variantPills.forEach(pill => {
@@ -3279,16 +3253,6 @@
       const dimensionEl = document.querySelector('[data-variant-dimension]');
       if (dimensionEl && variantDimensions) {
         dimensionEl.textContent = variantDimensions[matchingVariant.id] || 'N/A';
-      }
-
-      const lightSourceEl = document.querySelector('[data-variant-light-source]');
-      if (lightSourceEl && variantLightSources) {
-        lightSourceEl.textContent = variantLightSources[matchingVariant.id] || 'N/A';
-      }
-
-      const finishEl = document.querySelector('[data-variant-finish]');
-      if (finishEl && variantFinishes) {
-        finishEl.textContent = variantFinishes[matchingVariant.id] || 'N/A';
       }
 
       const colorTempEl = document.querySelector('[data-variant-color-temp]');
