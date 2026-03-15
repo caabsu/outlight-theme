@@ -427,6 +427,115 @@
         }
       }
     },
+    "collapsible_tabs": {
+      "name": "Collapsible tabs",
+      "settings": {
+        "description": {
+          "header": "Description & features",
+          "desktop_label": "Desktop label",
+          "mobile_label": "Mobile label",
+          "fallback_text": "Fallback text",
+          "fallback_info": "Shown if the product metafield is empty"
+        },
+        "shipping": {
+          "header": "Shipping & returns",
+          "desktop_label": "Desktop label",
+          "mobile_label": "Mobile label",
+          "content": "Content"
+        },
+        "spacing": {
+          "header": "Section spacing",
+          "padding_top": "Padding top",
+          "padding_bottom": "Padding bottom"
+        },
+        "colors": {
+          "header": "Section colors",
+          "section_bg": "Section background",
+          "card_bg": "Card background",
+          "card_radius": "Card border radius",
+          "card_padding_desktop": "Card padding (desktop)",
+          "card_padding_mobile": "Card padding (mobile)"
+        },
+        "desktop_label": {
+          "header": "Desktop label",
+          "color": "Text color",
+          "size": "Font size",
+          "weight": "Font weight"
+        },
+        "mobile_label": {
+          "header": "Mobile label",
+          "size": "Font size",
+          "weight": "Font weight",
+          "color": "Text color"
+        },
+        "desktop_text": {
+          "header": "Desktop - Text",
+          "size": "Size",
+          "weight": "Weight",
+          "color": "Color",
+          "line_height": "Line height"
+        },
+        "mobile_text": {
+          "header": "Mobile - Text",
+          "size": "Size",
+          "weight": "Weight",
+          "color": "Color",
+          "line_height": "Line height"
+        }
+      }
+    },
+    "product_faq": {
+      "name": "Product FAQ",
+      "settings": {
+        "content": {
+          "header": "Content",
+          "heading": "Heading"
+        },
+        "faq_items": {
+          "header_1": "FAQ item 1",
+          "header_2": "FAQ item 2",
+          "header_3": "FAQ item 3",
+          "header_4": "FAQ item 4",
+          "header_5": "FAQ item 5",
+          "header_6": "FAQ item 6",
+          "question": "Question",
+          "answer": "Answer",
+          "answer_2_info": "Use [product_name] to insert the product name dynamically"
+        },
+        "spacing": {
+          "header": "Section spacing",
+          "padding_top": "Padding top",
+          "padding_bottom": "Padding bottom"
+        },
+        "colors": {
+          "header": "Colors",
+          "background": "Background color",
+          "border": "Border color",
+          "icon": "Icon color"
+        },
+        "title_style": {
+          "header": "Title style",
+          "size_desktop": "Size (desktop)",
+          "size_mobile": "Size (mobile)",
+          "color": "Color",
+          "weight": "Weight"
+        },
+        "question_style": {
+          "header": "Question style",
+          "size_desktop": "Size (desktop)",
+          "size_mobile": "Size (mobile)",
+          "color": "Color",
+          "weight": "Weight"
+        },
+        "answer_style": {
+          "header": "Answer style",
+          "size_desktop": "Size (desktop)",
+          "size_mobile": "Size (mobile)",
+          "color": "Color",
+          "weight": "Weight"
+        }
+      }
+    },
     "featured_collection": {
       "name": "Featured collection",
       "settings": {

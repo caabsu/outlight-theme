@@ -90,7 +90,13 @@
   "product": {
     "specs": "Specs",
     "add_to_cart": "Add to cart",
-    "sold_out": "Sold out"
+    "sold_out": "Sold out",
+    "free_shipping": "Free shipping",
+    "easy_returns": "Easy returns",
+    "risk_free": "30-day risk free",
+    "use_code": "Use code",
+    "time_left": "left",
+    "faq_title": "Frequently asked questions"
   },
   "sections": {
     "shop_the_look": {
