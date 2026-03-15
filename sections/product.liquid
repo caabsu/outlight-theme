@@ -230,18 +230,6 @@
         <p class="product-eyebrow">{{ section.settings.eyebrow_text }}</p>
       {%- endif -%}
 
-      {%- comment -%} Title {%- endcomment -%}
-      <h1 class="product-title {% if section.settings.title_italic %}product-title--italic{% endif %}">{{ product.title }}</h1>
-
-      {%- comment -%} Rating Widget {%- endcomment -%}
-      <div class="product-title-rating">
-        {%- for block in section.blocks -%}
-          {%- if block.type == '@app' -%}
-            {% render block %}
-          {%- endif -%}
-        {%- endfor -%}
-      </div>
-
       {%- comment -%} Rating & Price Row {%- endcomment -%}
       <div class="product-rating-price-row">
         {%- if product.metafields.loox.avg_rating and product.metafields.loox.num_reviews -%}
@@ -385,38 +373,6 @@
             </button>
           </div>
 
-          {%- comment -%} Promotion Banner {%- endcomment -%}
-          {%- if section.settings.show_promo_banner -%}
-            <div class="product-promo-banner" style="
-              --promo-bg: {{ section.settings.promo_bg_color }};
-              --promo-text: {{ section.settings.promo_text_color }};
-              --promo-accent: {{ section.settings.promo_accent_color }};
-            ">
-              <div class="product-promo-banner__left">
-                <svg class="product-promo-banner__icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                  <path d="M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/>
-                </svg>
-                <div class="product-promo-banner__content">
-                  <span class="product-promo-banner__title">{{ section.settings.promo_title }}</span>
-                  <div class="product-promo-banner__code-row">
-                    <span class="product-promo-banner__code-label">{{ 'product.use_code' | t }}:</span>
-                    <span class="product-promo-banner__code">{{ section.settings.promo_code }}</span>
-                  </div>
-                </div>
-              </div>
-              <div class="product-promo-banner__right">
-                <span class="product-promo-banner__discount">{{ section.settings.promo_discount }}</span>
-                <div class="product-promo-banner__timer" data-promo-timer>
-                  <span class="product-promo-banner__timer-value" data-timer-hours>00</span>
-                  <span class="product-promo-banner__timer-sep">:</span>
-                  <span class="product-promo-banner__timer-value" data-timer-minutes>00</span>
-                  <span class="product-promo-banner__timer-sep">:</span>
-                  <span class="product-promo-banner__timer-value" data-timer-seconds>00</span>
-                  <span class="product-promo-banner__timer-label">{{ 'product.time_left' | t }}</span>
-                </div>
-              </div>
-            </div>
-          {%- endif -%}
         {% endform %}
       </div>
 
@@ -931,29 +887,6 @@
         {%- endcase -%}
       {%- endfor -%}
 
-      {%- comment -%} Trust Badges {%- endcomment -%}
-      <div class="product-trust-badges">
-        <div class="product-trust-badge">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="1" y="6" width="22" height="15" rx="2" ry="2"/><path d="M1 10h22"/>
-          </svg>
-          <span>{{ 'product.free_shipping' | t }}</span>
-        </div>
-        <div class="product-trust-badge__divider"></div>
-        <div class="product-trust-badge">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
-          </svg>
-          <span>{{ 'product.easy_returns' | t }}</span>
-        </div>
-        <div class="product-trust-badge__divider"></div>
-        <div class="product-trust-badge">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-          </svg>
-          <span>{{ 'product.risk_free' | t }}</span>
-        </div>
-      </div>
     </div>
   </div>
 </div>
@@ -1345,21 +1278,6 @@
     text-transform: uppercase;
     letter-spacing: 0.1em;
     margin: 0 0 0.5rem;
-  }
-
-  .product-title-rating {
-    display: flex;
-    align-items: center;
-    flex-shrink: 0;
-    margin-bottom: 0.5rem;
-  }
-
-  /* Loox widget positioning */
-  .product-title-rating .loox-rating,
-  .product-title-rating [data-loox-aggregate-rating],
-  .product-title-rating .loox-rating-wrapper {
-    display: flex;
-    align-items: center;
   }
 
   /* Title */
@@ -2773,172 +2691,6 @@
     }
   }
 
-  /* Promo Banner */
-  .product-promo-banner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: var(--promo-bg, #fef3c7);
-    padding: 0.75rem 1rem;
-    margin-top: 0.75rem;
-    gap: 0.75rem;
-  }
-
-  .product-promo-banner__left {
-    display: flex;
-    align-items: center;
-    gap: 0.625rem;
-  }
-
-  .product-promo-banner__icon {
-    color: var(--promo-text, #92400e);
-    flex-shrink: 0;
-  }
-
-  .product-promo-banner__content {
-    display: flex;
-    flex-direction: column;
-    gap: 0.125rem;
-  }
-
-  .product-promo-banner__title {
-    font-family: var(--font-heading-family), serif;
-    font-size: 14px;
-    font-style: italic;
-    font-weight: 400;
-    color: var(--promo-text, #1c1917);
-  }
-
-  .product-promo-banner__code-row {
-    display: flex;
-    align-items: center;
-    gap: 0.375rem;
-  }
-
-  .product-promo-banner__code-label {
-    font-family: var(--font-primary-family), sans-serif;
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--promo-text, #1c1917);
-  }
-
-  .product-promo-banner__code {
-    font-family: var(--font-primary-family), sans-serif;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    color: var(--promo-text, #1c1917);
-    background: rgba(255,255,255,0.5);
-    padding: 0.125rem 0.5rem;
-    border: 1px solid rgba(0,0,0,0.1);
-  }
-
-  .product-promo-banner__right {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 0.25rem;
-    flex-shrink: 0;
-  }
-
-  .product-promo-banner__discount {
-    font-family: var(--font-primary-family), sans-serif;
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--promo-accent, #16a34a);
-  }
-
-  .product-promo-banner__timer {
-    display: flex;
-    align-items: center;
-    gap: 0.125rem;
-  }
-
-  .product-promo-banner__timer-value {
-    font-family: var(--font-primary-family), sans-serif;
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--promo-text, #1c1917);
-    background: rgba(0,0,0,0.08);
-    padding: 0.125rem 0.25rem;
-    min-width: 22px;
-    text-align: center;
-    border-radius: 2px;
-  }
-
-  .product-promo-banner__timer-sep {
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--promo-text, #1c1917);
-    opacity: 0.5;
-  }
-
-  .product-promo-banner__timer-label {
-    font-family: var(--font-primary-family), sans-serif;
-    font-size: 9px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--promo-text, #1c1917);
-    opacity: 0.6;
-    margin-left: 0.25rem;
-  }
-
-  /* Trust Badges */
-  .product-trust-badges {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0;
-    padding: 1rem 0;
-    margin-top: 1rem;
-    border-top: 1px solid #E7E5E4;
-  }
-
-  .product-trust-badge {
-    display: flex;
-    align-items: center;
-    gap: 0.375rem;
-    padding: 0 0.75rem;
-    color: #57534E;
-  }
-
-  .product-trust-badge svg {
-    flex-shrink: 0;
-    color: #78716C;
-  }
-
-  .product-trust-badge span {
-    font-family: var(--font-primary-family), sans-serif;
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: #44403C;
-    white-space: nowrap;
-  }
-
-  .product-trust-badge__divider {
-    width: 1px;
-    height: 20px;
-    background: #D6D3D1;
-    flex-shrink: 0;
-  }
-
-  @media (max-width: 480px) {
-    .product-trust-badge span {
-      font-size: 9px;
-    }
-    .product-trust-badge svg {
-      width: 14px;
-      height: 14px;
-    }
-    .product-trust-badge {
-      padding: 0 0.5rem;
-    }
-  }
 {% endstylesheet %}
 
 {% javascript %}
@@ -2951,31 +2703,6 @@
 
     const options = { weekday: 'long', month: 'short', day: 'numeric' };
     deliveryDateEl.textContent = deliveryDate.toLocaleDateString('en-US', options);
-  }
-
-  // Promo countdown timer - resets every 24h at midnight viewer's timezone
-  const timerEl = document.querySelector('[data-promo-timer]');
-  if (timerEl) {
-    function updateTimer() {
-      const now = new Date();
-      const midnight = new Date();
-      midnight.setHours(24, 0, 0, 0);
-      const diff = midnight - now;
-      if (diff <= 0) {
-        timerEl.querySelector('[data-timer-hours]').textContent = '00';
-        timerEl.querySelector('[data-timer-minutes]').textContent = '00';
-        timerEl.querySelector('[data-timer-seconds]').textContent = '00';
-        return;
-      }
-      const hours = Math.floor(diff / (1000 * 60 * 60));
-      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-      timerEl.querySelector('[data-timer-hours]').textContent = String(hours).padStart(2, '0');
-      timerEl.querySelector('[data-timer-minutes]').textContent = String(minutes).padStart(2, '0');
-      timerEl.querySelector('[data-timer-seconds]').textContent = String(seconds).padStart(2, '0');
-    }
-    updateTimer();
-    setInterval(updateTimer, 1000);
   }
 
   // Gallery navigation
@@ -4898,52 +4625,6 @@
       "unit": "px",
       "label": "Corner radius",
       "default": 50
-    },
-    {
-      "type": "header",
-      "content": "Promotion banner"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_promo_banner",
-      "label": "Show promotion banner",
-      "default": true
-    },
-    {
-      "type": "text",
-      "id": "promo_title",
-      "label": "Promotion title",
-      "default": "New Year's Sale"
-    },
-    {
-      "type": "text",
-      "id": "promo_code",
-      "label": "Promo code",
-      "default": "NEWYEAR30"
-    },
-    {
-      "type": "text",
-      "id": "promo_discount",
-      "label": "Discount text",
-      "default": "-30%"
-    },
-    {
-      "type": "color",
-      "id": "promo_bg_color",
-      "label": "Background color",
-      "default": "#fef3c7"
-    },
-    {
-      "type": "color",
-      "id": "promo_text_color",
-      "label": "Text color",
-      "default": "#92400e"
-    },
-    {
-      "type": "color",
-      "id": "promo_accent_color",
-      "label": "Accent color (discount)",
-      "default": "#16a34a"
     },
     {
       "type": "header",

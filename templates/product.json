@@ -371,7 +371,7 @@
       "type": "product-faq",
       "name": "Product FAQ",
       "settings": {
-        "heading": "Frequently asked questions",
+        "heading": "FAQ",
         "section_bg": "#f7f5f0",
         "title_color": "#1c1917",
         "title_size": 36,
