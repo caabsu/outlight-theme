@@ -20,7 +20,7 @@
   assign intro_image2 = product.metafields.custom.intro_image2.value
 %}
 
-{% if product.title != blank or intro_main_image != blank %}
+{% if intro_title != blank or intro_main_image != blank %}
 <div class="product-intro" style="
   --intro-bg: {{ section.settings.background_color }};
   --intro-strap-color: {{ section.settings.strap_color }};
@@ -47,11 +47,13 @@
         <p class="product-intro__strap">{{ intro_strap }}</p>
       {% endif %}
 
-      <h2 class="product-intro__title">Meet {{ product.title }}</h2>
-
       {% if intro_title != blank %}
+        <h2 class="product-intro__title">{{ intro_title }}</h2>
+      {% endif %}
+
+      {% if intro_subheading != blank %}
         <blockquote class="product-intro__subheading">
-          "{{ intro_title }}"
+          "{{ intro_subheading }}"
         </blockquote>
       {% endif %}
     </div>
