@@ -115,7 +115,7 @@
   .product-intro__strap {
     font-family: var(--font-body-family), sans-serif;
     font-size: var(--intro-strap-size, 12px);
-    font-weight: 600;
+    font-weight: 400;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: var(--intro-strap-color, #9CA3AF);
@@ -186,8 +186,12 @@
     .product-intro__header {
       padding: 0 var(--intro-padding-x-desktop, 80px);
       margin-bottom: 60px;
-      max-width: 800px;
+      max-width: 1000px;
+      margin-left: auto;
+      margin-right: auto;
       gap: 24px;
+      text-align: center;
+      align-items: center;
     }
 
     .product-intro__title {
@@ -196,7 +200,8 @@
 
     .product-intro__subheading {
       font-size: var(--intro-subheading-size-desktop, 22px);
-      padding-left: 24px;
+      border-left: none;
+      padding-left: 0;
     }
 
     .product-intro__full-image {
@@ -210,6 +215,15 @@
     .product-intro__body {
       padding: 60px var(--intro-padding-x-desktop, 80px);
       max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: center;
+    }
+
+    .product-intro__text {
+      max-width: 720px;
+      margin-left: auto;
+      margin-right: auto;
     }
   }
 
@@ -278,10 +292,10 @@
       "id": "strap_size",
       "label": "Strap text size",
       "min": 10,
-      "max": 16,
+      "max": 24,
       "step": 1,
       "unit": "px",
-      "default": 12
+      "default": 16
     },
     {
       "type": "range",
@@ -298,10 +312,10 @@
       "id": "title_size_desktop",
       "label": "Title size (desktop)",
       "min": 36,
-      "max": 80,
+      "max": 100,
       "step": 2,
       "unit": "px",
-      "default": 56
+      "default": 72
     },
     {
       "type": "range",
@@ -318,20 +332,20 @@
       "id": "subheading_size_desktop",
       "label": "Subheading size (desktop)",
       "min": 18,
-      "max": 32,
+      "max": 40,
       "step": 1,
       "unit": "px",
-      "default": 22
+      "default": 26
     },
     {
       "type": "range",
       "id": "text_size",
       "label": "Body text size",
       "min": 13,
-      "max": 18,
+      "max": 24,
       "step": 1,
       "unit": "px",
-      "default": 15
+      "default": 18
     },
     {
       "type": "header",
