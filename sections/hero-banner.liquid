@@ -18,11 +18,15 @@
     --hero-heading-size-desktop: {{ section.settings.heading_size_desktop }}px;
     --hero-heading-size-mobile: {{ section.settings.heading_size_mobile }}px;
     --hero-heading-weight: {{ section.settings.heading_weight }};
+    --hero-heading-accent-color: {{ section.settings.heading_accent_color }};
 
     --hero-subheading-color: {{ section.settings.subheading_color }};
     --hero-subheading-size-desktop: {{ section.settings.subheading_size_desktop }}px;
     --hero-subheading-size-mobile: {{ section.settings.subheading_size_mobile }}px;
     --hero-subheading-weight: {{ section.settings.subheading_weight }};
+
+    --hero-promo-color: {{ section.settings.promo_color }};
+    --hero-promo-border: {{ section.settings.promo_border_color }};
 
     --hero-button-bg: {{ section.settings.button_bg_color | color_modify: 'alpha', section.settings.button_bg_opacity | divided_by: 100.0 }};
     --hero-button-text: {{ section.settings.button_text_color }};
@@ -33,6 +37,10 @@
     --hero-button-weight: {{ section.settings.button_weight }};
     --hero-button-padding-x: {{ section.settings.button_padding_x }}px;
     --hero-button-padding-y: {{ section.settings.button_padding_y }}px;
+
+    --hero-secondary-color: {{ section.settings.secondary_link_color }};
+    --hero-trust-color: {{ section.settings.trust_text_color }};
+    --hero-trust-check-color: {{ section.settings.trust_check_color }};
 
     --hero-overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
   "
@@ -64,24 +72,51 @@
   {%- comment -%} Content {%- endcomment -%}
   <div class="hero-banner__container">
     <div class="hero-banner__content">
+      {%- comment -%} Eyebrow with line {%- endcomment -%}
       {%- if section.settings.eyebrow != blank -%}
-        <span class="hero-banner__eyebrow hero-banner__eyebrow--desktop">{{ section.settings.eyebrow }}</span>
+        <div class="hero-banner__eyebrow-row hero-banner__eyebrow-row--desktop">
+          <span class="hero-banner__eyebrow-line"></span>
+          <span class="hero-banner__eyebrow">{{ section.settings.eyebrow }}</span>
+        </div>
       {%- endif -%}
       {%- if section.settings.eyebrow_mobile != blank -%}
-        <span class="hero-banner__eyebrow hero-banner__eyebrow--mobile">{{ section.settings.eyebrow_mobile }}</span>
+        <div class="hero-banner__eyebrow-row hero-banner__eyebrow-row--mobile">
+          <span class="hero-banner__eyebrow-line"></span>
+          <span class="hero-banner__eyebrow">{{ section.settings.eyebrow_mobile }}</span>
+        </div>
       {%- elsif section.settings.eyebrow != blank -%}
-        <span class="hero-banner__eyebrow hero-banner__eyebrow--mobile">{{ section.settings.eyebrow }}</span>
+        <div class="hero-banner__eyebrow-row hero-banner__eyebrow-row--mobile">
+          <span class="hero-banner__eyebrow-line"></span>
+          <span class="hero-banner__eyebrow">{{ section.settings.eyebrow }}</span>
+        </div>
       {%- endif -%}
 
+      {%- comment -%} Heading with optional accent line {%- endcomment -%}
       {%- if section.settings.heading != blank -%}
-        <h1 class="hero-banner__heading hero-banner__heading--desktop">{{ section.settings.heading }}</h1>
+        <h1 class="hero-banner__heading hero-banner__heading--desktop">
+          {{- section.settings.heading -}}
+          {%- if section.settings.heading_line2 != blank -%}
+            <br><em class="hero-banner__heading-accent">{{ section.settings.heading_line2 }}</em>
+          {%- endif -%}
+        </h1>
       {%- endif -%}
       {%- if section.settings.heading_mobile != blank -%}
-        <h1 class="hero-banner__heading hero-banner__heading--mobile">{{ section.settings.heading_mobile }}</h1>
+        <h1 class="hero-banner__heading hero-banner__heading--mobile">
+          {{- section.settings.heading_mobile -}}
+          {%- if section.settings.heading_line2 != blank -%}
+            <br><em class="hero-banner__heading-accent">{{ section.settings.heading_line2 }}</em>
+          {%- endif -%}
+        </h1>
       {%- elsif section.settings.heading != blank -%}
-        <h1 class="hero-banner__heading hero-banner__heading--mobile">{{ section.settings.heading }}</h1>
+        <h1 class="hero-banner__heading hero-banner__heading--mobile">
+          {{- section.settings.heading -}}
+          {%- if section.settings.heading_line2 != blank -%}
+            <br><em class="hero-banner__heading-accent">{{ section.settings.heading_line2 }}</em>
+          {%- endif -%}
+        </h1>
       {%- endif -%}
 
+      {%- comment -%} Subheading {%- endcomment -%}
       {%- if section.settings.subheading != blank -%}
         <p class="hero-banner__subheading hero-banner__subheading--desktop">{{ section.settings.subheading }}</p>
       {%- endif -%}
@@ -91,19 +126,69 @@
         <p class="hero-banner__subheading hero-banner__subheading--mobile">{{ section.settings.subheading }}</p>
       {%- endif -%}
 
-      {%- if section.settings.button_text != blank -%}
-        <a href="{{ section.settings.button_link }}" class="hero-banner__button hero-banner__button--desktop">
-          {{ section.settings.button_text }}
-        </a>
+      {%- comment -%} Promo Badge {%- endcomment -%}
+      {%- if section.settings.promo_discount != blank -%}
+        <div class="hero-banner__promo">
+          <span class="hero-banner__promo-discount">{{ section.settings.promo_discount }}</span>
+          {%- if section.settings.promo_code != blank -%}
+            <span class="hero-banner__promo-divider"></span>
+            <span class="hero-banner__promo-code">Code: <strong>{{ section.settings.promo_code }}</strong></span>
+          {%- endif -%}
+        </div>
       {%- endif -%}
-      {%- if section.settings.button_text_mobile != blank -%}
-        <a href="{{ section.settings.button_link_mobile | default: section.settings.button_link }}" class="hero-banner__button hero-banner__button--mobile">
-          {{ section.settings.button_text_mobile }}
-        </a>
-      {%- elsif section.settings.button_text != blank -%}
-        <a href="{{ section.settings.button_link }}" class="hero-banner__button hero-banner__button--mobile">
-          {{ section.settings.button_text }}
-        </a>
+
+      {%- comment -%} Buttons Row {%- endcomment -%}
+      <div class="hero-banner__buttons">
+        {%- if section.settings.button_text != blank -%}
+          <a href="{{ section.settings.button_link }}" class="hero-banner__button hero-banner__button--desktop">
+            {{ section.settings.button_text }}
+          </a>
+        {%- endif -%}
+        {%- if section.settings.button_text_mobile != blank -%}
+          <a href="{{ section.settings.button_link_mobile | default: section.settings.button_link }}" class="hero-banner__button hero-banner__button--mobile">
+            {{ section.settings.button_text_mobile }}
+          </a>
+        {%- elsif section.settings.button_text != blank -%}
+          <a href="{{ section.settings.button_link }}" class="hero-banner__button hero-banner__button--mobile">
+            {{ section.settings.button_text }}
+          </a>
+        {%- endif -%}
+
+        {%- if section.settings.secondary_link_text != blank -%}
+          <a href="{{ section.settings.secondary_link_url }}" class="hero-banner__secondary-link">
+            {{ section.settings.secondary_link_text }}
+          </a>
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} Trust Badges {%- endcomment -%}
+      {%- if section.settings.trust_1 != blank or section.settings.trust_2 != blank or section.settings.trust_3 != blank -%}
+        <div class="hero-banner__trust">
+          {%- if section.settings.trust_1 != blank -%}
+            <span class="hero-banner__trust-item">
+              <svg class="hero-banner__trust-check" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M13.3 4.3l-6.8 6.8L3 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              {{ section.settings.trust_1 }}
+            </span>
+          {%- endif -%}
+          {%- if section.settings.trust_2 != blank -%}
+            <span class="hero-banner__trust-item">
+              <svg class="hero-banner__trust-check" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M13.3 4.3l-6.8 6.8L3 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              {{ section.settings.trust_2 }}
+            </span>
+          {%- endif -%}
+          {%- if section.settings.trust_3 != blank -%}
+            <span class="hero-banner__trust-item">
+              <svg class="hero-banner__trust-check" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M13.3 4.3l-6.8 6.8L3 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              {{ section.settings.trust_3 }}
+            </span>
+          {%- endif -%}
+        </div>
       {%- endif -%}
     </div>
   </div>
@@ -166,7 +251,25 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 20px;
+    gap: 16px;
+  }
+
+  /* Eyebrow with line */
+  .hero-banner__eyebrow-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .hero-banner__eyebrow-row--mobile {
+    display: none;
+  }
+
+  .hero-banner__eyebrow-line {
+    width: 40px;
+    height: 1.5px;
+    background: var(--hero-eyebrow-color);
+    flex-shrink: 0;
   }
 
   .hero-banner__eyebrow {
@@ -178,10 +281,7 @@
     letter-spacing: var(--hero-eyebrow-spacing);
   }
 
-  .hero-banner__eyebrow--mobile {
-    display: none;
-  }
-
+  /* Heading */
   .hero-banner__heading {
     font-family: var(--font-heading-family);
     font-size: var(--hero-heading-size-desktop);
@@ -195,6 +295,13 @@
     display: none;
   }
 
+  .hero-banner__heading-accent {
+    color: var(--hero-heading-accent-color, #D97706);
+    font-style: italic;
+    font-weight: inherit;
+  }
+
+  /* Subheading */
   .hero-banner__subheading {
     font-family: var(--font-primary-family);
     font-size: var(--hero-subheading-size-desktop);
@@ -202,11 +309,57 @@
     color: var(--hero-subheading-color);
     line-height: 1.5;
     margin: 0;
-    max-width: 400px;
+    max-width: 440px;
   }
 
   .hero-banner__subheading--mobile {
     display: none;
+  }
+
+  /* Promo Badge */
+  .hero-banner__promo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0;
+    border: 1px solid var(--hero-promo-border, rgba(217, 119, 6, 0.4));
+    border-radius: 50px;
+    padding: 0;
+    margin-top: 4px;
+  }
+
+  .hero-banner__promo-discount {
+    font-family: var(--font-primary-family);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--hero-promo-color, #D97706);
+    padding: 8px 16px;
+  }
+
+  .hero-banner__promo-divider {
+    width: 1px;
+    height: 20px;
+    background: var(--hero-promo-border, rgba(217, 119, 6, 0.4));
+  }
+
+  .hero-banner__promo-code {
+    font-family: var(--font-primary-family);
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--hero-promo-color, #D97706);
+    padding: 8px 16px;
+  }
+
+  .hero-banner__promo-code strong {
+    font-weight: 600;
+  }
+
+  /* Buttons Row */
+  .hero-banner__buttons {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-top: 8px;
+    width: 100%;
   }
 
   .hero-banner__button {
@@ -221,10 +374,10 @@
     text-decoration: none;
     padding: var(--hero-button-padding-y) var(--hero-button-padding-x);
     border: var(--hero-button-border-width) solid var(--hero-button-border-color);
-    margin-top: 12px;
     transition: opacity 0.2s ease;
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
+    text-align: center;
   }
 
   .hero-banner__button:hover {
@@ -235,6 +388,45 @@
     display: none;
   }
 
+  .hero-banner__secondary-link {
+    font-family: var(--font-primary-family);
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--hero-secondary-color, #A8A29E);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    transition: opacity 0.2s ease;
+  }
+
+  .hero-banner__secondary-link:hover {
+    opacity: 0.7;
+  }
+
+  /* Trust Badges */
+  .hero-banner__trust {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+
+  .hero-banner__trust-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-primary-family);
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--hero-trust-color, #A8A29E);
+  }
+
+  .hero-banner__trust-check {
+    color: var(--hero-trust-check-color, #D97706);
+    flex-shrink: 0;
+  }
+
+  /* Mobile */
   @media screen and (max-width: 768px) {
     .hero-banner {
       min-height: var(--hero-min-height-mobile);
@@ -257,16 +449,20 @@
 
     .hero-banner__content {
       max-width: 100%;
-      gap: 16px;
+      gap: 14px;
     }
 
-    .hero-banner__eyebrow--desktop {
+    .hero-banner__eyebrow-row--desktop {
       display: none;
     }
 
-    .hero-banner__eyebrow--mobile {
-      display: block;
+    .hero-banner__eyebrow-row--mobile {
+      display: flex;
       font-size: var(--hero-eyebrow-size-mobile);
+    }
+
+    .hero-banner__eyebrow-line {
+      width: 32px;
     }
 
     .hero-banner__heading--desktop {
@@ -287,15 +483,47 @@
       font-size: var(--hero-subheading-size-mobile);
     }
 
+    .hero-banner__promo-discount,
+    .hero-banner__promo-code {
+      font-size: 13px;
+      padding: 7px 12px;
+    }
+
+    .hero-banner__buttons {
+      flex-direction: row;
+      align-items: center;
+      gap: 20px;
+    }
+
     .hero-banner__button--desktop {
       display: none;
     }
 
     .hero-banner__button--mobile {
       display: inline-block;
-      width: 100%;
+      flex: 1;
       text-align: center;
       font-size: var(--hero-button-size-mobile);
+    }
+
+    .hero-banner__secondary-link {
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .hero-banner__trust {
+      gap: 16px;
+      margin-top: 12px;
+    }
+
+    .hero-banner__trust-item {
+      font-size: 12px;
+      gap: 6px;
+    }
+
+    .hero-banner__trust-check {
+      width: 14px;
+      height: 14px;
     }
   }
 
@@ -357,30 +585,67 @@
       "type": "text",
       "id": "eyebrow",
       "label": "t:sections.hero_banner.settings.content.eyebrow",
-      "default": "THE SANCTUARY COLLECTION"
+      "default": "SPRING SALE"
     },
     {
       "type": "text",
       "id": "heading",
-      "label": "t:sections.hero_banner.settings.content.heading",
-      "default": "The Golden Hour"
+      "label": "Heading line 1",
+      "default": "Warm light,"
+    },
+    {
+      "type": "text",
+      "id": "heading_line2",
+      "label": "Heading line 2 (italic accent)",
+      "default": "warm price"
     },
     {
       "type": "textarea",
       "id": "subheading",
       "label": "t:sections.hero_banner.settings.content.subheading",
-      "default": "Illumination designed to soften the edges of modern life. Turn off the big light."
+      "default": "Every handcrafted fixture, now at its best spring price."
+    },
+    {
+      "type": "header",
+      "content": "Promo badge"
+    },
+    {
+      "type": "text",
+      "id": "promo_discount",
+      "label": "Discount text",
+      "default": "20% off"
+    },
+    {
+      "type": "text",
+      "id": "promo_code",
+      "label": "Promo code",
+      "default": "SPRING20"
+    },
+    {
+      "type": "header",
+      "content": "Buttons"
     },
     {
       "type": "text",
       "id": "button_text",
       "label": "t:sections.hero_banner.settings.content.button_text",
-      "default": "EXPLORE THE MOOD"
+      "default": "Shop the sale  →"
     },
     {
       "type": "url",
       "id": "button_link",
       "label": "t:sections.hero_banner.settings.content.button_link"
+    },
+    {
+      "type": "text",
+      "id": "secondary_link_text",
+      "label": "Secondary link text",
+      "default": "Explore all"
+    },
+    {
+      "type": "url",
+      "id": "secondary_link_url",
+      "label": "Secondary link URL"
     },
     {
       "type": "header",
@@ -411,6 +676,28 @@
       "type": "url",
       "id": "button_link_mobile",
       "label": "t:sections.hero_banner.settings.content.button_link"
+    },
+    {
+      "type": "header",
+      "content": "Trust badges"
+    },
+    {
+      "type": "text",
+      "id": "trust_1",
+      "label": "Badge 1",
+      "default": "Free shipping"
+    },
+    {
+      "type": "text",
+      "id": "trust_2",
+      "label": "Badge 2",
+      "default": "30-day returns"
+    },
+    {
+      "type": "text",
+      "id": "trust_3",
+      "label": "Badge 3",
+      "default": "2 Year Warranty"
     },
     {
       "type": "header",
@@ -545,6 +832,12 @@
       "default": "#FFFFFF"
     },
     {
+      "type": "color",
+      "id": "heading_accent_color",
+      "label": "Accent line color (italic)",
+      "default": "#D97706"
+    },
+    {
       "type": "range",
       "id": "heading_size_desktop",
       "label": "t:sections.hero_banner.settings.heading_style.size_desktop",
@@ -618,6 +911,22 @@
     },
     {
       "type": "header",
+      "content": "Promo style"
+    },
+    {
+      "type": "color",
+      "id": "promo_color",
+      "label": "Promo text color",
+      "default": "#D97706"
+    },
+    {
+      "type": "color",
+      "id": "promo_border_color",
+      "label": "Promo border color",
+      "default": "#7c5a2a"
+    },
+    {
+      "type": "header",
       "content": "t:sections.hero_banner.settings.button_style.header"
     },
     {
@@ -633,7 +942,7 @@
       "min": 0,
       "max": 100,
       "step": 5,
-      "default": 15,
+      "default": 0,
       "unit": "%"
     },
     {
@@ -708,6 +1017,32 @@
       "step": 2,
       "default": 16,
       "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Secondary link style"
+    },
+    {
+      "type": "color",
+      "id": "secondary_link_color",
+      "label": "Secondary link color",
+      "default": "#A8A29E"
+    },
+    {
+      "type": "header",
+      "content": "Trust badges style"
+    },
+    {
+      "type": "color",
+      "id": "trust_text_color",
+      "label": "Trust text color",
+      "default": "#A8A29E"
+    },
+    {
+      "type": "color",
+      "id": "trust_check_color",
+      "label": "Checkmark color",
+      "default": "#D97706"
     }
   ],
   "presets": [
