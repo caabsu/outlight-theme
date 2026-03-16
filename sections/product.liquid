@@ -387,20 +387,9 @@
           ">
             <span class="product-promotion__bar"></span>
             <span class="product-promotion__text">
-              {%- if block.settings.title_text != blank -%}
-                <span class="product-promotion__title">{{ block.settings.title_text }}</span>
-              {%- endif -%}
-              {%- if block.settings.discount_text != blank -%}
-                <span class="product-promotion__sep">&mdash;</span>
-                <span class="product-promotion__discount">{{ block.settings.discount_text }}</span>
-              {%- endif -%}
-              {%- if block.settings.code_value != blank -%}
-                <span class="product-promotion__code-prefix">with code</span>
-                <button class="product-promotion__code" data-promo-code="{{ block.settings.code_value }}" onclick="copyPromoCode(this)">
-                  <span class="product-promotion__code-value">{{ block.settings.code_value }}</span>
-                  <span class="product-promotion__code-copied">Copied!</span>
-                </button>
-              {%- endif -%}
+              {%- if block.settings.title_text != blank -%}<span class="product-promotion__title">{{ block.settings.title_text }}</span>{%- endif -%}
+              {%- if block.settings.discount_text != blank %} <span class="product-promotion__sep">&mdash;</span> <span class="product-promotion__discount">{{ block.settings.discount_text }}</span>{%- endif -%}
+              {%- if block.settings.code_value != blank %} <span class="product-promotion__code-prefix">with code</span> <button class="product-promotion__code" data-promo-code="{{ block.settings.code_value }}" onclick="copyPromoCode(this)"><span class="product-promotion__code-value">{{ block.settings.code_value }}</span><span class="product-promotion__code-copied">Copied!</span></button>{%- endif -%}
             </span>
           </div>
         {%- endif -%}
@@ -2341,9 +2330,12 @@
   .product-promotion {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     width: 100%;
     margin-top: 12px;
+    max-width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
   }
 
   .product-promotion__bar {
@@ -2355,14 +2347,17 @@
 
   .product-promotion__text {
     font-family: var(--font-primary-family), sans-serif;
-    font-size: var(--promo-size, 14px);
+    font-size: var(--promo-size, 13px);
     color: var(--promo-text-color, #1C1917);
     line-height: 1.4;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
   }
 
   .product-promotion__title {
-    font-weight: 400;
+    font-weight: 700;
   }
 
   .product-promotion__sep {
@@ -3752,11 +3747,11 @@
           "type": "range",
           "id": "font_size",
           "label": "Font size",
-          "min": 12,
-          "max": 18,
+          "min": 10,
+          "max": 16,
           "step": 1,
           "unit": "px",
-          "default": 14
+          "default": 13
         },
         {
           "type": "color",
