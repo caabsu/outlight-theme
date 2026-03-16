@@ -45,9 +45,10 @@
     assign display_title = section.settings.title
   endif
 
+  assign fetch_limit = products_limit | plus: 1
   assign visible_count = 0
   if carousel_collection != blank
-    for item in carousel_collection.products limit: products_limit | plus: 1
+    for item in carousel_collection.products limit: fetch_limit
       unless item.id == current_product_id
         if visible_count < products_limit
           assign visible_count = visible_count | plus: 1
@@ -106,7 +107,7 @@
     {%- comment -%} Product Track {%- endcomment -%}
     <div class="product-carousel__track" data-pc-track>
       {%- assign shown = 0 -%}
-      {%- for item in carousel_collection.products limit: products_limit | plus: 1 -%}
+      {%- for item in carousel_collection.products limit: fetch_limit -%}
         {%- unless item.id == current_product_id -%}
           {%- if shown < products_limit -%}
             {%- assign shown = shown | plus: 1 -%}
