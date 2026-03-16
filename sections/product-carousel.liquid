@@ -1,0 +1,575 @@
+{%- comment -%}
+  Product Carousel Section
+  Unified carousel for product pages - shows products from a collection
+  with eyebrow label, serif italic title, and horizontal scrolling cards.
+  Product subtitle shows the collection name the product belongs to.
+{%- endcomment -%}
+
+{%- assign carousel_collection = collections[section.settings.collection] -%}
+{%- assign current_product_id = product.id -%}
+{%- assign products_limit = section.settings.products_limit -%}
+
+{%- comment -%} Count visible products (excluding current) {%- endcomment -%}
+{%- assign visible_count = 0 -%}
+{%- if carousel_collection != blank -%}
+  {%- for item in carousel_collection.products limit: products_limit | plus: 1 -%}
+    {%- unless item.id == current_product_id -%}
+      {%- if visible_count < products_limit -%}
+        {%- assign visible_count = visible_count | plus: 1 -%}
+      {%- endif -%}
+    {%- endunless -%}
+  {%- endfor -%}
+{%- endif -%}
+
+{%- if carousel_collection != blank and visible_count > 0 -%}
+<div
+  class="product-carousel full-width"
+  style="
+    --pc-bg: {{ section.settings.section_bg }};
+    --pc-padding-top: {{ section.settings.padding_top }}px;
+    --pc-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --pc-accent: {{ section.settings.accent_color }};
+    --pc-eyebrow-size: {{ section.settings.eyebrow_size }}px;
+    --pc-title-color: {{ section.settings.title_color }};
+    --pc-title-size: {{ section.settings.title_size }}px;
+    --pc-title-size-mobile: {{ section.settings.title_size_mobile }}px;
+    --pc-card-radius: {{ section.settings.card_radius }}px;
+    --pc-card-width: {{ section.settings.card_width }}px;
+    --pc-card-width-mobile: {{ section.settings.card_width_mobile }}px;
+    --pc-gap: {{ section.settings.card_gap }}px;
+    --pc-name-color: {{ section.settings.name_color }};
+    --pc-name-size: {{ section.settings.name_size }}px;
+    --pc-subtitle-color: {{ section.settings.subtitle_color }};
+    --pc-subtitle-size: {{ section.settings.subtitle_size }}px;
+    --pc-price-color: {{ section.settings.price_color }};
+    --pc-price-size: {{ section.settings.price_size }}px;
+    --pc-divider-color: {{ section.settings.divider_color }};
+  "
+>
+  {% render 'scroll-animation' %}
+  <div class="product-carousel__container">
+    {%- comment -%} Header {%- endcomment -%}
+    <div class="product-carousel__header scroll-animate">
+      <div class="product-carousel__header-top">
+        <div class="product-carousel__eyebrow-row">
+          <span class="product-carousel__bar"></span>
+          <span class="product-carousel__eyebrow">{{ section.settings.eyebrow }}</span>
+        </div>
+        {%- if section.settings.show_view_all -%}
+          <a href="{{ carousel_collection.url }}" class="product-carousel__view-all">
+            {{ section.settings.view_all_text }}
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </a>
+        {%- endif -%}
+      </div>
+      <h2 class="product-carousel__title">{{ section.settings.title }}</h2>
+    </div>
+
+    {%- comment -%} Product Track {%- endcomment -%}
+    <div class="product-carousel__track" data-pc-track>
+      {%- assign shown = 0 -%}
+      {%- for item in carousel_collection.products limit: products_limit | plus: 1 -%}
+        {%- unless item.id == current_product_id -%}
+          {%- if shown < products_limit -%}
+            {%- assign shown = shown | plus: 1 -%}
+            <a href="{{ item.url }}" class="product-carousel__card">
+              <div class="product-carousel__image">
+                {%- if item.featured_image != blank -%}
+                  {{ item.featured_image | image_url: width: 800 | image_tag: loading: 'lazy' }}
+                {%- else -%}
+                  {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                {%- endif -%}
+              </div>
+              <div class="product-carousel__info">
+                <div class="product-carousel__info-left">
+                  <span class="product-carousel__name">{{ item.title }}</span>
+                  <span class="product-carousel__subtitle">{{ carousel_collection.title }}</span>
+                </div>
+                <span class="product-carousel__price">{{ item.price | money }}</span>
+              </div>
+            </a>
+          {%- endif -%}
+        {%- endunless -%}
+      {%- endfor -%}
+    </div>
+  </div>
+
+  {%- if section.settings.show_divider -%}
+    <div class="product-carousel__divider"></div>
+  {%- endif -%}
+</div>
+{%- endif -%}
+
+{% stylesheet %}
+  .product-carousel {
+    background: var(--pc-bg);
+    padding: var(--pc-padding-top) 0 var(--pc-padding-bottom);
+  }
+
+  .product-carousel__container {
+    width: 100%;
+    padding: 0 var(--page-margin);
+  }
+
+  /* Header */
+  .product-carousel__header {
+    margin-bottom: 20px;
+  }
+
+  .product-carousel__header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .product-carousel__eyebrow-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .product-carousel__bar {
+    width: 20px;
+    height: 2px;
+    background: var(--pc-accent);
+    flex-shrink: 0;
+  }
+
+  .product-carousel__eyebrow {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: var(--pc-eyebrow-size);
+    font-weight: 600;
+    color: var(--pc-accent);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .product-carousel__view-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--pc-accent);
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: opacity 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .product-carousel__view-all:hover {
+    opacity: 0.7;
+  }
+
+  .product-carousel__title {
+    font-family: var(--font-heading-family), serif;
+    font-size: var(--pc-title-size-mobile);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--pc-title-color);
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  /* Track */
+  .product-carousel__track {
+    display: flex;
+    gap: var(--pc-gap);
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding-bottom: 4px;
+  }
+
+  .product-carousel__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Cards */
+  .product-carousel__card {
+    flex: 0 0 var(--pc-card-width-mobile);
+    scroll-snap-align: start;
+    text-decoration: none;
+    display: block;
+  }
+
+  .product-carousel__image {
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    border-radius: var(--pc-card-radius);
+    background: #f0ece5;
+  }
+
+  .product-carousel__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .product-carousel__card:hover .product-carousel__image img {
+    transform: scale(1.03);
+  }
+
+  .product-carousel__image .placeholder-svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Info below card */
+  .product-carousel__info {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 10px 0 0;
+    gap: 8px;
+  }
+
+  .product-carousel__info-left {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .product-carousel__name {
+    font-family: var(--font-heading-family), serif;
+    font-size: var(--pc-name-size);
+    font-weight: 400;
+    color: var(--pc-name-color);
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .product-carousel__subtitle {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: var(--pc-subtitle-size);
+    font-weight: 400;
+    color: var(--pc-subtitle-color);
+    line-height: 1.3;
+  }
+
+  .product-carousel__price {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: var(--pc-price-size);
+    font-weight: 400;
+    color: var(--pc-price-color);
+    white-space: nowrap;
+    flex-shrink: 0;
+    line-height: 1.3;
+  }
+
+  /* Divider */
+  .product-carousel__divider {
+    width: calc(100% - var(--page-margin) * 2);
+    height: 1px;
+    background: var(--pc-divider-color);
+    margin: var(--pc-padding-bottom) auto 0;
+  }
+
+  /* Desktop */
+  @media (min-width: 768px) {
+    .product-carousel__header {
+      margin-bottom: 28px;
+    }
+
+    .product-carousel__header-top {
+      margin-bottom: 10px;
+    }
+
+    .product-carousel__eyebrow {
+      font-size: var(--pc-eyebrow-size);
+    }
+
+    .product-carousel__view-all {
+      font-size: 13px;
+    }
+
+    .product-carousel__title {
+      font-size: var(--pc-title-size);
+    }
+
+    .product-carousel__card {
+      flex: 0 0 var(--pc-card-width);
+    }
+
+    .product-carousel__info {
+      padding: 14px 0 0;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  /* No nav arrows needed - pure scroll */
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Product carousel",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow label",
+      "default": "CATEGORY"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Best of pendant lights"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_limit",
+      "label": "Products to show",
+      "min": 3,
+      "max": 12,
+      "step": 1,
+      "default": 6
+    },
+    {
+      "type": "header",
+      "content": "View all"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "label": "Show view all link",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "view_all_text",
+      "label": "View all text",
+      "default": "View all"
+    },
+    {
+      "type": "header",
+      "content": "Section style"
+    },
+    {
+      "type": "color",
+      "id": "section_bg",
+      "label": "Background",
+      "default": "#f7f5f0"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color",
+      "default": "#D97706"
+    },
+    {
+      "type": "header",
+      "content": "Divider"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_divider",
+      "label": "Show bottom divider",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Divider color",
+      "default": "#e5e2db"
+    },
+    {
+      "type": "header",
+      "content": "Eyebrow style"
+    },
+    {
+      "type": "range",
+      "id": "eyebrow_size",
+      "label": "Font size",
+      "min": 10,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Title style"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Color",
+      "default": "#1C1917"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Size (desktop)",
+      "min": 20,
+      "max": 48,
+      "step": 1,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "title_size_mobile",
+      "label": "Size (mobile)",
+      "min": 18,
+      "max": 36,
+      "step": 1,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "header",
+      "content": "Card style"
+    },
+    {
+      "type": "range",
+      "id": "card_width",
+      "label": "Card width (desktop)",
+      "min": 200,
+      "max": 400,
+      "step": 10,
+      "unit": "px",
+      "default": 280
+    },
+    {
+      "type": "range",
+      "id": "card_width_mobile",
+      "label": "Card width (mobile)",
+      "min": 150,
+      "max": 280,
+      "step": 10,
+      "unit": "px",
+      "default": 200
+    },
+    {
+      "type": "range",
+      "id": "card_gap",
+      "label": "Gap between cards",
+      "min": 8,
+      "max": 32,
+      "step": 4,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "card_radius",
+      "label": "Card border radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Product info"
+    },
+    {
+      "type": "color",
+      "id": "name_color",
+      "label": "Name color",
+      "default": "#1C1917"
+    },
+    {
+      "type": "range",
+      "id": "name_size",
+      "label": "Name size",
+      "min": 14,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle color",
+      "default": "#A8A29E"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size",
+      "label": "Subtitle size",
+      "min": 10,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "color",
+      "id": "price_color",
+      "label": "Price color",
+      "default": "#1C1917"
+    },
+    {
+      "type": "range",
+      "id": "price_size",
+      "label": "Price size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product carousel",
+      "settings": {
+        "eyebrow": "CATEGORY",
+        "title": "Best of pendant lights"
+      }
+    }
+  ],
+  "enabled_on": {
+    "templates": ["*"],
+    "groups": ["*"]
+  }
+}
+{% endschema %}
