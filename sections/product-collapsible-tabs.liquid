@@ -1,247 +1,298 @@
+{%- liquid
+  assign installation_metafield = product.metafields.custom.installation_guide
+  assign description_metafield = product.metafields.custom.collapsible_description
+
+  assign show_electrician_warning = false
+  for collection in section.settings.electrician_collections
+    if product.collections contains collection
+      assign show_electrician_warning = true
+      break
+    endif
+  endfor
+-%}
+
 <div
-  class="collapsible-tabs full-width"
+  class="amber-tabs full-width"
   style="
-    --section-padding-top: {{ section.settings.section_padding_top }}px;
-    --section-padding-bottom: {{ section.settings.section_padding_bottom }}px;
-    --section-bg: {{ section.settings.section_bg }};
-    --card-bg: {{ section.settings.card_bg }};
-    --card-radius: {{ section.settings.card_radius }}px;
-    --card-padding-desktop: {{ section.settings.card_padding_desktop }}px;
-    --card-padding-mobile: {{ section.settings.card_padding_mobile }}px;
-    --label-color: {{ section.settings.label_color }};
-    --label-size: {{ section.settings.label_size }}px;
-    --label-weight: {{ section.settings.label_weight }};
-    --desktop-text-size: {{ section.settings.desktop_text_size }}px;
-    --desktop-text-weight: {{ section.settings.desktop_text_weight }};
-    --desktop-text-color: {{ section.settings.desktop_text_color }};
-    --desktop-line-height: {{ section.settings.desktop_line_height }};
-    --mobile-label-size: {{ section.settings.mobile_label_size }}px;
-    --mobile-label-weight: {{ section.settings.mobile_label_weight }};
-    --mobile-label-color: {{ section.settings.mobile_label_color }};
-    --mobile-text-size: {{ section.settings.mobile_text_size }}px;
-    --mobile-text-weight: {{ section.settings.mobile_text_weight }};
-    --mobile-text-color: {{ section.settings.mobile_text_color }};
-    --mobile-line-height: {{ section.settings.mobile_line_height }};
+    --at-section-bg: {{ section.settings.section_bg }};
+    --at-padding-top: {{ section.settings.section_padding_top }}px;
+    --at-padding-bottom: {{ section.settings.section_padding_bottom }}px;
+    --at-accent: {{ section.settings.accent_color }};
+    --at-accent-bg: {{ section.settings.accent_bg_color }};
+    --at-number-size: {{ section.settings.number_size }}px;
+    --at-label-size: {{ section.settings.label_size }}px;
+    --at-label-color: {{ section.settings.label_color }};
+    --at-label-weight: {{ section.settings.label_weight }};
+    --at-border-color: {{ section.settings.border_color }};
+    --at-bottom-border-color: {{ section.settings.bottom_border_color }};
+    --at-icon-color: {{ section.settings.icon_color }};
+    --at-text-size: {{ section.settings.text_size }}px;
+    --at-text-color: {{ section.settings.text_color }};
+    --at-text-size-mobile: {{ section.settings.text_size_mobile }}px;
+    --at-warning-bg: {{ section.settings.warning_bg }};
+    --at-warning-text-color: {{ section.settings.warning_text_color }};
+    --at-warning-icon-color: {{ section.settings.warning_icon_color }};
   "
 >
-  <div class="collapsible-tabs__container">
-    <!-- Description & Features - Desktop -->
-    <details class="collapsible-tabs__accordion collapsible-tabs__accordion--desktop">
-      <summary class="collapsible-tabs__accordion-header">
-        <span class="collapsible-tabs__accordion-title">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
-            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-          </svg>
-          {{ section.settings.description_desktop_label }}
-        </span>
-        <span class="collapsible-tabs__accordion-icon">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
-            <line class="collapsible-tabs__icon-h" x1="4" y1="10" x2="16" y2="10"/>
-            <line class="collapsible-tabs__icon-v" x1="10" y1="4" x2="10" y2="16"/>
+  <div class="amber-tabs__container">
+    {%- comment -%} 01 — Installation {%- endcomment -%}
+    <details class="amber-tabs__item">
+      <summary class="amber-tabs__header">
+        <div class="amber-tabs__header-left">
+          <span class="amber-tabs__number">01</span>
+          <span class="amber-tabs__label">{{ section.settings.installation_label }}</span>
+        </div>
+        <span class="amber-tabs__icon">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <line class="amber-tabs__icon-h" x1="3" y1="9" x2="15" y2="9"/>
+            <line class="amber-tabs__icon-v" x1="9" y1="3" x2="9" y2="15"/>
           </svg>
         </span>
       </summary>
-      <div class="collapsible-tabs__content">
-        {%- if product.metafields.custom.collapsible_description != blank -%}
-          {{ product.metafields.custom.collapsible_description | metafield_tag }}
-        {%- else -%}
-          {{ section.settings.description_fallback_text }}
+      <div class="amber-tabs__content">
+        <div class="amber-tabs__body">
+          {%- if installation_metafield != blank -%}
+            {{ installation_metafield | metafield_tag }}
+          {%- else -%}
+            {{ section.settings.installation_fallback }}
+          {%- endif -%}
+        </div>
+        {%- if show_electrician_warning -%}
+          <div class="amber-tabs__warning">
+            <span class="amber-tabs__warning-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="16" x2="12" y2="12"/>
+                <line x1="12" y1="8" x2="12.01" y2="8"/>
+              </svg>
+            </span>
+            <span class="amber-tabs__warning-text">{{ section.settings.electrician_warning_text }}</span>
+          </div>
         {%- endif -%}
       </div>
     </details>
 
-    <!-- Description & Features - Mobile -->
-    <details class="collapsible-tabs__accordion collapsible-tabs__accordion--mobile">
-      <summary class="collapsible-tabs__accordion-header">
-        <span class="collapsible-tabs__accordion-title">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
-            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-          </svg>
-          {{ section.settings.description_mobile_label }}
-        </span>
-        <span class="collapsible-tabs__accordion-icon">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
-            <line class="collapsible-tabs__icon-h" x1="4" y1="10" x2="16" y2="10"/>
-            <line class="collapsible-tabs__icon-v" x1="10" y1="4" x2="10" y2="16"/>
+    {%- comment -%} 02 — Description & Features {%- endcomment -%}
+    <details class="amber-tabs__item">
+      <summary class="amber-tabs__header">
+        <div class="amber-tabs__header-left">
+          <span class="amber-tabs__number">02</span>
+          <span class="amber-tabs__label">{{ section.settings.description_label }}</span>
+        </div>
+        <span class="amber-tabs__icon">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <line class="amber-tabs__icon-h" x1="3" y1="9" x2="15" y2="9"/>
+            <line class="amber-tabs__icon-v" x1="9" y1="3" x2="9" y2="15"/>
           </svg>
         </span>
       </summary>
-      <div class="collapsible-tabs__content">
-        {%- if product.metafields.custom.collapsible_description != blank -%}
-          {{ product.metafields.custom.collapsible_description | metafield_tag }}
-        {%- else -%}
-          {{ section.settings.description_fallback_text }}
-        {%- endif -%}
+      <div class="amber-tabs__content">
+        <div class="amber-tabs__body">
+          {%- if description_metafield != blank -%}
+            {{ description_metafield | metafield_tag }}
+          {%- else -%}
+            {{ section.settings.description_fallback }}
+          {%- endif -%}
+        </div>
       </div>
     </details>
 
-    <!-- Shipping & Returns - Desktop -->
-    <details class="collapsible-tabs__accordion collapsible-tabs__accordion--desktop">
-      <summary class="collapsible-tabs__accordion-header">
-        <span class="collapsible-tabs__accordion-title">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="1" y="3" width="15" height="13"/>
-            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
-            <circle cx="5.5" cy="18.5" r="2.5"/>
-            <circle cx="18.5" cy="18.5" r="2.5"/>
-          </svg>
-          {{ section.settings.shipping_desktop_label }}
-        </span>
-        <span class="collapsible-tabs__accordion-icon">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
-            <line class="collapsible-tabs__icon-h" x1="4" y1="10" x2="16" y2="10"/>
-            <line class="collapsible-tabs__icon-v" x1="10" y1="4" x2="10" y2="16"/>
+    {%- comment -%} 03 — Shipping & Returns {%- endcomment -%}
+    <details class="amber-tabs__item">
+      <summary class="amber-tabs__header">
+        <div class="amber-tabs__header-left">
+          <span class="amber-tabs__number">03</span>
+          <span class="amber-tabs__label">{{ section.settings.shipping_label }}</span>
+        </div>
+        <span class="amber-tabs__icon">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <line class="amber-tabs__icon-h" x1="3" y1="9" x2="15" y2="9"/>
+            <line class="amber-tabs__icon-v" x1="9" y1="3" x2="9" y2="15"/>
           </svg>
         </span>
       </summary>
-      <div class="collapsible-tabs__content">
-        {{ section.settings.shipping_content }}
+      <div class="amber-tabs__content">
+        <div class="amber-tabs__body">
+          {{ section.settings.shipping_content }}
+        </div>
       </div>
     </details>
 
-    <!-- Shipping & Returns - Mobile -->
-    <details class="collapsible-tabs__accordion collapsible-tabs__accordion--mobile">
-      <summary class="collapsible-tabs__accordion-header">
-        <span class="collapsible-tabs__accordion-title">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="1" y="3" width="15" height="13"/>
-            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
-            <circle cx="5.5" cy="18.5" r="2.5"/>
-            <circle cx="18.5" cy="18.5" r="2.5"/>
-          </svg>
-          {{ section.settings.shipping_mobile_label }}
-        </span>
-        <span class="collapsible-tabs__accordion-icon">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
-            <line class="collapsible-tabs__icon-h" x1="4" y1="10" x2="16" y2="10"/>
-            <line class="collapsible-tabs__icon-v" x1="10" y1="4" x2="10" y2="16"/>
-          </svg>
-        </span>
-      </summary>
-      <div class="collapsible-tabs__content">
-        {{ section.settings.shipping_content }}
-      </div>
-    </details>
+    <div class="amber-tabs__bottom-border"></div>
   </div>
 </div>
 
 {% stylesheet %}
-  .collapsible-tabs {
-    background: var(--section-bg);
-    padding: var(--section-padding-top) 0 var(--section-padding-bottom) 0;
+  .amber-tabs {
+    background: var(--at-section-bg, #f7f5f0);
+    padding: var(--at-padding-top, 0) 0 var(--at-padding-bottom, 32px) 0;
   }
 
-  .collapsible-tabs__container {
+  .amber-tabs__container {
     max-width: var(--page-width);
     margin: 0 auto;
     padding: 0 var(--page-margin);
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
   }
 
-  /* Desktop Accordion */
-  .collapsible-tabs__accordion--desktop {
-    display: block;
-    background: var(--card-bg);
-    border-radius: var(--card-radius);
+  /* Each accordion item */
+  .amber-tabs__item {
+    border-top: 1px solid var(--at-border-color, #d6d3d1);
   }
 
-  .collapsible-tabs__accordion--mobile {
-    display: none;
-  }
-
-  .collapsible-tabs__accordion-header {
+  /* Header row */
+  .amber-tabs__header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: var(--card-padding-desktop);
+    padding: 20px 16px;
     cursor: pointer;
     list-style: none;
+    transition: background-color 0.2s ease;
   }
 
-  .collapsible-tabs__accordion-header::-webkit-details-marker {
+  .amber-tabs__header::-webkit-details-marker {
     display: none;
   }
 
-  .collapsible-tabs__accordion-title {
+  .amber-tabs__header-left {
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-size: var(--label-size);
-    font-weight: var(--label-weight);
-    color: var(--label-color);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+    gap: 20px;
   }
 
-  .collapsible-tabs__accordion-icon {
+  /* Number */
+  .amber-tabs__number {
+    font-family: var(--font-heading-family), serif;
+    font-size: var(--at-number-size, 14px);
+    font-weight: 400;
+    color: var(--at-accent, #d97706);
+    min-width: 24px;
+  }
+
+  /* Label */
+  .amber-tabs__label {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: var(--at-label-size, 13px);
+    font-weight: var(--at-label-weight, 600);
+    color: var(--at-label-color, #1c1917);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  /* Icon */
+  .amber-tabs__icon {
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    color: #999;
+    color: var(--at-icon-color, #999);
   }
 
-  .collapsible-tabs__icon-v {
+  .amber-tabs__icon-v {
     transition: opacity 0.2s ease, transform 0.2s ease;
   }
 
-  .collapsible-tabs__accordion[open] .collapsible-tabs__icon-v {
+  /* Open state — amber bg on header */
+  .amber-tabs__item[open] > .amber-tabs__header {
+    background-color: var(--at-accent-bg, rgba(217, 119, 6, 0.08));
+  }
+
+  .amber-tabs__item[open] .amber-tabs__icon-v {
     opacity: 0;
     transform: scaleY(0);
   }
 
-  .collapsible-tabs__content {
-    padding: 0 var(--card-padding-desktop) var(--card-padding-desktop);
-    font-size: var(--desktop-text-size);
-    font-weight: var(--desktop-text-weight);
-    color: var(--desktop-text-color);
-    line-height: var(--desktop-line-height);
-    text-align: center;
+  /* Content area */
+  .amber-tabs__content {
+    padding: 0 16px 24px 60px;
   }
 
+  /* Body text with left amber accent border */
+  .amber-tabs__body {
+    border-left: 3px solid var(--at-accent, #d97706);
+    padding-left: 20px;
+    font-family: var(--font-heading-family), serif;
+    font-size: var(--at-text-size, 16px);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--at-text-color, #44403c);
+    line-height: 1.7;
+  }
+
+  .amber-tabs__body p {
+    margin: 0;
+  }
+
+  .amber-tabs__body p + p {
+    margin-top: 1em;
+  }
+
+  .amber-tabs__body > *:first-child {
+    margin-top: 0;
+  }
+
+  /* Electrician warning */
+  .amber-tabs__warning {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 16px;
+    margin-left: 23px;
+    padding: 12px 16px;
+    background: var(--at-warning-bg, #ffffff);
+  }
+
+  .amber-tabs__warning-icon {
+    display: flex;
+    align-items: center;
+    color: var(--at-warning-icon-color, #d97706);
+    flex-shrink: 0;
+  }
+
+  .amber-tabs__warning-text {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 14px;
+    color: var(--at-warning-text-color, #1a1a1a);
+  }
+
+  /* Bottom thick border */
+  .amber-tabs__bottom-border {
+    height: 2px;
+    background: var(--at-bottom-border-color, #1c1917);
+    margin-top: 0;
+  }
+
+  /* Mobile adjustments */
   @media (max-width: 768px) {
-    .collapsible-tabs {
-      padding: var(--section-padding-top) 0 var(--section-padding-bottom) 0;
+    .amber-tabs__header {
+      padding: 18px 12px;
     }
 
-    .collapsible-tabs__container {
-      padding: 0;
-      gap: 0;
+    .amber-tabs__header-left {
+      gap: 16px;
     }
 
-    .collapsible-tabs__accordion--desktop {
-      display: none;
+    .amber-tabs__number {
+      font-size: 13px;
+      min-width: 20px;
     }
 
-    .collapsible-tabs__accordion--mobile {
-      display: block;
-      background: var(--card-bg);
-      border-radius: 0;
+    .amber-tabs__label {
+      font-size: 12px;
+      letter-spacing: 0.1em;
     }
 
-    .collapsible-tabs__accordion-header {
-      padding: 16px;
+    .amber-tabs__content {
+      padding: 0 12px 20px 48px;
     }
 
-    .collapsible-tabs__accordion-title {
-      font-size: var(--mobile-label-size);
-      font-weight: var(--mobile-label-weight);
-      color: var(--mobile-label-color);
-      letter-spacing: 0;
-      text-transform: none;
+    .amber-tabs__body {
+      font-size: var(--at-text-size-mobile, 14px);
+      padding-left: 16px;
     }
 
-    .collapsible-tabs__content {
-      padding: 0 16px 16px;
-      font-size: var(--mobile-text-size);
-      font-weight: var(--mobile-text-weight);
-      color: var(--mobile-text-color);
-      line-height: var(--mobile-line-height);
-      text-align: left;
+    .amber-tabs__warning {
+      margin-left: 19px;
     }
   }
 {% endstylesheet %}
@@ -252,57 +303,74 @@
   "settings": [
     {
       "type": "header",
-      "content": "t:sections.collapsible_tabs.settings.description.header"
+      "content": "Installation"
     },
     {
       "type": "text",
-      "id": "description_desktop_label",
-      "label": "t:sections.collapsible_tabs.settings.description.desktop_label",
-      "default": "Description & features"
-    },
-    {
-      "type": "text",
-      "id": "description_mobile_label",
-      "label": "t:sections.collapsible_tabs.settings.description.mobile_label",
-      "default": "Description & features"
+      "id": "installation_label",
+      "label": "Installation label",
+      "default": "INSTALLATION"
     },
     {
       "type": "textarea",
-      "id": "description_fallback_text",
-      "label": "t:sections.collapsible_tabs.settings.description.fallback_text",
-      "info": "t:sections.collapsible_tabs.settings.description.fallback_info",
+      "id": "installation_fallback",
+      "label": "Installation fallback text",
+      "info": "Shown if custom.installation_guide metafield is empty",
+      "default": "Secure the fixture to an exterior wall and connect it to AC power (85–265 V). Use proper weather-sealing at all junctions to maintain water resistance."
+    },
+    {
+      "type": "collection_list",
+      "id": "electrician_collections",
+      "label": "Collections requiring electrician",
+      "info": "Products in these collections will show the electrician warning"
+    },
+    {
+      "type": "text",
+      "id": "electrician_warning_text",
+      "label": "Electrician warning text",
+      "default": "Qualified electrician recommended for safe installation."
+    },
+    {
+      "type": "header",
+      "content": "Description & features"
+    },
+    {
+      "type": "text",
+      "id": "description_label",
+      "label": "Description label",
+      "default": "DESCRIPTION & FEATURES"
+    },
+    {
+      "type": "textarea",
+      "id": "description_fallback",
+      "label": "Description fallback text",
+      "info": "Shown if custom.collapsible_description metafield is empty",
       "default": "Crafted with premium materials and meticulous attention to detail. Each piece combines form and function for a truly distinctive lighting experience."
     },
     {
       "type": "header",
-      "content": "t:sections.collapsible_tabs.settings.shipping.header"
+      "content": "Shipping & returns"
     },
     {
       "type": "text",
-      "id": "shipping_desktop_label",
-      "label": "t:sections.collapsible_tabs.settings.shipping.desktop_label",
-      "default": "Shipping & returns"
-    },
-    {
-      "type": "text",
-      "id": "shipping_mobile_label",
-      "label": "t:sections.collapsible_tabs.settings.shipping.mobile_label",
-      "default": "Shipping & returns"
+      "id": "shipping_label",
+      "label": "Shipping label",
+      "default": "SHIPPING & RETURNS"
     },
     {
       "type": "textarea",
       "id": "shipping_content",
-      "label": "t:sections.collapsible_tabs.settings.shipping.content",
+      "label": "Shipping content",
       "default": "Free standard shipping on all orders. Express shipping available at checkout. We offer a 30-day risk-free return policy — if you're not satisfied, return in original packaging for a full refund."
     },
     {
       "type": "header",
-      "content": "t:sections.collapsible_tabs.settings.spacing.header"
+      "content": "Spacing"
     },
     {
       "type": "range",
       "id": "section_padding_top",
-      "label": "t:sections.collapsible_tabs.settings.spacing.padding_top",
+      "label": "Padding top",
       "min": 0,
       "max": 100,
       "step": 4,
@@ -312,85 +380,112 @@
     {
       "type": "range",
       "id": "section_padding_bottom",
-      "label": "t:sections.collapsible_tabs.settings.spacing.padding_bottom",
+      "label": "Padding bottom",
       "min": 0,
       "max": 100,
       "step": 4,
-      "default": 0,
+      "default": 32,
       "unit": "px"
     },
     {
       "type": "header",
-      "content": "t:sections.collapsible_tabs.settings.colors.header"
+      "content": "Colors"
     },
     {
       "type": "color",
       "id": "section_bg",
-      "label": "t:sections.collapsible_tabs.settings.colors.section_bg",
+      "label": "Section background",
       "default": "#f7f5f0"
     },
     {
       "type": "color",
-      "id": "card_bg",
-      "label": "t:sections.collapsible_tabs.settings.colors.card_bg",
-      "default": "#ebe8e0"
+      "id": "accent_color",
+      "label": "Accent color (numbers, border)",
+      "default": "#d97706"
     },
     {
-      "type": "range",
-      "id": "card_radius",
-      "label": "t:sections.collapsible_tabs.settings.colors.card_radius",
-      "min": 0,
-      "max": 40,
-      "step": 2,
-      "default": 16,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "card_padding_desktop",
-      "label": "t:sections.collapsible_tabs.settings.colors.card_padding_desktop",
-      "min": 20,
-      "max": 80,
-      "step": 4,
-      "default": 48,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "card_padding_mobile",
-      "label": "t:sections.collapsible_tabs.settings.colors.card_padding_mobile",
-      "min": 16,
-      "max": 48,
-      "step": 4,
-      "default": 24,
-      "unit": "px"
-    },
-    {
-      "type": "header",
-      "content": "t:sections.collapsible_tabs.settings.desktop_label.header"
+      "type": "color",
+      "id": "accent_bg_color",
+      "label": "Active header background",
+      "default": "#faefe0"
     },
     {
       "type": "color",
       "id": "label_color",
-      "label": "t:sections.collapsible_tabs.settings.desktop_label.color",
+      "label": "Label color",
+      "default": "#1c1917"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color",
+      "default": "#d6d3d1"
+    },
+    {
+      "type": "color",
+      "id": "bottom_border_color",
+      "label": "Bottom border color",
+      "default": "#1c1917"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon color",
+      "default": "#999999"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Body text color",
+      "default": "#44403c"
+    },
+    {
+      "type": "color",
+      "id": "warning_bg",
+      "label": "Warning background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "warning_text_color",
+      "label": "Warning text color",
       "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "warning_icon_color",
+      "label": "Warning icon color",
+      "default": "#d97706"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "number_size",
+      "label": "Number size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
     },
     {
       "type": "range",
       "id": "label_size",
-      "label": "t:sections.collapsible_tabs.settings.desktop_label.size",
+      "label": "Label size",
       "min": 10,
-      "max": 16,
+      "max": 18,
       "step": 1,
-      "default": 12,
+      "default": 13,
       "unit": "px"
     },
     {
       "type": "select",
       "id": "label_weight",
-      "label": "t:sections.collapsible_tabs.settings.desktop_label.weight",
+      "label": "Label weight",
       "options": [
-        { "value": "300", "label": "Light" },
         { "value": "400", "label": "Regular" },
         { "value": "500", "label": "Medium" },
         { "value": "600", "label": "Semibold" },
@@ -399,127 +494,24 @@
       "default": "600"
     },
     {
-      "type": "header",
-      "content": "t:sections.collapsible_tabs.settings.mobile_label.header"
-    },
-    {
       "type": "range",
-      "id": "mobile_label_size",
-      "label": "t:sections.collapsible_tabs.settings.mobile_label.size",
-      "min": 12,
-      "max": 20,
-      "step": 1,
-      "default": 15,
-      "unit": "px"
-    },
-    {
-      "type": "select",
-      "id": "mobile_label_weight",
-      "label": "t:sections.collapsible_tabs.settings.mobile_label.weight",
-      "options": [
-        { "value": "300", "label": "Light" },
-        { "value": "400", "label": "Regular" },
-        { "value": "500", "label": "Medium" },
-        { "value": "600", "label": "Semibold" },
-        { "value": "700", "label": "Bold" }
-      ],
-      "default": "500"
-    },
-    {
-      "type": "color",
-      "id": "mobile_label_color",
-      "label": "t:sections.collapsible_tabs.settings.mobile_label.color",
-      "default": "#1a1a1a"
-    },
-    {
-      "type": "header",
-      "content": "t:sections.collapsible_tabs.settings.desktop_text.header"
-    },
-    {
-      "type": "range",
-      "id": "desktop_text_size",
-      "label": "t:sections.collapsible_tabs.settings.desktop_text.size",
+      "id": "text_size",
+      "label": "Body text size (desktop)",
       "min": 14,
-      "max": 24,
+      "max": 22,
       "step": 1,
-      "default": 17,
+      "default": 16,
       "unit": "px"
-    },
-    {
-      "type": "select",
-      "id": "desktop_text_weight",
-      "label": "t:sections.collapsible_tabs.settings.desktop_text.weight",
-      "options": [
-        { "value": "300", "label": "Light" },
-        { "value": "400", "label": "Regular" },
-        { "value": "500", "label": "Medium" },
-        { "value": "600", "label": "Semibold" },
-        { "value": "700", "label": "Bold" }
-      ],
-      "default": "400"
-    },
-    {
-      "type": "color",
-      "id": "desktop_text_color",
-      "label": "t:sections.collapsible_tabs.settings.desktop_text.color",
-      "default": "#3d3d3d"
-    },
-    {
-      "type": "select",
-      "id": "desktop_line_height",
-      "label": "t:sections.collapsible_tabs.settings.desktop_text.line_height",
-      "options": [
-        { "value": "1.4", "label": "Tight" },
-        { "value": "1.6", "label": "Normal" },
-        { "value": "1.8", "label": "Relaxed" },
-        { "value": "2", "label": "Loose" }
-      ],
-      "default": "1.8"
-    },
-    {
-      "type": "header",
-      "content": "t:sections.collapsible_tabs.settings.mobile_text.header"
     },
     {
       "type": "range",
-      "id": "mobile_text_size",
-      "label": "t:sections.collapsible_tabs.settings.mobile_text.size",
+      "id": "text_size_mobile",
+      "label": "Body text size (mobile)",
       "min": 12,
-      "max": 20,
+      "max": 18,
       "step": 1,
-      "default": 15,
+      "default": 14,
       "unit": "px"
-    },
-    {
-      "type": "select",
-      "id": "mobile_text_weight",
-      "label": "t:sections.collapsible_tabs.settings.mobile_text.weight",
-      "options": [
-        { "value": "300", "label": "Light" },
-        { "value": "400", "label": "Regular" },
-        { "value": "500", "label": "Medium" },
-        { "value": "600", "label": "Semibold" },
-        { "value": "700", "label": "Bold" }
-      ],
-      "default": "400"
-    },
-    {
-      "type": "color",
-      "id": "mobile_text_color",
-      "label": "t:sections.collapsible_tabs.settings.mobile_text.color",
-      "default": "#3d3d3d"
-    },
-    {
-      "type": "select",
-      "id": "mobile_line_height",
-      "label": "t:sections.collapsible_tabs.settings.mobile_text.line_height",
-      "options": [
-        { "value": "1.4", "label": "Tight" },
-        { "value": "1.6", "label": "Normal" },
-        { "value": "1.8", "label": "Relaxed" },
-        { "value": "2", "label": "Loose" }
-      ],
-      "default": "1.6"
     }
   ],
   "presets": [
