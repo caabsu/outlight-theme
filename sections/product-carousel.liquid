@@ -1,25 +1,61 @@
 {%- comment -%}
   Product Carousel Section
-  Unified carousel for product pages - shows products from a collection
-  with eyebrow label, serif italic title, and horizontal scrolling cards.
-  Product subtitle shows the collection name the product belongs to.
+  Unified carousel for product pages.
+  Supports two modes:
+  - Auto-match: finds which collection (from blocks) the current product belongs to
+  - Manual: uses a single selected collection
 {%- endcomment -%}
 
-{%- assign carousel_collection = collections[section.settings.collection] -%}
-{%- assign current_product_id = product.id -%}
-{%- assign products_limit = section.settings.products_limit -%}
+{%- liquid
+  assign carousel_collection = nil
+  assign current_product_id = product.id
+  assign products_limit = section.settings.products_limit
 
-{%- comment -%} Count visible products (excluding current) {%- endcomment -%}
-{%- assign visible_count = 0 -%}
-{%- if carousel_collection != blank -%}
-  {%- for item in carousel_collection.products limit: products_limit | plus: 1 -%}
-    {%- unless item.id == current_product_id -%}
-      {%- if visible_count < products_limit -%}
-        {%- assign visible_count = visible_count | plus: 1 -%}
-      {%- endif -%}
-    {%- endunless -%}
-  {%- endfor -%}
-{%- endif -%}
+  if section.settings.auto_match
+    assign collection_blocks = section.blocks | where: "type", "collection"
+    for block in collection_blocks
+      assign check_collection = collections[block.settings.collection]
+      if check_collection != blank
+        for col_product in check_collection.products
+          if col_product.id == current_product_id
+            assign carousel_collection = check_collection
+            break
+          endif
+        endfor
+      endif
+      if carousel_collection != blank
+        break
+      endif
+    endfor
+  else
+    assign carousel_collection = collections[section.settings.collection]
+  endif
+
+  if section.settings.auto_match and carousel_collection != blank
+    if section.settings.title_prefix != blank
+      capture display_title
+        echo section.settings.title_prefix
+        echo ' '
+        echo carousel_collection.title
+      endcapture
+    else
+      assign display_title = carousel_collection.title
+    endif
+  else
+    assign display_title = section.settings.title
+  endif
+
+  assign visible_count = 0
+  if carousel_collection != blank
+    for item in carousel_collection.products limit: products_limit | plus: 1
+      unless item.id == current_product_id
+        if visible_count < products_limit
+          assign visible_count = visible_count | plus: 1
+        endif
+      endunless
+    endfor
+  endif
+-%}
 
 {%- if carousel_collection != blank and visible_count > 0 -%}
 <div
@@ -64,7 +100,7 @@
           </a>
         {%- endif -%}
       </div>
-      <h2 class="product-carousel__title">{{ section.settings.title }}</h2>
+      <h2 class="product-carousel__title">{{ display_title }}</h2>
     </div>
 
     {%- comment -%} Product Track {%- endcomment -%}
@@ -289,10 +325,6 @@
       margin-bottom: 10px;
     }
 
-    .product-carousel__eyebrow {
-      font-size: var(--pc-eyebrow-size);
-    }
-
     .product-carousel__view-all {
       font-size: 13px;
     }
@@ -330,15 +362,29 @@
       "default": "CATEGORY"
     },
     {
+      "type": "checkbox",
+      "id": "auto_match",
+      "label": "Auto-match collection from product",
+      "info": "When enabled, finds which collection (from blocks below) the current product belongs to",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "title_prefix",
+      "label": "Title prefix (auto-match mode)",
+      "info": "Prepended to the matched collection name",
+      "default": "Best of"
+    },
+    {
       "type": "text",
       "id": "title",
-      "label": "Title",
-      "default": "Best of pendant lights"
+      "label": "Title (manual mode)",
+      "default": "You may also like"
     },
     {
       "type": "collection",
       "id": "collection",
-      "label": "Collection"
+      "label": "Collection (manual mode)"
     },
     {
       "type": "range",
@@ -556,6 +602,19 @@
       "step": 1,
       "unit": "px",
       "default": 14
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Collection",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        }
+      ]
     }
   ],
   "presets": [

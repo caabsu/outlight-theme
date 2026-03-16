@@ -442,52 +442,52 @@
         "btn_secondary_border": "#e5e5e5"
       }
     },
-    "curated_collection_carousel_DwU4ep": {
-      "type": "curated-collection-carousel",
+    "category_carousel_1": {
+      "type": "product-carousel",
       "blocks": {
-        "collection_WxJBPx": {
+        "col_pendant": {
           "type": "collection",
           "settings": {
             "collection": "pendant-lights"
           }
         },
-        "collection_Ee4qgT": {
+        "col_wall": {
           "type": "collection",
           "settings": {
             "collection": "indoor-wall-lights"
           }
         },
-        "collection_AgUejJ": {
+        "col_ceiling": {
           "type": "collection",
           "settings": {
             "collection": "ceiling-lights"
           }
         },
-        "collection_MYaLpd": {
+        "col_desk": {
           "type": "collection",
           "settings": {
             "collection": "desk-lamp"
           }
         },
-        "collection_xbJjcB": {
+        "col_floor": {
           "type": "collection",
           "settings": {
             "collection": "floor-table-lamps"
           }
         },
-        "collection_Ccw67a": {
+        "col_chandelier": {
           "type": "collection",
           "settings": {
             "collection": "chandeliers"
           }
         },
-        "collection_PRe7NH": {
+        "col_outdoor_wall": {
           "type": "collection",
           "settings": {
             "collection": "wall-lights"
           }
         },
-        "collection_Qai8a6": {
+        "col_path": {
           "type": "collection",
           "settings": {
             "collection": "path-lights"
@@ -495,98 +495,74 @@
         }
       },
       "block_order": [
-        "collection_WxJBPx",
-        "collection_Ee4qgT",
-        "collection_AgUejJ",
-        "collection_MYaLpd",
-        "collection_xbJjcB",
-        "collection_Ccw67a",
-        "collection_PRe7NH",
-        "collection_Qai8a6"
+        "col_pendant",
+        "col_wall",
+        "col_ceiling",
+        "col_desk",
+        "col_floor",
+        "col_chandelier",
+        "col_outdoor_wall",
+        "col_path"
       ],
-      "name": "Curated carousel",
       "settings": {
+        "eyebrow": "CATEGORY",
+        "auto_match": true,
         "title_prefix": "Best of",
-        "products_limit_mobile": 4,
-        "products_limit_desktop": 6,
-        "products_per_row_mobile": 2,
-        "card_width": 240,
-        "grid_gap": 20,
-        "grid_gap_mobile": 12,
-        "section_bg": "#f7f5f0",
-        "padding_top": 48,
-        "padding_bottom": 48,
-        "padding_top_mobile": 32,
-        "padding_bottom_mobile": 32,
-        "title_color": "#1c1917",
-        "title_size": 38,
-        "title_size_mobile": 28,
-        "title_weight": "400",
-        "product_name_color": "#f7f5f0",
-        "product_name_size": 14,
-        "product_name_size_mobile": 14,
-        "product_name_weight": "500",
-        "price_color": "#f7f5f0",
-        "price_size": 14,
-        "price_size_mobile": 14,
-        "price_weight": "400",
-        "text_overlay_bg": "linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0) 100%)",
-        "nav_bg": "#ffffff",
-        "nav_color": "#1c1917",
+        "products_limit": 6,
         "show_view_all": true,
-        "view_all_text": "View All",
-        "view_all_color": "#1c1917",
-        "view_all_size": 15,
-        "view_all_weight": "500"
+        "view_all_text": "View all",
+        "section_bg": "#f7f5f0",
+        "padding_top": 40,
+        "padding_bottom": 40,
+        "accent_color": "#D97706",
+        "show_divider": true,
+        "divider_color": "#e5e2db",
+        "eyebrow_size": 12,
+        "title_color": "#1c1917",
+        "title_size": 32,
+        "title_size_mobile": 24,
+        "card_width": 280,
+        "card_width_mobile": 200,
+        "card_gap": 16,
+        "card_radius": 12,
+        "name_color": "#1c1917",
+        "name_size": 16,
+        "subtitle_color": "#A8A29E",
+        "subtitle_size": 12,
+        "price_color": "#1c1917",
+        "price_size": 14
       }
     },
-    "collection_carousel_mHqtVb": {
-      "type": "collection-carousel",
-      "name": "Collection carousel",
+    "recommended_carousel_2": {
+      "type": "product-carousel",
       "settings": {
-        "title": "You may also like ...",
+        "eyebrow": "RECOMMENDED",
+        "auto_match": false,
+        "title": "You may also like",
         "collection": "best-sellers",
-        "products_limit_mobile": 4,
-        "products_limit_desktop": 6,
-        "products_per_row_mobile": 2,
-        "card_width": 240,
-        "grid_gap_mobile": 12,
-        "grid_gap_desktop": 20,
-        "section_bg": "#f7f5f0",
-        "padding_top": 48,
-        "padding_bottom": 48,
-        "padding_top_mobile": 32,
-        "padding_bottom_mobile": 32,
-        "title_color": "#1a1a1a",
-        "title_size": 38,
-        "title_size_mobile": 28,
-        "title_weight": "400",
-        "subtitle": "",
-        "subtitle_color": "#57534e",
-        "subtitle_size": 12,
-        "subtitle_size_mobile": 10,
-        "subtitle_weight": "500",
-        "subtitle_letter_spacing": 0.2,
-        "subtitle_letter_spacing_mobile": 0.1,
-        "divider_color": "#1c1917",
-        "divider_width": 40,
-        "divider_opacity": 20,
-        "product_name_color": "#f7f5f0",
-        "product_name_size": 14,
-        "product_name_size_mobile": 14,
-        "product_name_weight": "400",
-        "price_color": "#f7f5f0",
-        "price_size": 14,
-        "price_size_mobile": 14,
-        "price_weight": "500",
-        "text_overlay_bg": "linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0) 100%)",
-        "nav_bg": "#ffffff",
-        "nav_color": "#1c1917",
+        "products_limit": 6,
         "show_view_all": true,
-        "view_all_text": "View All",
-        "view_all_color": "#1c1917",
-        "view_all_size": 14,
-        "view_all_weight": "500"
+        "view_all_text": "View all",
+        "section_bg": "#f7f5f0",
+        "padding_top": 40,
+        "padding_bottom": 40,
+        "accent_color": "#D97706",
+        "show_divider": false,
+        "divider_color": "#e5e2db",
+        "eyebrow_size": 12,
+        "title_color": "#1c1917",
+        "title_size": 32,
+        "title_size_mobile": 24,
+        "card_width": 280,
+        "card_width_mobile": 200,
+        "card_gap": 16,
+        "card_radius": 12,
+        "name_color": "#1c1917",
+        "name_size": 16,
+        "subtitle_color": "#A8A29E",
+        "subtitle_size": 12,
+        "price_color": "#1c1917",
+        "price_size": 14
       }
     },
     "1765072596b5ddad21": {
@@ -620,8 +596,8 @@
     "product_faq_mK9pL4",
     "testimonial_showcase_V6L66t",
     "support_banner_PjaKXH",
-    "curated_collection_carousel_DwU4ep",
-    "collection_carousel_mHqtVb",
+    "category_carousel_1",
+    "recommended_carousel_2",
     "1765072596b5ddad21"
   ]
 }
