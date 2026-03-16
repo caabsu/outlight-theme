@@ -28,6 +28,7 @@
   class="product-container"
   style="
     --eyebrow-size: {{ section.settings.eyebrow_size }}px;
+    --eyebrow-size-desktop: {{ section.settings.eyebrow_size_desktop }}px;
     --eyebrow-color: {{ section.settings.eyebrow_color }};
     --eyebrow-weight: {{ section.settings.eyebrow_weight }};
     --title-size: {{ section.settings.title_size }}px;
@@ -380,46 +381,27 @@
       {%- for block in section.blocks -%}
         {%- if block.type == 'promotion' -%}
           <div class="product-promotion" {{ block.shopify_attributes }} style="
-            --promo-bg: {{ block.settings.background_color }};
-            --promo-border-color: {{ block.settings.border_color }};
-            --promo-icon-color: {{ block.settings.icon_color }};
-            --promo-title-color: {{ block.settings.title_color }};
-            --promo-title-size: {{ block.settings.title_size }}px;
-            --promo-code-label-color: {{ block.settings.code_label_color }};
-            --promo-code-label-size: {{ block.settings.code_label_size }}px;
-            --promo-code-value-color: {{ block.settings.code_value_color }};
-            --promo-code-border-color: {{ block.settings.code_border_color }};
-            --promo-badge-bg: {{ block.settings.badge_bg_color }};
-            --promo-badge-color: {{ block.settings.badge_text_color }};
-            --promo-badge-size: {{ block.settings.badge_size }}px;
-            --promo-padding: {{ block.settings.padding }}px;
-            --promo-radius: {{ block.settings.border_radius }}px;
+            --promo-accent: {{ block.settings.accent_color }};
+            --promo-text-color: {{ block.settings.text_color }};
+            --promo-size: {{ block.settings.font_size }}px;
           ">
-            <span class="product-promotion__icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none">
-                <path d="M20 12v10H4V12H2v10c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V12h-2zm-8-8c-1.1 0-2 .9-2 2v2H6c-1.1 0-2 .9-2 2v2h16v-2c0-1.1-.9-2-2-2h-4V6c0-1.1-.9-2-2-2zm0 2c.55 0 1 .45 1 1v2h-2V7c0-.55.45-1 1-1z"/>
-                <rect x="4" y="10" width="16" height="2"/>
-              </svg>
-            </span>
-            <div class="product-promotion__content">
+            <span class="product-promotion__bar"></span>
+            <span class="product-promotion__text">
               {%- if block.settings.title_text != blank -%}
                 <span class="product-promotion__title">{{ block.settings.title_text }}</span>
               {%- endif -%}
-              <div class="product-promotion__code-row">
-                {%- if block.settings.code_label != blank -%}
-                  <span class="product-promotion__code-label">{{ block.settings.code_label }}</span>
-                {%- endif -%}
-                {%- if block.settings.code_value != blank -%}
-                  <button class="product-promotion__code-box" data-promo-code="{{ block.settings.code_value }}" onclick="copyPromoCode(this)">
-                    <span class="product-promotion__code-value">{{ block.settings.code_value }}</span>
-                    <span class="product-promotion__code-copied">Copied!</span>
-                  </button>
-                {%- endif -%}
-              </div>
-            </div>
-            {%- if block.settings.badge_text != blank -%}
-              <span class="product-promotion__badge">{{ block.settings.badge_text }}</span>
-            {%- endif -%}
+              {%- if block.settings.discount_text != blank -%}
+                <span class="product-promotion__sep">&mdash;</span>
+                <span class="product-promotion__discount">{{ block.settings.discount_text }}</span>
+              {%- endif -%}
+              {%- if block.settings.code_value != blank -%}
+                <span class="product-promotion__code-prefix">with code</span>
+                <button class="product-promotion__code" data-promo-code="{{ block.settings.code_value }}" onclick="copyPromoCode(this)">
+                  <span class="product-promotion__code-value">{{ block.settings.code_value }}</span>
+                  <span class="product-promotion__code-copied">Copied!</span>
+                </button>
+              {%- endif -%}
+            </span>
           </div>
         {%- endif -%}
       {%- endfor -%}
@@ -2359,80 +2341,62 @@
   .product-promotion {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     width: 100%;
-    background: var(--promo-bg, #f5f5f5);
-    border: 1px solid var(--promo-border-color, #e5e5e5);
-    border-radius: var(--promo-radius, 6px);
-    padding: var(--promo-padding, 10px) 14px;
     margin-top: 12px;
-    box-sizing: border-box;
   }
 
-  .product-promotion__icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--promo-icon-color, #c45a32);
+  .product-promotion__bar {
+    width: 20px;
+    height: 2px;
+    background: var(--promo-accent, #D97706);
     flex-shrink: 0;
   }
 
-  .product-promotion__icon svg {
-    width: 20px;
-    height: 20px;
-  }
-
-  .product-promotion__content {
-    display: flex;
-    flex-direction: column;
-    gap: 1px;
-    flex: 1;
+  .product-promotion__text {
+    font-family: var(--font-primary-family), sans-serif;
+    font-size: var(--promo-size, 14px);
+    color: var(--promo-text-color, #1C1917);
+    line-height: 1.4;
   }
 
   .product-promotion__title {
-    font-family: var(--font-heading-family), serif;
-    font-size: var(--promo-title-size, 15px);
-    font-style: italic;
-    color: var(--promo-title-color, #1a1a1a);
-    line-height: 1.2;
+    font-weight: 400;
   }
 
-  .product-promotion__code-row {
-    display: flex;
-    align-items: center;
-    gap: 6px;
+  .product-promotion__sep {
+    color: var(--promo-text-color, #1C1917);
   }
 
-  .product-promotion__code-label {
-    font-size: var(--promo-code-label-size, 10px);
-    font-weight: 600;
-    color: var(--promo-code-label-color, #666);
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
+  .product-promotion__discount {
+    color: var(--promo-accent, #D97706);
+    font-weight: 400;
   }
 
-  .product-promotion__code-box {
-    display: inline-flex;
-    align-items: center;
-    padding: 2px 6px;
-    background: transparent;
-    border: 1px solid var(--promo-code-border-color, #1a1a1a);
-    border-radius: 2px;
+  .product-promotion__code-prefix {
+    font-weight: 400;
+  }
+
+  .product-promotion__code {
+    background: none;
+    border: none;
+    padding: 0;
     cursor: pointer;
-    transition: all 0.2s ease;
     position: relative;
+    font-family: inherit;
+    font-size: inherit;
+    transition: opacity 0.2s ease;
   }
 
-  .product-promotion__code-box:hover {
-    background: rgba(0, 0, 0, 0.03);
+  .product-promotion__code:hover {
+    opacity: 0.7;
   }
 
   .product-promotion__code-value {
-    font-size: var(--promo-code-label-size, 10px);
-    font-weight: 700;
-    color: var(--promo-code-value-color, #1a1a1a);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    color: var(--promo-accent, #D97706);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    transition: opacity 0.2s ease;
   }
 
   .product-promotion__code-copied {
@@ -2440,34 +2404,20 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 9px;
-    font-weight: 600;
-    color: var(--promo-code-value-color, #1a1a1a);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--promo-accent, #D97706);
     opacity: 0;
     transition: opacity 0.2s ease;
     white-space: nowrap;
   }
 
-  .product-promotion__code-box.copied .product-promotion__code-value {
+  .product-promotion__code.copied .product-promotion__code-value {
     opacity: 0;
   }
 
-  .product-promotion__code-box.copied .product-promotion__code-copied {
+  .product-promotion__code.copied .product-promotion__code-copied {
     opacity: 1;
-  }
-
-  .product-promotion__badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 4px 8px;
-    background: var(--promo-badge-bg, #dcfce7);
-    border-radius: 3px;
-    font-size: var(--promo-badge-size, 12px);
-    font-weight: 600;
-    color: var(--promo-badge-color, #16a34a);
-    white-space: nowrap;
-    flex-shrink: 0;
   }
 
   /* Desktop Layout */
@@ -2669,6 +2619,10 @@
 
     .product-title {
       font-size: var(--title-size-desktop, 40px);
+    }
+
+    .product-eyebrow {
+      font-size: var(--eyebrow-size-desktop, 14px);
     }
 
     .product-price {
@@ -3776,40 +3730,16 @@
       "name": "Promotion banner",
       "settings": [
         {
-          "type": "header",
-          "content": "Title"
-        },
-        {
           "type": "text",
           "id": "title_text",
-          "label": "Title text (italic)",
-          "default": "2026 Spring Sale"
-        },
-        {
-          "type": "range",
-          "id": "title_size",
-          "label": "Title size",
-          "min": 12,
-          "max": 20,
-          "step": 1,
-          "unit": "px",
-          "default": 15
-        },
-        {
-          "type": "color",
-          "id": "title_color",
-          "label": "Title color",
-          "default": "#1a1a1a"
-        },
-        {
-          "type": "header",
-          "content": "Promo code"
+          "label": "Title text",
+          "default": "Spring Sale"
         },
         {
           "type": "text",
-          "id": "code_label",
-          "label": "Code label",
-          "default": "USE CODE:"
+          "id": "discount_text",
+          "label": "Discount text",
+          "default": "20% off"
         },
         {
           "type": "text",
@@ -3819,105 +3749,25 @@
         },
         {
           "type": "range",
-          "id": "code_label_size",
-          "label": "Code text size",
-          "min": 8,
-          "max": 12,
+          "id": "font_size",
+          "label": "Font size",
+          "min": 12,
+          "max": 18,
           "step": 1,
           "unit": "px",
-          "default": 10
+          "default": 14
         },
         {
           "type": "color",
-          "id": "code_label_color",
-          "label": "Label color",
-          "default": "#666666"
+          "id": "text_color",
+          "label": "Text color",
+          "default": "#1C1917"
         },
         {
           "type": "color",
-          "id": "code_value_color",
-          "label": "Code color",
-          "default": "#1a1a1a"
-        },
-        {
-          "type": "color",
-          "id": "code_border_color",
-          "label": "Code box border",
-          "default": "#1a1a1a"
-        },
-        {
-          "type": "header",
-          "content": "Discount badge"
-        },
-        {
-          "type": "text",
-          "id": "badge_text",
-          "label": "Badge text",
-          "default": "-30%"
-        },
-        {
-          "type": "range",
-          "id": "badge_size",
-          "label": "Badge text size",
-          "min": 10,
-          "max": 16,
-          "step": 1,
-          "unit": "px",
-          "default": 12
-        },
-        {
-          "type": "color",
-          "id": "badge_text_color",
-          "label": "Badge text color",
-          "default": "#16a34a"
-        },
-        {
-          "type": "color",
-          "id": "badge_bg_color",
-          "label": "Badge background",
-          "default": "#dcfce7"
-        },
-        {
-          "type": "header",
-          "content": "Box styling"
-        },
-        {
-          "type": "color",
-          "id": "background_color",
-          "label": "Background color",
-          "default": "#f5f5f5"
-        },
-        {
-          "type": "color",
-          "id": "border_color",
-          "label": "Border color",
-          "default": "#e5e5e5"
-        },
-        {
-          "type": "color",
-          "id": "icon_color",
-          "label": "Icon color",
-          "default": "#c45a32"
-        },
-        {
-          "type": "range",
-          "id": "padding",
-          "label": "Padding",
-          "min": 6,
-          "max": 20,
-          "step": 2,
-          "unit": "px",
-          "default": 10
-        },
-        {
-          "type": "range",
-          "id": "border_radius",
-          "label": "Border radius",
-          "min": 0,
-          "max": 16,
-          "step": 1,
-          "unit": "px",
-          "default": 8
+          "id": "accent_color",
+          "label": "Accent color",
+          "default": "#D97706"
         }
       ]
     },
@@ -4293,8 +4143,18 @@
       "max": 16,
       "step": 1,
       "unit": "px",
-      "label": "Font size",
+      "label": "Font size (mobile)",
       "default": 12
+    },
+    {
+      "type": "range",
+      "id": "eyebrow_size_desktop",
+      "min": 12,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "label": "Font size (desktop)",
+      "default": 14
     },
     {
       "type": "color",
