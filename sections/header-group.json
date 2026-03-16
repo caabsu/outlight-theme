@@ -14,10 +14,10 @@
     "announcement-bar": {
       "type": "announcement-bar",
       "settings": {
-        "text": "SPRING SALE : 20% OFF WITH CODE SPRING20",
+        "text": "2026 SPRING SALE : 20% OFF WITH CODE SPRING20",
         "link_text": "SHOP NOW",
         "link_url": "shopify://collections/best-sellers",
-        "text_mobile": "SPRING SALE : 20% OFF · CODE SPRING20",
+        "text_mobile": "2026 SPRING SALE : 20% OFF · SPRING20",
         "link_text_mobile": "SHOP COLLECTION",
         "bg_color": "#1c1917",
         "text_color": "#ffffff",
