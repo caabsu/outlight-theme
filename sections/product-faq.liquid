@@ -183,7 +183,6 @@
       {%- endif -%}
     </div>
 
-    <div class="product-faq__bottom-border"></div>
   </div>
 </div>
 {% endif %}
@@ -203,6 +202,7 @@
   /* Title */
   .product-faq__title-wrapper {
     margin-bottom: 40px;
+    text-align: center;
   }
 
   .product-faq__title {
@@ -212,10 +212,11 @@
     color: var(--faq-title-color, #a8a29e);
     text-transform: uppercase;
     letter-spacing: 0.2em;
-    margin: 0;
+    margin: 0 auto;
     padding-bottom: 16px;
     border-bottom: 1px solid var(--faq-border-color, #d6d3d1);
     line-height: 1;
+    display: inline-block;
   }
 
   /* List */
@@ -304,13 +305,6 @@
     max-width: 680px;
   }
 
-  /* Bottom border */
-  .product-faq__bottom-border {
-    height: 2px;
-    background: var(--faq-bottom-border-color, #1c1917);
-    margin-top: 0;
-  }
-
   /* Hover */
   .product-faq__question:hover .product-faq__question-text {
     opacity: 0.7;
@@ -379,7 +373,7 @@
       "type": "text",
       "id": "question_1",
       "label": "t:sections.product_faq.settings.faq_items.question",
-      "default": "What materials are used in Outlight fixtures?"
+      "default": "What's included in the box?"
     },
     {
       "type": "textarea",
@@ -395,14 +389,14 @@
       "type": "text",
       "id": "question_2",
       "label": "t:sections.product_faq.settings.faq_items.question",
-      "default": "How do I select the right color temperature?"
+      "default": "Is this light suitable for all outdoor spaces?"
     },
     {
       "type": "textarea",
       "id": "answer_2",
       "label": "t:sections.product_faq.settings.faq_items.answer",
       "info": "t:sections.product_faq.settings.faq_items.answer_2_info",
-      "default": "We offer three color temperature options: Warm (3000K) for a cozy, relaxing ambiance, Neutral (4000K) for balanced everyday lighting, and Cool (5000K) for bright, focused illumination."
+      "default": "Yes, [product_name] is built for all outdoor areas, including patios, driveways, and entryways. Its weather-resistant materials ensure durability in various conditions, but placing it under a covered space during extreme weather can extend its lifespan."
     },
     {
       "type": "header",
@@ -412,13 +406,13 @@
       "type": "text",
       "id": "question_3",
       "label": "t:sections.product_faq.settings.faq_items.question",
-      "default": "Do you offer custom sizing or finishes?"
+      "default": "How do I choose the right color temperature?"
     },
     {
       "type": "textarea",
       "id": "answer_3",
       "label": "t:sections.product_faq.settings.faq_items.answer",
-      "default": "We currently offer our fixtures in the sizes and finishes listed on each product page. For custom requests, please contact our team directly."
+      "default": "We offer three color temperature options: Warm (3000K) for a cozy, relaxing ambiance, Neutral (4000K) for balanced everyday lighting, and Cool (5000K) for bright, focused illumination. Most customers prefer Warm for living spaces and Cool for workspaces."
     },
     {
       "type": "header",
@@ -428,13 +422,13 @@
       "type": "text",
       "id": "question_4",
       "label": "t:sections.product_faq.settings.faq_items.question",
-      "default": "What is your shipping and return policy?"
+      "default": "What is the warranty policy?"
     },
     {
       "type": "textarea",
       "id": "answer_4",
       "label": "t:sections.product_faq.settings.faq_items.answer",
-      "default": "Free standard shipping on all orders. We offer a 30-day risk-free return policy — if you're not satisfied, return in original packaging for a full refund."
+      "default": "All our lights come with a 2-year warranty covering manufacturing defects. If you experience any issues, our support team will arrange a replacement or repair at no additional cost."
     },
     {
       "type": "header",
@@ -444,13 +438,13 @@
       "type": "text",
       "id": "question_5",
       "label": "t:sections.product_faq.settings.faq_items.question",
-      "default": "Are Outlight fixtures compatible with dimmers?"
+      "default": "Can I install this light myself?"
     },
     {
       "type": "textarea",
       "id": "answer_5",
       "label": "t:sections.product_faq.settings.faq_items.answer",
-      "default": "Many of our fixtures are compatible with standard LED dimmers. Check individual product specifications for dimmer compatibility details."
+      "default": "While some of our fixtures are designed for easy DIY installation, we recommend hiring a licensed electrician for hardwired installations to ensure safety and compliance with local building codes."
     },
     {
       "type": "header",
@@ -555,7 +549,7 @@
       "min": 16,
       "max": 32,
       "step": 1,
-      "default": 22,
+      "default": 19,
       "unit": "px"
     },
     {
@@ -565,7 +559,7 @@
       "min": 14,
       "max": 26,
       "step": 1,
-      "default": 18,
+      "default": 16,
       "unit": "px"
     },
     {
