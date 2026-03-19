@@ -98,6 +98,9 @@
     "time_left": "left",
     "faq_title": "Frequently asked questions"
   },
+  "trade_program": {
+    "badge": "Trade"
+  },
   "sections": {
     "shop_the_look": {
       "add": "Add",
