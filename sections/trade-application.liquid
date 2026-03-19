@@ -1,0 +1,796 @@
+{%- liquid
+  assign is_trade_member = false
+  if customer
+    if customer.tags contains 'trade-program'
+      assign is_trade_member = true
+    endif
+  endif
+-%}
+
+<div
+  class="trade-application full-width"
+  style="
+    --ta-bg: {{ section.settings.section_bg }};
+    --ta-hero-bg: {{ section.settings.hero_bg }};
+    --ta-accent: {{ section.settings.accent_color }};
+    --ta-title-color: {{ section.settings.title_color }};
+    --ta-subtitle-color: {{ section.settings.subtitle_color }};
+    --ta-body-color: {{ section.settings.body_color }};
+    --ta-input-border: {{ section.settings.input_border_color }};
+    --ta-btn-bg: {{ section.settings.btn_bg }};
+    --ta-btn-color: {{ section.settings.btn_color }};
+    --ta-card-bg: {{ section.settings.card_bg }};
+    --ta-card-border: {{ section.settings.card_border }};
+  "
+>
+  {%- comment -%} Hero {%- endcomment -%}
+  <div class="trade-application__hero">
+    <div class="trade-application__hero-inner">
+      <p class="trade-application__eyebrow">{{ 'trade_program.hero.eyebrow' | t }}</p>
+      <h1 class="trade-application__title">{{ 'trade_program.hero.title' | t }}</h1>
+      <p class="trade-application__subtitle">{{ 'trade_program.hero.subtitle' | t }}</p>
+    </div>
+  </div>
+
+  <div class="trade-application__container">
+
+    {%- comment -%} Benefits grid {%- endcomment -%}
+    <div class="trade-application__benefits">
+      <div class="trade-application__benefit">
+        <div class="trade-application__benefit-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/>
+          </svg>
+        </div>
+        <h3 class="trade-application__benefit-title">{{ 'trade_program.benefits.discount.title' | t }}</h3>
+        <p class="trade-application__benefit-desc">{{ 'trade_program.benefits.discount.description' | t }}</p>
+      </div>
+      <div class="trade-application__benefit">
+        <div class="trade-application__benefit-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="8" r="4"/>
+            <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+          </svg>
+        </div>
+        <h3 class="trade-application__benefit-title">{{ 'trade_program.benefits.concierge.title' | t }}</h3>
+        <p class="trade-application__benefit-desc">{{ 'trade_program.benefits.concierge.description' | t }}</p>
+      </div>
+      <div class="trade-application__benefit">
+        <div class="trade-application__benefit-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="2" y="5" width="20" height="14" rx="2"/>
+            <path d="M2 10h20"/>
+          </svg>
+        </div>
+        <h3 class="trade-application__benefit-title">{{ 'trade_program.benefits.payment.title' | t }}</h3>
+        <p class="trade-application__benefit-desc">{{ 'trade_program.benefits.payment.description' | t }}</p>
+      </div>
+      <div class="trade-application__benefit">
+        <div class="trade-application__benefit-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <h3 class="trade-application__benefit-title">{{ 'trade_program.benefits.support.title' | t }}</h3>
+        <p class="trade-application__benefit-desc">{{ 'trade_program.benefits.support.description' | t }}</p>
+      </div>
+    </div>
+
+    {%- comment -%} Member state: already enrolled {%- endcomment -%}
+    {%- if is_trade_member -%}
+      <div class="trade-application__member-state">
+        <div class="trade-application__member-icon">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="M9 12l2 2 4-4"/>
+          </svg>
+        </div>
+        <h2 class="trade-application__member-title">{{ 'trade_program.member.title' | t }}</h2>
+        <p class="trade-application__member-desc">{{ 'trade_program.member.description' | t }}</p>
+        {%- if section.settings.portal_url != blank -%}
+          <a href="{{ section.settings.portal_url }}" class="trade-application__submit">
+            {{ 'trade_program.member.portal_link' | t }}
+          </a>
+        {%- endif -%}
+      </div>
+
+    {%- comment -%} Application form {%- endcomment -%}
+    {%- else -%}
+      <div class="trade-application__form-wrap" id="trade-form-wrap">
+        <h2 class="trade-application__form-heading">{{ 'trade_program.form.heading' | t }}</h2>
+        <p class="trade-application__form-sub">{{ 'trade_program.form.subheading' | t }}</p>
+
+        <form
+          class="trade-application__form"
+          id="trade-application-form"
+          novalidate
+          data-backend-url="{{ section.settings.backend_url | escape }}"
+        >
+          <div class="trade-application__fields">
+
+            <div class="trade-application__field">
+              <label class="trade-application__label" for="ta-full-name">
+                {{ 'trade_program.form.full_name.label' | t }} <span class="trade-application__required" aria-hidden="true">*</span>
+              </label>
+              <input
+                class="trade-application__input"
+                type="text"
+                id="ta-full-name"
+                name="full_name"
+                autocomplete="name"
+                placeholder="{{ 'trade_program.form.full_name.placeholder' | t }}"
+                required
+              >
+            </div>
+
+            <div class="trade-application__field">
+              <label class="trade-application__label" for="ta-email">
+                {{ 'trade_program.form.email.label' | t }} <span class="trade-application__required" aria-hidden="true">*</span>
+              </label>
+              <input
+                class="trade-application__input"
+                type="email"
+                id="ta-email"
+                name="email"
+                autocomplete="email"
+                placeholder="{{ 'trade_program.form.email.placeholder' | t }}"
+                required
+              >
+            </div>
+
+            <div class="trade-application__field">
+              <label class="trade-application__label" for="ta-phone">
+                {{ 'trade_program.form.phone.label' | t }} <span class="trade-application__required" aria-hidden="true">*</span>
+              </label>
+              <input
+                class="trade-application__input"
+                type="tel"
+                id="ta-phone"
+                name="phone"
+                autocomplete="tel"
+                placeholder="{{ 'trade_program.form.phone.placeholder' | t }}"
+                required
+              >
+            </div>
+
+            <div class="trade-application__field">
+              <label class="trade-application__label" for="ta-company">
+                {{ 'trade_program.form.company.label' | t }} <span class="trade-application__required" aria-hidden="true">*</span>
+              </label>
+              <input
+                class="trade-application__input"
+                type="text"
+                id="ta-company"
+                name="company_name"
+                autocomplete="organization"
+                placeholder="{{ 'trade_program.form.company.placeholder' | t }}"
+                required
+              >
+            </div>
+
+            <div class="trade-application__field">
+              <label class="trade-application__label" for="ta-business-type">
+                {{ 'trade_program.form.business_type.label' | t }} <span class="trade-application__required" aria-hidden="true">*</span>
+              </label>
+              <div class="trade-application__select-wrap">
+                <select
+                  class="trade-application__input trade-application__select"
+                  id="ta-business-type"
+                  name="business_type"
+                  required
+                >
+                  <option value="" disabled selected>{{ 'trade_program.form.business_type.placeholder' | t }}</option>
+                  <option value="interior_designer">{{ 'trade_program.form.business_type.options.interior_designer' | t }}</option>
+                  <option value="architect">{{ 'trade_program.form.business_type.options.architect' | t }}</option>
+                  <option value="contractor">{{ 'trade_program.form.business_type.options.contractor' | t }}</option>
+                  <option value="hospitality">{{ 'trade_program.form.business_type.options.hospitality' | t }}</option>
+                  <option value="developer">{{ 'trade_program.form.business_type.options.developer' | t }}</option>
+                  <option value="other">{{ 'trade_program.form.business_type.options.other' | t }}</option>
+                </select>
+                <span class="trade-application__select-arrow" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"/>
+                  </svg>
+                </span>
+              </div>
+            </div>
+
+            <div class="trade-application__field">
+              <label class="trade-application__label" for="ta-website">
+                {{ 'trade_program.form.website.label' | t }} <span class="trade-application__required" aria-hidden="true">*</span>
+              </label>
+              <input
+                class="trade-application__input"
+                type="url"
+                id="ta-website"
+                name="website"
+                autocomplete="url"
+                placeholder="{{ 'trade_program.form.website.placeholder' | t }}"
+                required
+              >
+            </div>
+
+            <div class="trade-application__field trade-application__field--full">
+              <label class="trade-application__label" for="ta-description">
+                {{ 'trade_program.form.description.label' | t }}
+              </label>
+              <textarea
+                class="trade-application__input trade-application__textarea"
+                id="ta-description"
+                name="project_description"
+                rows="4"
+                placeholder="{{ 'trade_program.form.description.placeholder' | t }}"
+              ></textarea>
+            </div>
+
+            <div class="trade-application__field trade-application__field--full">
+              <label class="trade-application__label" for="ta-referral">
+                {{ 'trade_program.form.referral.label' | t }}
+              </label>
+              <input
+                class="trade-application__input"
+                type="text"
+                id="ta-referral"
+                name="referral_source"
+                placeholder="{{ 'trade_program.form.referral.placeholder' | t }}"
+              >
+            </div>
+
+          </div>
+
+          {%- comment -%} Honeypot – hidden from real users, traps bots {%- endcomment -%}
+          <div style="display:none" aria-hidden="true">
+            <label for="ta-honeypot">Leave this field empty</label>
+            <input type="text" id="ta-honeypot" name="website_confirm" tabindex="-1" autocomplete="off">
+          </div>
+
+          <div class="trade-application__form-footer">
+            <button
+              type="submit"
+              class="trade-application__submit"
+              id="trade-submit-btn"
+              data-label-submit="{{ 'trade_program.form.submit' | t | escape }}"
+              data-label-submitting="{{ 'trade_program.form.submitting' | t | escape }}"
+            >
+              {{ 'trade_program.form.submit' | t }}
+            </button>
+          </div>
+
+        </form>
+
+        <div class="trade-application__success" id="trade-success" style="display:none">
+          <div class="trade-application__success-icon" aria-hidden="true">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M9 12l2 2 4-4"/>
+            </svg>
+          </div>
+          <h3 class="trade-application__success-title">{{ 'trade_program.success.title' | t }}</h3>
+          <p class="trade-application__success-body">{{ 'trade_program.success.body' | t }}</p>
+        </div>
+
+        <div class="trade-application__error" id="trade-error" style="display:none">
+          <p id="trade-error-msg">{{ 'trade_program.error.generic' | t }}</p>
+        </div>
+
+      </div>
+    {%- endif -%}
+
+  </div>
+</div>
+
+{% stylesheet %}
+  .trade-application {
+    background: var(--ta-bg, #faf9f7);
+    width: 100%;
+  }
+
+  /* Hero */
+  .trade-application__hero {
+    background: var(--ta-hero-bg, #1c1917);
+    padding: 72px var(--page-margin, 24px) 64px;
+    text-align: center;
+  }
+
+  .trade-application__hero-inner {
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .trade-application__eyebrow {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ta-accent, #d97706);
+    margin: 0 0 20px;
+  }
+
+  .trade-application__title {
+    font-family: var(--font-heading-family), serif;
+    font-size: 44px;
+    font-weight: 400;
+    color: #ffffff;
+    margin: 0 0 20px;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+
+  .trade-application__subtitle {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 17px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  /* Container */
+  .trade-application__container {
+    max-width: var(--page-width, 1200px);
+    margin: 0 auto;
+    padding: 64px var(--page-margin, 24px) 80px;
+  }
+
+  /* Benefits grid */
+  .trade-application__benefits {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 64px;
+  }
+
+  .trade-application__benefit {
+    background: var(--ta-card-bg, #ffffff);
+    border: 1px solid var(--ta-card-border, #e8e4dc);
+    padding: 28px 24px;
+  }
+
+  .trade-application__benefit-icon {
+    color: var(--ta-accent, #d97706);
+    margin-bottom: 16px;
+  }
+
+  .trade-application__benefit-title {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ta-title-color, #1c1917);
+    margin: 0 0 8px;
+  }
+
+  .trade-application__benefit-desc {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--ta-subtitle-color, #78716c);
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  /* Form wrap */
+  .trade-application__form-wrap {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .trade-application__form-heading {
+    font-family: var(--font-heading-family), serif;
+    font-size: 32px;
+    font-weight: 400;
+    color: var(--ta-title-color, #1c1917);
+    margin: 0 0 8px;
+    letter-spacing: -0.01em;
+  }
+
+  .trade-application__form-sub {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 15px;
+    color: var(--ta-subtitle-color, #78716c);
+    margin: 0 0 40px;
+    line-height: 1.6;
+  }
+
+  /* Fields grid */
+  .trade-application__fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px 32px;
+    margin-bottom: 12px;
+  }
+
+  .trade-application__field--full {
+    grid-column: 1 / -1;
+  }
+
+  .trade-application__label {
+    display: block;
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ta-subtitle-color, #78716c);
+    margin-bottom: 8px;
+  }
+
+  .trade-application__required {
+    color: var(--ta-accent, #d97706);
+  }
+
+  .trade-application__input {
+    display: block;
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--ta-input-border, #d6d3d1);
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 15px;
+    color: var(--ta-title-color, #1c1917);
+    padding: 10px 0;
+    outline: none;
+    transition: border-color 0.2s ease;
+    box-sizing: border-box;
+  }
+
+  .trade-application__input::placeholder {
+    color: var(--ta-input-border, #d6d3d1);
+  }
+
+  .trade-application__input:focus {
+    border-bottom-color: var(--ta-title-color, #1c1917);
+  }
+
+  .trade-application__textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+
+  /* Select */
+  .trade-application__select-wrap {
+    position: relative;
+  }
+
+  .trade-application__select {
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    padding-right: 24px;
+  }
+
+  .trade-application__select-arrow {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: var(--ta-subtitle-color, #78716c);
+  }
+
+  /* Form footer */
+  .trade-application__form-footer {
+    margin-top: 40px;
+  }
+
+  .trade-application__submit {
+    display: inline-block;
+    background: var(--ta-btn-bg, #1c1917);
+    color: var(--ta-btn-color, #ffffff);
+    border: none;
+    padding: 16px 48px;
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .trade-application__submit:hover {
+    opacity: 0.85;
+  }
+
+  .trade-application__submit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Success state */
+  .trade-application__success {
+    text-align: center;
+    padding: 60px 24px;
+  }
+
+  .trade-application__success-icon {
+    color: var(--ta-accent, #d97706);
+    margin-bottom: 20px;
+  }
+
+  .trade-application__success-title {
+    font-family: var(--font-heading-family), serif;
+    font-size: 28px;
+    font-weight: 400;
+    color: var(--ta-title-color, #1c1917);
+    margin: 0 0 12px;
+  }
+
+  .trade-application__success-body {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 16px;
+    color: var(--ta-subtitle-color, #78716c);
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  /* Error state */
+  .trade-application__error {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    padding: 14px 20px;
+    margin-top: 20px;
+  }
+
+  .trade-application__error p {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 14px;
+    color: #991b1b;
+    margin: 0;
+  }
+
+  /* Already a member */
+  .trade-application__member-state {
+    max-width: 480px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 48px 24px;
+  }
+
+  .trade-application__member-icon {
+    color: var(--ta-accent, #d97706);
+    margin-bottom: 20px;
+  }
+
+  .trade-application__member-title {
+    font-family: var(--font-heading-family), serif;
+    font-size: 28px;
+    font-weight: 400;
+    color: var(--ta-title-color, #1c1917);
+    margin: 0 0 12px;
+  }
+
+  .trade-application__member-desc {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 16px;
+    color: var(--ta-subtitle-color, #78716c);
+    margin: 0 0 32px;
+    line-height: 1.6;
+  }
+
+  /* Responsive */
+  @media screen and (max-width: 768px) {
+    .trade-application__hero {
+      padding: 48px 20px 40px;
+    }
+
+    .trade-application__title {
+      font-size: 32px;
+    }
+
+    .trade-application__subtitle {
+      font-size: 15px;
+    }
+
+    .trade-application__container {
+      padding: 40px 20px 60px;
+    }
+
+    .trade-application__benefits {
+      grid-template-columns: 1fr;
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+
+    .trade-application__fields {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    .trade-application__form-heading {
+      font-size: 26px;
+    }
+
+    .trade-application__submit {
+      width: 100%;
+      text-align: center;
+      padding: 16px 32px;
+    }
+  }
+
+  @media screen and (min-width: 1024px) {
+    .trade-application__benefits {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (function() {
+    var form = document.getElementById('trade-application-form');
+    if (!form) return;
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      var honeypot = form.querySelector('[name="website_confirm"]');
+      if (honeypot && honeypot.value !== '') return;
+
+      var backendUrl = form.dataset.backendUrl;
+      if (!backendUrl) {
+        showError('No submission endpoint configured.');
+        return;
+      }
+
+      var btn = document.getElementById('trade-submit-btn');
+      var errorEl = document.getElementById('trade-error');
+      var successEl = document.getElementById('trade-success');
+
+      var labelSubmit = btn ? btn.dataset.labelSubmit : 'Submit';
+      var labelSubmitting = btn ? btn.dataset.labelSubmitting : 'Submitting...';
+
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = labelSubmitting;
+      }
+
+      if (errorEl) errorEl.style.display = 'none';
+
+      var data = {};
+      var elements = form.elements;
+      for (var i = 0; i < elements.length; i++) {
+        var el = elements[i];
+        if (!el.name || el.name === 'website_confirm') continue;
+        data[el.name] = el.value;
+      }
+
+      fetch(backendUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+        .then(function(res) {
+          if (!res.ok) {
+            return res.json().then(function(body) {
+              throw new Error((body && body.message) || 'Submission failed.');
+            });
+          }
+          return res.json();
+        })
+        .then(function() {
+          var formWrap = document.getElementById('trade-form-wrap');
+          if (formWrap && successEl) {
+            form.style.display = 'none';
+            var heading = formWrap.querySelector('.trade-application__form-heading');
+            var sub = formWrap.querySelector('.trade-application__form-sub');
+            if (heading) heading.style.display = 'none';
+            if (sub) sub.style.display = 'none';
+            successEl.style.display = 'block';
+          }
+        })
+        .catch(function(err) {
+          showError(err.message || 'Something went wrong. Please try again.');
+          if (btn) {
+            btn.disabled = false;
+            btn.textContent = labelSubmit;
+          }
+        });
+
+      function showError(msg) {
+        var errMsg = document.getElementById('trade-error-msg');
+        if (errMsg) errMsg.textContent = msg;
+        if (errorEl) errorEl.style.display = 'block';
+      }
+    });
+  })();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Trade application",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Backend"
+    },
+    {
+      "type": "text",
+      "id": "backend_url",
+      "label": "API endpoint URL",
+      "info": "The URL that receives POST requests with application data"
+    },
+    {
+      "type": "url",
+      "id": "portal_url",
+      "label": "Trade portal URL",
+      "info": "Shown to existing trade members instead of the form"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "section_bg",
+      "label": "Section background",
+      "default": "#faf9f7"
+    },
+    {
+      "type": "color",
+      "id": "hero_bg",
+      "label": "Hero background",
+      "default": "#1c1917"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color",
+      "default": "#d97706"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#1c1917"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle / muted text color",
+      "default": "#78716c"
+    },
+    {
+      "type": "color",
+      "id": "body_color",
+      "label": "Body text color",
+      "default": "#44403c"
+    },
+    {
+      "type": "color",
+      "id": "input_border_color",
+      "label": "Input border color",
+      "default": "#d6d3d1"
+    },
+    {
+      "type": "color",
+      "id": "btn_bg",
+      "label": "Button background",
+      "default": "#1c1917"
+    },
+    {
+      "type": "color",
+      "id": "btn_color",
+      "label": "Button text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "card_bg",
+      "label": "Benefit card background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "card_border",
+      "label": "Benefit card border",
+      "default": "#e8e4dc"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Trade application"
+    }
+  ]
+}
+{% endschema %}

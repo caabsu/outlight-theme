@@ -99,7 +99,88 @@
     "faq_title": "Frequently asked questions"
   },
   "trade_program": {
-    "badge": "Trade"
+    "badge": "Trade",
+    "hero": {
+      "eyebrow": "Trade program",
+      "title": "Built for the trade",
+      "subtitle": "Exclusive pricing, dedicated support, and flexible terms for interior designers, architects, and hospitality professionals."
+    },
+    "benefits": {
+      "discount": {
+        "title": "30% trade discount",
+        "description": "Exclusive pricing on the full catalog, applied automatically at checkout."
+      },
+      "concierge": {
+        "title": "Concierge service",
+        "description": "A dedicated account manager to assist with product selection and project planning."
+      },
+      "payment": {
+        "title": "Flexible payment terms",
+        "description": "Net-30 and net-60 terms available to qualified trade accounts."
+      },
+      "support": {
+        "title": "Priority support",
+        "description": "Jump the queue with priority email and phone access to our trade team."
+      }
+    },
+    "form": {
+      "heading": "Apply for trade access",
+      "subheading": "Fill out the form below and our team will review your application within 2 business days.",
+      "full_name": {
+        "label": "Full name",
+        "placeholder": "Your full name"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "you@company.com"
+      },
+      "phone": {
+        "label": "Phone",
+        "placeholder": "+1 (555) 000-0000"
+      },
+      "company": {
+        "label": "Company name",
+        "placeholder": "Your company or firm"
+      },
+      "business_type": {
+        "label": "Business type",
+        "placeholder": "Select your business type",
+        "options": {
+          "interior_designer": "Interior designer",
+          "architect": "Architect",
+          "contractor": "Contractor",
+          "hospitality": "Hospitality",
+          "developer": "Developer",
+          "other": "Other"
+        }
+      },
+      "website": {
+        "label": "Website or portfolio",
+        "placeholder": "https://yourwebsite.com"
+      },
+      "description": {
+        "label": "Project description (optional)",
+        "placeholder": "Tell us about your typical projects and how you plan to use our products."
+      },
+      "referral": {
+        "label": "How did you hear about us? (optional)",
+        "placeholder": "Instagram, referral, trade show, etc."
+      },
+      "submit": "Submit application",
+      "submitting": "Submitting..."
+    },
+    "success": {
+      "title": "Application received",
+      "body": "Thank you for applying. Our trade team will review your application and be in touch within 2 business days."
+    },
+    "error": {
+      "generic": "Something went wrong. Please try again or contact us directly."
+    },
+    "member": {
+      "title": "You're already a trade member",
+      "description": "Your account has active trade access. Visit the trade portal to view your pricing, order history, and account details.",
+      "portal_link": "Go to trade portal"
+    }
   },
   "sections": {
     "shop_the_look": {
