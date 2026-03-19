@@ -180,6 +180,48 @@
       "title": "You're already a trade member",
       "description": "Your account has active trade access. Visit the trade portal to view your pricing, order history, and account details.",
       "portal_link": "Go to trade portal"
+    },
+    "account": {
+      "welcome": "Welcome back, {{ first_name }}",
+      "company_label": "Company",
+      "badge": "Trade member",
+      "discount_code": {
+        "title": "Your trade discount code",
+        "note": "Your 30% discount is applied automatically when you're logged in. Use this code as a backup.",
+        "copy": "Copy",
+        "copied": "Copied!"
+      },
+      "actions": {
+        "shop": {
+          "title": "Shop collection",
+          "desc": "Browse our full collection with trade pricing applied automatically."
+        },
+        "concierge": {
+          "title": "Contact concierge",
+          "desc": "Get priority support from our dedicated team for your projects."
+        },
+        "orders": {
+          "title": "Order history",
+          "desc": "View your past orders and track current shipments."
+        }
+      },
+      "benefits": {
+        "title": "Your trade benefits",
+        "discount": "30% trade discount, applied automatically at checkout",
+        "terms": "Net 30/60 payment terms for qualified accounts",
+        "support": "Priority concierge support for your projects",
+        "resources": "Access to spec sheets and trade resources"
+      },
+      "not_member": {
+        "title": "Not a trade member",
+        "desc": "Your account does not have trade access. Apply to join our trade program and unlock exclusive pricing and benefits.",
+        "cta": "Apply for trade access"
+      },
+      "sign_in": {
+        "title": "Sign in to access",
+        "desc": "This page is for trade members only. Sign in to your account to access your trade dashboard.",
+        "cta": "Sign in"
+      }
     }
   },
   "sections": {

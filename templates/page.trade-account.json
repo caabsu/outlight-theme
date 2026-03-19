@@ -1,0 +1,9 @@
+{
+  "sections": {
+    "main": {
+      "type": "trade-account",
+      "settings": {}
+    }
+  },
+  "order": ["main"]
+}

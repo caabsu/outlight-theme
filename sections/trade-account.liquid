@@ -1,0 +1,700 @@
+{%- liquid
+  assign is_logged_in = false
+  assign is_trade_member = false
+  if customer
+    assign is_logged_in = true
+    if customer.tags contains 'trade-program'
+      assign is_trade_member = true
+    endif
+  endif
+-%}
+
+<div
+  class="trade-account full-width"
+  style="
+    --ta-bg: {{ section.settings.section_bg }};
+    --ta-hero-bg: {{ section.settings.hero_bg }};
+    --ta-accent: {{ section.settings.accent_color }};
+    --ta-title-color: {{ section.settings.title_color }};
+    --ta-subtitle-color: {{ section.settings.subtitle_color }};
+    --ta-btn-bg: {{ section.settings.btn_bg }};
+    --ta-btn-color: {{ section.settings.btn_color }};
+    --ta-card-bg: {{ section.settings.card_bg }};
+    --ta-card-border: {{ section.settings.card_border }};
+  "
+>
+
+  {%- if is_logged_in == false -%}
+
+    {%- comment -%} Gate: not logged in {%- endcomment -%}
+    <div class="trade-account__gate">
+      <div class="trade-account__gate-inner">
+        <div class="trade-account__gate-icon" aria-hidden="true">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+        </div>
+        <h1 class="trade-account__gate-title">{{ 'trade_program.account.sign_in.title' | t }}</h1>
+        <p class="trade-account__gate-desc">{{ 'trade_program.account.sign_in.desc' | t }}</p>
+        <a href="/account/login" class="trade-account__btn">{{ 'trade_program.account.sign_in.cta' | t }}</a>
+      </div>
+    </div>
+
+  {%- elsif is_trade_member == false -%}
+
+    {%- comment -%} Gate: logged in but not a trade member {%- endcomment -%}
+    <div class="trade-account__gate">
+      <div class="trade-account__gate-inner">
+        <div class="trade-account__gate-icon" aria-hidden="true">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <h1 class="trade-account__gate-title">{{ 'trade_program.account.not_member.title' | t }}</h1>
+        <p class="trade-account__gate-desc">{{ 'trade_program.account.not_member.desc' | t }}</p>
+        <a href="/pages/trade-program" class="trade-account__btn">{{ 'trade_program.account.not_member.cta' | t }}</a>
+      </div>
+    </div>
+
+  {%- else -%}
+
+    {%- comment -%} Dashboard: logged-in trade member {%- endcomment -%}
+
+    {%- comment -%} Hero / welcome {%- endcomment -%}
+    <div class="trade-account__hero">
+      <div class="trade-account__hero-inner">
+        <p class="trade-account__eyebrow">{{ 'trade_program.hero.eyebrow' | t }}</p>
+        <h1 class="trade-account__title">
+          {{ 'trade_program.account.welcome' | t: first_name: customer.first_name }}
+        </h1>
+        {%- assign company = customer.metafields.trade_program.company_name -%}
+        {%- if company != blank -%}
+          <p class="trade-account__company">{{ 'trade_program.account.company_label' | t }}: {{ company }}</p>
+        {%- endif -%}
+        <span class="trade-account__badge">{{ 'trade_program.account.badge' | t }}</span>
+      </div>
+    </div>
+
+    <div class="trade-account__container">
+
+      {%- comment -%} Discount code card {%- endcomment -%}
+      <div class="trade-account__code-card">
+        <div class="trade-account__code-card-body">
+          <p class="trade-account__code-label">{{ 'trade_program.account.discount_code.title' | t }}</p>
+          <div class="trade-account__code-row">
+            <span class="trade-account__code-value" id="trade-code-value">{{ section.settings.discount_code }}</span>
+            <button
+              class="trade-account__code-copy"
+              id="trade-code-copy"
+              type="button"
+              aria-label="{{ 'trade_program.account.discount_code.copy' | t | escape }}"
+              data-label-copy="{{ 'trade_program.account.discount_code.copy' | t | escape }}"
+              data-label-copied="{{ 'trade_program.account.discount_code.copied' | t | escape }}"
+            >
+              <span class="trade-account__code-copy-text">{{ 'trade_program.account.discount_code.copy' | t }}</span>
+              <svg class="trade-account__code-copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="9" y="9" width="13" height="13" rx="2"/>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+              </svg>
+            </button>
+          </div>
+          <p class="trade-account__code-note">{{ 'trade_program.account.discount_code.note' | t }}</p>
+        </div>
+      </div>
+
+      {%- comment -%} Quick action cards {%- endcomment -%}
+      <div class="trade-account__actions">
+
+        <a href="/collections/all" class="trade-account__action-card">
+          <div class="trade-account__action-icon" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+          </div>
+          <h3 class="trade-account__action-title">{{ 'trade_program.account.actions.shop.title' | t }}</h3>
+          <p class="trade-account__action-desc">{{ 'trade_program.account.actions.shop.desc' | t }}</p>
+          <span class="trade-account__action-arrow" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </span>
+        </a>
+
+        <button
+          type="button"
+          class="trade-account__action-card trade-account__action-card--btn"
+          id="trade-concierge-btn"
+        >
+          <div class="trade-account__action-icon" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+          </div>
+          <h3 class="trade-account__action-title">{{ 'trade_program.account.actions.concierge.title' | t }}</h3>
+          <p class="trade-account__action-desc">{{ 'trade_program.account.actions.concierge.desc' | t }}</p>
+          <span class="trade-account__action-arrow" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </span>
+        </button>
+
+        <a href="/account" class="trade-account__action-card">
+          <div class="trade-account__action-icon" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+              <polyline points="10 9 9 9 8 9"/>
+            </svg>
+          </div>
+          <h3 class="trade-account__action-title">{{ 'trade_program.account.actions.orders.title' | t }}</h3>
+          <p class="trade-account__action-desc">{{ 'trade_program.account.actions.orders.desc' | t }}</p>
+          <span class="trade-account__action-arrow" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </span>
+        </a>
+
+      </div>
+
+      {%- comment -%} Benefits summary {%- endcomment -%}
+      <div class="trade-account__benefits">
+        <h2 class="trade-account__benefits-title">{{ 'trade_program.account.benefits.title' | t }}</h2>
+        <ul class="trade-account__benefits-list">
+          <li class="trade-account__benefit-item">
+            <span class="trade-account__benefit-check" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </span>
+            {{ 'trade_program.account.benefits.discount' | t }}
+          </li>
+          <li class="trade-account__benefit-item">
+            <span class="trade-account__benefit-check" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </span>
+            {{ 'trade_program.account.benefits.terms' | t }}
+          </li>
+          <li class="trade-account__benefit-item">
+            <span class="trade-account__benefit-check" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </span>
+            {{ 'trade_program.account.benefits.support' | t }}
+          </li>
+          <li class="trade-account__benefit-item">
+            <span class="trade-account__benefit-check" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </span>
+            {{ 'trade_program.account.benefits.resources' | t }}
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+  {%- endif -%}
+
+</div>
+
+{% stylesheet %}
+  .trade-account {
+    background: var(--ta-bg, #faf9f7);
+    width: 100%;
+  }
+
+  /* ── Gate screens ─────────────────────────────── */
+  .trade-account__gate {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    padding: 80px var(--page-margin, 24px);
+  }
+
+  .trade-account__gate-inner {
+    max-width: 480px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .trade-account__gate-icon {
+    color: var(--ta-accent, #d97706);
+    margin-bottom: 24px;
+  }
+
+  .trade-account__gate-title {
+    font-family: var(--font-heading-family), serif;
+    font-size: 32px;
+    font-weight: 400;
+    color: var(--ta-title-color, #1c1917);
+    margin: 0 0 12px;
+    letter-spacing: -0.01em;
+  }
+
+  .trade-account__gate-desc {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 16px;
+    color: var(--ta-subtitle-color, #78716c);
+    margin: 0 0 32px;
+    line-height: 1.6;
+  }
+
+  /* ── Hero ─────────────────────────────────────── */
+  .trade-account__hero {
+    background: var(--ta-hero-bg, #1c1917);
+    padding: 64px var(--page-margin, 24px) 56px;
+    text-align: center;
+  }
+
+  .trade-account__hero-inner {
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .trade-account__eyebrow {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ta-accent, #d97706);
+    margin: 0 0 16px;
+  }
+
+  .trade-account__title {
+    font-family: var(--font-heading-family), serif;
+    font-size: 40px;
+    font-weight: 400;
+    color: #ffffff;
+    margin: 0 0 14px;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+  }
+
+  .trade-account__company {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0 0 20px;
+  }
+
+  .trade-account__badge {
+    display: inline-block;
+    background: var(--ta-accent, #d97706);
+    color: #ffffff;
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+  }
+
+  /* ── Container ────────────────────────────────── */
+  .trade-account__container {
+    max-width: var(--page-width, 1200px);
+    margin: 0 auto;
+    padding: 56px var(--page-margin, 24px) 80px;
+  }
+
+  /* ── Discount code card ───────────────────────── */
+  .trade-account__code-card {
+    background: var(--ta-card-bg, #ffffff);
+    border: 1px solid var(--ta-card-border, #e8e4dc);
+    padding: 32px 36px;
+    margin-bottom: 40px;
+    max-width: 600px;
+  }
+
+  .trade-account__code-label {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ta-subtitle-color, #78716c);
+    margin: 0 0 14px;
+  }
+
+  .trade-account__code-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 14px;
+  }
+
+  .trade-account__code-value {
+    font-family: var(--font-heading-family), serif;
+    font-size: 28px;
+    font-weight: 400;
+    color: var(--ta-title-color, #1c1917);
+    letter-spacing: 0.06em;
+  }
+
+  .trade-account__code-copy {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: 1px solid var(--ta-card-border, #e8e4dc);
+    padding: 8px 16px;
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ta-title-color, #1c1917);
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+
+  .trade-account__code-copy:hover {
+    border-color: var(--ta-title-color, #1c1917);
+  }
+
+  .trade-account__code-copy--copied {
+    color: var(--ta-accent, #d97706);
+    border-color: var(--ta-accent, #d97706);
+  }
+
+  .trade-account__code-note {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 13px;
+    color: var(--ta-subtitle-color, #78716c);
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  /* ── Action cards ─────────────────────────────── */
+  .trade-account__actions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 56px;
+  }
+
+  .trade-account__action-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--ta-card-bg, #ffffff);
+    border: 1px solid var(--ta-card-border, #e8e4dc);
+    padding: 28px 24px 24px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s ease;
+    position: relative;
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+    font: inherit;
+  }
+
+  .trade-account__action-card:hover {
+    border-color: var(--ta-title-color, #1c1917);
+  }
+
+  .trade-account__action-card--btn {
+    background: var(--ta-card-bg, #ffffff);
+  }
+
+  .trade-account__action-icon {
+    color: var(--ta-accent, #d97706);
+    margin-bottom: 16px;
+  }
+
+  .trade-account__action-title {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ta-title-color, #1c1917);
+    margin: 0 0 8px;
+  }
+
+  .trade-account__action-desc {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 14px;
+    color: var(--ta-subtitle-color, #78716c);
+    margin: 0;
+    line-height: 1.5;
+    flex: 1;
+  }
+
+  .trade-account__action-arrow {
+    display: block;
+    margin-top: 20px;
+    color: var(--ta-title-color, #1c1917);
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .trade-account__action-card:hover .trade-account__action-arrow {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* ── Benefits summary ─────────────────────────── */
+  .trade-account__benefits {
+    border-top: 1px solid var(--ta-card-border, #e8e4dc);
+    padding-top: 40px;
+  }
+
+  .trade-account__benefits-title {
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ta-subtitle-color, #78716c);
+    margin: 0 0 20px;
+  }
+
+  .trade-account__benefits-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 40px;
+  }
+
+  .trade-account__benefit-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 14px;
+    color: var(--ta-title-color, #1c1917);
+  }
+
+  .trade-account__benefit-check {
+    color: var(--ta-accent, #d97706);
+    flex-shrink: 0;
+  }
+
+  /* ── Shared button ────────────────────────────── */
+  .trade-account__btn {
+    display: inline-block;
+    background: var(--ta-btn-bg, #1c1917);
+    color: var(--ta-btn-color, #ffffff);
+    border: none;
+    padding: 16px 48px;
+    font-family: var(--font-body-family), sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .trade-account__btn:hover {
+    opacity: 0.85;
+  }
+
+  /* ── Responsive ───────────────────────────────── */
+  @media screen and (max-width: 768px) {
+    .trade-account__hero {
+      padding: 48px 20px 40px;
+    }
+
+    .trade-account__title {
+      font-size: 30px;
+    }
+
+    .trade-account__container {
+      padding: 40px 20px 60px;
+    }
+
+    .trade-account__code-card {
+      padding: 24px 20px;
+      max-width: 100%;
+    }
+
+    .trade-account__code-value {
+      font-size: 22px;
+    }
+
+    .trade-account__actions {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    .trade-account__benefits-list {
+      gap: 10px 0;
+      flex-direction: column;
+    }
+
+    .trade-account__btn {
+      width: 100%;
+      text-align: center;
+      padding: 16px 32px;
+    }
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    .trade-account__actions {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (function() {
+    // Copy discount code
+    var copyBtn = document.getElementById('trade-code-copy');
+    var codeEl = document.getElementById('trade-code-value');
+    if (copyBtn && codeEl) {
+      copyBtn.addEventListener('click', function() {
+        var code = codeEl.textContent.trim();
+        var labelCopied = copyBtn.dataset.labelCopied || 'Copied!';
+        var labelCopy = copyBtn.dataset.labelCopy || 'Copy';
+        var textEl = copyBtn.querySelector('.trade-account__code-copy-text');
+
+        navigator.clipboard.writeText(code).then(function() {
+          if (textEl) textEl.textContent = labelCopied;
+          copyBtn.classList.add('trade-account__code-copy--copied');
+          setTimeout(function() {
+            if (textEl) textEl.textContent = labelCopy;
+            copyBtn.classList.remove('trade-account__code-copy--copied');
+          }, 2000);
+        }).catch(function() {
+          // Fallback for older browsers
+          var tmp = document.createElement('textarea');
+          tmp.value = code;
+          tmp.style.position = 'fixed';
+          tmp.style.opacity = '0';
+          document.body.appendChild(tmp);
+          tmp.select();
+          document.execCommand('copy');
+          document.body.removeChild(tmp);
+          if (textEl) textEl.textContent = labelCopied;
+          copyBtn.classList.add('trade-account__code-copy--copied');
+          setTimeout(function() {
+            if (textEl) textEl.textContent = labelCopy;
+            copyBtn.classList.remove('trade-account__code-copy--copied');
+          }, 2000);
+        });
+      });
+    }
+
+    // Concierge button
+    var conciergeBtn = document.getElementById('trade-concierge-btn');
+    if (conciergeBtn) {
+      conciergeBtn.addEventListener('click', function() {
+        if (window.AICB && typeof window.AICB.open === 'function') {
+          window.AICB.open();
+        } else if (window.$zopim && window.$zopim.livechat) {
+          window.$zopim.livechat.window.show();
+        } else if (window.Intercom) {
+          window.Intercom('show');
+        } else {
+          window.location.href = '/pages/contact';
+        }
+      });
+    }
+  })();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Trade account",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Discount code"
+    },
+    {
+      "type": "text",
+      "id": "discount_code",
+      "label": "Trade discount code",
+      "default": "TRADE30",
+      "info": "The code shown to trade members as a backup for their automatic discount"
+    },
+    {
+      "type": "header",
+      "content": "Portal"
+    },
+    {
+      "type": "url",
+      "id": "portal_url",
+      "label": "Trade portal URL",
+      "info": "Reserved for future use — link to an external trade portal if applicable"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "section_bg",
+      "label": "Section background",
+      "default": "#faf9f7"
+    },
+    {
+      "type": "color",
+      "id": "hero_bg",
+      "label": "Hero background",
+      "default": "#1c1917"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color",
+      "default": "#d97706"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#1c1917"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle / muted text color",
+      "default": "#78716c"
+    },
+    {
+      "type": "color",
+      "id": "btn_bg",
+      "label": "Button background",
+      "default": "#1c1917"
+    },
+    {
+      "type": "color",
+      "id": "btn_color",
+      "label": "Button text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "card_bg",
+      "label": "Card background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "card_border",
+      "label": "Card border",
+      "default": "#e8e4dc"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Trade account"
+    }
+  ]
+}
+{% endschema %}
