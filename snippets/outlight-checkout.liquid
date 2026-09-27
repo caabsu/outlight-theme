@@ -1,5 +1,24 @@
-{% comment %}Outlight custom checkout. Set enabled to false to restore native Shopify checkout.{% endcomment %}
+{% doc %}
+Loads the Outlight checkout handoff and localized recovery choices.
+{% enddoc %}
 <script>
-  window.OutlightCheckout = {enabled: true, origin: 'https://checkout.outlight.us'};
+  window.OutlightCheckout = {enabled: true, origin: 'https://checkout.outlight.us', messages: {
+    title: {{ 'checkout.recovery_title' | t | json }},
+    unavailable: {{ 'checkout.unavailable' | t | json }},
+    unsupported: {{ 'checkout.unsupported' | t | json }},
+    retry: {{ 'checkout.retry' | t | json }},
+    paypal: {{ 'checkout.paypal' | t | json }},
+    back: {{ 'checkout.back' | t | json }},
+    help: {{ 'checkout.help' | t | json }}
+  }};
 </script>
 <script src="{{ 'outlight-checkout.js' | asset_url }}" defer></script>
+{% stylesheet %}
+.ol-checkout-recovery{max-width:420px;width:calc(100% - 32px);padding:28px;border:1px solid #d8d5cc;background:#faf9f6;color:#131314;font-family:Manrope,sans-serif}
+.ol-checkout-recovery::backdrop{background:rgb(0 0 0 / 45%)}
+.ol-checkout-recovery h2{font-size:22px;font-weight:500;margin:0 0 14px}
+.ol-checkout-recovery p{font-size:14px;line-height:1.6;margin:0 0 24px}
+.ol-checkout-recovery button,.ol-checkout-recovery a{display:block;width:100%;box-sizing:border-box;padding:13px 10px;margin:10px 0;text-align:center;border:1px solid #131314;background:#131314;color:#fff;font-size:13px;cursor:pointer;text-decoration:none}
+.ol-checkout-recovery .ol-checkout-back{background:transparent;color:#131314}
+.ol-checkout-recovery .ol-checkout-help{background:transparent;color:#131314;border:0;text-decoration:underline}
+{% endstylesheet %}

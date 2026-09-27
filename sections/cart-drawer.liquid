@@ -122,7 +122,7 @@
 
           <!-- Item details -->
           <div class="flex-1 min-w-0">
-            <div class="flex items-start justify-between gap-2 mb-1">
+            <div class="ol-cart-item-heading flex items-start justify-between gap-2 mb-1">
               <div class="min-w-0">
                 <a
                   href="{{ item.url }}"
@@ -140,7 +140,7 @@
                 {%- endif -%}
               </div>
               <!-- Price -->
-              <div class="text-right shrink-0">
+              <div class="ol-cart-item-price text-right shrink-0">
                 {% render 'cart-line-price', item: item %}
               </div>
             </div>
@@ -316,7 +316,7 @@
           Checkout — {{ cart.total_price | money }}
         </a>
         <p class="font-body text-[0.6rem] font-light text-[#2d3338]/35 text-center mt-2.5">
-          Secure checkout &nbsp;·&nbsp; Free returns &nbsp;·&nbsp; 2-year warranty
+          {{ 'cart.reassurance' | t }}
         </p>
       </div>
 

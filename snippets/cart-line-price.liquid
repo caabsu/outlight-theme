@@ -23,5 +23,11 @@ Displays the actual line total after all Shopify discount allocations.
 .ol-cart-line-price{display:flex;flex-direction:column;gap:3px;font-variant-numeric:tabular-nums}
 .ol-cart-payable{font:500 15px/1.35 'Manrope',sans-serif;color:#131314}
 .ol-cart-reference{font:400 11px/1.35 'Manrope',sans-serif;color:#777873}
-.ol-cart-discount-note{font:400 10px/1.35 'Manrope',sans-serif;color:#61655a}
+.ol-cart-discount-note{max-width:92px;white-space:normal;font:400 10px/1.35 'Manrope',sans-serif;color:#61655a}
+@media(max-width:480px){
+  .ol-cart-item-heading{flex-direction:column;gap:8px}
+  .ol-cart-item-price{text-align:left}
+  .ol-cart-item-price .ol-cart-line-price{display:flex;flex-direction:row;align-items:baseline;flex-wrap:wrap;gap:4px 8px}
+  .ol-cart-item-price .ol-cart-discount-note{flex-basis:100%;max-width:none}
+}
 {% endstylesheet %}

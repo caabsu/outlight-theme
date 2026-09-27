@@ -17,7 +17,17 @@
     "checkout": "Checkout",
     "subtotal": "Subtotal",
     "shipping_note": "Free US shipping. Estimated delivery in 4 days. Tax calculated at checkout.",
-    "discount_included": "Discount included"
+    "discount_included": "Discount included",
+    "reassurance": "Secure checkout · Free US shipping"
+  },
+  "checkout": {
+    "recovery_title": "Checkout needs another try",
+    "unavailable": "We could not open secure checkout. Your bag is saved. Try again, or continue with PayPal.",
+    "unsupported": "This bag needs our alternative checkout, where PayPal is currently available. You can also return to your bag or contact us for help.",
+    "retry": "Try secure checkout again",
+    "paypal": "Continue with PayPal",
+    "back": "Return to bag",
+    "help": "Contact Outlight"
   },
   "products": {
     "add_to_cart": "Add to Bag",
@@ -59,10 +69,16 @@
     "installation": "Installation",
     "shipping_returns": "Shipping & returns",
     "shipping_copy": "Free shipping within the United States.",
-    "returns_copy": "30-day returns and a 2-year warranty.",
+    "returns_copy": "Returns can be requested within 30 days. Eligibility, shipping charges and restocking fees are detailed in our refund policy.",
     "delivery_estimate": "Estimated delivery: {{ date }}",
     "no_code": "Price includes 60% off. No code needed.",
     "delivery_four_days": "Estimated delivery in 4 days.",
     "delivery_faq": "Free US shipping with estimated delivery in 4 days from placing your order. Tracking is sent when your order ships."
+  },
+  "policies": {
+    "returns": "Request a return within 30 days of delivery. Items must be unused and in their original packaging. For change-of-mind returns, you pay return shipping; a restocking fee of up to 50% may apply after inspection. Damaged or defective items are reviewed separately. See our refund policy for the full terms.",
+    "warranty": "Our published two-year warranty covers outdoor lighting fixtures against manufacturing defects. Coverage excludes improper installation, misuse, normal wear and weather-related damage. Contact info@outlight.us with your order details for help; see the refund policy for full warranty terms.",
+    "link": "Read the refund and warranty policy",
+    "shipping_returns": "Free US shipping. Returns can be requested within 30 days; return shipping charges and restocking fees may apply. See the refund policy for eligibility and warranty terms."
   }
 }

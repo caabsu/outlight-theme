@@ -45,9 +45,9 @@
       assign q4 = "How fast does it ship?"
       assign a4 = 'clearance.delivery_faq' | t
       assign q5 = "Can I return it if it's not right?"
-      assign a5 = "Yes — 30 days from delivery, full refund. We just ask that it hasn't been hardwired yet. Arrived damaged? Send a photo and we'll replace it."
+      assign a5 = 'policies.returns' | t
       assign q6 = "What's the warranty?"
-      assign a6 = "2-year warranty against defects in materials, finish, and electrical components. Real-person support replies within one business day."
+      assign a6 = 'policies.warranty' | t
     elsif product_faq_type == 'wall-indoor'
       assign q1 = "What's included in the box?"
       assign a1 = "The fixture, mounting plate, all required hardware (screws, anchors, wire nuts), and a printed installation guide. Bulb included only where specifically noted on the product page."
@@ -58,9 +58,9 @@
       assign q4 = "How fast does it ship?"
       assign a4 = 'clearance.delivery_faq' | t
       assign q5 = "Can I return it if it's not right?"
-      assign a5 = "Yes — 30 days from delivery, full refund. We just ask that it hasn't been hardwired yet. Arrived damaged? Send a photo and we'll replace it."
+      assign a5 = 'policies.returns' | t
       assign q6 = "What's the warranty?"
-      assign a6 = "2-year warranty against defects in materials, finish, and electrical components. Real-person support replies within one business day."
+      assign a6 = 'policies.warranty' | t
     else
       assign q1 = "What's included in the box?"
       assign a1 = "The lamp body, an attached inline-switch cord ready to plug into any standard US outlet, and a warm LED bulb. Setup takes about a minute — no tools required."
@@ -71,9 +71,9 @@
       assign q4 = "How fast does it ship?"
       assign a4 = 'clearance.delivery_faq' | t
       assign q5 = "Can I return it if it's not right?"
-      assign a5 = "Yes — 30 days from delivery, full refund. Arrived damaged? Send a photo and we'll replace it."
+      assign a5 = 'policies.returns' | t
       assign q6 = "What's the warranty?"
-      assign a6 = "2-year warranty against defects in materials, finish, and electrical components. Real-person support replies within one business day."
+      assign a6 = 'policies.warranty' | t
     endif
   -%}
   <script type="application/ld+json">

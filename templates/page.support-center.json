@@ -51,7 +51,7 @@
           "settings": {
             "category": "category_1",
             "question": "What does the warranty cover?",
-            "answer": "<p>Our 2-year warranty covers manufacturing defects and electrical components. If an issue is confirmed, we will provide either a full refund or a free replacement, upon approval. Please contact us by email or through our Contact Us page.</p>"
+            "answer": "<p>Our published two-year warranty covers outdoor lighting fixtures against manufacturing defects. Coverage excludes improper installation, misuse, normal wear and weather-related damage. Contact info@outlight.us with your order details for help; see the refund policy for full warranty terms.</p>"
           }
         },
         "re1": {
@@ -67,7 +67,7 @@
           "settings": {
             "category": "category_2",
             "question": "Is there a restocking fee?",
-            "answer": "<p>A 20% restocking fee applies to returns for items that are not damaged/defective and where the correct item was sent. For special cases, please contact us through our Contact Us page or email support@outlight.us</p>"
+            "answer": "<p>Non-defective returns may incur a restocking fee of up to 50%, based on condition, packaging and resale suitability after inspection. Change-of-mind return shipping is paid by the customer. See our refund policy for full terms.</p>"
           }
         },
         "re3": {

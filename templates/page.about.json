@@ -56,7 +56,7 @@
           "settings": {
             "number": "03",
             "title": "Quality-checked, then backed",
-            "description": "Each piece is inspected before it ships, covered by a 2-year warranty, and supported by a team that replies within 24 hours."
+            "description": "Each piece is inspected before it ships and supported by our customer care team. Outdoor fixtures carry a two-year warranty under our published policy."
           }
         }
       },
@@ -96,7 +96,7 @@
           "settings": {
             "number": "02",
             "emphasis": "30-day",
-            "text": "returns — time to live with it."
+            "text": "return request window; policy terms apply."
           }
         },
         "promise-3": {
@@ -104,7 +104,7 @@
           "settings": {
             "number": "03",
             "emphasis": "2-year",
-            "text": "warranty on every piece."
+            "text": "warranty on outdoor fixtures."
           }
         },
         "promise-4": {
