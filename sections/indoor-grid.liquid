@@ -1,0 +1,263 @@
+{%- comment -%}
+  indoor-grid.liquid — Homepage category routing (catalog redesign round 2, variation 1)
+  Four image tiles with gradient overlay routing to collections.
+  Grid: 4 cols, 2 cols at <=900px.
+{%- endcomment -%}
+
+{%- assign s = section.settings -%}
+
+<style>
+  #ol-cats-{{ section.id }}{
+    --ink:#131314;--paper:#F9F9FB;--gold:#C5A059;--warm:#f4f0eb;--body:#2d3338;
+    --serif:'Newsreader',Georgia,serif;
+    --sans:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    display:block;
+    background:var(--warm);
+    font-family:var(--sans);
+    padding:64px 0 80px;
+  }
+  #ol-cats-{{ section.id }} *{box-sizing:border-box;margin:0;padding:0;}
+  #ol-cats-{{ section.id }} img{display:block;max-width:100%;}
+  #ol-cats-{{ section.id }} a{color:inherit;text-decoration:none;}
+  #ol-cats-{{ section.id }} .ol-container{
+    width:100%;max-width:1360px;margin:0 auto;padding:0 32px;
+  }
+  #ol-cats-{{ section.id }} .section-head{
+    display:flex;align-items:flex-end;justify-content:space-between;
+    gap:32px;margin-bottom:48px;
+  }
+  #ol-cats-{{ section.id }} .eyebrow{
+    font-family:var(--sans);font-size:11px;font-weight:600;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--gold);
+  }
+  #ol-cats-{{ section.id }} .section-head h2{
+    font-family:var(--serif);font-weight:200;
+    font-size:clamp(28px,3.4vw,42px);line-height:1.08;letter-spacing:-0.01em;
+    margin-top:16px;color:var(--ink);
+  }
+  #ol-cats-{{ section.id }} .section-head h2 em{font-style:italic;color:var(--gold);}
+  #ol-cats-{{ section.id }} .head-link{
+    font-size:13px;font-weight:500;letter-spacing:.04em;white-space:nowrap;
+    padding-bottom:3px;border-bottom:1px solid var(--ink);
+    transition:color .2s,border-color .2s;color:var(--ink);
+  }
+  #ol-cats-{{ section.id }} .head-link:hover{color:var(--gold);border-color:var(--gold);}
+  #ol-cats-{{ section.id }} .cat-grid{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:24px;
+  }
+  #ol-cats-{{ section.id }} .cat-tile{
+    position:relative;aspect-ratio:3/4;overflow:hidden;display:block;
+  }
+  #ol-cats-{{ section.id }} .cat-tile img{
+    width:100%;height:100%;object-fit:cover;
+    transition:transform .55s cubic-bezier(.22,.61,.36,1);
+  }
+  #ol-cats-{{ section.id }} .cat-tile::after{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(to top,rgba(19,19,20,.7) 0%,rgba(19,19,20,.12) 45%,rgba(19,19,20,0) 75%);
+  }
+  #ol-cats-{{ section.id }} .cat-tile:hover img{transform:scale(1.06);}
+  #ol-cats-{{ section.id }} .cat-label{
+    position:absolute;left:24px;bottom:24px;z-index:2;color:var(--paper);
+  }
+  #ol-cats-{{ section.id }} .cat-label .ct-name{
+    font-family:var(--serif);font-weight:300;font-size:24px;line-height:1.1;
+  }
+  #ol-cats-{{ section.id }} .cat-label .ct-go{
+    font-size:11px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;
+    color:var(--gold);display:inline-flex;align-items:center;gap:6px;margin-top:5px;
+  }
+  #ol-cats-{{ section.id }} .cat-label .ct-go svg{width:13px;height:13px;}
+  @media (max-width:900px){
+    #ol-cats-{{ section.id }} .ol-container{padding:0 24px;}
+    #ol-cats-{{ section.id }} .cat-grid{grid-template-columns:repeat(2,1fr);}
+  }
+  @media (max-width:600px){
+    #ol-cats-{{ section.id }} .ol-container{padding:0 20px;}
+    #ol-cats-{{ section.id }} .cat-grid{gap:16px;}
+    #ol-cats-{{ section.id }} .cat-label{left:16px;bottom:16px;}
+    #ol-cats-{{ section.id }} .cat-label .ct-name{font-size:20px;}
+    #ol-cats-{{ section.id }} .section-head{
+      flex-direction:column;align-items:flex-start;gap:16px;
+    }
+    #ol-cats-{{ section.id }} .section-head h2{margin-top:8px;}
+  }
+</style>
+
+<section id="ol-cats-{{ section.id }}">
+  <div class="ol-container">
+    <div class="section-head">
+      <div>
+        {%- if s.eyebrow != blank -%}
+          <span class="eyebrow">{{ s.eyebrow | escape }}</span>
+        {%- endif -%}
+        <h2>{{ s.heading }}</h2>
+      </div>
+      {%- if s.link_text != blank -%}
+        <a href="{{ s.link_url | default: '/collections' }}" class="head-link">{{ s.link_text | escape }}</a>
+      {%- endif -%}
+    </div>
+
+    <div class="cat-grid">
+      {%- for i in (1..4) -%}
+        {%- assign name_key = 'tile' | append: i | append: '_name' -%}
+        {%- assign url_key = 'tile' | append: i | append: '_url' -%}
+        {%- assign img_key = 'tile' | append: i | append: '_image' -%}
+        {%- assign fallback_key = 'tile' | append: i | append: '_fallback' -%}
+        {%- assign t_name = s[name_key] -%}
+        {%- assign t_url = s[url_key] -%}
+        {%- assign t_img = s[img_key] -%}
+        {%- case i -%}
+          {%- when 1 -%}{%- assign t_fallback = 'https://outlight.us/cdn/shop/files/custom_nano-banana-2_1774170812831.png' -%}
+          {%- when 2 -%}{%- assign t_fallback = 'https://outlight.us/cdn/shop/files/custom_nano-banana-2_1774217020811.png' -%}
+          {%- when 3 -%}{%- assign t_fallback = 'https://outlight.us/cdn/shop/files/custom_nano-banana-2_1774218893711.png' -%}
+          {%- when 4 -%}{%- assign t_fallback = 'https://outlight.us/cdn/shop/files/custom_nano-banana-2_1774246042749.png' -%}
+        {%- endcase -%}
+        {%- if t_name != blank -%}
+          <a class="cat-tile" href="{{ t_url | default: '/collections' }}">
+            {%- if t_img != blank -%}
+              <img
+                src="{{ t_img | image_url: width: 700 }}"
+                srcset="{{ t_img | image_url: width: 500 }} 500w, {{ t_img | image_url: width: 700 }} 700w, {{ t_img | image_url: width: 1000 }} 1000w"
+                sizes="(max-width:900px) 50vw, 25vw"
+                width="700"
+                height="933"
+                alt="{{ t_img.alt | default: t_name | escape }}"
+                loading="lazy">
+            {%- else -%}
+              <img src="{{ t_fallback }}" width="700" height="933" alt="{{ t_name | escape }}" loading="lazy">
+            {%- endif -%}
+            <div class="cat-label">
+              <div class="ct-name">{{ t_name | escape }}</div>
+              <span class="ct-go">Shop now
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+            </div>
+          </a>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Category Routing",
+  "tag": "section",
+  "class": "ol-cats-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Shop by Room"
+    },
+    {
+      "type": "richtext",
+      "id": "heading",
+      "label": "Heading (italic = gold accent)",
+      "default": "<p>Find your <em>fixture</em></p>"
+    },
+    {
+      "type": "text",
+      "id": "link_text",
+      "label": "Link text",
+      "default": "All collections"
+    },
+    {
+      "type": "url",
+      "id": "link_url",
+      "label": "Link URL"
+    },
+    {
+      "type": "header",
+      "content": "Tile 1"
+    },
+    {
+      "type": "text",
+      "id": "tile1_name",
+      "label": "Name",
+      "default": "Floor Lamps"
+    },
+    {
+      "type": "url",
+      "id": "tile1_url",
+      "label": "Link"
+    },
+    {
+      "type": "image_picker",
+      "id": "tile1_image",
+      "label": "Image",
+      "info": "Falls back to the approved mockup image when blank."
+    },
+    {
+      "type": "header",
+      "content": "Tile 2"
+    },
+    {
+      "type": "text",
+      "id": "tile2_name",
+      "label": "Name",
+      "default": "Table & Bedside"
+    },
+    {
+      "type": "url",
+      "id": "tile2_url",
+      "label": "Link"
+    },
+    {
+      "type": "image_picker",
+      "id": "tile2_image",
+      "label": "Image",
+      "info": "Falls back to the approved mockup image when blank."
+    },
+    {
+      "type": "header",
+      "content": "Tile 3"
+    },
+    {
+      "type": "text",
+      "id": "tile3_name",
+      "label": "Name",
+      "default": "Wall Lights"
+    },
+    {
+      "type": "url",
+      "id": "tile3_url",
+      "label": "Link"
+    },
+    {
+      "type": "image_picker",
+      "id": "tile3_image",
+      "label": "Image",
+      "info": "Falls back to the approved mockup image when blank."
+    },
+    {
+      "type": "header",
+      "content": "Tile 4"
+    },
+    {
+      "type": "text",
+      "id": "tile4_name",
+      "label": "Name",
+      "default": "Outdoor"
+    },
+    {
+      "type": "url",
+      "id": "tile4_url",
+      "label": "Link"
+    },
+    {
+      "type": "image_picker",
+      "id": "tile4_image",
+      "label": "Image",
+      "info": "Falls back to the approved mockup image when blank."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Category Routing"
+    }
+  ]
+}
+{% endschema %}

@@ -9,12 +9,16 @@
  */
 {
   "sections": {
-    "main": {
-      "type": "article",
-      "settings": {}
+    "main-article": {
+      "type": "main-article",
+      "settings": {
+        "label": "Outlight Journal",
+        "primary_collection_label": "Shop indoor lighting",
+        "primary_collection_url": "/collections/indoor-lighting"
+      }
     }
   },
   "order": [
-    "main"
+    "main-article"
   ]
 }

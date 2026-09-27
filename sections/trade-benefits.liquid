@@ -1,0 +1,166 @@
+<section id="{{ section.settings.section_id }}" class="py-20 md:py-28 px-5 md:px-12 bg-[#F9F9FB]">
+  <div class="max-w-[1920px] mx-auto">
+
+    <!-- Header -->
+    <div class="mb-10 md:mb-14">
+      <div class="flex items-center gap-4 mb-5">
+        <div class="w-8 h-px bg-[#C5A059]"></div>
+        <span class="font-label text-[0.6rem] uppercase tracking-[0.25em] text-[#C5A059]">{{ section.settings.label }}</span>
+      </div>
+      <h2 class="heading-thin text-4xl md:text-5xl text-[#131314] tracking-tight">{{ section.settings.heading }}</h2>
+    </div>
+
+    <!-- Desktop: 30% left + list right -->
+    <div class="hidden md:grid grid-cols-12 gap-0">
+      <!-- Left: 30% hero card -->
+      <div class="col-span-4 bg-[#131314] p-10 flex flex-col justify-between">
+        <div>
+          <span class="font-label text-[0.55rem] uppercase tracking-[0.2em] text-[#C5A059]/50 block mb-8">01</span>
+          <div class="heading-thin text-[8rem] text-[#C5A059] leading-none mb-4" style="font-variation-settings:'opsz' 72;">30%</div>
+          <h3 class="heading-thin text-xl text-[#F9F9FB] mb-3 tracking-tight">Off Everything.</h3>
+          <p class="font-body text-[0.85rem] font-[300] text-[#F9F9FB]/45 leading-relaxed">Applied automatically at checkout. No codes, no minimums, no exceptions.</p>
+        </div>
+        <div class="mt-10 pt-5 border-t border-[#F9F9FB]/8">
+          <span class="font-label text-[0.55rem] uppercase tracking-[0.15em] text-[#C5A059]/50">Instant activation</span>
+        </div>
+      </div>
+      <!-- Right: benefits as spec-style list -->
+      <div class="col-span-8 border-l border-[#131314]/6">
+        {% for block in section.blocks %}
+          <div class="{% unless forloop.last %}border-b border-[#131314]/6{% endunless %} px-10 py-7 flex items-start gap-6" {{ block.shopify_attributes }}>
+            <span class="font-label text-[0.55rem] uppercase text-[#C5A059]/40 pt-1 shrink-0">0{{ forloop.index | plus: 1 }}</span>
+            <div class="border-l-2 border-[#C5A059]/20 pl-5 flex-1">
+              <div class="flex items-start justify-between">
+                <div>
+                  <h3 class="heading-thin text-lg text-[#131314] tracking-tight mb-2">{{ block.settings.title }}</h3>
+                  <p class="font-body text-[0.82rem] font-[300] text-[#2d3338]/70 leading-relaxed">{{ block.settings.description }}</p>
+                </div>
+                <span class="material-symbols-outlined text-[#C5A059]/30 text-xl shrink-0 ml-6" style="font-variation-settings:'wght' 200;">{{ block.settings.icon }}</span>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Mobile: stacked -->
+    <div class="md:hidden">
+      <div class="bg-[#131314] p-6 mb-3">
+        <span class="font-label text-[0.5rem] uppercase text-[#C5A059]/50 block mb-4">01</span>
+        <div class="heading-thin text-[4rem] text-[#C5A059] leading-none mb-3" style="font-variation-settings:'opsz' 72;">30%</div>
+        <h3 class="heading-thin text-lg text-[#F9F9FB] mb-2">Off Everything.</h3>
+        <p class="font-body text-[0.78rem] font-[300] text-[#F9F9FB]/40 leading-relaxed">Applied automatically. No codes, no minimums.</p>
+      </div>
+      {% for block in section.blocks %}
+        <div class="{% unless forloop.last %}border-b border-[#131314]/5{% endunless %} py-5 flex items-start gap-4" {{ block.shopify_attributes }}>
+          <span class="font-label text-[0.5rem] uppercase text-[#C5A059]/40 pt-0.5">0{{ forloop.index | plus: 1 }}</span>
+          <div class="border-l-2 border-[#C5A059]/20 pl-4 flex-1">
+            <h3 class="heading-thin text-base text-[#131314] mb-1">{{ block.settings.title }}</h3>
+            <p class="font-body text-[0.75rem] font-[300] text-[#2d3338]/60 leading-relaxed">{{ block.settings.description }}</p>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Trade Benefits",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section anchor ID",
+      "default": "benefits"
+    },
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Section label",
+      "default": "Program Benefits"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Everything you get from day one."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "benefit",
+      "name": "Benefit",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Account Manager"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "A named Outlight representative handles your account exclusively."
+        },
+        {
+          "type": "text",
+          "id": "icon",
+          "label": "Material Symbol icon name",
+          "default": "person"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Trade Benefits",
+      "blocks": [
+        {
+          "type": "benefit",
+          "settings": {
+            "title": "Account Manager",
+            "description": "A named Outlight representative handles your account exclusively. Direct line, same-day responses, and project-specific guidance.",
+            "icon": "person"
+          }
+        },
+        {
+          "type": "benefit",
+          "settings": {
+            "title": "Custom Fixtures",
+            "description": "Configure finish, beam angle, colour temperature, and cable length for any fixture. Custom specs at no additional lead time.",
+            "icon": "grid_view"
+          }
+        },
+        {
+          "type": "benefit",
+          "settings": {
+            "title": "Full Catalog Access",
+            "description": "Including unreleased collections, archived editions, and specials not available to the public.",
+            "icon": "inventory_2"
+          }
+        },
+        {
+          "type": "benefit",
+          "settings": {
+            "title": "Guaranteed Shipping",
+            "description": "Priority fulfilment with guaranteed delivery windows and expedited options for time-critical installations.",
+            "icon": "local_shipping"
+          }
+        },
+        {
+          "type": "benefit",
+          "settings": {
+            "title": "Priority Support",
+            "description": "Reach a senior support specialist within the hour — for returns, technical specs, or anything project-critical.",
+            "icon": "headset_mic"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

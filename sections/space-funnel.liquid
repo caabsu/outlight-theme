@@ -1,0 +1,326 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200;0,6..72,300;0,6..72,400;1,6..72,200;1,6..72,300&family=Manrope:wght@300;400;500;600&display=swap">
+{{ 'space-funnel.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'space-funnel.js' | asset_url }}" type="module"></script>
+
+{%- assign config_id = 'SpaceFunnelConfig-' | append: section.id -%}
+{%- assign root_id = 'SpaceFunnelRoot-' | append: section.id -%}
+
+{%- comment -%}
+  Macro: output a product JSON object with a given category.
+  Used below for each category collection.
+{%- endcomment -%}
+{%- capture product_json_template -%}TEMPLATE{%- endcapture -%}
+
+<div
+  id="{{ root_id }}"
+  data-space-funnel-root
+  data-config-id="{{ config_id }}"
+></div>
+
+<script id="{{ config_id }}" type="application/json">
+{
+  "apiBaseUrl": {{ section.settings.api_base_url | strip | json }},
+  "proxyBase": {{ section.settings.proxy_base | default: '/apps/space-funnel' | json }},
+  "shop": {{ shop.permanent_domain | json }},
+  "pageHandle": {{ page.handle | json }},
+  "copy": {
+    "eyebrow": {{ section.settings.eyebrow | json }},
+    "title": {{ section.settings.title | json }},
+    "lede": {{ section.settings.lede | json }},
+    "ctaLabel": {{ section.settings.cta_label | json }},
+    "ctaMicrocopy": {{ section.settings.cta_microcopy | json }}
+  },
+  "styleImages": {
+    "minimal": {{ 'style-minimal.jpg' | asset_url | prepend: 'https:' | json }},
+    "midcentury": {{ 'style-midcentury.jpg' | asset_url | prepend: 'https:' | json }},
+    "industrial": {{ 'style-industrial.jpg' | asset_url | prepend: 'https:' | json }},
+    "contemporary": {{ 'style-contemporary.jpg' | asset_url | prepend: 'https:' | json }},
+    "classic": {{ 'style-classic.jpg' | asset_url | prepend: 'https:' | json }}
+  },
+  "showcaseBefore": {%- if section.settings.showcase_before != blank -%}{{ section.settings.showcase_before | image_url: width: 800 | json }}{%- else -%}null{%- endif -%},
+  "showcaseAfter": {%- if section.settings.showcase_after != blank -%}{{ section.settings.showcase_after | image_url: width: 800 | json }}{%- else -%}null{%- endif -%},
+  "allowedProducts": [
+    {%- assign needs_comma = false -%}
+
+    {%- comment -%}── Floor Lamps collection ──{%- endcomment -%}
+    {%- if section.settings.collection_floor_lamps != blank -%}
+      {%- for product in section.settings.collection_floor_lamps.products -%}
+        {%- if needs_comma -%},{%- endif -%}
+        {
+          "id": {{ product.id | json }},
+          "handle": {{ product.handle | json }},
+          "title": {{ product.title | json }},
+          "url": {{ product.url | json }},
+          "price": {{ product.selected_or_first_available_variant.price | divided_by: 100.0 | json }},
+          "variantId": {{ product.selected_or_first_available_variant.id | json }},
+          "productType": {{ product.type | json }},
+          "category": "floor_lamp",
+          "featuredImage": {%- if product.featured_image != blank -%}{{ product.featured_image | image_url: width: 1200 | json }}{%- else -%}null{%- endif -%},
+          "showcaseBefore": {%- if product.metafields.custom.visualizer_before != blank -%}{{ product.metafields.custom.visualizer_before | image_url: width: 800 | json }}{%- else -%}null{%- endif -%},
+          "showcaseAfter": {%- if product.metafields.custom.visualizer_after != blank -%}{{ product.metafields.custom.visualizer_after | image_url: width: 800 | json }}{%- else -%}null{%- endif -%},
+          "variants": [
+            {%- for variant in product.variants -%}
+              { "id": {{ variant.id | json }}, "title": {{ variant.title | json }}, "price": {{ variant.price | divided_by: 100.0 | json }}, "available": {{ variant.available | json }} }{%- unless forloop.last -%},{%- endunless -%}
+            {%- endfor -%}
+          ]
+        }
+        {%- assign needs_comma = true -%}
+      {%- endfor -%}
+    {%- endif -%}
+
+    {%- comment -%}── Table / Desk Lamps collection ──{%- endcomment -%}
+    {%- if section.settings.collection_desk_lamps != blank -%}
+      {%- for product in section.settings.collection_desk_lamps.products -%}
+        {%- if needs_comma -%},{%- endif -%}
+        {
+          "id": {{ product.id | json }},
+          "handle": {{ product.handle | json }},
+          "title": {{ product.title | json }},
+          "url": {{ product.url | json }},
+          "price": {{ product.selected_or_first_available_variant.price | divided_by: 100.0 | json }},
+          "variantId": {{ product.selected_or_first_available_variant.id | json }},
+          "productType": {{ product.type | json }},
+          "category": "desk_lamp",
+          "featuredImage": {%- if product.featured_image != blank -%}{{ product.featured_image | image_url: width: 1200 | json }}{%- else -%}null{%- endif -%},
+          "showcaseBefore": {%- if product.metafields.custom.visualizer_before != blank -%}{{ product.metafields.custom.visualizer_before | image_url: width: 800 | json }}{%- else -%}null{%- endif -%},
+          "showcaseAfter": {%- if product.metafields.custom.visualizer_after != blank -%}{{ product.metafields.custom.visualizer_after | image_url: width: 800 | json }}{%- else -%}null{%- endif -%},
+          "variants": [
+            {%- for variant in product.variants -%}
+              { "id": {{ variant.id | json }}, "title": {{ variant.title | json }}, "price": {{ variant.price | divided_by: 100.0 | json }}, "available": {{ variant.available | json }} }{%- unless forloop.last -%},{%- endunless -%}
+            {%- endfor -%}
+          ]
+        }
+        {%- assign needs_comma = true -%}
+      {%- endfor -%}
+    {%- endif -%}
+
+    {%- comment -%}── Wall Lights collection ──{%- endcomment -%}
+    {%- if section.settings.collection_wall_lights != blank -%}
+      {%- for product in section.settings.collection_wall_lights.products -%}
+        {%- if needs_comma -%},{%- endif -%}
+        {
+          "id": {{ product.id | json }},
+          "handle": {{ product.handle | json }},
+          "title": {{ product.title | json }},
+          "url": {{ product.url | json }},
+          "price": {{ product.selected_or_first_available_variant.price | divided_by: 100.0 | json }},
+          "variantId": {{ product.selected_or_first_available_variant.id | json }},
+          "productType": {{ product.type | json }},
+          "category": "wall_light",
+          "featuredImage": {%- if product.featured_image != blank -%}{{ product.featured_image | image_url: width: 1200 | json }}{%- else -%}null{%- endif -%},
+          "showcaseBefore": {%- if product.metafields.custom.visualizer_before != blank -%}{{ product.metafields.custom.visualizer_before | image_url: width: 800 | json }}{%- else -%}null{%- endif -%},
+          "showcaseAfter": {%- if product.metafields.custom.visualizer_after != blank -%}{{ product.metafields.custom.visualizer_after | image_url: width: 800 | json }}{%- else -%}null{%- endif -%},
+          "variants": [
+            {%- for variant in product.variants -%}
+              { "id": {{ variant.id | json }}, "title": {{ variant.title | json }}, "price": {{ variant.price | divided_by: 100.0 | json }}, "available": {{ variant.available | json }} }{%- unless forloop.last -%},{%- endunless -%}
+            {%- endfor -%}
+          ]
+        }
+        {%- assign needs_comma = true -%}
+      {%- endfor -%}
+    {%- endif -%}
+
+    {%- comment -%}── Pendants collection ──{%- endcomment -%}
+    {%- if section.settings.collection_pendants != blank -%}
+      {%- for product in section.settings.collection_pendants.products -%}
+        {%- if needs_comma -%},{%- endif -%}
+        {
+          "id": {{ product.id | json }},
+          "handle": {{ product.handle | json }},
+          "title": {{ product.title | json }},
+          "url": {{ product.url | json }},
+          "price": {{ product.selected_or_first_available_variant.price | divided_by: 100.0 | json }},
+          "variantId": {{ product.selected_or_first_available_variant.id | json }},
+          "productType": {{ product.type | json }},
+          "category": "pendant",
+          "featuredImage": {%- if product.featured_image != blank -%}{{ product.featured_image | image_url: width: 1200 | json }}{%- else -%}null{%- endif -%},
+          "showcaseBefore": {%- if product.metafields.custom.visualizer_before != blank -%}{{ product.metafields.custom.visualizer_before | image_url: width: 800 | json }}{%- else -%}null{%- endif -%},
+          "showcaseAfter": {%- if product.metafields.custom.visualizer_after != blank -%}{{ product.metafields.custom.visualizer_after | image_url: width: 800 | json }}{%- else -%}null{%- endif -%},
+          "variants": [
+            {%- for variant in product.variants -%}
+              { "id": {{ variant.id | json }}, "title": {{ variant.title | json }}, "price": {{ variant.price | divided_by: 100.0 | json }}, "available": {{ variant.available | json }} }{%- unless forloop.last -%},{%- endunless -%}
+            {%- endfor -%}
+          ]
+        }
+        {%- assign needs_comma = true -%}
+      {%- endfor -%}
+    {%- endif -%}
+
+    {%- comment -%}── All Products fallback collection (auto-categorized) ──{%- endcomment -%}
+    {%- if section.settings.product_collection != blank -%}
+      {%- for product in section.settings.product_collection.products -%}
+        {%- if needs_comma -%},{%- endif -%}
+        {
+          "id": {{ product.id | json }},
+          "handle": {{ product.handle | json }},
+          "title": {{ product.title | json }},
+          "url": {{ product.url | json }},
+          "price": {{ product.selected_or_first_available_variant.price | divided_by: 100.0 | json }},
+          "variantId": {{ product.selected_or_first_available_variant.id | json }},
+          "productType": {{ product.type | json }},
+          "featuredImage": {%- if product.featured_image != blank -%}{{ product.featured_image | image_url: width: 1200 | json }}{%- else -%}null{%- endif -%},
+          "showcaseBefore": {%- if product.metafields.custom.visualizer_before != blank -%}{{ product.metafields.custom.visualizer_before | image_url: width: 800 | json }}{%- else -%}null{%- endif -%},
+          "showcaseAfter": {%- if product.metafields.custom.visualizer_after != blank -%}{{ product.metafields.custom.visualizer_after | image_url: width: 800 | json }}{%- else -%}null{%- endif -%},
+          "variants": [
+            {%- for variant in product.variants -%}
+              { "id": {{ variant.id | json }}, "title": {{ variant.title | json }}, "price": {{ variant.price | divided_by: 100.0 | json }}, "available": {{ variant.available | json }} }{%- unless forloop.last -%},{%- endunless -%}
+            {%- endfor -%}
+          ]
+        }
+        {%- assign needs_comma = true -%}
+      {%- endfor -%}
+    {%- endif -%}
+
+    {%- comment -%}── Manual product list (last resort fallback) ──{%- endcomment -%}
+    {%- if section.settings.product_collection == blank and section.settings.collection_floor_lamps == blank and section.settings.collection_desk_lamps == blank and section.settings.collection_wall_lights == blank and section.settings.collection_pendants == blank -%}
+      {%- for product in section.settings.allowed_products -%}
+        {%- if needs_comma -%},{%- endif -%}
+        {
+          "id": {{ product.id | json }},
+          "handle": {{ product.handle | json }},
+          "title": {{ product.title | json }},
+          "url": {{ product.url | json }},
+          "price": {{ product.selected_or_first_available_variant.price | divided_by: 100.0 | json }},
+          "variantId": {{ product.selected_or_first_available_variant.id | json }},
+          "productType": {{ product.type | json }},
+          "featuredImage": {%- if product.featured_image != blank -%}{{ product.featured_image | image_url: width: 1200 | json }}{%- else -%}null{%- endif -%},
+          "showcaseBefore": {%- if product.metafields.custom.visualizer_before != blank -%}{{ product.metafields.custom.visualizer_before | image_url: width: 800 | json }}{%- else -%}null{%- endif -%},
+          "showcaseAfter": {%- if product.metafields.custom.visualizer_after != blank -%}{{ product.metafields.custom.visualizer_after | image_url: width: 800 | json }}{%- else -%}null{%- endif -%},
+          "variants": [
+            {%- for variant in product.variants -%}
+              { "id": {{ variant.id | json }}, "title": {{ variant.title | json }}, "price": {{ variant.price | divided_by: 100.0 | json }}, "available": {{ variant.available | json }} }{%- unless forloop.last -%},{%- endunless -%}
+            {%- endfor -%}
+          ]
+        }
+        {%- assign needs_comma = true -%}
+      {%- endfor -%}
+    {%- endif -%}
+  ]
+}
+</script>
+
+{% schema %}
+{
+  "name": "Space Funnel",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Copy"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Lighting design tool"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "See your room with new light."
+    },
+    {
+      "type": "textarea",
+      "id": "lede",
+      "label": "Intro copy",
+      "default": "Upload a photo. Review the placement plan. Then generate a layered, photoreal preview of your room in seconds."
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Primary CTA label",
+      "default": "Design My Room"
+    },
+    {
+      "type": "text",
+      "id": "cta_microcopy",
+      "label": "CTA microcopy",
+      "default": "Free. Takes 60 seconds. No account needed."
+    },
+    {
+      "type": "header",
+      "content": "Settings"
+    },
+    {
+      "type": "text",
+      "id": "api_base_url",
+      "label": "Direct API base URL",
+      "info": "Optional. Set this to a public backend URL like https://your-tunnel.example.com/api for testing without an app proxy."
+    },
+    {
+      "type": "text",
+      "id": "proxy_base",
+      "label": "App proxy base path",
+      "default": "/apps/space-funnel",
+      "info": "Leave this as /apps/space-funnel unless your custom app uses a different proxy path."
+    },
+    {
+      "type": "header",
+      "content": "Showcase images"
+    },
+    {
+      "type": "image_picker",
+      "id": "showcase_before",
+      "label": "Before image",
+      "info": "Before photo shown on the landing page."
+    },
+    {
+      "type": "image_picker",
+      "id": "showcase_after",
+      "label": "After image",
+      "info": "After photo shown on the landing page."
+    },
+    {
+      "type": "header",
+      "content": "Product collections by category"
+    },
+    {
+      "type": "paragraph",
+      "content": "Assign a collection to each lighting category. Products are automatically tagged with the correct type — no need to set product types manually."
+    },
+    {
+      "type": "collection",
+      "id": "collection_floor_lamps",
+      "label": "Floor Lamps"
+    },
+    {
+      "type": "collection",
+      "id": "collection_desk_lamps",
+      "label": "Table & Desk Lamps"
+    },
+    {
+      "type": "collection",
+      "id": "collection_wall_lights",
+      "label": "Wall Lights"
+    },
+    {
+      "type": "collection",
+      "id": "collection_pendants",
+      "label": "Pendants"
+    },
+    {
+      "type": "header",
+      "content": "Fallback (optional)"
+    },
+    {
+      "type": "collection",
+      "id": "product_collection",
+      "label": "All products collection",
+      "info": "Optional catch-all. Products here are auto-categorized by title/type. Use this if you prefer a single collection."
+    },
+    {
+      "type": "product_list",
+      "id": "allowed_products",
+      "label": "Manual product list",
+      "info": "Only used if no collections are set above."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Space Funnel"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,115 @@
+{%- comment -%}
+  about-quote.liquid — Editorial centered statement
+  Large serif statement on paper with hairline rules and an attribution label.
+{%- endcomment -%}
+
+{%- assign s = section.settings -%}
+
+<style>
+  #ed-aboutquote-{{ section.id }}{
+    --ink:#131314;--paper:#F9F9FB;--gold:#C5A059;
+    --body:#2d3338;--hairline:rgba(19,19,20,.14);--measure:1320px;
+    display:block;background:var(--paper);font-family:'Manrope',sans-serif;
+    padding:30px 0 96px;
+  }
+  #ed-aboutquote-{{ section.id }} *{box-sizing:border-box;}
+  #ed-aboutquote-{{ section.id }} .ed-wrap{
+    max-width:var(--measure);margin:0 auto;padding:0 40px;
+  }
+  #ed-aboutquote-{{ section.id }} .quote{
+    border-top:1px solid var(--ink);border-bottom:1px solid var(--hairline);
+    padding:74px 0;text-align:center;
+  }
+  #ed-aboutquote-{{ section.id }} .quote__mark{
+    font-family:'Newsreader',serif;font-weight:200;font-style:italic;
+    font-size:48px;color:var(--gold);line-height:1;margin-bottom:24px;display:block;
+  }
+  #ed-aboutquote-{{ section.id }} .quote__text{
+    font-family:'Newsreader',serif;font-weight:200;
+    font-size:clamp(1.7rem,3.4vw,2.9rem);line-height:1.32;letter-spacing:-.01em;
+    color:var(--ink);margin:0 auto;max-width:22ch;
+  }
+  #ed-aboutquote-{{ section.id }} .quote__text em{
+    font-style:italic;font-weight:300;color:var(--gold);
+  }
+  #ed-aboutquote-{{ section.id }} .quote__attr{
+    margin-top:32px;display:flex;flex-direction:column;align-items:center;gap:6px;
+  }
+  #ed-aboutquote-{{ section.id }} .quote__rule{
+    width:36px;height:1px;background:var(--gold);margin-bottom:14px;
+  }
+  #ed-aboutquote-{{ section.id }} .quote__name{
+    font-family:'Manrope',sans-serif;font-weight:500;font-size:11px;
+    letter-spacing:.22em;text-transform:uppercase;color:var(--ink);
+  }
+  #ed-aboutquote-{{ section.id }} .quote__role{
+    font-family:'Manrope',sans-serif;font-weight:400;font-size:11px;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--body);
+  }
+  @media (max-width:880px){
+    #ed-aboutquote-{{ section.id }} .ed-wrap{padding:0 22px;}
+  }
+  @media (max-width:680px){
+    #ed-aboutquote-{{ section.id }}{padding:16px 0 64px;}
+    #ed-aboutquote-{{ section.id }} .ed-wrap{padding:0 20px;}
+    #ed-aboutquote-{{ section.id }} .quote{padding:52px 0;}
+    #ed-aboutquote-{{ section.id }} .quote__mark{font-size:38px;margin-bottom:18px;}
+    #ed-aboutquote-{{ section.id }} .quote__text{max-width:none;}
+    #ed-aboutquote-{{ section.id }} .quote__attr{margin-top:26px;}
+  }
+</style>
+
+<section id="ed-aboutquote-{{ section.id }}">
+  <div class="ed-wrap">
+    <div class="quote">
+      <span class="quote__mark" aria-hidden="true">&ldquo;</span>
+      {%- if s.quote != blank -%}
+        <p class="quote__text">{{ s.quote }}</p>
+      {%- endif -%}
+      {%- if s.attribution_name != blank or s.attribution_role != blank -%}
+        <div class="quote__attr">
+          <span class="quote__rule" aria-hidden="true"></span>
+          {%- if s.attribution_name != blank -%}
+            <span class="quote__name">{{ s.attribution_name | escape }}</span>
+          {%- endif -%}
+          {%- if s.attribution_role != blank -%}
+            <span class="quote__role">{{ s.attribution_role | escape }}</span>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "About Quote",
+  "tag": "section",
+  "class": "ed-aboutquote-section",
+  "settings": [
+    {
+      "type": "richtext",
+      "id": "quote",
+      "label": "Quote text",
+      "default": "<p>We're not selling lamps so much as the <em>evening version of a room</em> — the backdrop for a late book, a slow morning, the quiet hours.</p>"
+    },
+    {
+      "type": "text",
+      "id": "attribution_name",
+      "label": "Attribution name",
+      "default": "Outlight"
+    },
+    {
+      "type": "text",
+      "id": "attribution_role",
+      "label": "Attribution role",
+      "default": "Los Angeles, Est. 2024"
+    }
+  ],
+  "presets": [
+    {
+      "name": "About Quote"
+    }
+  ]
+}
+{% endschema %}

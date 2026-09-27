@@ -1,0 +1,71 @@
+{%- comment -%}
+  Product Questions CTA — minimal support strip.
+  Desktop: single row with icon + text left, response time right.
+  Mobile: stacked with icon + text, response time below.
+{%- endcomment -%}
+
+<section style="background-color:#F9F9FB;">
+  <div class="max-w-[1920px] mx-auto px-5 md:px-12">
+
+    {%- comment -%} Desktop {%- endcomment -%}
+    <div class="hidden md:flex items-center justify-between" style="padding:16px 0;border-top:1px solid rgba(19,19,20,0.06);border-bottom:1px solid rgba(19,19,20,0.06);">
+      <div class="flex items-center" style="gap:10px;">
+        <span class="material-symbols-outlined" style="font-size:1.1rem;color:#C5A059;font-variation-settings:'FILL' 0,'wght' 300;">help</span>
+        <span class="font-body" style="font-size:0.85rem;font-weight:300;color:#596065;">
+          Questions?
+          <a href="{{ section.settings.contact_url | default: '/pages/contact' }}" style="color:#131314;font-weight:400;text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(19,19,20,0.2);">Contact us</a>
+          or visit the
+          <a href="{{ section.settings.support_url | default: '/pages/support-center' }}" style="color:#131314;font-weight:400;text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(19,19,20,0.2);">Support Hub</a>
+        </span>
+      </div>
+      <span class="font-body" style="font-size:0.75rem;font-weight:300;color:rgba(45,51,56,0.4);">{{ section.settings.response_text | default: 'We respond within 24 hours' }}</span>
+    </div>
+
+    {%- comment -%} Mobile {%- endcomment -%}
+    <div class="md:hidden" style="padding:16px 0;border-top:1px solid rgba(19,19,20,0.06);border-bottom:1px solid rgba(19,19,20,0.06);">
+      <div class="flex items-center" style="gap:8px;margin-bottom:6px;">
+        <span class="material-symbols-outlined" style="font-size:1rem;color:#C5A059;font-variation-settings:'FILL' 0,'wght' 300;">help</span>
+        <span class="font-body" style="font-size:0.8rem;font-weight:300;color:#596065;">
+          Questions?
+          <a href="{{ section.settings.contact_url | default: '/pages/contact' }}" style="color:#131314;font-weight:400;text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(19,19,20,0.2);">Contact us</a>
+          or visit the
+          <a href="{{ section.settings.support_url | default: '/pages/support-center' }}" style="color:#131314;font-weight:400;text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(19,19,20,0.2);">Support Hub</a>
+        </span>
+      </div>
+      <span class="font-body" style="font-size:0.7rem;font-weight:300;color:rgba(45,51,56,0.35);padding-left:28px;">{{ section.settings.response_text | default: 'We respond within 24 hours' }}</span>
+    </div>
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Product Questions",
+  "tag": "section",
+  "class": "product-questions-section",
+  "settings": [
+    {
+      "type": "url",
+      "id": "contact_url",
+      "label": "Contact page URL"
+    },
+    {
+      "type": "url",
+      "id": "support_url",
+      "label": "Support Hub URL"
+    },
+    {
+      "type": "text",
+      "id": "response_text",
+      "label": "Response time text",
+      "default": "We respond within 24 hours"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Questions"
+    }
+  ],
+  "enabled_on": { "templates": ["product"] }
+}
+{% endschema %}

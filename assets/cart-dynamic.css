@@ -1,0 +1,107 @@
+.ol-cart-line-price{display:flex;flex-direction:column;gap:3px;font-variant-numeric:tabular-nums}
+.ol-cart-payable{font:500 15px/1.35 'Manrope',sans-serif;color:#131314}
+.ol-cart-reference{font:400 11px/1.35 'Manrope',sans-serif;color:#777873}
+.ol-cart-discount-note{max-width:92px;white-space:normal;font:400 10px/1.35 'Manrope',sans-serif;color:#61655a}
+@media(max-width:480px){
+  .ol-cart-item-heading{flex-direction:column;gap:8px}
+  .ol-cart-item-price{text-align:left}
+  .ol-cart-item-price .ol-cart-line-price{display:flex;flex-direction:row;align-items:baseline;flex-wrap:wrap;gap:4px 8px}
+  .ol-cart-item-price .ol-cart-discount-note{flex-basis:100%;max-width:none}
+}
+.ol-cart-assurance{display:flex;align-items:flex-start;gap:9px;margin:14px 0 18px;padding:14px 0 0;border-top:1px solid rgba(19,19,20,.08);font-family:'Manrope',sans-serif;text-align:left}
+.ol-cart-assurance__icon{font-size:18px;line-height:20px;color:#ad8847;flex-shrink:0}
+.ol-cart-assurance__title{margin:0 0 4px;color:#2d3338;font-size:12px;font-weight:500;line-height:20px;letter-spacing:0}
+.ol-cart-assurance__copy{margin:0;color:#62676b;font-size:12px;font-weight:300;line-height:1.6}
+.ol-cart-assurance__copy a{color:#51575b;text-decoration:underline;text-underline-offset:3px;white-space:nowrap}
+.ol-cart-assurance__copy a:hover{color:#947039}
+.ol-cart-assurance__copy a:focus-visible{outline:2px solid #ad8847;outline-offset:3px}
+.ol-cart-summary-note{display:block;font-family:'Manrope',sans-serif;font-size:11px;font-weight:300;line-height:1.65;color:#62676b;margin:8px 0 0}
+.ol-cart-checkout-icon{font-size:15px!important;line-height:1;margin-right:8px}
+#cart-drawer [data-discount-input]{min-width:0;width:0}
+@media(max-height:700px){
+  #cart-drawer{overflow-y:auto;overscroll-behavior:contain}
+  #cart-drawer [data-cart-items-container]{flex:none;overflow:visible}
+}
+
+#cart-drawer.ol-cart-panel{display:flex;flex-direction:column;width:min(100%,440px);background:#fff;color:#202223;font-family:'Manrope',sans-serif;overflow:hidden;box-shadow:-12px 0 50px #13131412;padding-bottom:env(safe-area-inset-bottom,0px)}
+#cart-drawer .ol-drawer-header{display:flex;align-items:center;justify-content:space-between;flex:none;min-height:72px;padding:12px 24px;border-bottom:1px solid #ededeb}
+#cart-drawer .ol-drawer-header h2{display:flex;align-items:center;gap:10px;font:400 24px/1.2 'Cormorant Garamond',serif;letter-spacing:-.4px}
+#cart-drawer .ol-drawer-header h2 span{font:500 12px/24px 'Manrope',sans-serif;min-width:24px;border-radius:50%;text-align:center;background:#f3f2ef;color:#61645f;letter-spacing:0}
+#cart-drawer .ol-drawer-icon-button{width:44px;height:44px;display:grid;place-items:center;margin-right:-10px;color:#555b5d}
+#cart-drawer .ol-drawer-icon-button .material-symbols-outlined{font-size:22px}
+#cart-drawer.ol-cart-panel .ol-drawer-items{flex:1;min-height:100px;overflow-y:auto;overscroll-behavior:contain;padding:24px}
+#cart-drawer .ol-drawer-item{display:grid;grid-template-columns:88px minmax(0,1fr);gap:16px;padding-bottom:24px}
+#cart-drawer .ol-drawer-item+.ol-drawer-item{padding-top:24px;border-top:1px solid #ededeb}
+#cart-drawer .ol-drawer-photo{width:88px;height:112px;background:#f3f1ec;overflow:hidden;border-radius:4px;display:block}
+#cart-drawer .ol-drawer-photo img{width:100%;height:100%;object-fit:cover}
+#cart-drawer .ol-drawer-item-content{min-width:0}
+#cart-drawer .ol-drawer-item-top{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:26px}
+#cart-drawer .ol-drawer-product-name{font-size:15px;line-height:22px;font-weight:500}
+#cart-drawer .ol-drawer-remove{width:36px;height:36px;flex-shrink:0;display:grid;place-items:center;margin:-7px -10px -3px 0;color:#777b77}
+#cart-drawer .ol-drawer-remove .material-symbols-outlined{font-size:17px}
+#cart-drawer .ol-drawer-variant{font-size:11px;line-height:17px;color:#737671;margin:2px 0;overflow-wrap:anywhere}
+#cart-drawer .ol-drawer-delivery{font-size:11px;line-height:18px;color:#747972;margin:4px 0 12px}
+#cart-drawer .ol-drawer-item-bottom{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px}
+#cart-drawer .ol-drawer-quantity{display:flex;align-items:center;border:1px solid #deded9;border-radius:4px;flex-shrink:0;height:38px}
+#cart-drawer .ol-drawer-quantity button{width:30px;height:36px;font-size:16px;display:grid;place-items:center}
+#cart-drawer .ol-drawer-quantity span{min-width:22px;font-size:12px;text-align:center}
+#cart-drawer .ol-drawer-price .ol-cart-line-price{align-items:flex-end;gap:2px}
+#cart-drawer .ol-drawer-price .ol-cart-payable{font-size:14px;font-weight:500}
+#cart-drawer .ol-drawer-price .ol-cart-reference{font-size:11px;color:#868a85}
+#cart-drawer .ol-drawer-price .ol-cart-discount-note{display:none}
+#cart-drawer .ol-drawer-extras:empty{display:none}
+#cart-drawer .ol-drawer-footer{flex:none;border-top:1px solid #ededeb;padding:0 24px 16px;background:#fff}
+#cart-drawer .ol-drawer-discount{padding:18px 0 16px;margin-bottom:16px;border-bottom:1px solid #ededeb}
+#cart-drawer .ol-drawer-discount-fields{display:flex;gap:8px;margin:0}
+#cart-drawer .ol-drawer-discount-fields input{flex:1;min-width:0;width:0;height:44px;border:1px solid #d9dcd6;border-radius:4px;padding:10px 12px;font:400 14px/22px 'Manrope',sans-serif;box-shadow:none;color:#202223}
+#cart-drawer .ol-drawer-discount-fields input::placeholder{color:#898e88}
+#cart-drawer .ol-drawer-discount-fields button{padding:0 16px;border:1px solid #deded9;border-radius:4px;background:#f3f3f0;font-size:12px;min-height:44px}
+#cart-drawer .ol-drawer-discount-message{font-size:12px;line-height:18px;margin:8px 0 0}
+#cart-drawer .ol-drawer-discount-message:empty{display:none}
+#cart-drawer .ol-drawer-total{display:flex;align-items:baseline;justify-content:space-between;gap:12px;font-size:15px;font-weight:500}
+#cart-drawer .ol-drawer-total strong{font-size:22px;font-weight:500;letter-spacing:-.6px;font-variant-numeric:tabular-nums}
+#cart-drawer .ol-drawer-shipping{font-size:11px;line-height:18px;color:#6b7069;margin:8px 0 0}
+#cart-drawer .ol-drawer-checkout{display:flex;align-items:center;justify-content:center;gap:8px;min-height:52px;margin:18px 0 6px;padding:14px 18px;background:#191b19;color:#fff;border-radius:4px;font-size:14px;font-weight:500;letter-spacing:0;transition:background .2s}
+#cart-drawer .ol-drawer-checkout:hover{background:#353a32}
+#cart-drawer .ol-drawer-checkout .material-symbols-outlined{font-size:17px}
+#cart-drawer .ol-drawer-checkout .material-symbols-outlined:last-child{margin-left:auto}
+#cart-drawer .ol-drawer-checkout .material-symbols-outlined:first-child{margin-right:auto}
+#cart-drawer .ol-drawer-policy{display:block;min-height:44px;text-align:center;padding:10px 0 0;font-size:11px;line-height:18px;color:#72766f;text-underline-offset:3px}
+#cart-drawer .ol-drawer-policy:hover{text-decoration:underline}
+#cart-drawer .ol-drawer-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px;text-align:center}
+#cart-drawer .ol-drawer-empty>.material-symbols-outlined{font-size:38px;color:#a4a798}
+#cart-drawer .ol-drawer-empty h3{font-size:18px;font-weight:400}
+#cart-drawer .ol-drawer-empty button{min-height:48px;padding:12px 24px;background:#191b19;color:#fff;border-radius:4px;font-size:13px}
+#cart-drawer button:disabled{opacity:.45;cursor:wait}
+#cart-drawer :is(a,button,input,summary):focus-visible{outline:2px solid #ad8847;outline-offset:3px}
+@media(max-width:480px){
+ #cart-drawer .ol-drawer-header{min-height:64px;padding:10px 20px}
+ #cart-drawer.ol-cart-panel .ol-drawer-items{padding:22px 20px}
+ #cart-drawer .ol-drawer-footer{padding:0 20px 12px}
+ #cart-drawer .ol-drawer-discount-fields input{font-size:16px}
+}
+@media(max-width:359px){
+ #cart-drawer .ol-drawer-item{grid-template-columns:72px minmax(0,1fr);gap:12px}
+ #cart-drawer .ol-drawer-photo{width:72px;height:102px}
+ #cart-drawer .ol-drawer-quantity button{width:27px}
+ #cart-drawer .ol-drawer-quantity span{min-width:20px}
+ #cart-drawer .ol-drawer-price .ol-cart-payable{font-size:13px}
+ #cart-drawer .ol-drawer-delivery{font-size:10px}
+}
+@media(max-height:700px){#cart-drawer.ol-cart-panel{overflow-y:auto}#cart-drawer.ol-cart-panel .ol-drawer-items{flex:none;overflow:visible}#cart-drawer .ol-drawer-header{position:sticky;top:0;background:#fff;z-index:1}}
+
+#cart-drawer .ol-drawer-support{display:flex;flex:none;gap:9px;padding:13px 24px;background:#f8f7f3;border-bottom:1px solid #eeece6}
+#cart-drawer .ol-drawer-support>.material-symbols-outlined{font-size:18px;line-height:20px;color:#9d804b;flex-shrink:0}
+#cart-drawer .ol-drawer-support-title{font-size:12px;line-height:18px;font-weight:500;color:#41483d;margin:0 0 3px}
+#cart-drawer .ol-drawer-support-copy{font-size:11px;line-height:17px;color:#73776d;margin:0}
+#cart-drawer .ol-drawer-applied-discounts{display:flex;flex-direction:column;gap:7px;margin:12px 0 0;padding:0;list-style:none}
+#cart-drawer .ol-drawer-applied-discounts li{display:flex;align-items:center;gap:6px;font-size:11px;line-height:17px;color:#597052}
+#cart-drawer .ol-drawer-applied-discounts .material-symbols-outlined{font-size:15px;flex-shrink:0}
+#cart-drawer .ol-drawer-applied-discounts li>span:nth-child(2){min-width:0;overflow-wrap:anywhere}
+#cart-drawer .ol-drawer-discount-status{margin-left:auto;flex-shrink:0;padding:2px 6px;border-radius:3px;background:#eef2eb;font-size:10px}
+#cart-drawer .ol-drawer-breakdown{display:grid;gap:9px;margin-bottom:13px;padding-bottom:13px;border-bottom:1px solid #ededeb;font-size:12px;color:#666d63}
+#cart-drawer .ol-drawer-breakdown>div{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+#cart-drawer .ol-drawer-breakdown>div>span:last-child{font-variant-numeric:tabular-nums;white-space:nowrap}
+#cart-drawer .ol-drawer-breakdown .ol-drawer-discount-total{color:#597052}
+@media(max-width:480px){#cart-drawer .ol-drawer-support{padding:12px 20px}}
+@media(prefers-reduced-motion:reduce){#cart-drawer .ol-drawer-checkout{transition:none}}

@@ -1,0 +1,77 @@
+{% doc %}
+  Renders BreadcrumbList JSON-LD for product, collection, and article pages.
+{% enddoc %}
+
+{% liquid
+  assign crumb_collection = blank
+
+  if template.name == 'product'
+    if collection
+      assign crumb_collection = collection
+    elsif product.collections.size > 0
+      assign crumb_collection = product.collections.first
+    endif
+  endif
+%}
+
+{% if template.name == 'product' or template.name == 'collection' or template.name == 'article' %}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": {{ shop.url | json }}
+        },
+        {% if template.name == 'article' %}
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": {{ blog.title | json }},
+          "item": {{ shop.url | append: blog.url | json }}
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": {{ article.title | json }},
+          "item": {{ canonical_url | json }}
+        }
+        {% else %}
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Collections",
+          "item": {{ shop.url | append: routes.collections_url | json }}
+        }{% if template.name == 'collection' %},
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": {{ collection.title | json }},
+          "item": {{ shop.url | append: collection.url | json }}
+        }{% elsif template.name == 'product' and crumb_collection != blank %},
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": {{ crumb_collection.title | json }},
+          "item": {{ shop.url | append: crumb_collection.url | json }}
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "name": {{ product.title | json }},
+          "item": {{ canonical_url | json }}
+        }{% else %},
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": {{ product.title | json }},
+          "item": {{ canonical_url | json }}
+        }{% endif %}
+        {% endif %}
+      ]
+    }
+  </script>
+{% endif %}

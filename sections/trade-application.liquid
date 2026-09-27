@@ -1,795 +1,272 @@
-{%- liquid
-  assign is_trade_member = false
-  if customer
-    if customer.tags contains 'trade-program'
-      assign is_trade_member = true
-    endif
-  endif
--%}
-
-<div
-  class="trade-application full-width"
-  style="
-    --ta-bg: {{ section.settings.section_bg }};
-    --ta-hero-bg: {{ section.settings.hero_bg }};
-    --ta-accent: {{ section.settings.accent_color }};
-    --ta-title-color: {{ section.settings.title_color }};
-    --ta-subtitle-color: {{ section.settings.subtitle_color }};
-    --ta-body-color: {{ section.settings.body_color }};
-    --ta-input-border: {{ section.settings.input_border_color }};
-    --ta-btn-bg: {{ section.settings.btn_bg }};
-    --ta-btn-color: {{ section.settings.btn_color }};
-    --ta-card-bg: {{ section.settings.card_bg }};
-    --ta-card-border: {{ section.settings.card_border }};
-  "
->
-  {%- comment -%} Hero {%- endcomment -%}
-  <div class="trade-application__hero">
-    <div class="trade-application__hero-inner">
-      <p class="trade-application__eyebrow">{{ 'trade_program.hero.eyebrow' | t }}</p>
-      <h1 class="trade-application__title">{{ 'trade_program.hero.title' | t }}</h1>
-      <p class="trade-application__subtitle">{{ 'trade_program.hero.subtitle' | t }}</p>
-    </div>
-  </div>
-
-  <div class="trade-application__container">
-
-    {%- comment -%} Benefits grid {%- endcomment -%}
-    <div class="trade-application__benefits">
-      <div class="trade-application__benefit">
-        <div class="trade-application__benefit-icon">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/>
-          </svg>
-        </div>
-        <h3 class="trade-application__benefit-title">{{ 'trade_program.benefits.discount.title' | t }}</h3>
-        <p class="trade-application__benefit-desc">{{ 'trade_program.benefits.discount.description' | t }}</p>
-      </div>
-      <div class="trade-application__benefit">
-        <div class="trade-application__benefit-icon">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="12" cy="8" r="4"/>
-            <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
-          </svg>
-        </div>
-        <h3 class="trade-application__benefit-title">{{ 'trade_program.benefits.concierge.title' | t }}</h3>
-        <p class="trade-application__benefit-desc">{{ 'trade_program.benefits.concierge.description' | t }}</p>
-      </div>
-      <div class="trade-application__benefit">
-        <div class="trade-application__benefit-icon">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <rect x="2" y="5" width="20" height="14" rx="2"/>
-            <path d="M2 10h20"/>
-          </svg>
-        </div>
-        <h3 class="trade-application__benefit-title">{{ 'trade_program.benefits.payment.title' | t }}</h3>
-        <p class="trade-application__benefit-desc">{{ 'trade_program.benefits.payment.description' | t }}</p>
-      </div>
-      <div class="trade-application__benefit">
-        <div class="trade-application__benefit-icon">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-          </svg>
-        </div>
-        <h3 class="trade-application__benefit-title">{{ 'trade_program.benefits.support.title' | t }}</h3>
-        <p class="trade-application__benefit-desc">{{ 'trade_program.benefits.support.description' | t }}</p>
-      </div>
-    </div>
-
-    {%- comment -%} Member state: already enrolled {%- endcomment -%}
-    {%- if is_trade_member -%}
-      <div class="trade-application__member-state">
-        <div class="trade-application__member-icon">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-            <path d="M9 12l2 2 4-4"/>
-          </svg>
-        </div>
-        <h2 class="trade-application__member-title">{{ 'trade_program.member.title' | t }}</h2>
-        <p class="trade-application__member-desc">{{ 'trade_program.member.description' | t }}</p>
-        {%- if section.settings.portal_url != blank -%}
-          <a href="{{ section.settings.portal_url }}" class="trade-application__submit">
-            {{ 'trade_program.member.portal_link' | t }}
-          </a>
-        {%- endif -%}
-      </div>
-
-    {%- comment -%} Application form {%- endcomment -%}
-    {%- else -%}
-      <div class="trade-application__form-wrap" id="trade-form-wrap">
-        <h2 class="trade-application__form-heading">{{ 'trade_program.form.heading' | t }}</h2>
-        <p class="trade-application__form-sub">{{ 'trade_program.form.subheading' | t }}</p>
-
-        <form
-          class="trade-application__form"
-          id="trade-application-form"
-          novalidate
-          data-backend-url="{{ section.settings.backend_url | escape }}"
-        >
-          <div class="trade-application__fields">
-
-            <div class="trade-application__field">
-              <label class="trade-application__label" for="ta-full-name">
-                {{ 'trade_program.form.full_name.label' | t }} <span class="trade-application__required" aria-hidden="true">*</span>
-              </label>
-              <input
-                class="trade-application__input"
-                type="text"
-                id="ta-full-name"
-                name="full_name"
-                autocomplete="name"
-                placeholder="{{ 'trade_program.form.full_name.placeholder' | t }}"
-                required
-              >
-            </div>
-
-            <div class="trade-application__field">
-              <label class="trade-application__label" for="ta-email">
-                {{ 'trade_program.form.email.label' | t }} <span class="trade-application__required" aria-hidden="true">*</span>
-              </label>
-              <input
-                class="trade-application__input"
-                type="email"
-                id="ta-email"
-                name="email"
-                autocomplete="email"
-                placeholder="{{ 'trade_program.form.email.placeholder' | t }}"
-                required
-              >
-            </div>
-
-            <div class="trade-application__field">
-              <label class="trade-application__label" for="ta-phone">
-                {{ 'trade_program.form.phone.label' | t }} <span class="trade-application__required" aria-hidden="true">*</span>
-              </label>
-              <input
-                class="trade-application__input"
-                type="tel"
-                id="ta-phone"
-                name="phone"
-                autocomplete="tel"
-                placeholder="{{ 'trade_program.form.phone.placeholder' | t }}"
-                required
-              >
-            </div>
-
-            <div class="trade-application__field">
-              <label class="trade-application__label" for="ta-company">
-                {{ 'trade_program.form.company.label' | t }} <span class="trade-application__required" aria-hidden="true">*</span>
-              </label>
-              <input
-                class="trade-application__input"
-                type="text"
-                id="ta-company"
-                name="company_name"
-                autocomplete="organization"
-                placeholder="{{ 'trade_program.form.company.placeholder' | t }}"
-                required
-              >
-            </div>
-
-            <div class="trade-application__field">
-              <label class="trade-application__label" for="ta-business-type">
-                {{ 'trade_program.form.business_type.label' | t }} <span class="trade-application__required" aria-hidden="true">*</span>
-              </label>
-              <div class="trade-application__select-wrap">
-                <select
-                  class="trade-application__input trade-application__select"
-                  id="ta-business-type"
-                  name="business_type"
-                  required
-                >
-                  <option value="" disabled selected>{{ 'trade_program.form.business_type.placeholder' | t }}</option>
-                  <option value="interior_designer">{{ 'trade_program.form.business_type.options.interior_designer' | t }}</option>
-                  <option value="architect">{{ 'trade_program.form.business_type.options.architect' | t }}</option>
-                  <option value="contractor">{{ 'trade_program.form.business_type.options.contractor' | t }}</option>
-                  <option value="hospitality">{{ 'trade_program.form.business_type.options.hospitality' | t }}</option>
-                  <option value="developer">{{ 'trade_program.form.business_type.options.developer' | t }}</option>
-                  <option value="other">{{ 'trade_program.form.business_type.options.other' | t }}</option>
-                </select>
-                <span class="trade-application__select-arrow" aria-hidden="true">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="6 9 12 15 18 9"/>
-                  </svg>
-                </span>
-              </div>
-            </div>
-
-            <div class="trade-application__field">
-              <label class="trade-application__label" for="ta-website">
-                {{ 'trade_program.form.website.label' | t }} <span class="trade-application__required" aria-hidden="true">*</span>
-              </label>
-              <input
-                class="trade-application__input"
-                type="url"
-                id="ta-website"
-                name="website"
-                autocomplete="url"
-                placeholder="{{ 'trade_program.form.website.placeholder' | t }}"
-                required
-              >
-            </div>
-
-            <div class="trade-application__field trade-application__field--full">
-              <label class="trade-application__label" for="ta-description">
-                {{ 'trade_program.form.description.label' | t }}
-              </label>
-              <textarea
-                class="trade-application__input trade-application__textarea"
-                id="ta-description"
-                name="project_description"
-                rows="4"
-                placeholder="{{ 'trade_program.form.description.placeholder' | t }}"
-              ></textarea>
-            </div>
-
-            <div class="trade-application__field trade-application__field--full">
-              <label class="trade-application__label" for="ta-referral">
-                {{ 'trade_program.form.referral.label' | t }}
-              </label>
-              <input
-                class="trade-application__input"
-                type="text"
-                id="ta-referral"
-                name="referral_source"
-                placeholder="{{ 'trade_program.form.referral.placeholder' | t }}"
-              >
-            </div>
-
-          </div>
-
-          {%- comment -%} Honeypot – hidden from real users, traps bots {%- endcomment -%}
-          <div style="display:none" aria-hidden="true">
-            <label for="ta-honeypot">Leave this field empty</label>
-            <input type="text" id="ta-honeypot" name="website_confirm" tabindex="-1" autocomplete="off">
-          </div>
-
-          <div class="trade-application__form-footer">
-            <button
-              type="submit"
-              class="trade-application__submit"
-              id="trade-submit-btn"
-              data-label-submit="{{ 'trade_program.form.submit' | t | escape }}"
-              data-label-submitting="{{ 'trade_program.form.submitting' | t | escape }}"
-            >
-              {{ 'trade_program.form.submit' | t }}
-            </button>
-          </div>
-
-        </form>
-
-        <div class="trade-application__success" id="trade-success" style="display:none">
-          <div class="trade-application__success-icon" aria-hidden="true">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"/>
-              <path d="M9 12l2 2 4-4"/>
-            </svg>
-          </div>
-          <h3 class="trade-application__success-title">{{ 'trade_program.success.title' | t }}</h3>
-          <p class="trade-application__success-body">{{ 'trade_program.success.body' | t }}</p>
-        </div>
-
-        <div class="trade-application__error" id="trade-error" style="display:none">
-          <p id="trade-error-msg">{{ 'trade_program.error.generic' | t }}</p>
-        </div>
-
-      </div>
-    {%- endif -%}
-
-  </div>
-</div>
-
-{% stylesheet %}
-  .trade-application {
-    background: var(--ta-bg, #faf9f7);
-    width: 100%;
+<style>
+  .ol-trade-app input:focus,
+  .ol-trade-app select:focus,
+  .ol-trade-app textarea:focus {
+    border-color: #C5A059 !important;
+    outline: none !important;
+    box-shadow: none !important;
   }
-
-  /* Hero */
-  .trade-application__hero {
-    background: var(--ta-hero-bg, #1c1917);
-    padding: 72px var(--page-margin, 24px) 64px;
-    text-align: center;
-  }
-
-  .trade-application__hero-inner {
-    max-width: 640px;
-    margin: 0 auto;
-  }
-
-  .trade-application__eyebrow {
-    font-family: var(--font-body-family), sans-serif;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--ta-accent, #d97706);
-    margin: 0 0 20px;
-  }
-
-  .trade-application__title {
-    font-family: var(--font-heading-family), serif;
-    font-size: 44px;
-    font-weight: 400;
-    color: #ffffff;
-    margin: 0 0 20px;
-    line-height: 1.1;
-    letter-spacing: -0.01em;
-  }
-
-  .trade-application__subtitle {
-    font-family: var(--font-body-family), sans-serif;
-    font-size: 17px;
-    font-weight: 400;
-    color: rgba(255, 255, 255, 0.7);
-    margin: 0;
-    line-height: 1.6;
-  }
-
-  /* Container */
-  .trade-application__container {
-    max-width: var(--page-width, 1200px);
-    margin: 0 auto;
-    padding: 64px var(--page-margin, 24px) 80px;
-  }
-
-  /* Benefits grid */
-  .trade-application__benefits {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-    margin-bottom: 64px;
-  }
-
-  .trade-application__benefit {
-    background: var(--ta-card-bg, #ffffff);
-    border: 1px solid var(--ta-card-border, #e8e4dc);
-    padding: 28px 24px;
-  }
-
-  .trade-application__benefit-icon {
-    color: var(--ta-accent, #d97706);
-    margin-bottom: 16px;
-  }
-
-  .trade-application__benefit-title {
-    font-family: var(--font-body-family), sans-serif;
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--ta-title-color, #1c1917);
-    margin: 0 0 8px;
-  }
-
-  .trade-application__benefit-desc {
-    font-family: var(--font-body-family), sans-serif;
-    font-size: 14px;
-    font-weight: 400;
-    color: var(--ta-subtitle-color, #78716c);
-    margin: 0;
-    line-height: 1.6;
-  }
-
-  /* Form wrap */
-  .trade-application__form-wrap {
-    max-width: 720px;
-    margin: 0 auto;
-  }
-
-  .trade-application__form-heading {
-    font-family: var(--font-heading-family), serif;
-    font-size: 32px;
-    font-weight: 400;
-    color: var(--ta-title-color, #1c1917);
-    margin: 0 0 8px;
-    letter-spacing: -0.01em;
-  }
-
-  .trade-application__form-sub {
-    font-family: var(--font-body-family), sans-serif;
-    font-size: 15px;
-    color: var(--ta-subtitle-color, #78716c);
-    margin: 0 0 40px;
-    line-height: 1.6;
-  }
-
-  /* Fields grid */
-  .trade-application__fields {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 28px 32px;
-    margin-bottom: 12px;
-  }
-
-  .trade-application__field--full {
-    grid-column: 1 / -1;
-  }
-
-  .trade-application__label {
-    display: block;
-    font-family: var(--font-body-family), sans-serif;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--ta-subtitle-color, #78716c);
-    margin-bottom: 8px;
-  }
-
-  .trade-application__required {
-    color: var(--ta-accent, #d97706);
-  }
-
-  .trade-application__input {
-    display: block;
-    width: 100%;
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid var(--ta-input-border, #d6d3d1);
-    font-family: var(--font-body-family), sans-serif;
-    font-size: 15px;
-    color: var(--ta-title-color, #1c1917);
-    padding: 10px 0;
-    outline: none;
-    transition: border-color 0.2s ease;
-    box-sizing: border-box;
-  }
-
-  .trade-application__input::placeholder {
-    color: var(--ta-input-border, #d6d3d1);
-  }
-
-  .trade-application__input:focus {
-    border-bottom-color: var(--ta-title-color, #1c1917);
-  }
-
-  .trade-application__textarea {
-    resize: vertical;
-    min-height: 100px;
-  }
-
-  /* Select */
-  .trade-application__select-wrap {
-    position: relative;
-  }
-
-  .trade-application__select {
+  .ol-trade-app select {
     appearance: none;
-    -webkit-appearance: none;
-    cursor: pointer;
-    padding-right: 24px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235F5E5F' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
   }
+</style>
 
-  .trade-application__select-arrow {
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none;
-    color: var(--ta-subtitle-color, #78716c);
-  }
+<section id="{{ section.settings.section_id }}" class="ol-trade-app" style="background: #f4f0eb;">
 
-  /* Form footer */
-  .trade-application__form-footer {
-    margin-top: 40px;
-  }
+  <!-- Desktop: 2-col split -->
+  <div class="hidden md:grid grid-cols-2 min-h-[720px]">
 
-  .trade-application__submit {
-    display: inline-block;
-    background: var(--ta-btn-bg, #1c1917);
-    color: var(--ta-btn-color, #ffffff);
-    border: none;
-    padding: 16px 48px;
-    font-family: var(--font-body-family), sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    cursor: pointer;
-    text-decoration: none;
-    transition: opacity 0.2s ease;
-  }
+    <!-- Left: content -->
+    <div class="px-14 lg:px-20 py-16 lg:py-20 flex flex-col justify-between">
+      <div>
+        <div class="flex items-center gap-3 mb-8">
+          <div class="w-8 h-px bg-[#C5A059]/50"></div>
+          <span class="font-label text-[0.6rem] uppercase tracking-[0.2em] text-[#C5A059]">{{ section.settings.label }}</span>
+        </div>
+        <h2 class="heading-thin text-4xl lg:text-5xl text-[#131314] tracking-tight leading-[1.1] mb-7">{{ section.settings.heading | newline_to_br }}</h2>
+        <p class="font-body text-[0.95rem] font-[300] text-[#2d3338] leading-[1.85] mb-10 max-w-sm">{{ section.settings.body }}</p>
+        <ul class="space-y-6">
+          {% for block in section.blocks %}
+            <li class="flex items-start gap-4" {{ block.shopify_attributes }}>
+              <span class="material-symbols-outlined text-[#C5A059] text-lg mt-0.5 shrink-0" style="font-variation-settings:'FILL' 0,'wght' 300;">check_circle</span>
+              <div>
+                <span class="font-body text-[0.9rem] font-[400] text-[#131314] block mb-0.5">{{ block.settings.title }}</span>
+                <span class="font-body text-[0.8rem] font-[300] text-[#2d3338]/60">{{ block.settings.description }}</span>
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="mt-12 pt-8 border-t border-[#131314]/8">
+        <p class="font-body text-[0.8rem] font-[300] text-[#2d3338]/55">{{ section.settings.trust_line }}</p>
+      </div>
+    </div>
 
-  .trade-application__submit:hover {
-    opacity: 0.85;
-  }
+    <!-- Right: white form card -->
+    <div class="bg-white px-10 lg:px-14 py-14 border-l border-[#131314]/6">
+      <span class="font-label text-[0.6rem] uppercase tracking-[0.2em] text-[#C5A059] block mb-8">Trade Application</span>
+      {% form 'contact' %}
+        {% if form.posted_successfully? %}
+          <div class="bg-[#C5A059]/10 border border-[#C5A059]/30 px-5 py-4 mb-6">
+            <p class="font-body text-[0.88rem] font-[300] text-[#131314]">Application received — we'll be in touch within a few hours.</p>
+          </div>
+        {% endif %}
+        <div class="space-y-5">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="font-label text-[0.6rem] uppercase tracking-[0.08em] text-[#131314]/50 block mb-2">Full Name</label>
+              <input type="text" name="contact[name]" placeholder="Sarah Chen" class="w-full border border-[#131314]/12 bg-transparent px-4 py-3 font-body text-[0.9rem] font-[300] text-[#131314] placeholder:text-[#131314]/25 transition-colors"/>
+            </div>
+            <div>
+              <label class="font-label text-[0.6rem] uppercase tracking-[0.08em] text-[#131314]/50 block mb-2">Email Address</label>
+              <input type="email" name="contact[email]" placeholder="sarah@studio.com" class="w-full border border-[#131314]/12 bg-transparent px-4 py-3 font-body text-[0.9rem] font-[300] text-[#131314] placeholder:text-[#131314]/25 transition-colors"/>
+            </div>
+          </div>
+          <div>
+            <label class="font-label text-[0.6rem] uppercase tracking-[0.08em] text-[#131314]/50 block mb-2">Company</label>
+            <input type="text" name="contact[company]" placeholder="Studio Chen" class="w-full border border-[#131314]/12 bg-transparent px-4 py-3 font-body text-[0.9rem] font-[300] text-[#131314] placeholder:text-[#131314]/25 transition-colors"/>
+          </div>
+          <div>
+            <label class="font-label text-[0.6rem] uppercase tracking-[0.08em] text-[#131314]/50 block mb-2">Business Type</label>
+            <select name="contact[business_type]" class="w-full border border-[#131314]/12 bg-transparent px-4 py-3 font-body text-[0.9rem] font-[300] text-[#131314]/60 transition-colors pr-10 cursor-pointer">
+              <option value="" disabled selected>Select type</option>
+              <option>Architecture Firm</option>
+              <option>Interior Design Studio</option>
+              <option>Lighting Consultant</option>
+              <option>General Contractor</option>
+              <option>Property Developer</option>
+              <option>Hospitality Group</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div>
+            <label class="font-label text-[0.6rem] uppercase tracking-[0.08em] text-[#131314]/50 block mb-2">Website</label>
+            <input type="url" name="contact[website]" placeholder="https://studioChen.com" class="w-full border border-[#131314]/12 bg-transparent px-4 py-3 font-body text-[0.9rem] font-[300] text-[#131314] placeholder:text-[#131314]/25 transition-colors"/>
+          </div>
+          <div>
+            <label class="font-label text-[0.6rem] uppercase tracking-[0.08em] text-[#131314]/50 block mb-2">About Your Projects</label>
+            <textarea name="contact[body]" rows="3" placeholder="Describe the type of projects you typically work on..." class="w-full border border-[#131314]/12 bg-transparent px-4 py-3 font-body text-[0.9rem] font-[300] text-[#131314] placeholder:text-[#131314]/25 transition-colors resize-none"></textarea>
+          </div>
+          <div>
+            <label class="font-label text-[0.6rem] uppercase tracking-[0.08em] text-[#131314]/50 block mb-2">How Did You Hear About Us?</label>
+            <select name="contact[referral]" class="w-full border border-[#131314]/12 bg-transparent px-4 py-3 font-body text-[0.9rem] font-[300] text-[#131314]/60 transition-colors pr-10 cursor-pointer">
+              <option value="" disabled selected>Select source</option>
+              <option>Google Search</option>
+              <option>Instagram</option>
+              <option>Colleague or Referral</option>
+              <option>Architectural Publication</option>
+              <option>Trade Show</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="pt-2">
+            <button type="submit" class="w-full py-4 font-label text-[0.75rem] uppercase tracking-[0.15em] text-[#131314] font-medium hover:opacity-90 transition-opacity flex items-center justify-center gap-3" style="background: #C5A059;">
+              Join the Trade Program
+              <span class="material-symbols-outlined" style="font-size:16px;">arrow_forward</span>
+            </button>
+            <p class="font-body text-[0.7rem] font-[300] text-[#2d3338]/55 text-center mt-4">By applying you agree to our <a href="{{ shop.url }}/policies/privacy-policy" class="underline underline-offset-4 hover:text-[#131314] transition-colors">Privacy Policy</a> and <a href="{{ shop.url }}/policies/terms-of-service" class="underline underline-offset-4 hover:text-[#131314] transition-colors">Terms</a>.</p>
+          </div>
+        </div>
+      {% endform %}
+    </div>
+  </div>
 
-  .trade-application__submit:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
+  <!-- Mobile: stacked -->
+  <div class="md:hidden">
+    <div class="px-5 py-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-6 h-px bg-[#C5A059]/50"></div>
+        <span class="font-label text-[0.55rem] uppercase tracking-[0.2em] text-[#C5A059]">{{ section.settings.label }}</span>
+      </div>
+      <h2 class="heading-thin text-3xl text-[#131314] tracking-tight leading-[1.1] mb-6">{{ section.settings.heading | newline_to_br }}</h2>
+      <p class="font-body text-[0.9rem] font-[300] text-[#2d3338] leading-[1.8] mb-8">{{ section.settings.body }}</p>
+      <ul class="space-y-5">
+        {% for block in section.blocks %}
+          <li class="flex items-start gap-3">
+            <span class="material-symbols-outlined text-[#C5A059] text-base mt-0.5 shrink-0" style="font-variation-settings:'FILL' 0,'wght' 300;">check_circle</span>
+            <div>
+              <span class="font-body text-[0.85rem] font-[400] text-[#131314] block">{{ block.settings.title }}</span>
+              <span class="font-body text-[0.75rem] font-[300] text-[#2d3338]/55">{{ block.settings.description }}</span>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="bg-white px-5 py-10">
+      <span class="font-label text-[0.55rem] uppercase tracking-[0.2em] text-[#C5A059] block mb-6">Trade Application</span>
+      {% form 'contact' %}
+        <div class="space-y-4">
+          <div>
+            <label class="font-label text-[0.55rem] uppercase tracking-[0.08em] text-[#131314]/45 block mb-1.5">Full Name</label>
+            <input type="text" name="contact[name]" placeholder="Sarah Chen" class="w-full border border-[#131314]/12 bg-transparent px-4 py-3 font-body text-[0.85rem] font-[300] text-[#131314] placeholder:text-[#131314]/25 transition-colors"/>
+          </div>
+          <div>
+            <label class="font-label text-[0.55rem] uppercase tracking-[0.08em] text-[#131314]/45 block mb-1.5">Email Address</label>
+            <input type="email" name="contact[email]" placeholder="sarah@studio.com" class="w-full border border-[#131314]/12 bg-transparent px-4 py-3 font-body text-[0.85rem] font-[300] text-[#131314] placeholder:text-[#131314]/25 transition-colors"/>
+          </div>
+          <div>
+            <label class="font-label text-[0.55rem] uppercase tracking-[0.08em] text-[#131314]/45 block mb-1.5">Company</label>
+            <input type="text" name="contact[company]" placeholder="Studio Chen" class="w-full border border-[#131314]/12 bg-transparent px-4 py-3 font-body text-[0.85rem] font-[300] text-[#131314] placeholder:text-[#131314]/25 transition-colors"/>
+          </div>
+          <div>
+            <label class="font-label text-[0.55rem] uppercase tracking-[0.08em] text-[#131314]/45 block mb-1.5">Business Type</label>
+            <select name="contact[business_type]" class="w-full border border-[#131314]/12 bg-transparent px-4 py-3 font-body text-[0.85rem] font-[300] text-[#131314]/55 transition-colors pr-10 cursor-pointer">
+              <option value="" disabled selected>Select type</option>
+              <option>Architecture Firm</option>
+              <option>Interior Design Studio</option>
+              <option>Lighting Consultant</option>
+              <option>General Contractor</option>
+              <option>Property Developer</option>
+              <option>Hospitality Group</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div>
+            <label class="font-label text-[0.55rem] uppercase tracking-[0.08em] text-[#131314]/45 block mb-1.5">About Your Projects</label>
+            <textarea name="contact[body]" rows="3" placeholder="Describe the type of projects you typically work on..." class="w-full border border-[#131314]/12 bg-transparent px-4 py-3 font-body text-[0.85rem] font-[300] text-[#131314] placeholder:text-[#131314]/25 transition-colors resize-none"></textarea>
+          </div>
+          <div class="pt-2">
+            <button type="submit" class="w-full py-4 font-label text-[0.7rem] uppercase tracking-[0.15em] text-[#131314] font-medium" style="background: #C5A059;">Join the Trade Program</button>
+          </div>
+        </div>
+      {% endform %}
+    </div>
+  </div>
 
-  /* Success state */
-  .trade-application__success {
-    text-align: center;
-    padding: 60px 24px;
-  }
-
-  .trade-application__success-icon {
-    color: var(--ta-accent, #d97706);
-    margin-bottom: 20px;
-  }
-
-  .trade-application__success-title {
-    font-family: var(--font-heading-family), serif;
-    font-size: 28px;
-    font-weight: 400;
-    color: var(--ta-title-color, #1c1917);
-    margin: 0 0 12px;
-  }
-
-  .trade-application__success-body {
-    font-family: var(--font-body-family), sans-serif;
-    font-size: 16px;
-    color: var(--ta-subtitle-color, #78716c);
-    margin: 0;
-    line-height: 1.6;
-  }
-
-  /* Error state */
-  .trade-application__error {
-    background: #fef2f2;
-    border: 1px solid #fecaca;
-    padding: 14px 20px;
-    margin-top: 20px;
-  }
-
-  .trade-application__error p {
-    font-family: var(--font-body-family), sans-serif;
-    font-size: 14px;
-    color: #991b1b;
-    margin: 0;
-  }
-
-  /* Already a member */
-  .trade-application__member-state {
-    max-width: 480px;
-    margin: 0 auto;
-    text-align: center;
-    padding: 48px 24px;
-  }
-
-  .trade-application__member-icon {
-    color: var(--ta-accent, #d97706);
-    margin-bottom: 20px;
-  }
-
-  .trade-application__member-title {
-    font-family: var(--font-heading-family), serif;
-    font-size: 28px;
-    font-weight: 400;
-    color: var(--ta-title-color, #1c1917);
-    margin: 0 0 12px;
-  }
-
-  .trade-application__member-desc {
-    font-family: var(--font-body-family), sans-serif;
-    font-size: 16px;
-    color: var(--ta-subtitle-color, #78716c);
-    margin: 0 0 32px;
-    line-height: 1.6;
-  }
-
-  /* Responsive */
-  @media screen and (max-width: 768px) {
-    .trade-application__hero {
-      padding: 48px 20px 40px;
-    }
-
-    .trade-application__title {
-      font-size: 32px;
-    }
-
-    .trade-application__subtitle {
-      font-size: 15px;
-    }
-
-    .trade-application__container {
-      padding: 40px 20px 60px;
-    }
-
-    .trade-application__benefits {
-      grid-template-columns: 1fr;
-      gap: 16px;
-      margin-bottom: 48px;
-    }
-
-    .trade-application__fields {
-      grid-template-columns: 1fr;
-      gap: 24px;
-    }
-
-    .trade-application__form-heading {
-      font-size: 26px;
-    }
-
-    .trade-application__submit {
-      width: 100%;
-      text-align: center;
-      padding: 16px 32px;
-    }
-  }
-
-  @media screen and (min-width: 1024px) {
-    .trade-application__benefits {
-      grid-template-columns: repeat(4, 1fr);
-    }
-  }
-{% endstylesheet %}
-
-{% javascript %}
-  (function() {
-    var form = document.getElementById('trade-application-form');
-    if (!form) return;
-
-    form.addEventListener('submit', function(e) {
-      e.preventDefault();
-
-      var honeypot = form.querySelector('[name="website_confirm"]');
-      if (honeypot && honeypot.value !== '') return;
-
-      var backendUrl = form.dataset.backendUrl;
-      if (!backendUrl) {
-        showError('No submission endpoint configured.');
-        return;
-      }
-
-      var btn = document.getElementById('trade-submit-btn');
-      var errorEl = document.getElementById('trade-error');
-      var successEl = document.getElementById('trade-success');
-
-      var labelSubmit = btn ? btn.dataset.labelSubmit : 'Submit';
-      var labelSubmitting = btn ? btn.dataset.labelSubmitting : 'Submitting...';
-
-      if (btn) {
-        btn.disabled = true;
-        btn.textContent = labelSubmitting;
-      }
-
-      if (errorEl) errorEl.style.display = 'none';
-
-      var data = {};
-      var elements = form.elements;
-      for (var i = 0; i < elements.length; i++) {
-        var el = elements[i];
-        if (!el.name || el.name === 'website_confirm') continue;
-        data[el.name] = el.value;
-      }
-
-      fetch(backendUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      })
-        .then(function(res) {
-          if (!res.ok) {
-            return res.json().then(function(body) {
-              throw new Error((body && body.message) || 'Submission failed.');
-            });
-          }
-          return res.json();
-        })
-        .then(function() {
-          var formWrap = document.getElementById('trade-form-wrap');
-          if (formWrap && successEl) {
-            form.style.display = 'none';
-            var heading = formWrap.querySelector('.trade-application__form-heading');
-            var sub = formWrap.querySelector('.trade-application__form-sub');
-            if (heading) heading.style.display = 'none';
-            if (sub) sub.style.display = 'none';
-            successEl.style.display = 'block';
-          }
-        })
-        .catch(function(err) {
-          showError(err.message || 'Something went wrong. Please try again.');
-          if (btn) {
-            btn.disabled = false;
-            btn.textContent = labelSubmit;
-          }
-        });
-
-      function showError(msg) {
-        var errMsg = document.getElementById('trade-error-msg');
-        if (errMsg) errMsg.textContent = msg;
-        if (errorEl) errorEl.style.display = 'block';
-      }
-    });
-  })();
-{% endjavascript %}
+</section>
 
 {% schema %}
 {
-  "name": "Trade application",
+  "name": "Trade Application",
+  "tag": "section",
   "settings": [
     {
-      "type": "header",
-      "content": "Backend"
+      "type": "text",
+      "id": "section_id",
+      "label": "Section anchor ID",
+      "default": "apply"
     },
     {
       "type": "text",
-      "id": "backend_url",
-      "label": "API endpoint URL",
-      "info": "The URL that receives POST requests with application data"
+      "id": "label",
+      "label": "Section label",
+      "default": "Apply Now"
     },
     {
-      "type": "url",
-      "id": "portal_url",
-      "label": "Trade portal URL",
-      "info": "Shown to existing trade members instead of the form"
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Start saving on\nyour next project."
     },
     {
-      "type": "header",
-      "content": "Colors"
+      "type": "textarea",
+      "id": "body",
+      "label": "Body",
+      "default": "Join over 1,200 trade professionals already using Outlight. Approval is instant — your discount activates the moment we verify your credentials."
     },
     {
-      "type": "color",
-      "id": "section_bg",
-      "label": "Section background",
-      "default": "#faf9f7"
-    },
+      "type": "text",
+      "id": "trust_line",
+      "label": "Trust line",
+      "default": "Trusted by 1,200+ professionals across architecture, interiors, hospitality, and real estate."
+    }
+  ],
+  "blocks": [
     {
-      "type": "color",
-      "id": "hero_bg",
-      "label": "Hero background",
-      "default": "#1c1917"
-    },
-    {
-      "type": "color",
-      "id": "accent_color",
-      "label": "Accent color",
-      "default": "#d97706"
-    },
-    {
-      "type": "color",
-      "id": "title_color",
-      "label": "Title color",
-      "default": "#1c1917"
-    },
-    {
-      "type": "color",
-      "id": "subtitle_color",
-      "label": "Subtitle / muted text color",
-      "default": "#78716c"
-    },
-    {
-      "type": "color",
-      "id": "body_color",
-      "label": "Body text color",
-      "default": "#44403c"
-    },
-    {
-      "type": "color",
-      "id": "input_border_color",
-      "label": "Input border color",
-      "default": "#d6d3d1"
-    },
-    {
-      "type": "color",
-      "id": "btn_bg",
-      "label": "Button background",
-      "default": "#1c1917"
-    },
-    {
-      "type": "color",
-      "id": "btn_color",
-      "label": "Button text color",
-      "default": "#ffffff"
-    },
-    {
-      "type": "color",
-      "id": "card_bg",
-      "label": "Benefit card background",
-      "default": "#ffffff"
-    },
-    {
-      "type": "color",
-      "id": "card_border",
-      "label": "Benefit card border",
-      "default": "#e8e4dc"
+      "type": "bullet",
+      "name": "Benefit bullet",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "No annual fee"
+        },
+        {
+          "type": "text",
+          "id": "description",
+          "label": "Description",
+          "default": "Free to join and free to maintain — no subscription, no renewal."
+        }
+      ]
     }
   ],
   "presets": [
     {
-      "name": "Trade application"
+      "name": "Trade Application",
+      "blocks": [
+        {
+          "type": "bullet",
+          "settings": {
+            "title": "No annual fee",
+            "description": "Free to join and free to maintain — no subscription, no renewal."
+          }
+        },
+        {
+          "type": "bullet",
+          "settings": {
+            "title": "Instant 30% discount",
+            "description": "Applied automatically at checkout on every order from day one."
+          }
+        },
+        {
+          "type": "bullet",
+          "settings": {
+            "title": "No minimum order",
+            "description": "Single fixture or full project specification — same 30% off, no threshold."
+          }
+        },
+        {
+          "type": "bullet",
+          "settings": {
+            "title": "Full catalog from day one",
+            "description": "Immediate access to every product, including unreleased and archived editions."
+          }
+        }
+      ]
     }
   ]
 }

@@ -1,90 +1,295 @@
-{% doc %}
-  Renders CSS custom properties for the theme.
+{%- comment -%}
+  CSS Variables — maps theme settings to custom properties.
+  Rendered inline in <head> via theme.liquid.
+{%- endcomment -%}
 
-  Includes font-face declarations and all global CSS variables for colors,
-  typography, layout, and buttons.
+{%- assign scale = settings.font_scale | divided_by: 100.0 -%}
 
-  @example
-  {% render 'css-variables' %}
-{% enddoc %}
-
-{% style %}
-  {% comment %} Font face declarations with display: swap for better performance {% endcomment %}
-  {{ settings.type_primary_font | font_face: font_display: 'swap' }}
-  {{ settings.type_primary_font | font_modify: 'weight', 'bold' | font_face: font_display: 'swap' }}
-  {{ settings.type_primary_font | font_modify: 'weight', 'bold' | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
-  {{ settings.type_primary_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
-
-  {{ settings.type_heading_font | font_face: font_display: 'swap' }}
-  {{ settings.type_heading_font | font_modify: 'weight', 'bold' | font_face: font_display: 'swap' }}
-
-  /* Custom font: Playfair Display Italic (Variable) */
-  @font-face {
-    font-family: "Playfair Display";
-    src: url("https://cdn.shopify.com/s/files/1/0651/2915/2585/files/PlayfairDisplay-Italic-VariableFont_wght.woff?v=1764924006") format("woff");
-    font-weight: 100 900;
-    font-style: italic;
-    font-display: swap;
-  }
-
+<style>
   :root {
-    /* Typography */
-    --font-primary-family: {{ settings.type_primary_font.family }}, {{ settings.type_primary_font.fallback_families }};
-    --font-primary-style: {{ settings.type_primary_font.style }};
-    --font-primary-weight: {{ settings.type_primary_font.weight }};
-
-    /* Custom font */
-    --font-custom-family: "Playfair Display", Georgia, serif;
-    --font-custom-style: italic;
-
-    /* Heading font - uses custom font if enabled */
-    {%- if settings.use_custom_heading_font -%}
-      --font-heading-family: var(--font-custom-family);
-      --font-heading-style: var(--font-custom-style);
-      --font-heading-weight: 400;
-    {%- else -%}
-      --font-heading-family: {{ settings.type_heading_font.family }}, {{ settings.type_heading_font.fallback_families }};
-      --font-heading-style: {{ settings.type_heading_font.style }};
-      --font-heading-weight: {{ settings.type_heading_font.weight }};
-    {%- endif -%}
-
-    /* Layout */
-    --page-width: {{ settings.max_page_width }};
-    --page-margin: {{ settings.min_page_margin }}px;
-    --border-radius: {{ settings.border_radius }}px;
-    --content-grid: var(--page-margin) minmax(0, var(--page-width)) var(--page-margin);
-
-    /* Base colors */
-    --color-canvas: {{ settings.color_canvas }};
-    --color-ink: {{ settings.color_ink }};
+    /* --- Colors --- */
+    --color-background: {{ settings.color_background }};
+    --color-foreground: {{ settings.color_foreground }};
     --color-accent: {{ settings.color_accent }};
+    --color-body-text: {{ settings.color_body_text }};
+    --color-warm: {{ settings.color_warm }};
 
-    /* Surface colors */
-    --color-surface: {{ settings.color_surface }};
-    --color-surface-elevated: {{ settings.color_surface_elevated }};
+    /* --- Layout --- */
+    --page-width: {{ settings.max_page_width }}px;
+    --page-margin: {{ settings.desktop_padding }}px;
+    --page-margin-mobile: {{ settings.mobile_padding }}px;
+    --free-shipping-threshold: {{ settings.free_shipping_threshold }};
 
-    /* UI colors */
-    --color-border: {{ settings.color_border }};
-    --color-subtext: {{ settings.color_subtext }};
-
-    /* Accent scale */
-    --color-accent-dark: {{ settings.color_accent_dark }};
-    --color-accent-medium: {{ settings.color_accent_medium }};
-    --color-accent-light: {{ settings.color_accent_light }};
-    --color-accent-subtle: {{ settings.color_accent_subtle }};
-
-    /* Button colors */
-    --button-primary-bg: {{ settings.button_primary_bg }};
-    --button-primary-text: {{ settings.button_primary_text }};
-    --button-secondary-bg: {{ settings.button_secondary_bg }};
-    --button-secondary-text: {{ settings.button_secondary_text }};
-
-    /* Semantic aliases */
-    --color-background: var(--color-canvas);
-    --color-foreground: var(--color-ink);
-    --color-text: var(--color-ink);
-    --color-text-muted: var(--color-subtext);
-    --color-link: var(--color-accent);
-    --color-link-hover: var(--color-accent-medium);
+    /* --- Typography: Desktop (default) ---
+       Used on viewports >= 768px.
+       Global scale multiplier applies to all. */
+    --font-micro: {{ settings.font_size_micro | divided_by: 100.0 | times: scale }}rem;
+    --font-caption: {{ settings.font_size_caption | divided_by: 100.0 | times: scale }}rem;
+    --font-label: {{ settings.font_size_label | divided_by: 100.0 | times: scale }}rem;
+    --font-body-sm: {{ settings.font_size_body_sm | divided_by: 100.0 | times: scale }}rem;
+    --font-body: {{ settings.font_size_body | divided_by: 100.0 | times: scale }}rem;
+    --font-body-lg: {{ settings.font_size_body_lg | divided_by: 100.0 | times: scale }}rem;
+    --font-content: {{ settings.font_size_content | divided_by: 100.0 | times: scale }}rem;
+    --font-subheading: {{ settings.font_size_subheading | divided_by: 100.0 | times: scale }}rem;
+    --font-heading: {{ settings.font_size_heading | divided_by: 100.0 | times: scale }}rem;
+    --font-heading-lg: {{ settings.font_size_heading_lg | divided_by: 100.0 | times: scale }}rem;
+    --font-display: {{ settings.font_size_display | divided_by: 100.0 | times: scale }}rem;
   }
-{% endstyle %}
+
+  /* --- Typography: Mobile override (< 768px) --- */
+  @media (max-width: 767px) {
+    :root {
+      --font-micro: {{ settings.font_size_micro_mobile | divided_by: 100.0 | times: scale }}rem;
+      --font-caption: {{ settings.font_size_caption_mobile | divided_by: 100.0 | times: scale }}rem;
+      --font-label: {{ settings.font_size_label_mobile | divided_by: 100.0 | times: scale }}rem;
+      --font-body-sm: {{ settings.font_size_body_sm_mobile | divided_by: 100.0 | times: scale }}rem;
+      --font-body: {{ settings.font_size_body_mobile | divided_by: 100.0 | times: scale }}rem;
+      --font-body-lg: {{ settings.font_size_body_lg_mobile | divided_by: 100.0 | times: scale }}rem;
+      --font-content: {{ settings.font_size_content_mobile | divided_by: 100.0 | times: scale }}rem;
+      --font-subheading: {{ settings.font_size_subheading_mobile | divided_by: 100.0 | times: scale }}rem;
+      --font-heading: {{ settings.font_size_heading_mobile | divided_by: 100.0 | times: scale }}rem;
+      --font-heading-lg: {{ settings.font_size_heading_lg_mobile | divided_by: 100.0 | times: scale }}rem;
+      --font-display: {{ settings.font_size_display_mobile | divided_by: 100.0 | times: scale }}rem;
+    }
+  }
+
+  /* ==========================================================
+     TYPOGRAPHY TIER OVERRIDES
+     Maps all hardcoded Tailwind font-size classes to CSS vars.
+     The vars automatically switch between desktop/mobile values
+     based on viewport width.
+     ========================================================== */
+
+  /* --- MICRO: tiny badges, avatar initials --- */
+  [class*="text-[0.45rem]"],
+  [class*="text-[0.5rem]"] {
+    font-size: var(--font-micro) !important;
+  }
+
+  /* --- CAPTION: section labels, category badges, form labels --- */
+  [class*="text-[0.55rem]"],
+  [class*="text-[0.58rem]"],
+  [class*="text-[0.6rem]"],
+  [class*="text-[0.62rem]"] {
+    font-size: var(--font-caption) !important;
+  }
+
+  /* --- LABEL: spec labels, breadcrumbs, product details --- */
+  [class*="text-[0.65rem]"],
+  [class*="text-[0.68rem]"],
+  [class*="text-[0.7rem]"],
+  [class*="text-[0.72rem]"] {
+    font-size: var(--font-label) !important;
+  }
+
+  /* --- BODY SMALL: button text, nav labels, metadata --- */
+  [class*="text-[0.75rem]"],
+  [class*="text-[0.78rem]"] {
+    font-size: var(--font-body-sm) !important;
+  }
+  .text-xs {
+    font-size: var(--font-body-sm) !important;
+  }
+
+  /* --- BODY: product descriptions, general body copy --- */
+  [class*="text-[0.8rem]"],
+  [class*="text-[0.82rem]"],
+  [class*="text-[0.85rem]"] {
+    font-size: var(--font-body) !important;
+  }
+
+  /* --- BODY LARGE: readable body, form text, descriptions --- */
+  [class*="text-[0.88rem]"],
+  [class*="text-[0.9rem]"],
+  [class*="text-[0.92rem]"],
+  [class*="text-[0.95rem]"] {
+    font-size: var(--font-body-lg) !important;
+  }
+  .text-sm {
+    font-size: var(--font-body-lg) !important;
+  }
+
+  /* --- CONTENT: standard content, navigation, base text --- */
+  [class*="text-[1rem]"],
+  [class*="text-[1.05rem]"],
+  [class*="text-[1.1rem]"] {
+    font-size: var(--font-content) !important;
+  }
+  .text-base,
+  .text-lg {
+    font-size: var(--font-content) !important;
+  }
+
+  /* --- SUBHEADING: section subtitles, emphasized text --- */
+  [class*="text-[1.15rem]"],
+  [class*="text-[1.25rem]"],
+  [class*="text-[1.4rem]"],
+  [class*="text-[1.5rem]"] {
+    font-size: var(--font-subheading) !important;
+  }
+  .text-xl,
+  .text-2xl {
+    font-size: var(--font-subheading) !important;
+  }
+
+  /* --- HEADING: section headings, medium titles --- */
+  [class*="text-[1.6rem]"],
+  [class*="text-[1.7rem]"],
+  [class*="text-[1.8rem]"],
+  [class*="text-[2rem]"] {
+    font-size: var(--font-heading) !important;
+  }
+  .text-3xl {
+    font-size: var(--font-heading) !important;
+  }
+
+  /* --- HEADING LARGE: hero subheadings, prominent headings --- */
+  [class*="text-[2.6rem]"],
+  [class*="text-[2.8rem]"],
+  [class*="text-[3rem]"],
+  [class*="text-[3.2rem]"],
+  [class*="text-[3.5rem]"],
+  [class*="text-[3.6rem]"] {
+    font-size: var(--font-heading-lg) !important;
+  }
+  .text-4xl,
+  .text-5xl {
+    font-size: var(--font-heading-lg) !important;
+  }
+
+  /* --- DISPLAY: hero headlines, large stat numbers --- */
+  [class*="text-[4rem]"],
+  [class*="text-[4.4rem]"],
+  [class*="text-[5rem]"],
+  [class*="text-[6rem]"],
+  [class*="text-[6.5rem]"],
+  [class*="text-[7rem]"],
+  [class*="text-[8rem]"] {
+    font-size: var(--font-display) !important;
+  }
+  .text-6xl,
+  .text-7xl {
+    font-size: var(--font-display) !important;
+  }
+
+  /* --- INLINE STYLE FALLBACKS (gift_card.liquid etc.) --- */
+  [style*="font-size: 0.48rem"],
+  [style*="font-size:0.48rem"] { font-size: var(--font-micro) !important; }
+
+  [style*="font-size: 0.58rem"],
+  [style*="font-size:0.58rem"],
+  [style*="font-size: 0.6rem"],
+  [style*="font-size:0.6rem"],
+  [style*="font-size: 0.62rem"],
+  [style*="font-size:0.62rem"],
+  [style*="font-size: 0.63rem"],
+  [style*="font-size:0.63rem"] { font-size: var(--font-caption) !important; }
+
+  [style*="font-size: 0.65rem"],
+  [style*="font-size:0.65rem"],
+  [style*="font-size: 0.68rem"],
+  [style*="font-size:0.68rem"],
+  [style*="font-size: 0.7rem"],
+  [style*="font-size:0.7rem"],
+  [style*="font-size: 0.72rem"],
+  [style*="font-size:0.72rem"] { font-size: var(--font-label) !important; }
+
+  [style*="font-size: 0.75rem"],
+  [style*="font-size:0.75rem"],
+  [style*="font-size: 0.78rem"],
+  [style*="font-size:0.78rem"] { font-size: var(--font-body-sm) !important; }
+
+  [style*="font-size: 0.8rem"],
+  [style*="font-size:0.8rem"],
+  [style*="font-size: 0.85rem"],
+  [style*="font-size:0.85rem"] { font-size: var(--font-body) !important; }
+
+  [style*="font-size: 0.88rem"],
+  [style*="font-size:0.88rem"],
+  [style*="font-size: 0.9rem"],
+  [style*="font-size:0.9rem"] { font-size: var(--font-body-lg) !important; }
+
+  [style*="font-size: 1rem"],
+  [style*="font-size:1rem"],
+  [style*="font-size: 1.1rem"],
+  [style*="font-size:1.1rem"],
+  [style*="font-size: 1.15rem"],
+  [style*="font-size:1.15rem"] { font-size: var(--font-content) !important; }
+
+  [style*="font-size: 1.2rem"],
+  [style*="font-size:1.2rem"],
+  [style*="font-size: 1.25rem"],
+  [style*="font-size:1.25rem"],
+  [style*="font-size: 1.3rem"],
+  [style*="font-size:1.3rem"],
+  [style*="font-size: 1.35rem"],
+  [style*="font-size:1.35rem"] { font-size: var(--font-subheading) !important; }
+
+  [style*="font-size: 1.95rem"],
+  [style*="font-size:1.95rem"] { font-size: var(--font-heading) !important; }
+
+  [style*="font-size: 2.2rem"],
+  [style*="font-size:2.2rem"],
+  [style*="font-size: 2.4rem"],
+  [style*="font-size:2.4rem"],
+  [style*="font-size: 2.5rem"],
+  [style*="font-size:2.5rem"] { font-size: var(--font-heading-lg) !important; }
+
+  [style*="font-size: 4rem"],
+  [style*="font-size:4rem"] { font-size: var(--font-display) !important; }
+
+  /* ==========================================================
+     MOBILE RESPONSIVE FIX
+     Elements with both base and md: classes (e.g. text-[0.6rem]
+     md:text-[0.78rem]) get the wrong tier on mobile because both
+     selectors match. This block uses higher specificity (double
+     attribute selector) to re-assert the correct mobile tier.
+     Only applies < 768px; on desktop the global rules work fine.
+     ========================================================== */
+  @media (max-width: 767px) {
+    /* Micro */
+    [class*="text-[0.5rem]"][class*="md:text-"] { font-size: var(--font-micro) !important; }
+
+    /* Caption */
+    [class*="text-[0.55rem]"][class*="md:text-"] { font-size: var(--font-caption) !important; }
+    [class*="text-[0.6rem]"][class*="md:text-"] { font-size: var(--font-caption) !important; }
+
+    /* Label */
+    [class*="text-[0.65rem]"][class*="md:text-"] { font-size: var(--font-label) !important; }
+    [class*="text-[0.7rem]"][class*="md:text-"] { font-size: var(--font-label) !important; }
+
+    /* Body Small */
+    [class*="text-[0.75rem]"][class*="md:text-"] { font-size: var(--font-body-sm) !important; }
+
+    /* Body */
+    [class*="text-[0.8rem]"][class*="md:text-"] { font-size: var(--font-body) !important; }
+    [class*="text-[0.85rem]"][class*="md:text-"] { font-size: var(--font-body) !important; }
+
+    /* Body Large */
+    [class*="text-[0.9rem]"][class*="md:text-"] { font-size: var(--font-body-lg) !important; }
+    [class*="text-[0.95rem]"][class*="md:text-"] { font-size: var(--font-body-lg) !important; }
+
+    /* Content */
+    [class*="text-[1rem]"][class*="md:text-"] { font-size: var(--font-content) !important; }
+
+    /* Subheading */
+    [class*="text-[1.5rem]"][class*="md:text-"] { font-size: var(--font-subheading) !important; }
+
+    /* Heading */
+    [class*="text-[2rem]"][class*="md:text-"] { font-size: var(--font-heading) !important; }
+
+    /* Heading Large */
+    [class*="text-[2.6rem]"][class*="md:text-"] { font-size: var(--font-heading-lg) !important; }
+    [class*="text-[2.8rem]"][class*="md:text-"] { font-size: var(--font-heading-lg) !important; }
+    [class*="text-[3.2rem]"][class*="md:text-"] { font-size: var(--font-heading-lg) !important; }
+
+    /* Display */
+    [class*="text-[5rem]"][class*="md:text-"] { font-size: var(--font-display) !important; }
+
+    /* Tailwind named sizes with responsive variants */
+    .text-3xl[class*="md:text-"] { font-size: var(--font-heading) !important; }
+    .text-5xl[class*="md:text-"] { font-size: var(--font-heading-lg) !important; }
+  }
+
+
+</style>

@@ -1,0 +1,112 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "reviews-page": {
+      "type": "reviews-page",
+      "blocks": {
+        "guarantee-1": {
+          "type": "guarantee",
+          "settings": {
+            "title": "Shipping",
+            "emphasis": "Estimated 4-day",
+            "line": "delivery",
+            "emphasis_position": "before",
+            "note": "Free US shipping. Estimated delivery in 4 days."
+          }
+        },
+        "guarantee-2": {
+          "type": "guarantee",
+          "settings": {
+            "title": "Returns",
+            "emphasis": "30 days",
+            "line": "to decide",
+            "emphasis_position": "before",
+            "note": "Live with the light, then return it within 30 days if it isn't right."
+          }
+        },
+        "guarantee-3": {
+          "type": "guarantee",
+          "settings": {
+            "title": "Warranty",
+            "emphasis": "2 years",
+            "line": "Covered for",
+            "emphasis_position": "after",
+            "note": "Outdoor lighting carries a two-year warranty against manufacturing defects. See our refund policy for terms."
+          }
+        },
+        "guarantee-4": {
+          "type": "guarantee",
+          "settings": {
+            "title": "Support",
+            "emphasis": "within 24h",
+            "line": "Real replies",
+            "emphasis_position": "after",
+            "note": "A real team answers questions and orders within 24 hours."
+          }
+        },
+        "review-1": {
+          "type": "review",
+          "settings": {
+            "lead": "The corner finally makes sense.",
+            "quote": "The Olin took our living room from passable to considered. By evening it's the first thing I switch on.",
+            "name": "Marielle R.",
+            "role": "Portland, OR"
+          }
+        },
+        "review-2": {
+          "type": "review",
+          "settings": {
+            "lead": "Warmer than I expected.",
+            "quote": "I'd lived under one cold ceiling light for years. The Elm changed the whole feel of the room — softer, calmer, finished.",
+            "name": "David O.",
+            "role": "Austin, TX"
+          }
+        },
+        "review-3": {
+          "type": "review",
+          "settings": {
+            "lead": "Arrived in four days.",
+            "quote": "Ordered the Aurevo for our entry and it shipped fast. The porch reads intentional now, not an afterthought.",
+            "name": "Priya N.",
+            "role": "San Diego, CA"
+          }
+        }
+      },
+      "block_order": [
+        "guarantee-1",
+        "guarantee-2",
+        "guarantee-3",
+        "guarantee-4",
+        "review-1",
+        "review-2",
+        "review-3"
+      ],
+      "settings": {
+        "eyebrow": "Reviews & Guarantees",
+        "heading": "<p>Trusted by the rooms <em>it finished.</em></p>",
+        "subheading": "Buying lighting online asks for trust. Here is what backs it — the ratings, the guarantees, and a few customers in their own words.",
+        "rating_display": "4.7",
+        "review_count": "2,000+",
+        "review_source": "From verified Outlight customers",
+        "reviews_marker": "01",
+        "reviews_label": "In their own words",
+        "reviews_heading": "<p>What the rooms <em>felt like</em> after.</p>",
+        "reviews_aside": "A 4.7 average across more than 2,000 verified reviews. A few we keep coming back to.",
+        "reviews_note": "Every review is left by a verified Outlight customer after purchase. Names are shown as first name and initial.",
+        "widget_marker": "02",
+        "widget_title": "<p>Every review, unfiltered.</p>"
+      }
+    }
+  },
+  "order": [
+    "reviews-page"
+  ]
+}

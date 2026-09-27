@@ -1,0 +1,26 @@
+{% doc %}
+  Displays continued clearance coverage within the cart summary, before checkout.
+{% enddoc %}
+<div class="ol-cart-assurance">
+  <span class="material-symbols-outlined ol-cart-assurance__icon" aria-hidden="true">verified</span>
+  <div>
+    <p class="ol-cart-assurance__title">{{ 'cart.protection_title' | t }}</p>
+    <p class="ol-cart-assurance__copy">{{ 'cart.protection_copy' | t }} <a href="{{ shop.refund_policy.url }}">{{ 'cart.protection_policy' | t }}</a></p>
+  </div>
+</div>
+{% stylesheet %}
+.ol-cart-assurance{display:flex;align-items:flex-start;gap:9px;margin:14px 0 18px;padding:14px 0 0;border-top:1px solid rgba(19,19,20,.08);font-family:'Manrope',sans-serif;text-align:left}
+.ol-cart-assurance__icon{font-size:18px;line-height:20px;color:#ad8847;flex-shrink:0}
+.ol-cart-assurance__title{margin:0 0 4px;color:#2d3338;font-size:12px;font-weight:500;line-height:20px;letter-spacing:0}
+.ol-cart-assurance__copy{margin:0;color:#62676b;font-size:12px;font-weight:300;line-height:1.6}
+.ol-cart-assurance__copy a{color:#51575b;text-decoration:underline;text-underline-offset:3px;white-space:nowrap}
+.ol-cart-assurance__copy a:hover{color:#947039}
+.ol-cart-assurance__copy a:focus-visible{outline:2px solid #ad8847;outline-offset:3px}
+.ol-cart-summary-note{display:block;font-family:'Manrope',sans-serif;font-size:11px;font-weight:300;line-height:1.65;color:#62676b;margin:8px 0 0}
+.ol-cart-checkout-icon{font-size:15px!important;line-height:1;margin-right:8px}
+#cart-drawer [data-discount-input]{min-width:0;width:0}
+@media(max-height:700px){
+  #cart-drawer{overflow-y:auto;overscroll-behavior:contain}
+  #cart-drawer [data-cart-items-container]{flex:none;overflow:visible}
+}
+{% endstylesheet %}

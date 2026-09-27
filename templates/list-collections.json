@@ -9,12 +9,116 @@
  */
 {
   "sections": {
-    "main": {
-      "type": "collections",
-      "settings": {}
+    "collection-list": {
+      "type": "collection-list",
+      "blocks": {
+        "cat-indoor": {
+          "type": "category_header",
+          "settings": {
+            "title": "Indoor Lighting"
+          }
+        },
+        "col-floor": {
+          "type": "collection_row",
+          "settings": {
+            "collection": "floor-table-lamps",
+            "label": "Floor Lamps"
+          }
+        },
+        "col-desk": {
+          "type": "collection_row",
+          "settings": {
+            "collection": "desk-lamp",
+            "label": "Desk Lamps"
+          }
+        },
+        "col-chandeliers": {
+          "type": "collection_row",
+          "settings": {
+            "collection": "chandeliers",
+            "label": "Chandeliers"
+          }
+        },
+        "col-wall": {
+          "type": "collection_row",
+          "settings": {
+            "collection": "indoor-wall-lights",
+            "label": "Wall Sconces"
+          }
+        },
+        "col-pendant": {
+          "type": "collection_row",
+          "settings": {
+            "collection": "pendant-lights",
+            "label": "Pendant Lights"
+          }
+        },
+        "col-ceiling": {
+          "type": "collection_row",
+          "settings": {
+            "collection": "ceiling-lights",
+            "label": "Ceiling Lights"
+          }
+        },
+        "cat-outdoor": {
+          "type": "category_header",
+          "settings": {
+            "title": "Outdoor Lighting"
+          }
+        },
+        "col-owall": {
+          "type": "collection_row",
+          "settings": {
+            "collection": "wall-lights",
+            "label": "Outdoor Wall Lights"
+          }
+        },
+        "col-path": {
+          "type": "collection_row",
+          "settings": {
+            "collection": "path-lights",
+            "label": "Path Lights"
+          }
+        },
+        "promo-best": {
+          "type": "promo_card",
+          "settings": {
+            "title": "Best Sellers",
+            "label": "Curated",
+            "url": "shopify://collections/best-sellers"
+          }
+        },
+        "promo-new": {
+          "type": "promo_card",
+          "settings": {
+            "title": "Clearance Sale",
+            "label": "The Fall Edit",
+            "url": "shopify://collections/best-sellers"
+          }
+        }
+      },
+      "block_order": [
+        "cat-indoor",
+        "col-floor",
+        "col-desk",
+        "col-chandeliers",
+        "col-wall",
+        "col-pendant",
+        "col-ceiling",
+        "cat-outdoor",
+        "col-owall",
+        "col-path",
+        "promo-best",
+        "promo-new"
+      ],
+      "settings": {
+        "eyebrow": "Browse",
+        "heading": "All Collections",
+        "subheading": "Architectural lighting across 8 categories."
+      }
     }
   },
   "order": [
-    "main"
+    "collection-list"
   ]
 }

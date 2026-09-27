@@ -9,232 +9,108 @@
  */
 {
   "general": {
-    "account": "Account",
-    "search": "Search",
-    "cart": "Cart",
-    "close": "Close"
-  },
-  "404": {
-    "title": "404",
-    "not_found": "Page not found.",
-    "back_to_shopping": "Back to shopping"
-  },
-  "blog": {
-    "article_comments": "Comments",
-    "article_metadata_html": "{{ date }} by {{ author }}",
-    "comment_form_body": "Comment",
-    "comment_form_email": "Email",
-    "comment_form_name": "Name",
-    "comment_form_submit": "Post",
-    "comment_form_title": "Add a comment"
+    "shop_name": "Outlight"
   },
   "cart": {
-    "checkout": "Checkout",
-    "title": "Cart",
-    "update": "Update",
-    "remove": "Remove",
-    "subtotal": "Subtotal",
-    "shipping_note": "Shipping calculated at checkout.",
+    "title": "Your Cart",
     "empty": "Your cart is empty",
-    "continue_shopping": "Continue shopping",
-    "qty": "Qty",
-    "decrease_quantity": "Decrease quantity",
-    "increase_quantity": "Increase quantity"
-  },
-  "customers": {
-    "login": {
-      "email": "Email",
-      "password": "Password",
-      "submit": "Sign in",
-      "title": "Login"
+    "checkout": "Checkout",
+    "subtotal": "Subtotal",
+    "shipping_note": "Free US shipping. Estimated delivery in 4 days. Tax calculated at checkout.",
+    "discount_included": "Discount included",
+    "reassurance": "Secure checkout · Free US shipping",
+    "protection_title": "Returns, warranty & support",
+    "protection_copy": "Your 30-day returns, warranty and customer support continue—even after clearance ends or your item sells out.",
+    "protection_policy": "Policy details",
+    "drawer": {
+      "close": "Close cart",
+      "remove": "Remove {{ product }} from cart",
+      "quantity": "Quantity for {{ product }}",
+      "decrease": "Decrease quantity",
+      "increase": "Increase quantity",
+      "delivery_estimate": "Delivery in {{ days }} days",
+      "discount_toggle": "Add a discount code",
+      "code_applied": "{{ code }} applied",
+      "savings": "You save {{ amount }}",
+      "shipping_tax": "Free US shipping · Tax at checkout",
+      "calculated_shipping_tax": "Shipping and tax calculated at checkout",
+      "shipping_threshold": "Add {{ amount }} for free US shipping",
+      "checkout": "Secure checkout",
+      "policy_link": "30-day returns · Warranty & support",
+      "discount_placeholder": "Discount code",
+      "apply": "Apply",
+      "continue_shopping": "Continue shopping",
+      "support_title": "Clearance ends. Our support continues.",
+      "support_copy": "Your 30-day returns, warranty and customer support continue after clearance ends.",
+      "applied_discounts": "Applied discounts",
+      "applied": "Applied",
+      "original_total": "Original total",
+      "total_discount": "Total discount"
     }
   },
-  "collections": {
-    "title": "Collections"
+  "checkout": {
+    "recovery_title": "Checkout needs another try",
+    "unavailable": "We could not open secure checkout. Your bag is saved. Try again, or continue with PayPal.",
+    "unsupported": "This bag needs our alternative checkout, where PayPal is currently available. You can also return to your bag or contact us for help.",
+    "retry": "Try secure checkout again",
+    "paypal": "Continue with PayPal",
+    "back": "Return to bag",
+    "help": "Contact Outlight"
   },
-  "footer": {
-    "newsletter_placeholder": "Enter your email",
-    "all_rights_reserved": "All rights reserved"
+  "products": {
+    "add_to_cart": "Add to Bag",
+    "in_stock": "In Stock"
   },
-  "gift_card": {
-    "add_to_apple_wallet": "Add to Apple Wallet",
-    "card": "Gift card",
-    "expired": "This gift card has expired",
-    "expires_on": "Expires on {{ expires_on }}",
-    "use_at_checkout": "Use this gift card at checkout"
+  "newsletter": {
+    "label": "The Outlight Clearance Sale",
+    "placeholder": "Enter your email",
+    "submit": "Subscribe"
   },
-  "header": {
-    "account": "Account",
-    "cart": "Cart"
-  },
-  "password": {
-    "title": "This shop is private",
-    "password": "Password",
-    "enter": "Enter"
-  },
-  "search": {
-    "title": "Search",
-    "placeholder": "Search articles, pages, or products",
-    "submit": "Search",
-    "no_results_html": "No results found for {{ terms }}",
-    "results_for_html": "{{ count }} results found for {{ terms }}"
-  },
-  "social": {
-    "instagram": "Instagram",
-    "facebook": "Facebook",
-    "pinterest": "Pinterest",
-    "tiktok": "TikTok",
-    "x": "X",
-    "youtube": "YouTube"
-  },
-  "product": {
-    "specs": "Specs",
-    "add_to_cart": "Add to cart",
+  "clearance": {
+    "title": "Clearance Sale",
+    "offer": "60% off all lighting",
+    "note": "Prices shown include 60% off. Applied automatically—no code needed.",
     "sold_out": "Sold out",
-    "free_shipping": "Free shipping",
-    "easy_returns": "Easy returns",
-    "risk_free": "30-day risk free",
-    "use_code": "Use code",
-    "time_left": "left",
-    "faq_title": "Frequently asked questions"
+    "low_stock": "Low stock",
+    "variant_low": "Low stock",
+    "available": "In stock",
+    "remaining": "{{ count }} available",
+    "from": "From",
+    "original_price": "Regular price",
+    "sale_price": "Clearance price",
+    "save": "60% off",
+    "cart_error": "This item could not be added. Please check availability and try again.",
+    "edit": "The clearance edit",
+    "editorial_note": "Sculptural lighting. Enduring design.",
+    "automatic_note": "Prices shown include 60% off. No code needed.",
+    "off": "off all lighting",
+    "collection_note": "Considered pieces for a home that feels like you.",
+    "discount_badge": "{{ percent }}% off",
+    "save_amount": "Save {{ amount }}",
+    "reassurance": "Free shipping · 30-day returns",
+    "specifications": "Specifications",
+    "dimensions": "Dimensions",
+    "light_source": "Light source",
+    "finish": "Finish",
+    "color_temperature": "Color temperature",
+    "details": "Details & features",
+    "installation": "Installation",
+    "shipping_returns": "Shipping & returns",
+    "shipping_copy": "Free shipping within the United States.",
+    "returns_copy": "Returns can be requested within 30 days. Eligibility, shipping charges and restocking fees are detailed in our refund policy.",
+    "delivery_estimate": "Estimated delivery: {{ date }}",
+    "no_code": "Price includes 60% off. No code needed.",
+    "delivery_four_days": "Estimated delivery in 4 days.",
+    "delivery_faq": "Free US shipping with estimated delivery in 4 days from placing your order. Tracking is sent when your order ships.",
+    "protection_title": "Clearance ends. Our support continues.",
+    "protection_copy": "Your 30-day returns, warranty and customer support continue—even after clearance ends or your item sells out.",
+    "protection_policy": "Returns & warranty",
+    "protection_support": "Contact support"
   },
-  "trade_program": {
-    "badge": "Trade",
-    "hero": {
-      "eyebrow": "Trade program",
-      "title": "Built for the trade",
-      "subtitle": "Exclusive pricing, dedicated support, and flexible terms for interior designers, architects, and hospitality professionals."
-    },
-    "benefits": {
-      "discount": {
-        "title": "30% trade discount",
-        "description": "Exclusive pricing on the full catalog, applied automatically at checkout."
-      },
-      "concierge": {
-        "title": "Concierge service",
-        "description": "A dedicated account manager to assist with product selection and project planning."
-      },
-      "payment": {
-        "title": "Flexible payment terms",
-        "description": "Net-30 and net-60 terms available to qualified trade accounts."
-      },
-      "support": {
-        "title": "Priority support",
-        "description": "Jump the queue with priority email and phone access to our trade team."
-      }
-    },
-    "form": {
-      "heading": "Apply for trade access",
-      "subheading": "Fill out the form below and our team will review your application within 2 business days.",
-      "full_name": {
-        "label": "Full name",
-        "placeholder": "Your full name"
-      },
-      "email": {
-        "label": "Email",
-        "placeholder": "you@company.com"
-      },
-      "phone": {
-        "label": "Phone",
-        "placeholder": "+1 (555) 000-0000"
-      },
-      "company": {
-        "label": "Company name",
-        "placeholder": "Your company or firm"
-      },
-      "business_type": {
-        "label": "Business type",
-        "placeholder": "Select your business type",
-        "options": {
-          "interior_designer": "Interior designer",
-          "architect": "Architect",
-          "contractor": "Contractor",
-          "hospitality": "Hospitality",
-          "developer": "Developer",
-          "other": "Other"
-        }
-      },
-      "website": {
-        "label": "Website or portfolio",
-        "placeholder": "https://yourwebsite.com"
-      },
-      "description": {
-        "label": "Project description (optional)",
-        "placeholder": "Tell us about your typical projects and how you plan to use our products."
-      },
-      "referral": {
-        "label": "How did you hear about us? (optional)",
-        "placeholder": "Instagram, referral, trade show, etc."
-      },
-      "submit": "Submit application",
-      "submitting": "Submitting..."
-    },
-    "success": {
-      "title": "Application received",
-      "body": "Thank you for applying. Our trade team will review your application and be in touch within 2 business days."
-    },
-    "error": {
-      "generic": "Something went wrong. Please try again or contact us directly."
-    },
-    "member": {
-      "title": "You're already a trade member",
-      "description": "Your account has active trade access. Visit the trade portal to view your pricing, order history, and account details.",
-      "portal_link": "Go to trade portal"
-    },
-    "account": {
-      "welcome": "Welcome back, {{ first_name }}",
-      "company_label": "Company",
-      "badge": "Trade member",
-      "discount_code": {
-        "title": "Your trade discount code",
-        "note": "Your 30% discount is applied automatically when you're logged in. Use this code as a backup.",
-        "copy": "Copy",
-        "copied": "Copied!"
-      },
-      "actions": {
-        "shop": {
-          "title": "Shop collection",
-          "desc": "Browse our full collection with trade pricing applied automatically."
-        },
-        "concierge": {
-          "title": "Contact concierge",
-          "desc": "Get priority support from our dedicated team for your projects."
-        },
-        "orders": {
-          "title": "Order history",
-          "desc": "View your past orders and track current shipments."
-        }
-      },
-      "benefits": {
-        "title": "Your trade benefits",
-        "discount": "30% trade discount, applied automatically at checkout",
-        "terms": "Net 30/60 payment terms for qualified accounts",
-        "support": "Priority concierge support for your projects",
-        "resources": "Access to spec sheets and trade resources"
-      },
-      "not_member": {
-        "title": "Not a trade member",
-        "desc": "Your account does not have trade access. Apply to join our trade program and unlock exclusive pricing and benefits.",
-        "cta": "Apply for trade access"
-      },
-      "sign_in": {
-        "title": "Sign in to access",
-        "desc": "This page is for trade members only. Sign in to your account to access your trade dashboard.",
-        "cta": "Sign in"
-      }
-    }
-  },
-  "sections": {
-    "shop_the_look": {
-      "add": "Add",
-      "add_to_cart": "Add to cart",
-      "pre_order": "Pre-order",
-      "in_stock": "In stock",
-      "waitlist": "Waitlist",
-      "add_selected": "Add selected to cart",
-      "add_product": "Add {{ product }} to cart",
-      "view_product": "View product: {{ product }}",
-      "add_error": "Unable to add items to cart. Please try again."
-    }
+  "policies": {
+    "returns": "Request a return within 30 days of delivery. Items must be unused and in their original packaging. For change-of-mind returns, you pay return shipping; a restocking fee of up to 50% may apply after inspection. Damaged or defective items are reviewed separately. See our refund policy for the full terms.",
+    "warranty": "Our published two-year warranty covers outdoor lighting fixtures against manufacturing defects. Coverage excludes improper installation, misuse, normal wear and weather-related damage. Contact info@outlight.us with your order details for help; see the refund policy for full warranty terms.",
+    "link": "Read the refund and warranty policy",
+    "shipping_returns": "Free US shipping. Returns can be requested within 30 days; return shipping charges and restocking fees may apply. See the refund policy for eligibility and warranty terms."
   }
 }

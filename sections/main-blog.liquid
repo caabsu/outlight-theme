@@ -1,0 +1,129 @@
+{% paginate blog.articles by section.settings.articles_per_page %}
+  <section class="pt-[72px] md:pt-[88px]">
+
+    <!-- ── Blog header ── -->
+    <div class="px-5 md:px-12 pt-16 md:pt-24 pb-6 md:pb-8">
+      <div class="max-w-[52rem] mx-auto">
+        <span class="font-label text-[0.55rem] md:text-[0.62rem] uppercase tracking-[0.28em] text-[#C5A059] block mb-6 md:mb-8">
+          {{ section.settings.label }}
+        </span>
+        <h1 class="font-headline text-[2.8rem] md:text-[4.2rem] font-[200] text-[#131314] tracking-tight leading-[0.95] mb-5 md:mb-6" style="font-family:Newsreader,serif;letter-spacing:-0.03em;">
+          {{ blog.title }}
+        </h1>
+        <p class="font-body text-[0.95rem] md:text-[1.06rem] leading-[1.78] font-light text-[#2d3338]/65 max-w-[36rem]">
+          {% if section.settings.intro != blank %}
+            {{ section.settings.intro }}
+          {% else %}
+            Design notes, buying guidance, and lighting ideas from the Outlight editorial team.
+          {% endif %}
+        </p>
+      </div>
+    </div>
+
+    <!-- ── Gold rule ── -->
+    <div class="px-5 md:px-12">
+      <div class="max-w-[52rem] mx-auto">
+        <hr class="border-0 border-t border-[#C5A059]/30 my-0">
+      </div>
+    </div>
+
+    <!-- ── Article grid ── -->
+    <div class="px-5 md:px-12 pt-10 md:pt-14 pb-20 md:pb-28">
+      <div class="max-w-[52rem] mx-auto">
+        {% if blog.articles_count > 0 %}
+          <div class="space-y-0">
+            {% for article in blog.articles %}
+              <article class="border-t border-[#C5A059]/30 pt-8 md:pt-10 pb-8 md:pb-10{% if forloop.first %} border-t-0 pt-0{% endif %}">
+                <a href="{{ article.url }}" class="block group md:grid md:grid-cols-12 md:gap-8 md:items-start">
+
+                  {% if article.image %}
+                    <div class="md:col-span-5 mb-5 md:mb-0 overflow-hidden bg-[#f4f1eb]">
+                      {{ article.image | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '600,900,1200', sizes: '(min-width: 768px) 28vw, 100vw', class: 'w-full aspect-[3/2] object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02]' }}
+                    </div>
+                  {% endif %}
+
+                  <div class="{% if article.image %}md:col-span-7{% else %}md:col-span-12{% endif %}">
+                    <div class="flex items-center gap-3 mb-4 text-[#7d8387]">
+                      <span class="font-label text-[0.55rem] uppercase tracking-[0.2em] text-[#C5A059]">{{ blog.title }}</span>
+                      <span class="w-[3px] h-[3px] rounded-full bg-[#C5A059]/40"></span>
+                      <time class="font-body text-[0.75rem] font-light" datetime="{{ article.published_at | date: '%Y-%m-%d' }}">
+                        {{ article.published_at | date: '%B %d, %Y' }}
+                      </time>
+                    </div>
+
+                    <h2 class="text-[1.65rem] md:text-[2rem] leading-[1.05] tracking-tight text-[#131314] mb-4 group-hover:text-[#131314]/80 transition-colors" style="font-family:Newsreader,serif;font-weight:300;letter-spacing:-0.02em;">
+                      {{ article.title }}
+                    </h2>
+
+                    <p class="font-body text-[0.92rem] md:text-[0.98rem] leading-[1.78] font-light text-[#2d3338]/65 max-w-[32rem] mb-5">
+                      {{ article.excerpt_or_content | strip_html | strip_newlines | truncate: 200 }}
+                    </p>
+
+                    <span class="font-label inline-block text-[0.58rem] uppercase tracking-[0.18em] text-[#131314] group-hover:text-[#C5A059] transition-colors duration-300">
+                      Read article &rarr;
+                    </span>
+                  </div>
+
+                </a>
+              </article>
+            {% endfor %}
+          </div>
+
+          {% if paginate.pages > 1 %}
+            <nav class="mt-10 md:mt-14 pt-6 border-t border-[#C5A059]/30 flex items-center gap-5 font-label text-[0.62rem] uppercase tracking-[0.14em] text-[#131314]">
+              {% if paginate.previous %}
+                <a href="{{ paginate.previous.url }}" class="hover:text-[#C5A059] transition-colors">&larr; Previous</a>
+              {% endif %}
+              <span class="text-[#7d8387]">Page {{ paginate.current_page }} of {{ paginate.pages }}</span>
+              {% if paginate.next %}
+                <a href="{{ paginate.next.url }}" class="hover:text-[#C5A059] transition-colors">Next &rarr;</a>
+              {% endif %}
+            </nav>
+          {% endif %}
+        {% else %}
+          <div class="pt-8">
+            <p class="font-body text-[0.95rem] font-light text-[#2d3338]/65">
+              No journal articles are published yet.
+            </p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+{% endpaginate %}
+
+{% schema %}
+{
+  "name": "Main blog",
+  "tag": "section",
+  "class": "section-main-blog",
+  "settings": [
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Eyebrow label",
+      "default": "Outlight Journal"
+    },
+    {
+      "type": "textarea",
+      "id": "intro",
+      "label": "Intro",
+      "default": "Design notes, buying guidance, and lighting ideas that support category discovery and product selection."
+    },
+    {
+      "type": "range",
+      "id": "articles_per_page",
+      "label": "Articles per page",
+      "min": 4,
+      "max": 16,
+      "step": 2,
+      "default": 8
+    }
+  ],
+  "presets": [
+    {
+      "name": "Main blog"
+    }
+  ]
+}
+{% endschema %}

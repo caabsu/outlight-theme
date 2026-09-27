@@ -9,86 +9,52 @@
  */
 {
   "type": "footer",
-  "name": "t:general.footer",
+  "name": "Footer group",
   "sections": {
     "footer": {
       "type": "footer",
       "blocks": {
-        "menu_6LyAYX": {
-          "type": "menu",
+        "menu_column_6DbExe": {
+          "type": "menu_column",
           "settings": {
-            "menu": "lights-by-collection",
-            "custom_title": ""
+            "menu": "lights-by-collection"
           }
         },
-        "menu_44TfhC": {
-          "type": "menu",
+        "menu_column_hEWEMQ": {
+          "type": "menu_column",
           "settings": {
-            "menu": "track-return",
-            "custom_title": ""
+            "menu": "track-return"
           }
         },
-        "menu_XqCjBR": {
-          "type": "menu",
+        "menu_column_jLHb9T": {
+          "type": "menu_column",
           "settings": {
-            "menu": "our-story",
-            "custom_title": ""
+            "menu": "trade-program"
           }
         },
-        "menu_QgPmFY": {
-          "type": "menu",
+        "menu_column_8kQDdD": {
+          "type": "menu_column",
           "settings": {
-            "menu": "footer",
-            "custom_title": "Our Policy"
+            "menu": "our-story"
+          }
+        },
+        "menu_column_fD6TJC": {
+          "type": "menu_column",
+          "settings": {
+            "menu": "footer"
           }
         }
       },
       "block_order": [
-        "menu_6LyAYX",
-        "menu_44TfhC",
-        "menu_XqCjBR",
-        "menu_QgPmFY"
+        "menu_column_6DbExe",
+        "menu_column_hEWEMQ",
+        "menu_column_jLHb9T",
+        "menu_column_8kQDdD",
+        "menu_column_fD6TJC"
       ],
       "settings": {
-        "show_newsletter": true,
-        "newsletter_title": "Join our newsletter",
-        "newsletter_button_text": "Join",
-        "newsletter_image": "shopify://shop_images/Halo_row23_2025-09-23T22-49-30_1_1.png",
-        "newsletter_image_opacity": 50,
-        "newsletter_padding_desktop": 32,
-        "newsletter_title_size_desktop": 24,
-        "newsletter_input_size_desktop": 15,
-        "newsletter_button_size_desktop": 13,
-        "newsletter_padding_mobile": 24,
-        "newsletter_title_size_mobile": 20,
-        "newsletter_input_size_mobile": 14,
-        "newsletter_button_size_mobile": 12,
-        "newsletter_bg_color": "#1c1917",
-        "newsletter_title_color": "#ffffff",
-        "newsletter_title_weight": "400",
-        "newsletter_input_color": "#ffffff",
-        "newsletter_button_color": "#ffffff",
-        "newsletter_button_weight": "600",
-        "brand_description": "We curate lighting that turns houses into sanctuaries. Banish the harshness.",
-        "learn_more_text": "Learn More",
-        "learn_more_url": "shopify://pages/about-us",
-        "learn_more_color": "#dbd6cc",
-        "description_color": "#a8a29e",
-        "description_size": 14,
-        "description_weight": "400",
-        "menu_heading_color": "#f7f5f0",
-        "menu_heading_size": 14,
-        "menu_heading_weight": "700",
-        "menu_link_color": "#a8a29e",
-        "menu_link_size": 14,
-        "menu_link_weight": "400",
-        "background_color": "#1c1917",
-        "border_color": "#dbd6cc",
-        "copyright_color": "#d97706",
-        "padding_top": 0,
-        "padding_bottom": 48,
-        "section_gap": 48,
-        "show_payment_icons": true
+        "newsletter_heading": "Clearance Sale: 60% off all lighting.",
+        "copyright_text": "All rights reserved."
       }
     }
   },

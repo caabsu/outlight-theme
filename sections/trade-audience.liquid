@@ -1,0 +1,150 @@
+<style>
+  .ol-aud-overlay {
+    background: linear-gradient(to top, rgba(19,19,20,0.88) 0%, rgba(19,19,20,0.3) 50%, transparent 100%);
+  }
+  .ol-aud-desc {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .ol-aud-card:hover .ol-aud-desc {
+    max-height: 150px;
+  }
+</style>
+
+<section class="py-20 md:py-28" style="background-color:#F9F9FB;">
+  <div class="max-w-[1920px] mx-auto">
+
+    <div class="px-5 md:px-12 mb-10 md:mb-14">
+      <div class="flex items-center gap-3 mb-5">
+        <div class="w-8 h-px bg-[#C5A059]/50"></div>
+        <span class="font-label text-[0.65rem] uppercase tracking-[0.2em] text-[#C5A059]">{{ section.settings.label }}</span>
+      </div>
+      <h2 class="heading-thin text-3xl md:text-5xl text-[#131314] tracking-tight max-w-2xl leading-[1.15]">{{ section.settings.heading }}</h2>
+    </div>
+
+    <!-- Desktop: 4-col grid -->
+    <div class="hidden md:grid grid-cols-4 gap-[1px]" style="background: rgba(19,19,20,0.06);">
+      {% for block in section.blocks %}
+        <div class="ol-aud-card relative overflow-hidden group cursor-pointer" style="min-height: 520px; background: {{ block.settings.gradient }};" {{ block.shopify_attributes }}>
+          <div class="ol-aud-overlay absolute inset-0 transition-opacity duration-500 group-hover:opacity-90"></div>
+          <div class="absolute bottom-0 left-0 right-0 p-8">
+            <span class="material-symbols-outlined text-[#C5A059] mb-3 block" style="font-size:26px; font-variation-settings:'FILL' 0,'wght' 200;">{{ block.settings.icon }}</span>
+            <h3 class="heading-thin text-2xl text-[#F9F9FB] tracking-tight">{{ block.settings.title }}</h3>
+            <div class="ol-aud-desc"><p class="font-body text-[0.8rem] font-[300] text-[#F9F9FB]/65 leading-relaxed pt-2">{{ block.settings.description }}</p></div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Mobile: 2-col grid -->
+    <div class="md:hidden grid grid-cols-2 gap-[1px]" style="background: rgba(19,19,20,0.06);">
+      {% for block in section.blocks %}
+        <div class="relative overflow-hidden" style="min-height: 260px; background: {{ block.settings.gradient }};" {{ block.shopify_attributes }}>
+          <div class="ol-aud-overlay absolute inset-0"></div>
+          <div class="absolute bottom-0 left-0 right-0 p-5">
+            <span class="material-symbols-outlined text-[#C5A059] mb-2 block" style="font-size:20px; font-variation-settings:'FILL' 0,'wght' 200;">{{ block.settings.icon }}</span>
+            <h3 class="heading-thin text-lg text-[#F9F9FB]">{{ block.settings.title }}</h3>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Trade Audience",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Section label",
+      "default": "Who It's For"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "If you design, build, or furnish spaces — this is for you."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "audience",
+      "name": "Audience Card",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Interior Designers"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Curated collections that anchor any concept with a cohesive finish language throughout your scheme."
+        },
+        {
+          "type": "text",
+          "id": "icon",
+          "label": "Material Symbol icon name",
+          "default": "design_services"
+        },
+        {
+          "type": "text",
+          "id": "gradient",
+          "label": "Card background gradient (CSS)",
+          "default": "linear-gradient(160deg, #e8ddd0 0%, #c4b09a 100%)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Trade Audience",
+      "blocks": [
+        {
+          "type": "audience",
+          "settings": {
+            "title": "Interior Designers",
+            "description": "Curated collections that anchor any concept — from raw minimalism to warm modernist — with a cohesive finish language throughout your scheme.",
+            "icon": "design_services",
+            "gradient": "linear-gradient(160deg, #e8ddd0 0%, #c4b09a 100%)"
+          }
+        },
+        {
+          "type": "audience",
+          "settings": {
+            "title": "Architects & Firms",
+            "description": "Precise IES files, CAD drawings, photometric data, and BIM objects for seamless integration into your lighting plans and technical submissions.",
+            "icon": "architecture",
+            "gradient": "linear-gradient(160deg, #d5cfc5 0%, #b0a48e 100%)"
+          }
+        },
+        {
+          "type": "audience",
+          "settings": {
+            "title": "Hospitality & Hotels",
+            "description": "Bulk ordering, consolidated invoicing across multiple properties, and guaranteed delivery windows for phased rollouts and opening deadlines.",
+            "icon": "hotel",
+            "gradient": "linear-gradient(160deg, #c8cdd5 0%, #8e9aa8 100%)"
+          }
+        },
+        {
+          "type": "audience",
+          "settings": {
+            "title": "Real Estate & Staging",
+            "description": "Lighting that photographs beautifully and elevates perceived value. Rapid dispatch for tight staging schedules and listing timelines.",
+            "icon": "home_work",
+            "gradient": "linear-gradient(160deg, #d0ccc0 0%, #a09480 100%)"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

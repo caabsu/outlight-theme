@@ -1,0 +1,68 @@
+{%- comment -%}
+  Mega menu panel — driven by `mega_collection` blocks on the header section.
+  Each block has a collection picker + an OPTIONAL image_picker override so the
+  admin can upload a manual image per collection (falls back to the collection's
+  own image, then the first product's photo, then a placeholder icon).
+  Empty collections are skipped silently. Grid auto-fits 1–6 collections cleanly.
+
+  Required local: `mega_blocks` (filtered list of mega_collection blocks).
+{%- endcomment -%}
+
+<div class="wd-nav__mega" data-wd-mega>
+  <div class="wd-nav__mega-inner">
+    <div class="wd-nav__mega-head">
+      <span class="wd-nav__mega-kicker">Shop by collection</span>
+      <a href="{{ routes.collections_url }}" class="wd-nav__mega-all">
+        All collections <span class="material-symbols-outlined">arrow_forward</span>
+      </a>
+    </div>
+
+    <div class="wd-nav__mega-grid wd-nav__mega-grid--count-{{ mega_blocks.size }}">
+      {%- for mblock in mega_blocks -%}
+        {%- assign c = mblock.settings.collection -%}
+        {%- if c and c.products_count > 0 -%}
+          {%- comment -%}
+            Image priority: admin-uploaded override → collection.image → first
+            product's featured image. Falls back to a styled placeholder if all empty.
+          {%- endcomment -%}
+          {%- assign mega_img = mblock.settings.image -%}
+          {%- if mega_img == blank -%}
+            {%- if c.image -%}
+              {%- assign mega_img = c.image -%}
+            {%- elsif c.products.first.featured_image -%}
+              {%- assign mega_img = c.products.first.featured_image -%}
+            {%- endif -%}
+          {%- endif -%}
+
+          <a href="{{ c.url }}" class="wd-nav__mega-cell" {{ mblock.shopify_attributes }}>
+            <div class="wd-nav__mega-thumb">
+              {%- if mega_img -%}
+                {%- assign mega_img_height = 800 | divided_by: mega_img.aspect_ratio | round -%}
+                <img src="{{ mega_img | image_url: width: 800 }}" alt="{{ c.title | escape }}" width="800" height="{{ mega_img_height }}" loading="lazy">
+              {%- else -%}
+                <div class="wd-nav__mega-placeholder">
+                  <span class="material-symbols-outlined filled">
+                    {%- if c.title contains 'Floor' -%}floor_lamp
+                    {%- elsif c.title contains 'Wall' -%}wall_lamp
+                    {%- elsif c.title contains 'Table' -%}table_lamp
+                    {%- else -%}star
+                    {%- endif -%}
+                  </span>
+                </div>
+              {%- endif -%}
+              <span class="wd-nav__mega-arrow material-symbols-outlined">arrow_outward</span>
+            </div>
+            <div class="wd-nav__mega-meta">
+              <span class="wd-nav__mega-title">{{ c.title }}</span>
+              <span class="wd-nav__mega-count">{{ c.products_count }} {% if c.products_count == 1 %}product{% else %}products{% endif %}</span>
+            </div>
+          </a>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+
+    <div class="wd-nav__mega-foot">
+      <span class="wd-nav__mega-tagline">Every product designed exclusively at 2700K.</span>
+    </div>
+  </div>
+</div>

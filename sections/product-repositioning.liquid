@@ -1,0 +1,446 @@
+{%- comment -%}
+  product-repositioning.liquid — Editorial PDP content modules (r3)
+  Two stacked modules in the editorial design language:
+    1. "Why this piece" — best-for / why-it-works framing (editable blocks).
+    2. "Why buy from Outlight" — curation, quality-checking, returns, warranty,
+       support. Honest — no design / manufacturing / handcraft claims.
+  No commerce logic; safe to reorder in product.json.
+{%- endcomment -%}
+
+{%- assign s = section.settings -%}
+{%- assign reason_blocks = section.blocks | where: 'type', 'reason' -%}
+{%- assign promise_blocks = section.blocks | where: 'type', 'promise' -%}
+
+<style>
+  #ed-repo-{{ section.id }}{
+    --ink:#131314;--paper:#F9F9FB;--gold:#C5A059;--warm:#f4f0eb;
+    --body:#2d3338;--hairline:rgba(19,19,20,.14);--measure:1320px;
+    display:block;background:var(--paper);font-family:'Manrope',sans-serif;
+  }
+  #ed-repo-{{ section.id }} *{box-sizing:border-box;}
+  #ed-repo-{{ section.id }} .ed-wrap{
+    max-width:var(--measure);margin:0 auto;padding:0 40px;
+  }
+  #ed-repo-{{ section.id }} .ed-label{
+    font-family:'Manrope',sans-serif;font-weight:500;font-size:11px;
+    letter-spacing:.26em;text-transform:uppercase;color:var(--body);
+  }
+
+  /* ---- section head (shared) ---- */
+  #ed-repo-{{ section.id }} .sec-head{
+    display:flex;align-items:flex-start;gap:30px;margin-bottom:50px;
+  }
+  #ed-repo-{{ section.id }} .sec-head__marker{flex:none;}
+  #ed-repo-{{ section.id }} .marker{
+    font-family:'Newsreader',serif;font-weight:200;font-style:italic;
+    font-size:clamp(2rem,4vw,3.1rem);color:var(--gold);line-height:1;display:inline-block;
+  }
+  #ed-repo-{{ section.id }} .sec-head__text{flex:1;}
+  #ed-repo-{{ section.id }} .sec-head__label{margin-bottom:18px;display:block;}
+  #ed-repo-{{ section.id }} .sec-head h2{
+    font-family:'Newsreader',serif;font-weight:200;
+    font-size:clamp(2.1rem,4.2vw,3.2rem);line-height:1.05;letter-spacing:-.012em;
+    max-width:16ch;color:var(--ink);margin:0;
+  }
+  #ed-repo-{{ section.id }} .sec-head h2 em{font-style:italic;font-weight:300;color:var(--gold);}
+  #ed-repo-{{ section.id }} .sec-head__aside{
+    flex:none;width:280px;padding-top:8px;border-top:1px solid var(--hairline);
+  }
+  #ed-repo-{{ section.id }} .sec-head__aside p{
+    font-size:14px;color:var(--body);line-height:1.7;padding-top:14px;
+    font-weight:300;margin:0;
+  }
+
+  /* ---- module 1: why this piece ---- */
+  #ed-repo-{{ section.id }} .repo-why{padding:96px 0;}
+  #ed-repo-{{ section.id }} .repo-reasons{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--hairline);
+    border-top:1px solid var(--hairline);border-bottom:1px solid var(--hairline);
+  }
+  #ed-repo-{{ section.id }} .repo-reason{
+    background:var(--paper);padding:40px 34px;display:flex;flex-direction:column;
+  }
+  #ed-repo-{{ section.id }} .repo-reason__num{
+    font-family:'Newsreader',serif;font-style:italic;font-weight:300;
+    font-size:20px;color:var(--gold);margin-bottom:20px;
+  }
+  #ed-repo-{{ section.id }} .repo-reason__title{
+    font-family:'Newsreader',serif;font-weight:300;font-size:23px;line-height:1.25;
+    color:var(--ink);margin:0 0 12px;
+  }
+  #ed-repo-{{ section.id }} .repo-reason__body{
+    font-family:'Manrope',sans-serif;font-weight:300;font-size:14px;line-height:1.72;
+    color:var(--body);margin:0;
+  }
+
+  /* ---- module 2: why outlight ---- */
+  #ed-repo-{{ section.id }} .repo-trust{
+    padding:96px 0;border-top:1px solid var(--hairline);
+  }
+  #ed-repo-{{ section.id }} .repo-trust__grid{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--hairline);
+    border-top:1px solid var(--hairline);border-bottom:1px solid var(--hairline);
+  }
+  #ed-repo-{{ section.id }} .repo-promise{
+    background:var(--paper);padding:34px 30px;display:flex;flex-direction:column;gap:10px;
+  }
+  #ed-repo-{{ section.id }} .repo-promise__ic{
+    width:30px;height:30px;display:flex;align-items:center;justify-content:center;
+  }
+  #ed-repo-{{ section.id }} .repo-promise__ic .material-symbols-outlined{
+    font-size:24px;color:var(--gold);font-variation-settings:'FILL' 0,'wght' 300;
+  }
+  #ed-repo-{{ section.id }} .repo-promise__title{
+    font-family:'Manrope',sans-serif;font-weight:500;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin:6px 0 0;
+  }
+  #ed-repo-{{ section.id }} .repo-promise__line{
+    font-family:'Newsreader',serif;font-weight:300;font-size:20px;line-height:1.3;
+    color:var(--ink);margin:0;
+  }
+  #ed-repo-{{ section.id }} .repo-promise__line em{font-style:italic;color:var(--gold);}
+  #ed-repo-{{ section.id }} .repo-promise__body{
+    font-family:'Manrope',sans-serif;font-weight:300;font-size:13px;line-height:1.68;
+    color:var(--body);margin:0;
+  }
+  #ed-repo-{{ section.id }} .repo-foot{
+    margin-top:40px;padding-top:18px;border-top:1px solid var(--hairline);
+  }
+  #ed-repo-{{ section.id }} .repo-foot p{
+    font-family:'Manrope',sans-serif;font-weight:300;font-size:13px;
+    color:var(--body);max-width:60ch;margin:0;line-height:1.7;
+  }
+
+  @media (max-width:980px){
+    #ed-repo-{{ section.id }} .repo-reasons,
+    #ed-repo-{{ section.id }} .repo-trust__grid{grid-template-columns:1fr 1fr;}
+  }
+  @media (max-width:880px){
+    #ed-repo-{{ section.id }} .ed-wrap{padding:0 22px;}
+    #ed-repo-{{ section.id }} .repo-why,
+    #ed-repo-{{ section.id }} .repo-trust{padding:64px 0;}
+    #ed-repo-{{ section.id }} .sec-head{flex-direction:column;gap:20px;margin-bottom:36px;}
+    #ed-repo-{{ section.id }} .sec-head__aside{width:100%;}
+  }
+  @media (max-width:680px){
+    #ed-repo-{{ section.id }} .ed-wrap{padding:0 20px;}
+    #ed-repo-{{ section.id }} .marker{font-size:1.9rem;}
+    #ed-repo-{{ section.id }} .sec-head h2{max-width:none;}
+    #ed-repo-{{ section.id }} .repo-reasons,
+    #ed-repo-{{ section.id }} .repo-trust__grid{grid-template-columns:1fr;}
+    #ed-repo-{{ section.id }} .repo-reason{padding:32px 24px;}
+    #ed-repo-{{ section.id }} .repo-promise{padding:28px 22px;}
+  }
+</style>
+
+<section id="ed-repo-{{ section.id }}">
+
+  {%- comment -%} ---- Module 1: Why this piece ---- {%- endcomment -%}
+  {%- if reason_blocks.size > 0 -%}
+    <div class="repo-why">
+      <div class="ed-wrap">
+        <div class="sec-head">
+          <div class="sec-head__marker"><span class="marker">{{ s.why_marker | escape }}</span></div>
+          <div class="sec-head__text">
+            {%- if s.why_label != blank -%}
+              <span class="sec-head__label ed-label">{{ s.why_label | escape }}</span>
+            {%- endif -%}
+            <h2>{{ s.why_heading }}</h2>
+          </div>
+          {%- if s.why_aside != blank -%}
+            <div class="sec-head__aside"><p>{{ s.why_aside | escape }}</p></div>
+          {%- endif -%}
+        </div>
+
+        <div class="repo-reasons">
+          {%- for block in reason_blocks -%}
+            <div class="repo-reason" {{ block.shopify_attributes }}>
+              {%- if block.settings.number != blank -%}
+                <span class="repo-reason__num">{{ block.settings.number | escape }}</span>
+              {%- endif -%}
+              <h3 class="repo-reason__title">{{ block.settings.title | escape }}</h3>
+              <p class="repo-reason__body">{{ block.settings.body | escape }}</p>
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
+
+  {%- comment -%} ---- Module 2: Why buy from Outlight ---- {%- endcomment -%}
+  {%- if promise_blocks.size > 0 -%}
+    <div class="repo-trust">
+      <div class="ed-wrap">
+        <div class="sec-head">
+          <div class="sec-head__marker"><span class="marker">{{ s.trust_marker | escape }}</span></div>
+          <div class="sec-head__text">
+            {%- if s.trust_label != blank -%}
+              <span class="sec-head__label ed-label">{{ s.trust_label | escape }}</span>
+            {%- endif -%}
+            <h2>{{ s.trust_heading }}</h2>
+          </div>
+          {%- if s.trust_aside != blank -%}
+            <div class="sec-head__aside"><p>{{ s.trust_aside | escape }}</p></div>
+          {%- endif -%}
+        </div>
+
+        <div class="repo-trust__grid">
+          {%- for block in promise_blocks -%}
+            <div class="repo-promise" {{ block.shopify_attributes }}>
+              {%- if block.settings.icon != blank -%}
+                <span class="repo-promise__ic"><span class="material-symbols-outlined">{{ block.settings.icon | escape }}</span></span>
+              {%- endif -%}
+              {%- if block.settings.title != blank -%}
+                <span class="repo-promise__title">{{ block.settings.title | escape }}</span>
+              {%- endif -%}
+              <p class="repo-promise__line">
+                {%- if block.settings.emphasis != blank -%}
+                  {{ block.settings.line | escape }} <em>{{ block.settings.emphasis | escape }}</em>
+                {%- else -%}
+                  {{ block.settings.line | escape }}
+                {%- endif -%}
+              </p>
+              {%- if block.settings.body != blank -%}
+                <p class="repo-promise__body">{{ block.settings.body | escape }}</p>
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+        </div>
+
+        {%- if s.trust_foot != blank -%}
+          <div class="repo-foot"><p>{{ s.trust_foot | escape }}</p></div>
+        {%- endif -%}
+      </div>
+    </div>
+  {%- endif -%}
+
+</section>
+
+{% schema %}
+{
+  "name": "PDP Repositioning",
+  "tag": "section",
+  "class": "product-repositioning-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Module 1 — Why this piece"
+    },
+    {
+      "type": "text",
+      "id": "why_marker",
+      "label": "Section number marker",
+      "default": "01"
+    },
+    {
+      "type": "text",
+      "id": "why_label",
+      "label": "Label",
+      "default": "Why this piece"
+    },
+    {
+      "type": "richtext",
+      "id": "why_heading",
+      "label": "Heading",
+      "info": "Wrap a phrase in italics for the gold accent.",
+      "default": "<p>Made for the corner that <em>never quite worked.</em></p>"
+    },
+    {
+      "type": "textarea",
+      "id": "why_aside",
+      "label": "Aside text",
+      "default": "Where this piece earns its place — and the kind of room it was selected for."
+    },
+    {
+      "type": "header",
+      "content": "Module 2 — Why buy from Outlight"
+    },
+    {
+      "type": "text",
+      "id": "trust_marker",
+      "label": "Section number marker",
+      "default": "02"
+    },
+    {
+      "type": "text",
+      "id": "trust_label",
+      "label": "Label",
+      "default": "Why Outlight"
+    },
+    {
+      "type": "richtext",
+      "id": "trust_heading",
+      "label": "Heading",
+      "default": "<p>A small catalogue, <em>carefully kept.</em></p>"
+    },
+    {
+      "type": "textarea",
+      "id": "trust_aside",
+      "label": "Aside text",
+      "default": "An LA lighting brand, est. 2024. We curate the range, check every order, and stand behind it after it ships."
+    },
+    {
+      "type": "textarea",
+      "id": "trust_foot",
+      "label": "Footer note",
+      "default": "Outlight curates and stands behind a focused range of warm, sculptural lighting. Every order is quality-checked before it leaves our US warehouse."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "reason",
+      "name": "Reason",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "text",
+          "id": "number",
+          "label": "Number",
+          "default": "01"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Best for a quiet corner"
+        },
+        {
+          "type": "textarea",
+          "id": "body",
+          "label": "Body",
+          "default": "Anchors an empty corner of a living room or bedroom and gives it a reason to exist after dark — a pool of warm light where there was none."
+        }
+      ]
+    },
+    {
+      "type": "promise",
+      "name": "Promise",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "text",
+          "id": "icon",
+          "label": "Material Symbols icon name",
+          "info": "e.g. inventory_2, fact_check, undo, verified, support_agent",
+          "default": "inventory_2"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Small label (gold)",
+          "default": "Curation"
+        },
+        {
+          "type": "text",
+          "id": "line",
+          "label": "Line text",
+          "default": "A focused range, selected for"
+        },
+        {
+          "type": "text",
+          "id": "emphasis",
+          "label": "Emphasis phrase (gold italic)",
+          "default": "warm, sculptural light."
+        },
+        {
+          "type": "textarea",
+          "id": "body",
+          "label": "Body",
+          "default": "We don't list everything. We choose pieces that make a room feel finished, and leave out the ones that don't."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "PDP Repositioning",
+      "blocks": [
+        {
+          "type": "reason",
+          "settings": {
+            "number": "01",
+            "title": "Best for a quiet corner",
+            "body": "Anchors an empty corner of a living room or bedroom and gives it a reason to exist after dark — a pool of warm light where there was none."
+          }
+        },
+        {
+          "type": "reason",
+          "settings": {
+            "number": "02",
+            "title": "A warmer kind of light",
+            "body": "Selected for a soft, warm glow rather than a cool, clinical wash — the difference between a room that reads calm and one that feels like an office."
+          }
+        },
+        {
+          "type": "reason",
+          "settings": {
+            "number": "03",
+            "title": "Layered, not overhead",
+            "body": "Works alongside your ceiling light, not instead of it. One more warm source at eye level is what makes an evening room feel considered."
+          }
+        },
+        {
+          "type": "promise",
+          "settings": {
+            "icon": "inventory_2",
+            "title": "Curation",
+            "line": "A focused range, selected for",
+            "emphasis": "warm, sculptural light.",
+            "body": "We don't list everything. We choose pieces that make a room feel finished, and leave out the ones that don't."
+          }
+        },
+        {
+          "type": "promise",
+          "settings": {
+            "icon": "fact_check",
+            "title": "Quality-checked",
+            "line": "Every order is checked",
+            "emphasis": "before it ships.",
+            "body": "Orders are inspected before dispatch. Free US shipping with estimated delivery in 4 days."
+          }
+        },
+        {
+          "type": "promise",
+          "settings": {
+            "icon": "undo",
+            "title": "30-Day Returns",
+            "line": "A month to",
+            "emphasis": "live with it.",
+            "body": "If the piece doesn't feel right in the room, return it within 30 days. If it arrives damaged, send a photo and we'll replace it."
+          }
+        },
+        {
+          "type": "promise",
+          "settings": {
+            "icon": "verified",
+            "title": "Outdoor Warranty",
+            "line": "Backed for",
+            "emphasis": "two years.",
+            "body": "Outdoor lighting fixtures are covered by our two-year warranty against manufacturing defects. See the refund policy for terms."
+          }
+        },
+        {
+          "type": "promise",
+          "settings": {
+            "icon": "support_agent",
+            "title": "Real Support",
+            "line": "A reply within",
+            "emphasis": "24 hours.",
+            "body": "Questions before or after you buy reach a real person. Support replies within one business day."
+          }
+        },
+        {
+          "type": "promise",
+          "settings": {
+            "icon": "reviews",
+            "title": "Verified Reviews",
+            "line": "A 4.7 average across",
+            "emphasis": "2,000+ reviews.",
+            "body": "Reviews are collected from verified Outlight customers — the same figure shown across the site."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

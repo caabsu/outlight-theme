@@ -1,0 +1,33 @@
+{% doc %}
+Displays the actual line total after all Shopify discount allocations.
+@param {line_item} item - Cart line item
+@param {boolean} [unit] - Show the per-unit amount
+{% enddoc %}
+{%- liquid
+  assign allocated_discount = item.discount_allocations | sum: 'amount'
+  assign payable_price = item.original_line_price | minus: allocated_discount
+  assign reference_price = item.original_line_price
+  if unit
+    assign payable_price = payable_price | times: 1.0 | divided_by: item.quantity | round
+    assign reference_price = item.original_price
+  endif
+-%}
+<span class="ol-cart-line-price" data-payable-price="{{ payable_price }}">
+  <span class="ol-cart-payable">{{ payable_price | money }}</span>
+  {%- if allocated_discount > 0 -%}
+    <s class="ol-cart-reference">{{ reference_price | money }}</s>
+    {%- unless unit -%}<span class="ol-cart-discount-note">{{ 'cart.discount_included' | t }}</span>{%- endunless -%}
+  {%- endif -%}
+</span>
+{% stylesheet %}
+.ol-cart-line-price{display:flex;flex-direction:column;gap:3px;font-variant-numeric:tabular-nums}
+.ol-cart-payable{font:500 15px/1.35 'Manrope',sans-serif;color:#131314}
+.ol-cart-reference{font:400 11px/1.35 'Manrope',sans-serif;color:#777873}
+.ol-cart-discount-note{max-width:92px;white-space:normal;font:400 10px/1.35 'Manrope',sans-serif;color:#61655a}
+@media(max-width:480px){
+  .ol-cart-item-heading{flex-direction:column;gap:8px}
+  .ol-cart-item-price{text-align:left}
+  .ol-cart-item-price .ol-cart-line-price{display:flex;flex-direction:row;align-items:baseline;flex-wrap:wrap;gap:4px 8px}
+  .ol-cart-item-price .ol-cart-discount-note{flex-basis:100%;max-width:none}
+}
+{% endstylesheet %}

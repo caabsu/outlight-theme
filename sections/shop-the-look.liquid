@@ -1,1098 +1,395 @@
-{% comment %}
-  Shop the Look Section
-  - Displays a lifestyle image with product hotspots
-  - Products can be selected and added to cart together
-  - Separate hotspot positioning for desktop and mobile
-{% endcomment %}
+{{ 'section-shop-the-look.css' | asset_url | stylesheet_tag }}
 
-<section
-  id="shop-the-look-{{ section.id }}"
-  class="shop-the-look"
-  style="
-    --stl-bg: {{ section.settings.background_color }};
-    --stl-text-color: {{ section.settings.text_color }};
-    --stl-heading-size-mobile: {{ section.settings.heading_size_mobile }}px;
-    --stl-heading-size-desktop: {{ section.settings.heading_size_desktop }}px;
-    --stl-heading-weight: {{ section.settings.heading_weight }};
-    --stl-subheading-size-mobile: {{ section.settings.subheading_size_mobile }}px;
-    --stl-subheading-size-desktop: {{ section.settings.subheading_size_desktop }}px;
-    --stl-subheading-weight: {{ section.settings.subheading_weight }};
-    --stl-product-title-size-mobile: {{ section.settings.product_title_size_mobile }}px;
-    --stl-product-title-size-desktop: {{ section.settings.product_title_size_desktop }}px;
-    --stl-product-title-weight: {{ section.settings.product_title_weight }};
-    --stl-price-size-mobile: {{ section.settings.price_size_mobile }}px;
-    --stl-price-size-desktop: {{ section.settings.price_size_desktop }}px;
-    --stl-price-weight: {{ section.settings.price_weight }};
-    --stl-hotspot-color: {{ section.settings.hotspot_color }};
-    --stl-hotspot-size: {{ section.settings.hotspot_size }}px;
-    --stl-accent-color: {{ section.settings.accent_color | default: section.settings.hotspot_color }};
-    --stl-card-bg: {{ section.settings.card_background }};
-    --stl-card-border: {{ section.settings.card_border_color }};
-    --stl-button-bg: {{ section.settings.button_background }};
-    --stl-button-text: {{ section.settings.button_text_color }};
-    --stl-padding-top-mobile: {{ section.settings.padding_top_mobile }}px;
-    --stl-padding-bottom-mobile: {{ section.settings.padding_bottom_mobile }}px;
-    --stl-padding-top-desktop: {{ section.settings.padding_top_desktop }}px;
-    --stl-padding-bottom-desktop: {{ section.settings.padding_bottom_desktop }}px;
-  "
->
-  {% render 'scroll-animation' %}
-  <div class="shop-the-look__container">
-    {%- comment -%} Desktop Layout {%- endcomment -%}
-    <div class="shop-the-look__inner">
-      {%- comment -%} Image Side with Hotspots {%- endcomment -%}
-      <div class="shop-the-look__image-wrapper scroll-animate">
-        {%- if section.settings.image != blank -%}
-          <div class="shop-the-look__image shop-the-look__image--desktop">
-            {{ section.settings.image | image_url: width: 1200 | image_tag: loading: 'lazy', class: 'shop-the-look__img' }}
+<section class="bg-[#F9F9FB] px-5 md:px-12 py-16 md:py-24" id="section-{{ section.id }}">
+  <div class="max-w-[1920px] mx-auto">
 
-            {%- comment -%} Desktop Hotspots {%- endcomment -%}
-            {%- for block in section.blocks -%}
-              {%- if block.type == 'product' and block.settings.product != blank -%}
-                <a
-                  href="{{ block.settings.product.url }}"
-                  class="shop-the-look__hotspot shop-the-look__hotspot--desktop"
-                  style="
-                    --hotspot-x: {{ block.settings.hotspot_x_desktop }}%;
-                    --hotspot-y: {{ block.settings.hotspot_y_desktop }}%;
-                  "
-                  data-stl-hotspot="{{ forloop.index }}"
-                  data-stl-product-index="{{ forloop.index }}"
-                  aria-label="{{ 'sections.shop_the_look.view_product' | t: product: block.settings.product.title }}"
-                  {{ block.shopify_attributes }}
-                >
-                  <span class="shop-the-look__hotspot-ring"></span>
-                  <span class="shop-the-look__hotspot-dot"></span>
-                </a>
-              {%- endif -%}
-            {%- endfor -%}
+    {%- assign block_count = section.blocks.size -%}
+
+    <!-- ============================================================
+         DESKTOP LAYOUT
+    ============================================================ -->
+    <div class="hidden md:block">
+
+      <!-- Section header -->
+      <div class="flex items-baseline justify-between mb-8">
+        <div>
+          <div class="flex items-center gap-4 mb-5">
+            <div class="w-8 h-px bg-[#C5A059]"></div>
+            <span class="font-label text-[0.7rem] uppercase tracking-[0.25em] text-[#C5A059]">Shop the Look</span>
           </div>
+          <h2 class="heading-thin text-4xl text-[#131314] tracking-tight">{{ section.settings.heading | escape }}</h2>
+        </div>
+        {%- if section.settings.description != blank -%}
+          <p class="font-body text-[0.85rem] font-light text-[#2d3338]/65 max-w-xs text-right">{{ section.settings.description | escape }}</p>
+        {%- endif -%}
+      </div>
 
-          {%- comment -%} Mobile Image {%- endcomment -%}
-          <div class="shop-the-look__image shop-the-look__image--mobile">
-            {%- if section.settings.image_mobile != blank -%}
-              {{ section.settings.image_mobile | image_url: width: 800 | image_tag: loading: 'lazy', class: 'shop-the-look__img' }}
-            {%- else -%}
-              {{ section.settings.image | image_url: width: 800 | image_tag: loading: 'lazy', class: 'shop-the-look__img' }}
-            {%- endif -%}
+      <!-- Grid: 8-col room scene + 4-col product stack -->
+      <div class="grid grid-cols-12 gap-0">
 
-            {%- comment -%} Mobile Hotspots {%- endcomment -%}
-            {%- for block in section.blocks -%}
-              {%- if block.type == 'product' and block.settings.product != blank -%}
-                <a
-                  href="{{ block.settings.product.url }}"
-                  class="shop-the-look__hotspot shop-the-look__hotspot--mobile"
-                  style="
-                    --hotspot-x: {{ block.settings.hotspot_x_mobile }}%;
-                    --hotspot-y: {{ block.settings.hotspot_y_mobile }}%;
-                  "
-                  data-stl-hotspot="{{ forloop.index }}"
-                  data-stl-product-index="{{ forloop.index }}"
-                  aria-label="{{ 'sections.shop_the_look.view_product' | t: product: block.settings.product.title }}"
+        <!-- Room scene with pulse markers -->
+        <div class="col-span-8 relative">
+          {%- if section.settings.image != blank -%}
+            <div class="relative w-full aspect-[4/3] overflow-hidden">
+              <img
+                src="{{ section.settings.image | image_url: width: 1400 }}"
+                alt="{{ section.settings.heading | escape }}"
+                width="{{ section.settings.image.width }}"
+                height="{{ section.settings.image.height }}"
+                loading="lazy"
+                class="w-full h-full object-cover"
+              >
+              <!-- Pulse markers -->
+              {%- for block in section.blocks -%}
+                {%- assign px = block.settings.position_x -%}
+                {%- assign py = block.settings.position_y -%}
+                <div
+                  class="absolute stl-marker"
+                  style="top: {{ py }}%; left: {{ px }}%;"
+                  data-index="{{ forloop.index0 }}"
                   {{ block.shopify_attributes }}
                 >
-                  <span class="shop-the-look__hotspot-ring"></span>
-                  <span class="shop-the-look__hotspot-dot"></span>
-                </a>
-              {%- endif -%}
+                  <div class="w-9 h-9 rounded-full border-2 border-white/50 bg-white/15 backdrop-blur-sm flex items-center justify-center cursor-pointer marker-pulse hover:bg-[#C5A059] hover:border-[#C5A059] transition-all group"
+                       style="animation-delay: {{ forloop.index0 | times: 0.9 }}s;">
+                    <span class="material-symbols-outlined text-white text-sm group-hover:text-[#131314]">add</span>
+                  </div>
+                </div>
+              {%- endfor -%}
+            </div>
+          {%- else -%}
+            <!-- Fallback warm gradient when no image is set -->
+            <div class="relative aspect-[4/3] w-full overflow-hidden" style="background: linear-gradient(155deg, #d4c4a8 0%, #b8a07a 40%, #a08960 100%);">
+              {%- for block in section.blocks -%}
+                {%- assign px = block.settings.position_x -%}
+                {%- assign py = block.settings.position_y -%}
+                <div
+                  class="absolute stl-marker"
+                  style="top: {{ py }}%; left: {{ px }}%;"
+                  data-index="{{ forloop.index0 }}"
+                  {{ block.shopify_attributes }}
+                >
+                  <div class="w-9 h-9 rounded-full border-2 border-white/50 bg-white/15 backdrop-blur-sm flex items-center justify-center cursor-pointer marker-pulse hover:bg-[#C5A059] hover:border-[#C5A059] transition-all group"
+                       style="animation-delay: {{ forloop.index0 | times: 0.9 }}s;">
+                    <span class="material-symbols-outlined text-white text-sm group-hover:text-[#131314]">add</span>
+                  </div>
+                </div>
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+        </div>
+
+        <!-- Product card stack -->
+        <div class="col-span-4 border-l border-[#131314]/6 flex flex-col">
+          {%- for block in section.blocks -%}
+            {%- assign product = block.settings.product -%}
+            {%- assign is_last = false -%}
+            {%- if forloop.last -%}{%- assign is_last = true -%}{%- endif -%}
+
+            {%- if product != blank -%}
+              <a
+                href="{{ product.url }}"
+                class="stl-card flex-1 p-6 group hover:bg-[#f4f0eb] transition-colors{% unless is_last %} border-b border-[#131314]/5{% endunless %}"
+                data-index="{{ forloop.index0 }}"
+                {{ block.shopify_attributes }}
+              >
+                <div class="flex items-center justify-between mb-4">
+                  <span class="quote-thin text-lg text-[#C5A059]/40">0{{ forloop.index }}</span>
+                  <span class="font-label text-[0.7rem] uppercase tracking-[0.08em] text-[#131314]/60 bg-[#f4f0eb] px-2.5 py-1">In Stock</span>
+                </div>
+                <div class="flex items-start gap-4">
+                  {%- if product.featured_image != blank -%}
+                    <img
+                      src="{{ product.featured_image | image_url: width: 200 }}"
+                      alt="{{ product.featured_image.alt | escape }}"
+                      width="64"
+                      height="64"
+                      loading="lazy"
+                      class="w-16 h-16 shrink-0 object-cover"
+                    >
+                  {%- else -%}
+                    <div class="w-16 h-16 shrink-0" style="background: linear-gradient(165deg, #e8ddd0 0%, #d4c4b0 100%);"></div>
+                  {%- endif -%}
+                  <div class="border-l-2 border-[#C5A059]/25 pl-4">
+                    <span class="font-headline text-xl font-[300] text-[#131314] block group-hover:text-[#C5A059] transition-colors mb-0.5">{{ product.title | split: ' ' | first | escape }}</span>
+                    {%- if block.settings.label != blank -%}
+                      <span class="font-label text-[0.72rem] uppercase tracking-[0.08em] text-[#2d3338]/55 block mb-2">{{ block.settings.label | escape }}</span>
+                    {%- else -%}
+                      <span class="font-label text-[0.72rem] uppercase tracking-[0.08em] text-[#2d3338]/55 block mb-2">{{ product.type | escape }}</span>
+                    {%- endif -%}
+                    <span class="font-headline text-base font-[300] text-[#131314]">{{ product.price | money }}</span>
+                  </div>
+                </div>
+              </a>
+            {%- else -%}
+              <!-- Placeholder when no product is set in the editor -->
+              <div
+                class="flex-1 p-6 border-b border-[#131314]/5 opacity-40"
+                {{ block.shopify_attributes }}
+              >
+                <div class="flex items-center justify-between mb-4">
+                  <span class="quote-thin text-lg text-[#C5A059]/40">0{{ forloop.index }}</span>
+                  <span class="font-label text-[0.7rem] uppercase tracking-[0.08em] text-[#131314]/60 bg-[#f4f0eb] px-2.5 py-1">In Stock</span>
+                </div>
+                <div class="flex items-start gap-4">
+                  <div class="w-16 h-16 shrink-0" style="background: linear-gradient(165deg, #e8ddd0 0%, #d4c4b0 100%);"></div>
+                  <div class="border-l-2 border-[#C5A059]/25 pl-4">
+                    <span class="font-headline text-xl font-[300] text-[#131314] block mb-0.5">Product Name</span>
+                    <span class="font-label text-[0.72rem] uppercase tracking-[0.08em] text-[#2d3338]/55 block mb-2">{{ block.settings.label | default: 'Category' }}</span>
+                    <span class="font-headline text-base font-[300] text-[#131314]">$000</span>
+                  </div>
+                </div>
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        </div><!-- /product stack -->
+
+      </div><!-- /grid -->
+    </div><!-- /desktop -->
+
+
+    <!-- ============================================================
+         MOBILE LAYOUT
+    ============================================================ -->
+    <div class="md:hidden">
+
+      <!-- Header -->
+      <div class="mb-4">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-5 h-px bg-[#C5A059]"></div>
+          <span class="font-label text-[0.6rem] uppercase tracking-[0.25em] text-[#C5A059]">Shop the Look</span>
+        </div>
+        <h2 class="heading-thin text-[1.6rem] text-[#131314] tracking-tight mb-1">{{ section.settings.heading | escape }}</h2>
+        {%- if section.settings.description != blank -%}
+          <p class="font-body text-[0.78rem] font-light text-[#2d3338]/60">{{ section.settings.description | escape }}</p>
+        {%- endif -%}
+      </div>
+
+      <!-- Room scene, full width on mobile -->
+      <div class="relative mb-4">
+        {%- if section.settings.image != blank -%}
+          <div class="relative aspect-[4/3] w-full overflow-hidden">
+            <img
+              src="{{ section.settings.image | image_url: width: 800 }}"
+              alt="{{ section.settings.heading | escape }}"
+              width="{{ section.settings.image.width }}"
+              height="{{ section.settings.image.height }}"
+              loading="lazy"
+              class="w-full h-full object-cover"
+            >
+            {%- for block in section.blocks -%}
+              {%- assign px = block.settings.position_x -%}
+              {%- assign py = block.settings.position_y -%}
+              <div class="absolute" style="top: {{ py }}%; left: {{ px }}%;">
+                <div class="w-7 h-7 rounded-full border-2 border-white/50 bg-white/15 flex items-center justify-center marker-pulse"
+                     style="animation-delay: {{ forloop.index0 | times: 0.9 }}s;">
+                  <span class="material-symbols-outlined text-white text-xs">add</span>
+                </div>
+              </div>
             {%- endfor -%}
           </div>
         {%- else -%}
-          <div class="shop-the-look__image shop-the-look__image--placeholder">
-            {{ 'lifestyle-1' | placeholder_svg_tag: 'shop-the-look__placeholder' }}
+          <div class="relative aspect-[4/3] w-full" style="background: linear-gradient(155deg, #d4c4a8 0%, #b8a07a 40%, #a08960 100%);">
+            {%- for block in section.blocks -%}
+              {%- assign px = block.settings.position_x -%}
+              {%- assign py = block.settings.position_y -%}
+              <div class="absolute" style="top: {{ py }}%; left: {{ px }}%;">
+                <div class="w-7 h-7 rounded-full border-2 border-white/50 bg-white/15 flex items-center justify-center marker-pulse"
+                     style="animation-delay: {{ forloop.index0 | times: 0.9 }}s;">
+                  <span class="material-symbols-outlined text-white text-xs">add</span>
+                </div>
+              </div>
+            {%- endfor -%}
           </div>
         {%- endif -%}
       </div>
 
-      {%- comment -%} Content Side {%- endcomment -%}
-      <div class="shop-the-look__content">
-        <div class="shop-the-look__header scroll-animate">
-          {%- if section.settings.heading != blank -%}
-            <h2 class="shop-the-look__heading">{{ section.settings.heading }}</h2>
-          {%- endif -%}
+      <!-- Product list -->
+      <div class="border-t border-[#131314]/6">
+        {%- for block in section.blocks -%}
+          {%- assign product = block.settings.product -%}
+          {%- assign is_last = false -%}
+          {%- if forloop.last -%}{%- assign is_last = true -%}{%- endif -%}
 
-          {%- if section.settings.subheading != blank -%}
-            <p class="shop-the-look__subheading">{{ section.settings.subheading }}</p>
-          {%- endif -%}
-        </div>
-
-        <div class="shop-the-look__products scroll-animate" data-stl-products>
-          {%- for block in section.blocks -%}
-            {%- if block.type == 'product' -%}
-              {%- assign product = block.settings.product -%}
-              {%- if product != blank -%}
-                {%- assign variant = product.selected_or_first_available_variant -%}
-                <div
-                  class="shop-the-look__product-card"
-                  data-stl-product-card="{{ forloop.index }}"
-                  data-variant-id="{{ variant.id }}"
-                  data-price="{{ variant.price }}"
-                  {{ block.shopify_attributes }}
+          {%- if product != blank -%}
+            <a
+              href="{{ product.url }}"
+              class="flex items-center gap-4 py-5{% unless is_last %} border-b border-[#131314]/5{% endunless %}"
+            >
+              {%- if product.featured_image != blank -%}
+                <img
+                  src="{{ product.featured_image | image_url: width: 200 }}"
+                  alt="{{ product.featured_image.alt | escape }}"
+                  width="64"
+                  height="64"
+                  loading="lazy"
+                  class="w-16 h-16 shrink-0 object-cover"
                 >
-                  <div class="shop-the-look__card-accent"></div>
-
-                  {%- comment -%} Mobile Layout {%- endcomment -%}
-                  <div class="shop-the-look__card-mobile">
-                    <a href="{{ product.url }}" class="shop-the-look__product-image-wrapper">
-                      {%- if product.featured_image != blank -%}
-                        {{ product.featured_image | image_url: width: 160, height: 160, crop: 'center' | image_tag: loading: 'lazy', class: 'shop-the-look__product-image' }}
-                      {%- endif -%}
-                    </a>
-                    <div class="shop-the-look__product-info">
-                      <a href="{{ product.url }}" class="shop-the-look__product-title-link">
-                        <h3 class="shop-the-look__product-title">{{ block.settings.custom_title | default: product.title }}</h3>
-                      </a>
-                      <span class="shop-the-look__product-price">{{ variant.price | money }}</span>
-                      <button
-                        class="shop-the-look__add-link"
-                        data-stl-add-single
-                        data-variant-id="{{ variant.id }}"
-                      >
-                        {{ 'sections.shop_the_look.add_to_cart' | t | default: 'ADD TO CART' }}
-                      </button>
-                    </div>
-                  </div>
-
-                  {%- comment -%} Desktop Layout {%- endcomment -%}
-                  <div class="shop-the-look__card-desktop">
-                    <div class="shop-the-look__card-header">
-                      <span class="shop-the-look__product-number">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
-                      <span class="shop-the-look__stock-badge {% if variant.available %}shop-the-look__stock-badge--in-stock{% else %}shop-the-look__stock-badge--waitlist{% endif %}">
-                        {%- if variant.available -%}
-                          {{ 'sections.shop_the_look.in_stock' | t | default: 'IN STOCK' }}
-                        {%- else -%}
-                          {{ 'sections.shop_the_look.waitlist' | t | default: 'WAITLIST' }}
-                        {%- endif -%}
-                      </span>
-                    </div>
-
-                    <div class="shop-the-look__card-body">
-                      <a href="{{ product.url }}" class="shop-the-look__product-image-wrapper">
-                        {%- if product.featured_image != blank -%}
-                          {{ product.featured_image | image_url: width: 200, height: 200, crop: 'center' | image_tag: loading: 'lazy', class: 'shop-the-look__product-image' }}
-                        {%- endif -%}
-                      </a>
-
-                      <div class="shop-the-look__product-info">
-                        <a href="{{ product.url }}" class="shop-the-look__product-title-link">
-                          <h3 class="shop-the-look__product-title">{{ block.settings.custom_title | default: product.title }}</h3>
-                        </a>
-                        {%- if product.metafields.descriptors.subtitle != blank -%}
-                          <span class="shop-the-look__product-subtitle">{{ product.metafields.descriptors.subtitle }}</span>
-                        {%- endif -%}
-                        <span class="shop-the-look__product-price">{{ variant.price | money }}</span>
-                      </div>
-                    </div>
-
-                    <button
-                      class="shop-the-look__add-btn"
-                      data-stl-add-single
-                      data-variant-id="{{ variant.id }}"
-                      aria-label="{{ 'sections.shop_the_look.add_product' | t: product: product.title }}"
-                    >
-                      {%- if variant.available -%}
-                        {{ 'sections.shop_the_look.add_to_cart' | t | default: 'ADD TO CART' }}
-                      {%- else -%}
-                        {{ 'sections.shop_the_look.pre_order' | t | default: 'PRE-ORDER' }}
-                      {%- endif -%}
-                    </button>
-                  </div>
-                </div>
+              {%- else -%}
+                <div class="w-16 h-16 shrink-0" style="background: linear-gradient(165deg, #e8ddd0 0%, #d4c4b0 100%);"></div>
               {%- endif -%}
-            {%- endif -%}
-          {%- endfor -%}
-        </div>
-
+              <div class="flex-1 border-l-2 border-[#C5A059]/20 pl-4">
+                <span class="font-headline text-[1.1rem] font-[300] text-[#131314] block mb-0.5">{{ product.title | split: ' ' | first | escape }}</span>
+                {%- if block.settings.label != blank -%}
+                  <span class="font-label text-[0.65rem] uppercase text-[#2d3338]/55 block mb-1">{{ block.settings.label | escape }}</span>
+                {%- else -%}
+                  <span class="font-label text-[0.65rem] uppercase text-[#2d3338]/55 block mb-1">{{ product.type | escape }}</span>
+                {%- endif -%}
+                <span class="font-headline text-[0.9rem] font-[300] text-[#131314]">{{ product.price | money }}</span>
               </div>
-    </div>
+              <span class="font-label text-[0.58rem] uppercase text-[#131314]/55 bg-[#f4f0eb] px-2 py-1 self-start shrink-0">In Stock</span>
+            </a>
+          {%- else -%}
+            <div class="flex items-center gap-4 py-5 border-b border-[#131314]/5 opacity-40" {{ block.shopify_attributes }}>
+              <div class="w-16 h-16 shrink-0" style="background: linear-gradient(165deg, #e8ddd0 0%, #d4c4b0 100%);"></div>
+              <div class="flex-1 border-l-2 border-[#C5A059]/20 pl-4">
+                <span class="font-headline text-[1.1rem] font-[300] text-[#131314] block mb-0.5">Product Name</span>
+                <span class="font-label text-[0.65rem] uppercase text-[#2d3338]/55 block mb-1">{{ block.settings.label | default: 'Category' }}</span>
+                <span class="font-headline text-[0.9rem] font-[300] text-[#131314]">$000</span>
+              </div>
+              <span class="font-label text-[0.58rem] uppercase text-[#131314]/55 bg-[#f4f0eb] px-2 py-1 self-start shrink-0">In Stock</span>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+
+    </div><!-- /mobile -->
+
   </div>
 </section>
 
-{% stylesheet %}
-  .shop-the-look {
-    background-color: var(--stl-bg);
-    color: var(--stl-text-color);
-    padding: var(--stl-padding-top-mobile) 0 var(--stl-padding-bottom-mobile);
-    width: 100%;
+<style>
+  @keyframes markerPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(197,160,89,0.35); }
+    50%       { box-shadow: 0 0 0 10px rgba(197,160,89,0); }
   }
+  .marker-pulse { animation: markerPulse 2.8s ease-in-out infinite; }
+  .heading-thin  { font-family: 'Newsreader', serif; font-weight: 200; font-variation-settings: 'opsz' 72; }
+  .quote-thin    { font-family: 'Newsreader', serif; font-weight: 200; font-style: italic; font-variation-settings: 'opsz' 72; }
+  .stl-card.stl-active { background: #f4f0eb !important; }
+  .stl-marker.stl-active > div { background: #C5A059 !important; border-color: #C5A059 !important; }
+  .stl-marker.stl-active > div span { color: #131314 !important; }
+</style>
 
-  .shop-the-look__container {
-    width: 100%;
-  }
+<script>
+(function(){
+  var markers = document.querySelectorAll('.stl-marker');
+  var cards = document.querySelectorAll('.stl-card');
+  if (!markers.length || !cards.length) return;
 
-  .shop-the-look__inner {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  @media screen and (min-width: 769px) {
-    .shop-the-look {
-      padding: var(--stl-padding-top-desktop) 40px var(--stl-padding-bottom-desktop);
-    }
-
-    .shop-the-look__inner {
-      gap: 32px;
-    }
-  }
-
-  @media screen and (min-width: 1200px) {
-    .shop-the-look {
-      padding: var(--stl-padding-top-desktop) 60px var(--stl-padding-bottom-desktop);
+  function highlight(idx) {
+    markers.forEach(function(m) { m.classList.remove('stl-active'); });
+    cards.forEach(function(c) { c.classList.remove('stl-active'); });
+    if (markers[idx]) markers[idx].classList.add('stl-active');
+    if (cards[idx]) {
+      cards[idx].classList.add('stl-active');
+      cards[idx].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
   }
 
-  /* Image Wrapper */
-  .shop-the-look__image-wrapper {
-    position: relative;
-    width: 100%;
-  }
-
-  .shop-the-look__image {
-    position: relative;
-    overflow: hidden;
-  }
-
-  .shop-the-look__image--desktop {
-    display: none;
-  }
-
-  .shop-the-look__image--mobile {
-    display: block;
-  }
-
-  @media screen and (min-width: 769px) {
-    .shop-the-look__image--desktop {
-      display: block;
-    }
-
-    .shop-the-look__image--mobile {
-      display: none;
-    }
-  }
-
-  .shop-the-look__img {
-    width: 100%;
-    height: auto;
-    display: block;
-  }
-
-  .shop-the-look__placeholder {
-    width: 100%;
-    height: auto;
-    background: #f0f0f0;
-  }
-
-  /* Hotspots - Minimal Modern Design */
-  .shop-the-look__hotspot {
-    position: absolute;
-    left: var(--hotspot-x);
-    top: var(--hotspot-y);
-    transform: translate(-50%, -50%);
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
-    padding: 0;
-    text-decoration: none;
-  }
-
-  .shop-the-look__hotspot:hover .shop-the-look__hotspot-ring {
-    transform: scale(1.15);
-    opacity: 0.5;
-  }
-
-  .shop-the-look__hotspot:hover .shop-the-look__hotspot-dot {
-    transform: scale(1.1);
-  }
-
-  .shop-the-look__hotspot--desktop {
-    display: none;
-  }
-
-  .shop-the-look__hotspot--mobile {
-    display: flex;
-  }
-
-  @media screen and (min-width: 769px) {
-    .shop-the-look__hotspot--desktop {
-      display: flex;
-    }
-
-    .shop-the-look__hotspot--mobile {
-      display: none;
-    }
-  }
-
-  .shop-the-look__hotspot-ring {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    border: 1.5px solid var(--stl-hotspot-color);
-    opacity: 0.3;
-    animation: stl-ring-pulse 3s ease-out infinite;
-    transition: transform 0.2s ease, opacity 0.2s ease;
-  }
-
-  @keyframes stl-ring-pulse {
-    0% {
-      transform: scale(1);
-      opacity: 0.3;
-    }
-    50% {
-      transform: scale(1.5);
-      opacity: 0;
-    }
-    100% {
-      transform: scale(1.5);
-      opacity: 0;
-    }
-  }
-
-  .shop-the-look__hotspot-dot {
-    position: relative;
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background-color: var(--stl-hotspot-color);
-    z-index: 1;
-    transition: transform 0.2s ease;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-  }
-
-  .shop-the-look__hotspot-dot::before,
-  .shop-the-look__hotspot-dot::after {
-    content: '';
-    position: absolute;
-    background-color: #fff;
-  }
-
-  .shop-the-look__hotspot-dot::before {
-    width: 8px;
-    height: 1.5px;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
-
-  .shop-the-look__hotspot-dot::after {
-    width: 1.5px;
-    height: 8px;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
-
-  /* Content */
-  .shop-the-look__content {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    padding: 0;
-    width: 100%;
-  }
-
-  @media screen and (min-width: 769px) {
-    .shop-the-look__content {
-      gap: 24px;
-    }
-  }
-
-  .shop-the-look__header {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .shop-the-look__heading {
-    font-size: var(--stl-heading-size-mobile);
-    font-weight: var(--stl-heading-weight);
-    margin: 0;
-    line-height: 1.2;
-  }
-
-  .shop-the-look__subheading {
-    font-size: var(--stl-subheading-size-mobile);
-    font-weight: var(--stl-subheading-weight);
-    margin: 0;
-    opacity: 0.7;
-    line-height: 1.4;
-  }
-
-  @media screen and (min-width: 769px) {
-    .shop-the-look__heading {
-      font-size: var(--stl-heading-size-desktop);
-    }
-
-    .shop-the-look__subheading {
-      font-size: var(--stl-subheading-size-desktop);
-    }
-  }
-
-  /* Product Cards */
-  .shop-the-look__products {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 0;
-  }
-
-  @media screen and (min-width: 769px) {
-    .shop-the-look__products {
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 24px;
-    }
-  }
-
-  .shop-the-look__product-card {
-    background-color: var(--stl-card-bg);
-    border: none;
-    border-radius: 0;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-  }
-
-  /* Accent Line at Top */
-  .shop-the-look__card-accent {
-    height: 3px;
-    background-color: var(--stl-accent-color, #c9a227);
-    width: 100%;
-  }
-
-  /* Mobile Layout */
-  .shop-the-look__card-mobile {
-    display: flex;
-    padding: 16px;
-    gap: 16px;
-    align-items: flex-start;
-  }
-
-  .shop-the-look__card-mobile .shop-the-look__product-image-wrapper {
-    width: 80px;
-    height: 80px;
-    flex-shrink: 0;
-  }
-
-  .shop-the-look__card-mobile .shop-the-look__product-info {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    flex: 1;
-  }
-
-  .shop-the-look__card-mobile .shop-the-look__product-title {
-    font-family: var(--font-heading-family), serif;
-    font-size: var(--stl-product-title-size-mobile);
-    font-weight: var(--stl-product-title-weight);
-    margin: 0;
-    line-height: 1.2;
-    color: var(--stl-text-color);
-  }
-
-  .shop-the-look__card-mobile .shop-the-look__product-price {
-    font-size: var(--stl-price-size-mobile);
-    font-weight: var(--stl-price-weight);
-    color: var(--stl-text-color);
-    margin-top: 2px;
-  }
-
-  .shop-the-look__add-link {
-    background: none;
-    border: none;
-    padding: 0;
-    margin-top: 8px;
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    color: var(--stl-accent-color, #c9a227);
-    cursor: pointer;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    text-align: left;
-  }
-
-  .shop-the-look__add-link:hover {
-    opacity: 0.7;
-  }
-
-  /* Desktop Layout */
-  .shop-the-look__card-desktop {
-    display: none;
-  }
-
-  @media screen and (min-width: 769px) {
-    .shop-the-look__card-mobile {
-      display: none;
-    }
-
-    .shop-the-look__card-desktop {
-      display: flex;
-      flex-direction: column;
-      padding: 20px 24px 24px;
-      flex: 1;
-    }
-  }
-
-  /* Card Header - Number and Stock Badge (Desktop only) */
-  .shop-the-look__card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-
-  .shop-the-look__product-number {
-    font-family: var(--font-heading-family), serif;
-    font-style: italic;
-    font-size: 24px;
-    font-weight: 400;
-    color: var(--stl-text-color);
-  }
-
-  .shop-the-look__stock-badge {
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    padding: 6px 12px;
-    border-radius: 0;
-  }
-
-  .shop-the-look__stock-badge--in-stock {
-    background-color: #f5f5f4;
-    color: #57534e;
-  }
-
-  .shop-the-look__stock-badge--waitlist {
-    background-color: #1c1917;
-    color: #ffffff;
-  }
-
-  /* Card Body - Image and Info (Desktop) */
-  .shop-the-look__card-body {
-    display: flex;
-    gap: 20px;
-    margin-bottom: 24px;
-  }
-
-  .shop-the-look__card-desktop .shop-the-look__product-image-wrapper {
-    width: 110px;
-    height: 110px;
-    flex-shrink: 0;
-    display: block;
-  }
-
-  .shop-the-look__product-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 0;
-  }
-
-  .shop-the-look__card-desktop .shop-the-look__product-info {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 6px;
-  }
-
-  .shop-the-look__product-title-link {
-    text-decoration: none;
-    color: inherit;
-  }
-
-  .shop-the-look__product-title-link:hover .shop-the-look__product-title {
-    opacity: 0.7;
-  }
-
-  .shop-the-look__card-desktop .shop-the-look__product-title {
-    font-family: var(--font-heading-family), serif;
-    font-size: var(--stl-product-title-size-desktop);
-    font-weight: var(--stl-product-title-weight);
-    margin: 0;
-    line-height: 1.3;
-    color: var(--stl-text-color);
-  }
-
-  .shop-the-look__product-subtitle {
-    font-size: 14px;
-    color: #78716c;
-    line-height: 1.3;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-  }
-
-  .shop-the-look__card-desktop .shop-the-look__product-price {
-    font-size: var(--stl-price-size-desktop);
-    font-weight: var(--stl-price-weight);
-    color: var(--stl-text-color);
-    margin-top: 8px;
-  }
-
-  /* Add to Cart Button (Desktop) */
-  .shop-the-look__add-btn {
-    width: 100%;
-    padding: 16px 24px;
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: opacity 0.2s ease;
-    text-decoration: none;
-    border-radius: 0;
-    text-align: center;
-    margin-top: auto;
-    background-color: var(--stl-button-bg, #1c1917);
-    color: var(--stl-button-text, #ffffff);
-    border: 1px solid var(--stl-button-bg, #1c1917);
-  }
-
-  .shop-the-look__add-btn:hover {
-    opacity: 0.85;
-  }
-{% endstylesheet %}
-
-{% javascript %}
-  document.addEventListener('DOMContentLoaded', function() {
-    const section = document.getElementById('shop-the-look-{{ section.id }}');
-    if (!section) return;
-
-    const addBtns = section.querySelectorAll('[data-stl-add-single]');
-
-    // Add to cart function
-    async function addToCart(variantId) {
-      try {
-        const response = await fetch('/cart/add.js', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            items: [{ id: parseInt(variantId, 10), quantity: 1 }]
-          })
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to add to cart');
-        }
-
-        // Trigger cart drawer open or redirect
-        const cartDrawer = document.querySelector('[data-cart-drawer]');
-        if (cartDrawer) {
-          cartDrawer.setAttribute('data-cart-drawer', 'open');
-          document.body.style.overflow = 'hidden';
-        } else {
-          window.location.href = '/cart';
-        }
-
-        // Dispatch event for other scripts
-        document.dispatchEvent(new CustomEvent('cart:updated'));
-
-      } catch (error) {
-        console.error('Add to cart error:', error);
-      }
-    }
-
-    // Add single product
-    addBtns.forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        const variantId = this.dataset.variantId;
-        if (variantId) {
-          addToCart(variantId);
-        }
-      });
+  markers.forEach(function(m) {
+    m.addEventListener('click', function(e) {
+      e.preventDefault();
+      highlight(parseInt(m.dataset.index));
     });
   });
-{% endjavascript %}
+
+  cards.forEach(function(c) {
+    c.addEventListener('mouseenter', function() {
+      highlight(parseInt(c.dataset.index));
+    });
+  });
+})();
+</script>
 
 {% schema %}
 {
-  "name": "t:sections.shop_the_look.name",
+  "name": "Shop the Look",
   "tag": "section",
   "class": "section-shop-the-look",
   "settings": [
     {
-      "type": "header",
-      "content": "t:sections.shop_the_look.settings.header_image"
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "The Warm Sanctuary"
+    },
+    {
+      "type": "text",
+      "id": "description",
+      "label": "Description",
+      "default": "Build calm with warm, layered illumination."
     },
     {
       "type": "image_picker",
       "id": "image",
-      "label": "t:sections.shop_the_look.settings.image.label"
-    },
-    {
-      "type": "image_picker",
-      "id": "image_mobile",
-      "label": "t:sections.shop_the_look.settings.image_mobile.label",
-      "info": "t:sections.shop_the_look.settings.image_mobile.info"
-    },
-    {
-      "type": "header",
-      "content": "t:sections.shop_the_look.settings.header_content"
-    },
-    {
-      "type": "text",
-      "id": "heading",
-      "label": "t:sections.shop_the_look.settings.heading.label",
-      "default": "The Sleep Sanctuary"
-    },
-    {
-      "type": "textarea",
-      "id": "subheading",
-      "label": "t:sections.shop_the_look.settings.subheading.label",
-      "default": "Layer your light for a calmer bedtime routine."
-    },
-    {
-      "type": "header",
-      "content": "Typography - Mobile"
-    },
-    {
-      "type": "range",
-      "id": "heading_size_mobile",
-      "label": "Heading size",
-      "min": 20,
-      "max": 60,
-      "step": 2,
-      "default": 32,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "subheading_size_mobile",
-      "label": "Subheading size",
-      "min": 12,
-      "max": 28,
-      "step": 1,
-      "default": 16,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "product_title_size_mobile",
-      "label": "Product title size",
-      "min": 14,
-      "max": 28,
-      "step": 1,
-      "default": 18,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "price_size_mobile",
-      "label": "Price size",
-      "min": 12,
-      "max": 24,
-      "step": 1,
-      "default": 16,
-      "unit": "px"
-    },
-    {
-      "type": "header",
-      "content": "Typography - Desktop"
-    },
-    {
-      "type": "range",
-      "id": "heading_size_desktop",
-      "label": "Heading size",
-      "min": 24,
-      "max": 72,
-      "step": 2,
-      "default": 40,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "subheading_size_desktop",
-      "label": "Subheading size",
-      "min": 12,
-      "max": 32,
-      "step": 1,
-      "default": 18,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "product_title_size_desktop",
-      "label": "Product title size",
-      "min": 14,
-      "max": 32,
-      "step": 1,
-      "default": 22,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "price_size_desktop",
-      "label": "Price size",
-      "min": 14,
-      "max": 28,
-      "step": 1,
-      "default": 20,
-      "unit": "px"
-    },
-    {
-      "type": "header",
-      "content": "Typography - Weights"
-    },
-    {
-      "type": "select",
-      "id": "heading_weight",
-      "label": "Heading weight",
-      "options": [
-        { "value": "300", "label": "Light" },
-        { "value": "400", "label": "Regular" },
-        { "value": "500", "label": "Medium" },
-        { "value": "600", "label": "Semibold" },
-        { "value": "700", "label": "Bold" }
-      ],
-      "default": "400"
-    },
-    {
-      "type": "select",
-      "id": "subheading_weight",
-      "label": "Subheading weight",
-      "options": [
-        { "value": "300", "label": "Light" },
-        { "value": "400", "label": "Regular" },
-        { "value": "500", "label": "Medium" },
-        { "value": "600", "label": "Semibold" },
-        { "value": "700", "label": "Bold" }
-      ],
-      "default": "400"
-    },
-    {
-      "type": "select",
-      "id": "product_title_weight",
-      "label": "Product title weight",
-      "options": [
-        { "value": "300", "label": "Light" },
-        { "value": "400", "label": "Regular" },
-        { "value": "500", "label": "Medium" },
-        { "value": "600", "label": "Semibold" },
-        { "value": "700", "label": "Bold" }
-      ],
-      "default": "400"
-    },
-    {
-      "type": "select",
-      "id": "price_weight",
-      "label": "Price weight",
-      "options": [
-        { "value": "300", "label": "Light" },
-        { "value": "400", "label": "Regular" },
-        { "value": "500", "label": "Medium" },
-        { "value": "600", "label": "Semibold" },
-        { "value": "700", "label": "Bold" }
-      ],
-      "default": "500"
-    },
-    {
-      "type": "header",
-      "content": "t:sections.shop_the_look.settings.header_hotspots"
-    },
-    {
-      "type": "color",
-      "id": "hotspot_color",
-      "label": "t:sections.shop_the_look.settings.hotspot_color.label",
-      "default": "#000000"
-    },
-    {
-      "type": "range",
-      "id": "hotspot_size",
-      "label": "t:sections.shop_the_look.settings.hotspot_size.label",
-      "min": 24,
-      "max": 48,
-      "step": 2,
-      "default": 32,
-      "unit": "px"
-    },
-    {
-      "type": "color",
-      "id": "accent_color",
-      "label": "Accent line color",
-      "default": "#c9a227",
-      "info": "Color of the accent line at top of product cards"
-    },
-    {
-      "type": "header",
-      "content": "t:sections.shop_the_look.settings.header_colors"
-    },
-    {
-      "type": "color",
-      "id": "background_color",
-      "label": "t:sections.shop_the_look.settings.background_color.label",
-      "default": "#F5F3EF"
-    },
-    {
-      "type": "color",
-      "id": "text_color",
-      "label": "t:sections.shop_the_look.settings.text_color.label",
-      "default": "#1A1A1A"
-    },
-    {
-      "type": "color",
-      "id": "card_background",
-      "label": "t:sections.shop_the_look.settings.card_background.label",
-      "default": "#FFFFFF"
-    },
-    {
-      "type": "color",
-      "id": "card_border_color",
-      "label": "t:sections.shop_the_look.settings.card_border_color.label",
-      "default": "#E5E5E5"
-    },
-    {
-      "type": "color",
-      "id": "button_background",
-      "label": "t:sections.shop_the_look.settings.button_background.label",
-      "default": "#1A1A1A"
-    },
-    {
-      "type": "color",
-      "id": "button_text_color",
-      "label": "t:sections.shop_the_look.settings.button_text_color.label",
-      "default": "#FFFFFF"
-    },
-    {
-      "type": "header",
-      "content": "Spacing - Mobile"
-    },
-    {
-      "type": "range",
-      "id": "padding_top_mobile",
-      "label": "Padding top",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "default": 32,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "padding_bottom_mobile",
-      "label": "Padding bottom",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "default": 32,
-      "unit": "px"
-    },
-    {
-      "type": "header",
-      "content": "Spacing - Desktop"
-    },
-    {
-      "type": "range",
-      "id": "padding_top_desktop",
-      "label": "Padding top",
-      "min": 0,
-      "max": 120,
-      "step": 4,
-      "default": 60,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "padding_bottom_desktop",
-      "label": "Padding bottom",
-      "min": 0,
-      "max": 120,
-      "step": 4,
-      "default": 60,
-      "unit": "px"
+      "label": "Room scene image"
     }
   ],
   "blocks": [
     {
-      "type": "product",
-      "name": "t:sections.shop_the_look.blocks.product.name",
+      "type": "product_pin",
+      "name": "Product Pin",
       "settings": [
         {
           "type": "product",
           "id": "product",
-          "label": "t:sections.shop_the_look.blocks.product.settings.product.label"
+          "label": "Product"
+        },
+        {
+          "type": "range",
+          "id": "position_x",
+          "label": "Marker X position (%)",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 50
+        },
+        {
+          "type": "range",
+          "id": "position_y",
+          "label": "Marker Y position (%)",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 50
         },
         {
           "type": "text",
-          "id": "custom_title",
-          "label": "t:sections.shop_the_look.blocks.product.settings.custom_title.label",
-          "info": "t:sections.shop_the_look.blocks.product.settings.custom_title.info"
-        },
-        {
-          "type": "textarea",
-          "id": "custom_description",
-          "label": "t:sections.shop_the_look.blocks.product.settings.custom_description.label",
-          "info": "t:sections.shop_the_look.blocks.product.settings.custom_description.info"
-        },
-        {
-          "type": "header",
-          "content": "t:sections.shop_the_look.blocks.product.settings.header_desktop"
-        },
-        {
-          "type": "range",
-          "id": "hotspot_x_desktop",
-          "label": "t:sections.shop_the_look.blocks.product.settings.hotspot_x.label",
-          "min": 0,
-          "max": 100,
-          "step": 1,
-          "default": 50,
-          "unit": "%"
-        },
-        {
-          "type": "range",
-          "id": "hotspot_y_desktop",
-          "label": "t:sections.shop_the_look.blocks.product.settings.hotspot_y.label",
-          "min": 0,
-          "max": 100,
-          "step": 1,
-          "default": 50,
-          "unit": "%"
-        },
-        {
-          "type": "header",
-          "content": "t:sections.shop_the_look.blocks.product.settings.header_mobile"
-        },
-        {
-          "type": "range",
-          "id": "hotspot_x_mobile",
-          "label": "t:sections.shop_the_look.blocks.product.settings.hotspot_x.label",
-          "min": 0,
-          "max": 100,
-          "step": 1,
-          "default": 50,
-          "unit": "%"
-        },
-        {
-          "type": "range",
-          "id": "hotspot_y_mobile",
-          "label": "t:sections.shop_the_look.blocks.product.settings.hotspot_y.label",
-          "min": 0,
-          "max": 100,
-          "step": 1,
-          "default": 50,
-          "unit": "%"
+          "id": "label",
+          "label": "Category label",
+          "default": "Modern Wall Light",
+          "info": "Shown under the product name. Falls back to the product's type if blank."
         }
       ]
     }
   ],
   "presets": [
     {
-      "name": "t:sections.shop_the_look.presets.default.name",
+      "name": "Shop the Look",
       "blocks": [
         {
-          "type": "product"
+          "type": "product_pin",
+          "settings": {
+            "position_x": 16,
+            "position_y": 26,
+            "label": "Modern Wall Light"
+          }
         },
         {
-          "type": "product"
+          "type": "product_pin",
+          "settings": {
+            "position_x": 44,
+            "position_y": 52,
+            "label": "Arched Floor Lamp"
+          }
+        },
+        {
+          "type": "product_pin",
+          "settings": {
+            "position_x": 74,
+            "position_y": 32,
+            "label": "Ceramic Table Lamp"
+          }
         }
       ]
     }

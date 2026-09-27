@@ -9,583 +9,123 @@
  */
 {
   "sections": {
-    "main": {
-      "type": "product",
+    "product-main": {
+      "type": "product-main",
       "blocks": {
-        "promotion_CEchqV": {
-          "type": "promotion",
+        "spec-dimensions": {
+          "type": "spec_item",
           "settings": {
-            "title_text": "2026 Spring Sale",
-            "discount_text": "20% off",
-            "code_value": "SPRING20",
-            "font_size": 13,
-            "text_color": "#1c1917",
-            "accent_color": "#D97706"
+            "spec_label": "Dimensions",
+            "spec_value": "45\" \u00d7 11\" \u00d7 11\""
           }
         },
-        "product_details_aFigg4": {
-          "type": "product_details",
+        "spec-light-source": {
+          "type": "spec_item",
           "settings": {
-            "description_header": "SPECIFICATIONS",
-            "header_color": "#d97706",
-            "header_size": 10,
-            "header_weight": "700",
-            "description_text": "",
-            "description_color": "#57534e",
-            "description_size": 15,
-            "card_bg_color": "#ebe8e0",
-            "card_radius": 0,
-            "label_color": "#78716c",
-            "label_size": 11,
-            "value_color": "#1c1917",
-            "value_size": 15,
-            "value_weight": "700",
-            "spec_label_1": "Dimensions",
-            "spec_value_1": "12\" x 6\"",
-            "spec_label_2": "Light Source",
-            "spec_value_2": "E27 LED Bulbs",
-            "spec_label_3": "Finish",
-            "spec_value_3": "Glass / Wood",
-            "spec_label_4": "Color Temeprature",
-            "spec_value_4": "Warm (3000K)",
-            "shipping_box_subheader": "On all orders",
-            "shipping_box_subheader_size": 10,
-            "shipping_box_subheader_color": "#57534e",
-            "shipping_box_header": "2 Year Warranty",
-            "shipping_box_header_size": 14,
-            "shipping_box_header_color": "#1c1917",
-            "shipping_box_link": "",
-            "shipping_box_bg": "#ebe8e0",
-            "shipping_box_image": "shopify://shop_images/Xara_closeup.jpg",
-            "shipping_box_img_opacity": 30,
-            "specs_box_subheader": "Learn more",
-            "specs_box_subheader_size": 10,
-            "specs_box_subheader_color": "#dbd6cc",
-            "specs_box_header": "View Full Specs",
-            "specs_box_header_size": 14,
-            "specs_box_header_color": "#f7f5f0",
-            "specs_box_link": "",
-            "specs_box_bg": "#1c1917",
-            "specs_box_image": "shopify://shop_images/Rivor_closeup.jpg",
-            "specs_box_img_opacity": 30
+            "spec_label": "Light Source",
+            "spec_value": "E27 LED Bulb"
           }
         },
-        "trust_badges_EnJJJQ": {
-          "type": "trust_badges",
+        "spec-finish": {
+          "type": "spec_item",
           "settings": {
-            "item_1_text": "FREE SHIPPING",
-            "item_1_show_icon": true,
-            "item_1_icon": "shipping",
-            "item_2_text": "EASY RETURNS",
-            "item_2_show_icon": true,
-            "item_2_icon": "return",
-            "item_2_url": "",
-            "line_color": "#d4d4d4",
-            "divider_color": "#999999",
-            "icon_color": "#1c1917",
-            "text_color": "#1c1917",
-            "icon_size": 18,
-            "text_size": 11,
-            "text_weight": "700",
-            "padding": 16
+            "spec_label": "Finish",
+            "spec_value": "Wood, Metal"
+          }
+        },
+        "spec-color-temp": {
+          "type": "spec_item",
+          "settings": {
+            "spec_label": "Color Temp",
+            "spec_value": "3-Color Switch"
+          }
+        },
+        "tab-installation": {
+          "type": "accordion_tab",
+          "settings": {
+            "tab_title": "Installation",
+            "tab_content": "Simply place on any flat surface and plug in. No assembly required. The tripod base provides stable support on all floor types."
+          }
+        },
+        "tab-description": {
+          "type": "accordion_tab",
+          "settings": {
+            "tab_title": "Description & Features",
+            "tab_content": "Hand-woven wooden ribbons form a sculptural silhouette with 3-color temperature switch for versatile ambiance."
+          }
+        },
+        "tab-shipping": {
+          "type": "accordion_tab",
+          "settings": {
+            "tab_title": "Shipping & Returns",
+            "tab_content": "Free US shipping. Estimated delivery in 4 days. Return requests within 30 days; shipping charges and restocking fees may apply. See our refund policy."
           }
         }
       },
       "block_order": [
-        "promotion_CEchqV",
-        "product_details_aFigg4",
-        "trust_badges_EnJJJQ"
+        "spec-dimensions",
+        "spec-light-source",
+        "spec-finish",
+        "spec-color-temp",
+        "tab-installation",
+        "tab-description",
+        "tab-shipping"
       ],
       "settings": {
-        "product_info_bg": "#f7f5f0",
-        "eyebrow_text": "modern floor lamp",
-        "eyebrow_size": 11,
-        "eyebrow_color": "#78716c",
-        "eyebrow_weight": "400",
-        "title_size": 34,
-        "title_size_desktop": 40,
-        "title_color": "#1c1917",
-        "title_weight": "700",
-        "title_italic": false,
-        "subtitle_text": "",
-        "subtitle_size": 15,
-        "subtitle_color": "#78716c",
-        "subtitle_weight": "400",
-        "price_size": 19,
-        "price_size_desktop": 24,
-        "price_color": "#1c1917",
-        "price_weight": "500",
-        "add_to_cart_text": "ADD",
-        "sold_out_text": "Sold out",
-        "description_header": "SPECIFICATIONS",
-        "description_text": "Minimalist in form, maximalist in texture. The Dune Sconce features a curved sandstone face that acts as a natural diffuser.",
-        "spec_label_1": "Dimensions",
-        "spec_value_1": "12\" x 6\"",
-        "spec_label_2": "Weight",
-        "spec_value_2": "4.2 lbs",
-        "spec_label_3": "Bulb",
-        "spec_value_3": "LED 8.5W",
-        "spec_label_4": "Finish",
-        "spec_value_4": "Honed",
-        "specs_title": "Specifications",
-        "variant_focus_color": "#d97706",
-        "variant_label_size": 11,
-        "variant_label_weight": "700",
-        "variant_label_color": "#57534e",
-        "button_size": 15,
-        "button_size_desktop": 16,
-        "button_weight": "700",
-        "button_text_color": "#f7f5f0",
-        "button_bg_color": "#1c1917",
-        "button_radius": 9,
-        "show_delivery_estimate": true,
-        "delivery_label": "Estimated Delivery By",
-        "delivery_days": 31,
-        "delivery_bg_color": "#ebe8e0",
-        "delivery_border_color": "#c2b8a3",
-        "delivery_border_width": 1,
-        "delivery_label_size": 13,
-        "delivery_label_weight": "400",
-        "delivery_label_color": "#57534e",
-        "delivery_date_size": 13,
-        "delivery_date_weight": "600",
-        "delivery_date_color": "#57534e",
-        "gallery_arrow_color": "#f7f5f0",
-        "gallery_arrow_size": 20,
-        "gallery_arrow_opacity": 70,
-        "gallery_arrow_hover_opacity": 100,
-        "gallery_counter_size": 13,
-        "gallery_counter_weight": "400",
-        "gallery_nav_bottom": 12,
-        "lightbox_bg_color": "#000000",
-        "ct_background_color": "#0a0a0a",
-        "ct_card_background": "#1a1a1a",
-        "ct_card_radius": 24,
-        "ct_text_color": "#f7f5f0",
-        "ct_subtitle_color": "#999999",
-        "ct_tab_background": "#2a2a2a",
-        "ct_tab_text_color": "#999999",
-        "ct_tab_active_background": "#d97706",
-        "ct_tab_active_text_color": "#1c1917",
-        "ct_tab_1_label": "Warm",
-        "ct_warm_glow_color": "#f5a623",
-        "ct_warm_title": "Warm",
-        "ct_warm_subtitle": "Best for relaxing environments.",
-        "ct_warm_mobile_subtitle": "SUNSET GLOW",
-        "ct_tab_2_label": "Natural",
-        "ct_neutral_glow_color": "#ffeed1",
-        "ct_neutral_title": "Neutral",
-        "ct_neutral_subtitle": "Perfect balance for any space.",
-        "ct_neutral_mobile_subtitle": "SOFT AMBER",
-        "ct_tab_3_label": "Cool",
-        "ct_cool_glow_color": "#daf6ff",
-        "ct_cool_title": "Cool",
-        "ct_cool_subtitle": "Ideal for focused activities.",
-        "ct_cool_mobile_subtitle": "DAYLIGHT"
+        "promo_label": "Clearance Sale: 60% Off",
+        "promo_code": "CLEARANCE60"
       }
     },
-    "collapsible_tabs_xR7kL2": {
-      "type": "product-collapsible-tabs",
-      "name": "Product details",
-      "settings": {
-        "installation_label": "INSTALLATION",
-        "installation_fallback": "Installation should be performed by a licensed electrician. Begin by turning off power at the main breaker panel.",
-        "electrician_collections": [
-          "chandeliers",
-          "indoor-wall-lights",
-          "wall-lights"
-        ],
-        "electrician_warning_text": "Qualified electrician recommended for safe installation.",
-        "description_label": "DESCRIPTION & FEATURES",
-        "description_fallback": "Crafted with premium materials and meticulous attention to detail. Each piece combines form and function for a truly distinctive lighting experience.",
-        "shipping_label": "SHIPPING & RETURNS",
-        "shipping_content": "Free standard shipping on all orders. Express shipping available at checkout. We offer a 30-day risk-free return policy — if you're not satisfied, return in original packaging for refund.",
-        "section_padding_top": 0,
-        "section_padding_bottom": 32,
-        "section_bg": "#f7f5f0",
-        "accent_color": "#d97706",
-        "accent_bg_color": "#faefe0",
-        "label_color": "#1c1917",
-        "border_color": "#d6d3d1",
-        "bottom_border_color": "#1c1917",
-        "icon_color": "#999999",
-        "text_color": "#44403c",
-        "warning_bg": "#ffffff",
-        "warning_text_color": "#1a1a1a",
-        "warning_icon_color": "#d97706",
-        "number_size": 14,
-        "label_size": 13,
-        "label_weight": "600",
-        "text_size": 16,
-        "text_size_mobile": 14
-      }
-    },
-    "product_intro_NrLrBk": {
+    "product-intro": {
       "type": "product-intro",
-      "name": "Product Intro",
-      "settings": {
-        "background_color": "#f7f5f0",
-        "strap_color": "#9ca3af",
-        "title_color": "#000000",
-        "subheading_color": "#57534e",
-        "text_color": "#78716c",
-        "accent_color": "#d97706",
-        "strap_size": 16,
-        "title_size_mobile": 40,
-        "title_size_desktop": 72,
-        "subheading_size_mobile": 18,
-        "subheading_size_desktop": 26,
-        "text_size": 18,
-        "padding_mobile": 44,
-        "padding_desktop": 80,
-        "padding_x_mobile": 0,
-        "padding_x_desktop": 0
-      }
+      "settings": {}
     },
-    "product_social_video_carousel_WfNx4y": {
-      "type": "product-social-video-carousel",
-      "blocks": {
-        "video_PH4KJJ": {
-          "type": "video",
-          "settings": {
-            "video": "shopify://files/videos/copy_E5281AEA-5986-4B6E-8AB1-37964F4F71CB.mp4",
-            "video_url": "",
-            "hashtag": "HomeDecor",
-            "creator_handle": "tonyasachika"
-          }
-        },
-        "video_pxkBtE": {
-          "type": "video",
-          "settings": {
-            "video": "shopify://files/videos/1764950212490017.mp4",
-            "video_url": "",
-            "hashtag": "SlowLight",
-            "creator_handle": "mellisa__creator"
-          }
-        },
-        "video_JrBBAN": {
-          "type": "video",
-          "settings": {
-            "video": "shopify://files/videos/copy_7B2F1006-6399-4F18-8336-C3A69E66935D.mp4",
-            "video_url": "",
-            "hashtag": "SlowLight",
-            "creator_handle": "offhourhustle"
-          }
-        },
-        "video_RiAi7W": {
-          "type": "video",
-          "settings": {
-            "video": "shopify://files/videos/IMG_9154.mp4",
-            "video_url": "",
-            "hashtag": "Lifestyle",
-            "creator_handle": "mellisa__creator"
-          }
-        },
-        "video_UbmmLV": {
-          "type": "video",
-          "settings": {
-            "video": "shopify://files/videos/copy_657AF8EB-5DE9-4183-9001-FCDA062DD1E8.mp4",
-            "video_url": "",
-            "hashtag": "Details",
-            "creator_handle": "katecalls"
-          }
-        }
-      },
-      "block_order": [
-        "video_PH4KJJ",
-        "video_pxkBtE",
-        "video_JrBBAN",
-        "video_RiAi7W",
-        "video_UbmmLV"
-      ],
-      "name": "Product video carousel",
-      "settings": {
-        "product": "aven",
-        "title": "See Aven In Real Homes",
-        "subtitle": "See how Aven looks in natural, lived-in light.",
-        "follow_text": "FOLLOW US",
-        "follow_url": "",
-        "padding_top": 0,
-        "padding_bottom": 60,
-        "section_bg": "#f7f5f0",
-        "title_color": "#1c1917",
-        "subtitle_color": "#78716c",
-        "card_width_desktop": 280,
-        "card_width_mobile": 200,
-        "card_gap": 16,
-        "card_radius": 12,
-        "hashtag_size_desktop": 16,
-        "hashtag_size_mobile": 14,
-        "handle_size_desktop": 13,
-        "handle_size_mobile": 12
-      }
-    },
-    "product_faq_mK9pL4": {
+    "product-faq": {
       "type": "product-faq",
-      "name": "Product FAQ",
       "settings": {
-        "heading": "FREQUENTLY ASKED",
-        "question_1": "What's included in the box?",
-        "answer_1": "Each order includes the light fixture, mounting hardware, installation manual, and LED bulb(s). Everything you need for a straightforward setup.",
-        "question_2": "Is this light suitable for all outdoor spaces?",
-        "answer_2": "Yes, [product_name] is built for all outdoor areas, including patios, driveways, and entryways. Its weather-resistant materials ensure durability in various conditions, but placing it under a covered space during extreme weather can extend its lifespan.",
-        "question_3": "How do I choose the right color temperature?",
-        "answer_3": "We offer three color temperature options: Warm (3000K) for a cozy, relaxing ambiance, Neutral (4000K) for balanced everyday lighting, and Cool (5000K) for bright, focused illumination. Most customers prefer Warm for living spaces and Cool for workspaces.",
-        "question_4": "What is the warranty policy?",
-        "answer_4": "All our lights come with a 2-year warranty covering manufacturing defects. If you experience any issues, our support team will arrange a replacement or repair at no additional cost.",
-        "question_5": "Can I install this light myself?",
-        "answer_5": "While some of our fixtures are designed for easy DIY installation, we recommend hiring a licensed electrician for hardwired installations to ensure safety and compliance with local building codes.",
-        "question_6": "",
-        "answer_6": "",
-        "section_padding_top": 48,
-        "section_padding_bottom": 48,
-        "section_bg": "#f7f5f0",
-        "border_color": "#d6d3d1",
-        "bottom_border_color": "#1c1917",
-        "icon_color": "#a8a29e",
-        "number_color": "#a8a29e",
-        "title_color": "#a8a29e",
-        "title_size": 12,
-        "question_size": 19,
-        "question_size_mobile": 16,
-        "question_color": "#1c1917",
-        "answer_size": 15,
-        "answer_size_mobile": 14,
-        "answer_color": "#57534e"
+        "label": "Support",
+        "heading": "Frequently Asked"
       }
     },
-    "testimonial_showcase_V6L66t": {
-      "type": "testimonial-showcase",
-      "disabled": true,
-      "name": "Testimonial showcase",
+    "product-questions": {
+      "type": "product-questions",
       "settings": {
-        "image": "shopify://shop_images/Zela_6.jpg",
-        "photo_label": "CUSTOMER PHOTO: JAMES T.",
-        "quote": "\"Finally, lighting that feels natural.\"",
-        "body": "We struggled to find a fixture that didn't feel industrial or cold. The Dune Sconce casts the perfect warm glow for our evening reading nook.",
-        "author_name": "James Thompson",
-        "author_subtitle": "Architect, NYC",
-        "mobile_author_subtitle": "Verified Buyer",
-        "show_stars_mobile": true,
-        "star_rating": 5,
-        "star_color": "#f59e0b",
-        "star_empty_color": "#6b7280",
-        "content_bg_color": "#f7f5f0",
-        "quote_icon_color": "#d97706",
-        "divider_color": "#d97706",
-        "photo_label_bg": "#f7f5f0",
-        "photo_label_color": "#000000",
-        "desktop_quote_size": 36,
-        "desktop_quote_weight": "400",
-        "desktop_quote_color": "#1c1917",
-        "desktop_body_size": 16,
-        "desktop_body_weight": "400",
-        "desktop_body_color": "#57534e",
-        "desktop_name_size": 16,
-        "desktop_name_weight": "600",
-        "desktop_name_color": "#1c1917",
-        "desktop_subtitle_size": 14,
-        "desktop_subtitle_weight": "400",
-        "desktop_subtitle_color": "#57534e",
-        "mobile_quote_size": 24,
-        "mobile_quote_weight": "400",
-        "mobile_quote_color": "#1c1917",
-        "mobile_body_size": 14,
-        "mobile_body_weight": "400",
-        "mobile_body_color": "#57534e",
-        "mobile_name_size": 14,
-        "mobile_name_weight": "600",
-        "mobile_name_color": "#1c1917",
-        "mobile_subtitle_size": 12,
-        "mobile_subtitle_weight": "400",
-        "mobile_subtitle_color": "#57534e"
+        "contact_url": "shopify://pages/contact",
+        "support_url": "shopify://pages/support-center",
+        "response_text": "We respond within 24 hours"
       }
     },
-    "support_banner_PjaKXH": {
-      "type": "support-banner",
-      "name": "Support banner",
-      "settings": {
-        "title": "Support",
-        "description": "Visit out Support Hub or submit a ticket.",
-        "btn_primary_text": "Contact",
-        "btn_primary_url": "shopify://pages/contact",
-        "btn_secondary_text": "Support Hub",
-        "btn_secondary_url": "shopify://pages/support-center",
-        "background_image_mobile": "shopify://shop_images/Dell_1.png",
-        "background_opacity_mobile": 15,
-        "background_image_desktop": "shopify://shop_images/Elm_2.png",
-        "background_opacity_desktop": 10,
-        "section_bg": "#f7f5f0",
-        "padding_top": 20,
-        "padding_bottom": 20,
-        "card_bg": "#ebe8e0",
-        "icon_bg": "#f7f5f0",
-        "icon_color": "#78716c",
-        "title_color": "#1a1a1a",
-        "description_color": "#57534e",
-        "btn_primary_bg": "#1a1a1a",
-        "btn_primary_color": "#ffffff",
-        "btn_secondary_bg": "#f7f5f0",
-        "btn_secondary_color": "#1a1a1a",
-        "btn_secondary_border": "#e5e5e5"
-      }
-    },
-    "category_carousel_1": {
-      "type": "product-carousel",
-      "blocks": {
-        "col_pendant": {
-          "type": "collection",
-          "settings": {
-            "collection": "pendant-lights"
-          }
-        },
-        "col_wall": {
-          "type": "collection",
-          "settings": {
-            "collection": "indoor-wall-lights"
-          }
-        },
-        "col_ceiling": {
-          "type": "collection",
-          "settings": {
-            "collection": "ceiling-lights"
-          }
-        },
-        "col_desk": {
-          "type": "collection",
-          "settings": {
-            "collection": "desk-lamp"
-          }
-        },
-        "col_floor": {
-          "type": "collection",
-          "settings": {
-            "collection": "floor-table-lamps"
-          }
-        },
-        "col_chandelier": {
-          "type": "collection",
-          "settings": {
-            "collection": "chandeliers"
-          }
-        },
-        "col_outdoor_wall": {
-          "type": "collection",
-          "settings": {
-            "collection": "wall-lights"
-          }
-        },
-        "col_path": {
-          "type": "collection",
-          "settings": {
-            "collection": "path-lights"
-          }
-        }
-      },
-      "block_order": [
-        "col_pendant",
-        "col_wall",
-        "col_ceiling",
-        "col_desk",
-        "col_floor",
-        "col_chandelier",
-        "col_outdoor_wall",
-        "col_path"
-      ],
-      "settings": {
-        "eyebrow": "CATEGORY",
-        "auto_match": true,
-        "title_prefix": "Best of",
-        "products_limit": 6,
-        "show_view_all": true,
-        "view_all_text": "View all",
-        "section_bg": "#f7f5f0",
-        "padding_top": 40,
-        "padding_bottom": 40,
-        "accent_color": "#D97706",
-        "show_divider": true,
-        "divider_color": "#e5e2db",
-        "eyebrow_size": 12,
-        "title_color": "#1c1917",
-        "title_size": 32,
-        "title_size_mobile": 24,
-        "card_width": 280,
-        "card_width_mobile": 200,
-        "card_gap": 16,
-        "card_radius": 12,
-        "name_color": "#1c1917",
-        "name_size": 16,
-        "subtitle_color": "#A8A29E",
-        "subtitle_size": 12,
-        "price_color": "#1c1917",
-        "price_size": 14
-      }
-    },
-    "recommended_carousel_2": {
+    "product-carousel-recommended": {
       "type": "product-carousel",
       "settings": {
-        "eyebrow": "RECOMMENDED",
-        "auto_match": false,
-        "title": "You may also like",
+        "marker": "",
+        "label": "",
+        "heading": "<p>You may also <em>like.</em></p>",
+        "aside_text": "",
         "collection": "best-sellers",
-        "products_limit": 6,
-        "show_view_all": true,
-        "view_all_text": "View all",
-        "section_bg": "#f7f5f0",
-        "padding_top": 40,
-        "padding_bottom": 40,
-        "accent_color": "#D97706",
-        "show_divider": false,
-        "divider_color": "#e5e2db",
-        "eyebrow_size": 12,
-        "title_color": "#1c1917",
-        "title_size": 32,
-        "title_size_mobile": 24,
-        "card_width": 280,
-        "card_width_mobile": 200,
-        "card_gap": 16,
-        "card_radius": 12,
-        "name_color": "#1c1917",
-        "name_size": 16,
-        "subtitle_color": "#A8A29E",
-        "subtitle_size": 12,
-        "price_color": "#1c1917",
-        "price_size": 14
+        "products_to_show": 4,
+        "foot_text": "",
+        "foot_cta_text": ""
       }
     },
-    "1765072596b5ddad21": {
-      "type": "apps",
-      "blocks": {
-        "loox_reviews_loox_dynamic_section_jiw8MR": {
-          "type": "shopify://apps/loox-reviews/blocks/loox-dynamic-section/5c3b337f-fd14-4df5-b1d6-80ec13e6e28e",
-          "settings": {
-            "reviews_to_display": "",
-            "default_tab": "automatic",
-            "only_photos": false,
-            "aggregated": false,
-            "limit": 20,
-            "hide_thumbnails": false,
-            "maxwidth": 1080,
-            "is_sample": false
-          }
-        }
-      },
-      "block_order": [
-        "loox_reviews_loox_dynamic_section_jiw8MR"
-      ],
+    "outlight-reviews": {
+      "type": "outlight-reviews",
+      "settings": {
+        "reviews_per_page": 10
+      }
+    },
+    "review-carousel-v20": {
+      "type": "review-carousel-v20",
       "settings": {}
     }
   },
   "order": [
-    "main",
-    "collapsible_tabs_xR7kL2",
-    "product_intro_NrLrBk",
-    "product_social_video_carousel_WfNx4y",
-    "product_faq_mK9pL4",
-    "testimonial_showcase_V6L66t",
-    "support_banner_PjaKXH",
-    "category_carousel_1",
-    "recommended_carousel_2",
-    "1765072596b5ddad21"
+    "product-main",
+    "review-carousel-v20",
+    "product-intro",
+    "product-faq",
+    "product-questions",
+    "product-carousel-recommended",
+    "outlight-reviews"
   ]
 }

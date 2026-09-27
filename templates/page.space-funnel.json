@@ -1,0 +1,36 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "space-funnel",
+      "settings": {
+        "eyebrow": "Lighting design tool",
+        "title": "See your room with new light.",
+        "lede": "Upload a photo. Review the placement plan. Then generate a layered, photoreal preview of your room in seconds.",
+        "cta_label": "Design My Room",
+        "cta_microcopy": "Free. Takes 60 seconds. No account needed.",
+        "api_base_url": "",
+        "proxy_base": "/apps/space-funnel",
+        "showcase_before": "shopify://shop_images/custom_nano-banana-2_1774517927942.png",
+        "showcase_after": "shopify://shop_images/outlight-aven-1774518058298.jpg",
+        "collection_floor_lamps": "floor-table-lamps",
+        "collection_desk_lamps": "desk-lamp",
+        "collection_wall_lights": "indoor-wall-lights",
+        "collection_pendants": "ceiling-lights",
+        "product_collection": "all",
+        "allowed_products": []
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

@@ -1,0 +1,69 @@
+<section class="bg-[#131314] py-20 md:py-28 px-5 md:px-12 text-center">
+  <div class="max-w-[1920px] mx-auto">
+    <p class="quote-thin text-xl md:text-2xl text-[#C5A059] mb-7">{{ section.settings.italic_line }}</p>
+    <h2 class="heading-thin text-4xl md:text-6xl lg:text-7xl text-[#F9F9FB] tracking-tight leading-[1.05] mb-8 max-w-3xl mx-auto">{{ section.settings.heading }}</h2>
+    <p class="font-body text-[0.95rem] font-[300] text-[#F9F9FB]/45 leading-[1.85] max-w-lg mx-auto mb-12">{{ section.settings.body }}</p>
+    <a href="{{ section.settings.button_url | default: '#apply' }}" class="inline-flex items-center gap-3 px-10 py-4 font-label text-[0.75rem] uppercase tracking-[0.15em] text-[#131314] font-medium hover:opacity-90 transition-opacity mb-10" style="background: #C5A059;">
+      {{ section.settings.button_label }}
+      <span class="material-symbols-outlined" style="font-size:16px;">arrow_forward</span>
+    </a>
+    <div class="flex items-center justify-center gap-6">
+      <a href="{{ section.settings.contact_url }}" class="font-body text-[0.8rem] font-[300] text-[#F9F9FB]/30 hover:text-[#F9F9FB]/60 transition-colors underline underline-offset-4">Contact</a>
+      <span class="text-[#F9F9FB]/10">·</span>
+      <a href="{{ section.settings.support_url }}" class="font-body text-[0.8rem] font-[300] text-[#F9F9FB]/30 hover:text-[#F9F9FB]/60 transition-colors underline underline-offset-4">Support</a>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Trade CTA",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "italic_line",
+      "label": "Italic gold line",
+      "default": "Stop paying retail."
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Main heading",
+      "default": "Save 30% starting today."
+    },
+    {
+      "type": "textarea",
+      "id": "body",
+      "label": "Body",
+      "default": "Free to join, instant approval, no minimums. Everything you need to specify Outlight on your next project — at the margins your business deserves."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Join for Free"
+    },
+    {
+      "type": "url",
+      "id": "button_url",
+      "label": "Button URL"
+    },
+    {
+      "type": "url",
+      "id": "contact_url",
+      "label": "Contact URL"
+    },
+    {
+      "type": "url",
+      "id": "support_url",
+      "label": "Support URL"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Trade CTA"
+    }
+  ]
+}
+{% endschema %}

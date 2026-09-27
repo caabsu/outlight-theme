@@ -1,0 +1,107 @@
+<section class="py-16 md:py-20 px-5 md:px-12" style="background-color:#F9F9FB;">
+  <div class="max-w-[1920px] mx-auto">
+
+    <!-- Desktop: 4 stats with 1px vertical dividers -->
+    <div class="hidden md:grid grid-cols-4">
+      {% for block in section.blocks %}
+        <div class="text-center px-10 py-6{% unless forloop.first %} border-l border-[#131314]/8{% endunless %}" {{ block.shopify_attributes }}>
+          <div class="heading-thin leading-none mb-3" style="font-size: {{ block.settings.number_size }}; font-variation-settings: 'opsz' 72; color: {{ block.settings.number_color }};">{{ block.settings.number }}</div>
+          <div class="font-label text-[0.6rem] uppercase tracking-[0.2em] text-[#131314]/40">{{ block.settings.label }}</div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Mobile: 2x2 grid -->
+    <div class="md:hidden grid grid-cols-2" style="border: 1px solid rgba(19,19,20,0.06);">
+      {% for block in section.blocks %}
+        <div class="text-center py-10 px-5{% unless forloop.last %}{% if forloop.index == 1 or forloop.index == 2 %} border-b{% endif %}{% if forloop.index == 1 or forloop.index == 3 %} border-r{% endif %} border-[#131314]/6{% endunless %}" {{ block.shopify_attributes }}>
+          <div class="heading-thin text-[3rem] mb-2 leading-none" style="font-variation-settings: 'opsz' 72; color: {{ block.settings.number_color }};">{{ block.settings.number }}</div>
+          <div class="font-label text-[0.55rem] uppercase tracking-[0.15em] text-[#131314]/35">{{ block.settings.label }}</div>
+        </div>
+      {% endfor %}
+    </div>
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Trade Stats",
+  "tag": "section",
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "Stat",
+      "settings": [
+        {
+          "type": "text",
+          "id": "number",
+          "label": "Stat number",
+          "default": "5,000+"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Stat label",
+          "default": "Projects Completed"
+        },
+        {
+          "type": "text",
+          "id": "number_color",
+          "label": "Number color (hex)",
+          "default": "#131314"
+        },
+        {
+          "type": "text",
+          "id": "number_size",
+          "label": "Number font size (desktop)",
+          "default": "4.5rem"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Trade Stats",
+      "blocks": [
+        {
+          "type": "stat",
+          "settings": {
+            "number": "5,000+",
+            "label": "Projects Completed",
+            "number_color": "#131314",
+            "number_size": "4.5rem"
+          }
+        },
+        {
+          "type": "stat",
+          "settings": {
+            "number": "1,200+",
+            "label": "Trade Partners",
+            "number_color": "#131314",
+            "number_size": "4.5rem"
+          }
+        },
+        {
+          "type": "stat",
+          "settings": {
+            "number": "30%",
+            "label": "Off Every Order",
+            "number_color": "#C5A059",
+            "number_size": "4.5rem"
+          }
+        },
+        {
+          "type": "stat",
+          "settings": {
+            "number": "Instant",
+            "label": "Approval",
+            "number_color": "#131314",
+            "number_size": "3rem"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

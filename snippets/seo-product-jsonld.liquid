@@ -1,0 +1,140 @@
+{% doc %}
+  Renders Product JSON-LD for the current product page.
+
+  @param {product} product - The current product
+  @param {variant} current_variant - The selected or first available variant
+{% enddoc %}
+
+{% liquid
+  assign brand_name = product.vendor | default: shop.name
+  assign currency_code = cart.currency.iso_code | default: localization.country.currency.iso_code | default: 'USD'
+
+  capture product_description
+    echo product.description | strip_html | strip_newlines | strip
+  endcapture
+
+  capture dimension_value
+    echo current_variant.metafields.custom.variant_dimension | default: ''
+  endcapture
+
+  capture light_source_value
+    if product.metafields.custom.light_source != blank
+      echo product.metafields.custom.light_source.value
+    endif
+  endcapture
+
+  capture finish_value
+    if product.metafields.custom.finish != blank
+      echo product.metafields.custom.finish.value
+    endif
+  endcapture
+
+  capture color_temperature_value
+    echo current_variant.metafields.custom.color_temperature | default: product.metafields.custom.color_temperature | default: ''
+  endcapture
+
+  capture delivery_time_value
+    echo product.metafields.custom.delivery_time | default: ''
+  endcapture
+
+  assign warranty_value = ''
+  assign return_window_days = 30
+
+  capture rating_value
+    if product.metafields.loox.avg_rating != blank
+      echo product.metafields.loox.avg_rating
+    elsif product.metafields.reviews.rating != blank
+      echo product.metafields.reviews.rating.value.rating | default: product.metafields.reviews.rating.value
+    endif
+  endcapture
+
+  capture review_count_value
+    echo product.metafields.loox.num_reviews | default: product.metafields.reviews.rating_count | default: ''
+  endcapture
+%}
+
+{% if template.name == 'product' %}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "@id": {{ canonical_url | append: '#product' | json }},
+      "name": {{ product.title | json }},
+      "url": {{ canonical_url | json }},
+      "mainEntityOfPage": {{ canonical_url | json }},
+      "brand": {
+        "@type": "Brand",
+        "name": {{ brand_name | json }}
+      }{% if product_description != blank %},
+      "description": {{ product_description | json }}{% endif %}{% if product.type != blank %},
+      "category": {{ product.type | json }}{% endif %},
+      "image": [{% for image in product.images limit: 10 %}{{ image | image_url: width: 1600 | prepend: 'https:' | json }}{% unless forloop.last %},{% endunless %}{% endfor %}],
+      "offers": [{% for variant in product.variants %}{
+        "@type": "Offer",
+        "url": {{ shop.url | append: product.url | append: '?variant=' | append: variant.id | json }},
+        "priceCurrency": {{ currency_code | json }},
+        "price": {{ variant.price | divided_by: 100.0 | json }},
+        "availability": {{ variant.available | default: false | replace: 'true', 'https://schema.org/InStock' | replace: 'false', 'https://schema.org/OutOfStock' | json }},
+        "itemCondition": "https://schema.org/NewCondition",
+        "seller": {
+          "@id": {{ shop.url | append: '#organization' | json }}
+        },
+        "shippingDetails": {
+          "@type": "OfferShippingDetails",
+          "shippingDestination": {
+            "@type": "DefinedRegion",
+            "addressCountry": "US"
+          },
+          "shippingRate": {
+            "@type": "MonetaryAmount",
+            "value": "0",
+            "currency": {{ currency_code | json }}
+          }
+        },
+        "hasMerchantReturnPolicy": {
+          "@type": "MerchantReturnPolicy",
+          "applicableCountry": "US",
+          "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+          "merchantReturnDays": {{ return_window_days }},
+          "url": {{ shop.url | append: '/policies/refund-policy' | json }}
+        }{% if variant.sku != blank %},
+        "sku": {{ variant.sku | json }}{% endif %}{% if variant.barcode != blank %},
+        "gtin": {{ variant.barcode | json }}{% endif %}
+      }{% unless forloop.last %},{% endunless %}{% endfor %}]{% if rating_value != blank and review_count_value != blank %},
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": {{ rating_value | strip | json }},
+        "reviewCount": {{ review_count_value | strip | json }},
+        "bestRating": "5",
+        "worstRating": "1"
+      }{% endif %}{% if current_variant.sku != blank %},
+      "sku": {{ current_variant.sku | json }}{% endif %}{% if current_variant.barcode != blank %},
+      "gtin": {{ current_variant.barcode | json }}{% endif %}{% if dimension_value != blank or light_source_value != blank or finish_value != blank or color_temperature_value != blank or delivery_time_value != blank %},
+      "additionalProperty": [{% assign property_emitted = false %}{% if dimension_value != blank %}{% assign property_emitted = true %}{
+        "@type": "PropertyValue",
+        "name": "Dimensions",
+        "value": {{ dimension_value | strip | json }}
+      }{% endif %}{% if light_source_value != blank %}{% if property_emitted %},{% endif %}{% assign property_emitted = true %}{
+        "@type": "PropertyValue",
+        "name": "Light source",
+        "value": {{ light_source_value | strip | json }}
+      }{% endif %}{% if finish_value != blank %}{% if property_emitted %},{% endif %}{% assign property_emitted = true %}{
+        "@type": "PropertyValue",
+        "name": "Finish",
+        "value": {{ finish_value | strip | json }}
+      }{% endif %}{% if color_temperature_value != blank %}{% if property_emitted %},{% endif %}{% assign property_emitted = true %}{
+        "@type": "PropertyValue",
+        "name": "Color temperature",
+        "value": {{ color_temperature_value | strip | json }}
+      }{% endif %}{% if delivery_time_value != blank %}{% if property_emitted %},{% endif %}{% assign property_emitted = true %}{
+        "@type": "PropertyValue",
+        "name": "Delivery time",
+        "value": {{ delivery_time_value | strip | append: ' days' | json }}
+      }{% endif %}{% if warranty_value != blank %}{% if property_emitted %},{% endif %}{
+        "@type": "PropertyValue",
+        "name": "Warranty",
+        "value": {{ warranty_value | json }}
+      }{% endif %}]{% endif %}
+    }
+  </script>
+{% endif %}

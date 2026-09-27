@@ -1,0 +1,314 @@
+{%- comment -%}
+  Product Reviews Carousel — V20 Full-Bleed Cards
+  Outlight Theme v2
+  Listens for 'outlight-reviews-loaded' event from the review widget,
+  then renders reviews as V20 horizontal carousel cards.
+{%- endcomment -%}
+
+{%- assign api_base = section.settings.api_base_url | default: 'https://shopify-ai-chatbot-production-9ab4.up.railway.app' -%}
+
+<style>
+  .rc20-wrap{overflow:hidden}
+  .rc20-carousel{
+    display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;padding:0 20px 8px;
+  }
+  @media(min-width:768px){
+    .rc20-carousel{padding:0 48px 8px;gap:14px}
+  }
+  .rc20-carousel::-webkit-scrollbar{height:3px}
+  .rc20-carousel::-webkit-scrollbar-thumb{background:rgba(197,160,89,.35);border-radius:2px}
+  .rc20-carousel::-webkit-scrollbar-track{background:rgba(19,19,20,.04)}
+
+  .rc20-card{
+    flex:0 0 310px;height:400px;scroll-snap-align:start;border-radius:6px;
+    overflow:hidden;position:relative;
+    box-shadow:0 1px 2px rgba(0,0,0,.03),0 4px 16px rgba(0,0,0,.04);
+    transition:box-shadow .3s,transform .3s;cursor:pointer;
+  }
+  @media(min-width:768px){.rc20-card{flex:0 0 360px}}
+  .rc20-card:hover{
+    box-shadow:0 2px 4px rgba(0,0,0,.04),0 8px 28px rgba(0,0,0,.08);
+    transform:translateY(-2px);
+  }
+  .rc20-bg{position:absolute;inset:0}
+  .rc20-bg img{width:100%;height:100%;object-fit:cover}
+  .rc20-grad{position:absolute;inset:0;background:linear-gradient(transparent 25%,rgba(0,0,0,.72))}
+  .rc20-content{position:absolute;bottom:0;left:0;right:0;padding:20px}
+  @media(min-width:768px){.rc20-content{padding:24px}}
+  .rc20-stars{display:flex;gap:2px;margin-bottom:6px}
+  .rc20-star{
+    font-family:'Material Symbols Outlined';font-size:11px;color:#fff;
+    font-variation-settings:'FILL' 1,'wght' 400;line-height:1;
+  }
+  .rc20-star.empty{color:rgba(255,255,255,.25);font-variation-settings:'FILL' 0,'wght' 300}
+  .rc20-name{font-family:'Manrope',sans-serif;font-size:.8rem;font-weight:400;color:#fff;margin-bottom:2px}
+  .rc20-name .rc20-vf{
+    font-family:'Material Symbols Outlined';font-size:11px;color:#C5A059;
+    font-variation-settings:'FILL' 1,'wght' 400;vertical-align:middle;margin-left:3px;
+  }
+  .rc20-date{font-family:'Manrope',sans-serif;font-size:.55rem;font-weight:300;color:rgba(255,255,255,.4);margin-bottom:6px}
+  .rc20-snippet{
+    font-family:'Manrope',sans-serif;font-size:.74rem;font-weight:300;
+    color:rgba(255,255,255,.65);line-height:1.6;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  }
+  .rc20-expand{max-height:0;overflow:hidden;transition:max-height .4s ease,opacity .3s;opacity:0}
+  .rc20-card:hover .rc20-expand{max-height:200px;opacity:1}
+  .rc20-full-text{
+    font-family:'Manrope',sans-serif;font-size:.74rem;font-weight:300;
+    color:rgba(255,255,255,.6);line-height:1.6;margin:8px 0;
+  }
+  .rc20-foot{
+    display:flex;align-items:center;justify-content:space-between;
+    padding-top:8px;border-top:1px solid rgba(255,255,255,.12);
+  }
+  .rc20-item{font-family:'Manrope',sans-serif;font-size:.54rem;font-weight:300;color:rgba(255,255,255,.3)}
+  .rc20-helpful{
+    border:1px solid rgba(255,255,255,.15);background:none;
+    font-family:'Manrope',sans-serif;font-size:.58rem;font-weight:400;
+    color:rgba(255,255,255,.4);padding:3px 9px;cursor:pointer;
+    transition:all .2s;display:inline-flex;align-items:center;gap:3px;
+  }
+  .rc20-helpful:hover{border-color:#C5A059;color:#C5A059}
+  .rc20-helpful .material-symbols-outlined{font-size:11px;font-variation-settings:'FILL' 0,'wght' 300}
+
+  /* No-photo card */
+  .rc20-card.no-photo{background:#f4f0eb;height:400px}
+  .rc20-card.no-photo .rc20-content{position:relative;padding:28px;display:flex;flex-direction:column;height:100%;justify-content:center}
+  .rc20-card.no-photo .rc20-star{color:#C5A059}
+  .rc20-card.no-photo .rc20-star.empty{color:rgba(45,51,56,.18)}
+  .rc20-card.no-photo .rc20-name{color:#131314}
+  .rc20-card.no-photo .rc20-date{color:rgba(45,51,56,.3)}
+  .rc20-card.no-photo .rc20-snippet{color:rgba(45,51,56,.55);-webkit-line-clamp:unset;display:block}
+  .rc20-card.no-photo .rc20-expand{max-height:none;opacity:1}
+  .rc20-card.no-photo .rc20-full-text{display:none}
+  .rc20-card.no-photo .rc20-foot{border-color:rgba(19,19,20,.08)}
+  .rc20-card.no-photo .rc20-item{color:rgba(45,51,56,.28)}
+  .rc20-card.no-photo .rc20-helpful{border-color:rgba(19,19,20,.08);color:rgba(45,51,56,.35)}
+  .rc20-card.no-photo .rc20-helpful:hover{border-color:#C5A059;color:#C5A059}
+
+  /* Skeleton */
+  .rc20-skeleton{
+    flex:0 0 310px;height:400px;border-radius:6px;
+    background:linear-gradient(110deg,#f0f0f0 8%,#e8e8e8 18%,#f0f0f0 33%);
+    background-size:200% 100%;animation:rc20-shimmer 1.5s linear infinite;
+  }
+  @media(min-width:768px){.rc20-skeleton{flex:0 0 360px}}
+  @keyframes rc20-shimmer{to{background-position-x:-200%}}
+
+  @media(hover:none){
+    .rc20-card.expanded .rc20-expand{max-height:200px;opacity:1}
+  }
+
+  /* Hide the widget — it just provides data */
+  #outlight-reviews{position:fixed!important;left:-9999px!important;top:-9999px!important;visibility:hidden!important;pointer-events:none!important;width:1200px!important}
+</style>
+
+<section id="section-{{ section.id }}" class="rc20-wrap bg-[#F9F9FB] py-12 md:py-20">
+  <div class="max-w-[1920px] mx-auto">
+
+    <div class="text-center px-5 md:px-12 mb-6 md:mb-8">
+      <span class="font-label text-[0.5rem] md:text-[0.55rem] uppercase tracking-[0.3em] text-[#C5A059] block mb-3">Customer Reviews</span>
+      <div class="flex items-center justify-center gap-2 mb-2">
+        <div class="flex gap-0.5">
+          <span class="material-symbols-outlined text-[#C5A059] text-sm md:text-lg" style="font-variation-settings:'FILL' 1,'wght' 400;">star</span>
+          <span class="material-symbols-outlined text-[#C5A059] text-sm md:text-lg" style="font-variation-settings:'FILL' 1,'wght' 400;">star</span>
+          <span class="material-symbols-outlined text-[#C5A059] text-sm md:text-lg" style="font-variation-settings:'FILL' 1,'wght' 400;">star</span>
+          <span class="material-symbols-outlined text-[#C5A059] text-sm md:text-lg" style="font-variation-settings:'FILL' 1,'wght' 400;">star</span>
+          <span class="material-symbols-outlined text-[#C5A059] text-sm md:text-lg" style="font-variation-settings:'FILL' 1,'wght' 400;">star</span>
+        </div>
+        <span class="font-headline text-2xl md:text-3xl font-[200] text-[#131314]" id="rc20-avg-{{ section.id }}">{{ section.settings.average_rating }}</span>
+      </div>
+      <span class="font-body text-[0.7rem] md:text-[0.78rem] font-light text-[#2d3338]/45" id="rc20-count-{{ section.id }}">
+        Based on {{ section.settings.review_count }} verified reviews
+      </span>
+    </div>
+
+    <div class="rc20-carousel" id="rc20-carousel-{{ section.id }}">
+      <div class="rc20-skeleton"></div>
+      <div class="rc20-skeleton"></div>
+      <div class="rc20-skeleton"></div>
+    </div>
+
+  </div>
+</section>
+
+{%- comment -%} Widget container + script — loads data, hidden via CSS above {%- endcomment -%}
+<div id="outlight-reviews" data-product-handle="{{ product.handle }}"></div>
+<script src="{{ api_base }}/widget/review-widget.js" defer></script>
+
+<script>
+(function(){
+  var SECTION_ID = {{ section.id | json }};
+  var PER_PAGE = {{ section.settings.reviews_per_page | default: 10 }};
+  var carouselEl = document.getElementById('rc20-carousel-' + SECTION_ID);
+  var avgEl = document.getElementById('rc20-avg-' + SECTION_ID);
+  var countEl = document.getElementById('rc20-count-' + SECTION_ID);
+  var rendered = false;
+
+  function starsHtml(n) {
+    var h = '';
+    for (var i = 1; i <= 5; i++) h += '<span class="rc20-star' + (i > n ? ' empty' : '') + '">star</span>';
+    return h;
+  }
+
+  function escHtml(s) {
+    var d = document.createElement('div'); d.textContent = s; return d.innerHTML;
+  }
+
+  function buildCard(r) {
+    /* Normalize field names — handles any key format your API uses */
+    var author = r.author || r.reviewer_name || r.name || 'Customer';
+    var rating = r.rating || r.star_rating || r.score || 5;
+    var body = r.body || r.review_text || r.content || r.text || '';
+    var date = r.date || r.review_date || r.created_at || '';
+    var item = r.variant || r.variant_title || r.product_title || r.reviewed_item || '';
+    var verified = r.verified !== false;
+    var images = r.images || r.photos || r.media || [];
+    if (typeof images === 'string') images = [images];
+    var hasPhoto = images.length > 0;
+    var helpful = r.helpful_count || r.votes_up || r.helpful || 0;
+
+    var snippet = body.length > 120 ? body.substring(0, 120) + '…' : body;
+    var d = document.createElement('div');
+    d.className = 'rc20-card' + (hasPhoto ? '' : ' no-photo');
+
+    var h = '';
+    if (hasPhoto) {
+      h += '<div class="rc20-bg"><img src="' + escHtml(images[0]) + '" alt="Review photo by ' + escHtml(author) + '" loading="lazy"></div>';
+      h += '<div class="rc20-grad"></div>';
+    }
+    h += '<div class="rc20-content">';
+    h += '<div class="rc20-stars">' + starsHtml(rating) + '</div>';
+    h += '<div class="rc20-name">' + escHtml(author) + (verified ? ' <span class="rc20-vf">verified</span>' : '') + '</div>';
+    if (date) h += '<div class="rc20-date">' + escHtml(date) + '</div>';
+    if (hasPhoto) {
+      h += '<p class="rc20-snippet">' + escHtml(snippet) + '</p>';
+      h += '<div class="rc20-expand">';
+      if (body.length > 120) h += '<p class="rc20-full-text">' + escHtml(body) + '</p>';
+    } else {
+      h += '<p class="rc20-snippet">' + escHtml(body) + '</p>';
+      h += '<div class="rc20-expand">';
+    }
+    h += '<div class="rc20-foot">';
+    if (item) h += '<span class="rc20-item">' + escHtml(item) + '</span>';
+    h += '<button class="rc20-helpful"><span class="material-symbols-outlined">thumb_up</span> ' + (helpful > 0 ? helpful : 'Helpful') + '</button>';
+    h += '</div></div></div>';
+
+    d.innerHTML = h;
+    return d;
+  }
+
+  function render(data) {
+    if (rendered) return;
+    rendered = true;
+
+    /* Find the reviews array — handles any response shape */
+    var reviews = data.reviews || data.data || data.results || data;
+    if (!Array.isArray(reviews)) {
+      var keys = Object.keys(data);
+      for (var i = 0; i < keys.length; i++) {
+        if (Array.isArray(data[keys[i]]) && data[keys[i]].length > 0) {
+          reviews = data[keys[i]]; break;
+        }
+      }
+    }
+    if (!Array.isArray(reviews) || reviews.length === 0) return;
+
+    /* Update summary header */
+    var avg = data.average_rating || data.avg_rating || data.rating;
+    var total = data.total_count || data.total || data.count || data.review_count || reviews.length;
+    if (avg) avgEl.textContent = parseFloat(avg).toFixed(1);
+    if (total) countEl.textContent = 'Based on ' + total + ' verified reviews';
+
+    /* Build V20 cards */
+    carouselEl.innerHTML = '';
+    reviews.slice(0, PER_PAGE).forEach(function(r) {
+      carouselEl.appendChild(buildCard(r));
+    });
+
+    /* Touch: tap to expand on mobile */
+    if ('ontouchstart' in window) {
+      carouselEl.querySelectorAll('.rc20-card:not(.no-photo)').forEach(function(c) {
+        c.addEventListener('click', function() {
+          var was = c.classList.contains('expanded');
+          carouselEl.querySelectorAll('.rc20-card').forEach(function(x) { x.classList.remove('expanded'); });
+          if (!was) c.classList.add('expanded');
+        });
+      });
+    }
+  }
+
+  /*
+   * Listen for the review widget to expose data via:
+   *   window.__outlightReviews = { reviews: [...], average_rating, total_count }
+   *   window.dispatchEvent(new CustomEvent('outlight-reviews-loaded'))
+   *
+   * Add these two lines in your review-widget.js after you fetch data from the API.
+   */
+  window.addEventListener('outlight-reviews-loaded', function() {
+    if (window.__outlightReviews) render(window.__outlightReviews);
+  });
+
+  /* Also check if data is already available (widget loaded before this script) */
+  if (window.__outlightReviews) {
+    render(window.__outlightReviews);
+  }
+
+  /* Poll as backup — checks every 200ms for up to 10s if widget sets the data */
+  var pollCount = 0;
+  var poll = setInterval(function() {
+    pollCount++;
+    if (window.__outlightReviews && !rendered) {
+      render(window.__outlightReviews);
+      clearInterval(poll);
+    }
+    if (pollCount > 50) clearInterval(poll);
+  }, 200);
+
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Reviews Carousel",
+  "tag": "section",
+  "class": "product-reviews-carousel",
+  "settings": [
+    {
+      "type": "text",
+      "id": "api_base_url",
+      "label": "Review API Base URL",
+      "default": "https://shopify-ai-chatbot-production-9ab4.up.railway.app"
+    },
+    {
+      "type": "range",
+      "id": "reviews_per_page",
+      "label": "Reviews per page",
+      "min": 4,
+      "max": 20,
+      "step": 2,
+      "default": 10
+    },
+    {
+      "type": "text",
+      "id": "average_rating",
+      "label": "Average Rating",
+      "default": "4.9"
+    },
+    {
+      "type": "text",
+      "id": "review_count",
+      "label": "Total Review Count",
+      "default": "220"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Reviews Carousel"
+    }
+  ],
+  "enabled_on": { "templates": ["product"] }
+}
+{% endschema %}

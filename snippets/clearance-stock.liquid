@@ -1,0 +1,48 @@
+{% doc %}
+Renders inventory-based clearance availability.
+@param {product} product - Product to display
+@param {variant} [variant] - Selected variant for a product page
+@param {string} [placement] - Use image for an image overlay
+{% enddoc %}
+{%- liquid
+  assign stock_variant = variant | default: product.selected_or_first_available_variant
+  assign stock_label = ''
+  assign stock_low = false
+  assign stock_handles = 'aven,olin,fira' | split: ','
+  if stock_variant.available == false
+    assign stock_label = 'clearance.sold_out' | t
+  elsif stock_handles contains product.handle
+    if stock_variant.inventory_management != blank and stock_variant.inventory_policy == 'deny' and stock_variant.inventory_quantity > 0
+      if stock_variant.inventory_quantity <= 50
+        assign stock_label = 'clearance.low_stock' | t
+        assign stock_low = true
+      else
+        assign stock_label = ''
+      endif
+    endif
+    if variant == blank and stock_low == false
+      for option_variant in product.variants
+        if option_variant.available and option_variant.inventory_management != blank and option_variant.inventory_policy == 'deny' and option_variant.inventory_quantity > 0 and option_variant.inventory_quantity <= 50
+          assign stock_label = 'clearance.variant_low' | t
+          assign stock_low = true
+          break
+        endif
+      endfor
+    endif
+  endif
+-%}
+<span class="ol-stock{% if stock_low %} ol-stock--low{% endif %}{% if stock_variant.available == false %} ol-stock--sold{% endif %}{% if placement == 'image' %} ol-stock--image{% endif %}"{% if variant %} data-clearance-stock aria-live="polite"{% endif %}{% if stock_label == blank %} hidden{% endif %}>{{ stock_label }}</span>
+{% stylesheet %}
+.ol-stock{display:block;margin-top:10px;color:#6b6c66;font-family:'Manrope',sans-serif;font-size:12px;font-weight:400;line-height:1.5;letter-spacing:.015em}
+.ol-stock[hidden]{display:none}
+.ol-stock.ol-stock--low{display:inline-flex;align-items:center;gap:7px;width:fit-content;padding:6px 9px;margin:0 0 14px;background:#f8eee7;border:1px solid #d4a18b55;border-radius:3px;color:#983e25;font-size:12px;font-weight:500}
+.ol-stock--low::before{content:'';display:block;flex:0 0 5px;width:5px;height:5px;border-radius:50%;background:currentColor}
+.ol-stock.ol-stock--image.ol-stock--low{position:absolute;bottom:14px;left:14px;z-index:3;padding:8px 10px;margin:0;background:#faf9f5ed;color:#705a38}
+.ol-stock.ol-stock--image.ol-stock--sold{position:absolute;inset:auto 14px 14px auto;z-index:3;display:inline-flex;align-items:center;justify-content:center;margin:0;padding:8px 12px;text-transform:uppercase;font-size:10px;font-weight:500;letter-spacing:.1em;color:#4f514b;background:#faf9f5ed;border:1px solid #ffffff70;text-align:center;pointer-events:none}
+.ol-stock.ol-stock--sold:not(.ol-stock--image){font-size:12px;font-weight:400;letter-spacing:0;color:#6b6c66}
+a.ol-card-sold,a.ol-card-sold:hover{cursor:default;transform:none!important}
+.ol-card-sold .ol-product-image{filter:saturate(.25);opacity:.64}
+.ol-card-sold:hover img{transform:none!important}
+.ol-card-sold .ed-card__arrow,.ol-card-sold .card__arrow,.ol-card-sold .quick{display:none!important}
+@media(max-width:600px){.ol-stock.ol-stock--image.ol-stock--sold{right:9px;bottom:9px;padding:7px 9px;font-size:9px}}
+{% endstylesheet %}

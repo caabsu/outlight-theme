@@ -1,0 +1,707 @@
+{% assign clearance_percent = settings.clearance_discount_percent | default: 60 %}
+{% assign clearance_remaining = 100 | minus: clearance_percent %}
+{% comment %}
+  Product Main Section
+  Outlight Theme v2
+{% endcomment %}
+
+{%- if product.featured_image -%}
+  <link rel="preload" as="image" href="{{ product.featured_image | image_url: width: 1200 }}" fetchpriority="high">
+{%- endif -%}
+
+<style>
+  .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+  .accordion-content.open { max-height: 400px; }
+  .accordion-icon { transition: transform 0.3s ease; }
+  .accordion-trigger.open .accordion-icon { transform: rotate(45deg); }
+  .qty-btn { transition: color 0.15s ease; background: transparent !important; }
+  .qty-btn:hover { color: #131314 !important; background: rgba(19,19,20,0.03) !important; }
+  select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235F5E5F' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; }
+  .thumbnail-active { border: 2px solid #C5A059; }
+  .thumbnail-inactive { border: 1px solid rgba(19,19,20,0.08); }
+  .thumbnail-inactive:hover { border-color: #C5A059; transition: border-color 0.2s; }
+  .main-product-image { transition: opacity 0.3s ease; }
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  input[type="number"] { -moz-appearance: textfield; }
+
+#shopify-section-{{ section.id }} h1{font-weight:400!important;letter-spacing:-.035em!important;font-size:44px!important;line-height:1.08!important}
+#shopify-section-{{ section.id }} #product-price,#shopify-section-{{ section.id }} #product-price-mobile{font-size:23px!important;font-weight:500!important;white-space:nowrap}
+#shopify-section-{{ section.id }} #compare-price,#shopify-section-{{ section.id }} #compare-price-mobile{font-size:13px!important;color:#73756f!important;font-weight:400!important}
+#shopify-section-{{ section.id }} .ol-product-offer{background:transparent!important;border:0!important;border-top:1px solid #dedbd4!important;border-bottom:1px solid #dedbd4!important;padding:15px 0!important;margin:22px 0 18px!important;gap:0!important}
+#shopify-section-{{ section.id }} .ol-product-offer > .material-symbols-outlined{display:none}
+#shopify-section-{{ section.id }} .ol-product-offer .font-body{font-size:12px!important;line-height:1.7!important;color:#55584f!important}
+#shopify-section-{{ section.id }} .ol-product-offer .font-body:first-child{font-weight:500!important;color:#292c25!important;letter-spacing:.025em}
+@media(max-width:767px){#shopify-section-{{ section.id }} h1{font-size:37px!important}#shopify-section-{{ section.id }} #product-price-mobile{font-size:21px!important}#shopify-section-{{ section.id }} .ol-product-offer{margin:18px 0 15px!important;padding:12px 0!important}}
+
+#shopify-section-{{ section.id }} .ol-balanced-offer{display:flex;align-items:center;gap:12px;padding:14px;margin:18px 0 12px;background:#f1ebe2;border:1px solid #e4d7c7;border-radius:5px}
+#shopify-section-{{ section.id }} .ol-balanced-offer__badge{flex-shrink:0;padding:7px 9px;border-radius:3px;background:#a2472e;color:#fff;font:500 11px/1.3 'Manrope',sans-serif}
+#shopify-section-{{ section.id }} .ol-balanced-offer strong{display:block;font:500 12px/1.5 'Manrope',sans-serif;color:#34372f}
+#shopify-section-{{ section.id }} .ol-balanced-offer div>span{display:block;font:400 10px/1.5 'Manrope',sans-serif;color:#727466}
+#shopify-section-{{ section.id }} .ol-balanced-offer__saving{margin-left:auto;font:500 11px/1.4 'Manrope',sans-serif;color:#8f402a;text-align:right}
+#shopify-section-{{ section.id }} [data-clearance-stock]{margin-bottom:15px}
+@media(max-width:767px){#shopify-section-{{ section.id }} .ol-balanced-offer{gap:9px;padding:12px}#shopify-section-{{ section.id }} .ol-balanced-offer div>span{max-width:145px;font-size:10px}#shopify-section-{{ section.id }} .ol-balanced-offer__saving{max-width:70px;font-size:10px}}
+</style>
+
+{% assign current_variant = product.selected_or_first_available_variant %}
+{% assign clearance_price = current_variant.price | times: clearance_remaining | divided_by: 100.0 | round %}
+{% render 'seo-product-jsonld', product: product, current_variant: current_variant %}
+{% render 'seo-faq-jsonld', product: product %}
+
+{%- comment -%} Desktop product layout {%- endcomment -%}
+<div class="hidden md:block" style="background-color:#F9F9FB;">
+  <div class="grid grid-cols-12 max-w-[1920px] mx-auto">
+
+    {%- comment -%} Left: Image gallery (7 cols) — sliding with scrollable thumbs {%- endcomment -%}
+    {%- assign desk_img_total = product.images.size -%}
+    {%- if desk_img_total == 0 -%}{%- assign desk_img_total = 1 -%}{%- endif -%}
+    <div class="col-span-7 p-10">
+      <div class="aspect-square w-full relative mb-3 overflow-hidden bg-[#ebeef2]" id="desk-slider">
+        <span id="desk-counter" style="position:absolute;top:16px;right:16px;z-index:2;font-family:'Newsreader',serif;font-weight:300;font-size:0.8rem;color:rgba(19,19,20,0.25);letter-spacing:0.05em;">1 / {{ desk_img_total }}</span>
+        <div class="flex h-full" id="desk-slides" style="width:{{ desk_img_total | times: 100 }}%;transition:transform 0.5s cubic-bezier(0.25,1,0.5,1);">
+          {%- if product.images.size > 0 -%}
+            {%- for image in product.images -%}
+              <div class="h-full" style="width:{{ 100.0 | divided_by: desk_img_total }}%;">
+                <img src="{{ image | image_url: width: 1200 }}" alt="{{ image.alt | escape }}" class="w-full h-full object-cover" {% if forloop.first %}loading="eager" fetchpriority="high"{% else %}loading="lazy"{% endif %} width="1200" height="1200">
+              </div>
+            {%- endfor -%}
+          {%- else -%}
+            <div class="w-full h-full bg-[#ebeef2]"></div>
+          {%- endif -%}
+        </div>
+        <div class="absolute inset-4 border border-white/12 pointer-events-none"></div>
+      </div>
+
+      {%- if product.images.size > 1 -%}
+        <!-- Progress bar -->
+        <div style="height:1px;background:rgba(19,19,20,0.06);position:relative;margin-bottom:10px;">
+          <div id="desk-progress" style="height:100%;background:#C5A059;position:absolute;left:0;top:0;width:{{ 100.0 | divided_by: desk_img_total }}%;transition:width 0.5s cubic-bezier(0.25,1,0.5,1);"></div>
+        </div>
+        <!-- Scrollable thumbnail strip -->
+        <div class="flex gap-2 overflow-x-auto scroll-hide" id="desk-thumbstrip">
+          {%- for image in product.images -%}
+            <button
+              type="button"
+              data-dslide="{{ forloop.index0 }}"
+              class="shrink-0 aspect-square overflow-hidden desk-thumb"
+              style="width:calc(25% - 6px);opacity:{% if forloop.first %}1{% else %}0.45{% endif %};transition:opacity 0.3s ease;border:none;padding:0;background:none;cursor:pointer;position:relative;"
+              onclick="deskGoTo({{ forloop.index0 }})"
+            >
+              <img src="{{ image | image_url: width: 300 }}" alt="{{ image.alt | escape }}" class="w-full h-full object-cover" loading="lazy" width="300" height="300">
+              <span class="desk-thumb-bar" style="position:absolute;bottom:0;left:0;right:0;height:2px;background:#C5A059;transform:scaleX({% if forloop.first %}1{% else %}0{% endif %});transition:transform 0.35s cubic-bezier(0.25,1,0.5,1);"></span>
+            </button>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <script>
+    (function(){
+      var cur=0, total={{ desk_img_total }};
+      var slides=document.getElementById('desk-slides');
+      if(!slides||total<=1) return;
+      window.deskGoTo=function(i){
+        if(i<0)i=0; if(i>=total)i=total-1; cur=i;
+        slides.style.transform='translateX(-'+(cur*(100/total))+'%)';
+        document.getElementById('desk-counter').textContent=(cur+1)+' / '+total;
+        document.getElementById('desk-progress').style.width=((cur+1)/total*100)+'%';
+        document.querySelectorAll('#desk-thumbstrip .desk-thumb').forEach(function(t,idx){
+          t.style.opacity=idx===cur?'1':'0.45';
+          t.querySelector('.desk-thumb-bar').style.transform=idx===cur?'scaleX(1)':'scaleX(0)';
+        });
+        var th=document.querySelector('#desk-thumbstrip button[data-dslide="'+i+'"]');
+        if(th) th.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});
+      };
+    })();
+    </script>
+
+    {%- comment -%} Right: Product details (5 cols), sticky {%- endcomment -%}
+    <div class="col-span-5 border-l border-[#131314]/6 px-8 py-7 flex flex-col justify-start sticky top-[88px] self-start">
+
+      {%- comment -%} Reviews badge {%- endcomment -%}
+      <div style="padding-bottom:12px;margin-bottom:14px;border-bottom:1px solid rgba(19,19,20,0.06);">
+        <div class="outlight-review-badge" data-product-handle="{{ product.handle }}"></div>
+      </div>
+
+      {%- comment -%} Title left + Price right {%- endcomment -%}
+      <div class="flex items-start justify-between mb-1">
+        <div>
+          <h1 class="font-headline font-[200] text-[#131314] tracking-tight leading-[1]" style="font-size:2.4rem;letter-spacing:-0.02em;">{{ product.title | split: ' ' | first }}</h1>
+          {%- if product.metafields.descriptors.subtitle != blank -%}
+            <p class="font-body font-[300]" style="font-size:0.95rem;color:#4a5056;margin-top:5px;">{{ product.metafields.descriptors.subtitle.value }}</p>
+          {%- elsif product.metafields.custom.subtitle != blank -%}
+            <p class="font-body font-[300]" style="font-size:0.95rem;color:#4a5056;margin-top:5px;">{{ product.metafields.custom.subtitle }}</p>
+          {%- elsif product.type != blank -%}
+            <p class="font-body font-[300]" style="font-size:0.95rem;color:#4a5056;margin-top:5px;">{{ product.type }}</p>
+          {%- endif -%}
+        </div>
+        <div class="text-right" style="padding-top:4px;">
+          <span class="font-body font-[400] text-[#131314] tracking-tight" id="product-price" style="font-size:1.7rem;">{{ clearance_price | money }}</span>
+          {%- if current_variant.price > 0 -%}
+            <span class="block font-body font-[300] line-through" id="compare-price" style="font-size:0.82rem;color:rgba(45,51,56,0.35);margin-top:2px;">{{ current_variant.price | money }}</span>
+          {%- endif -%}
+        </div>
+      </div>
+
+      <div class="ol-balanced-offer">
+        <span class="ol-balanced-offer__badge">{{ 'clearance.discount_badge' | t: percent: clearance_percent }}</span>
+        <div><strong>{{ 'clearance.title' | t }}</strong><span>{{ 'clearance.no_code' | t }}</span></div>
+        <span class="ol-balanced-offer__saving" data-clearance-savings>{% assign savings = current_variant.price | minus: clearance_price | money %}{{ 'clearance.save_amount' | t: amount: savings }}</span>
+      </div>
+      {% render 'clearance-stock', product: product, variant: current_variant %}
+      {% form 'product', product, id: 'product-form-desktop', data-type: 'add-to-cart-form' %}
+        <input type="hidden" name="id" value="{{ current_variant.id }}" id="variant-id-desktop">
+
+        {%- comment -%} Variant selector {%- endcomment -%}
+        {%- unless product.has_only_default_variant -%}
+          {%- for option in product.options_with_values -%}
+            <span class="font-label text-[0.75rem] uppercase tracking-[0.06em] text-[#131314] font-medium block mb-2">{{ option.name }}</span>
+            <select
+              class="w-full border border-[#131314]/15 bg-transparent px-4 py-3 font-body text-[0.95rem] font-[300] text-[#131314] focus:border-[#C5A059] focus:ring-0 outline-none mb-4 pr-10 cursor-pointer"
+              name="options[{{ option.name | escape }}]"
+              id="option-{{ option.position }}-desktop"
+              data-option-index="{{ forloop.index0 }}"
+            >
+              {%- for value in option.values -%}
+                <option value="{{ value | escape }}" {% if option.selected_value == value %}selected{% endif %}>
+                  {{ value }}
+                </option>
+              {%- endfor -%}
+            </select>
+          {%- endfor -%}
+        {%- endunless -%}
+
+        {%- comment -%} Quantity + Add to Bag {%- endcomment -%}
+        <div class="flex gap-3 mb-5">
+          <div class="flex items-center border border-[#131314]/15">
+            <button type="button" class="qty-btn w-11 h-[48px] flex items-center justify-center font-body text-base text-[#2d3338]" onclick="var el=document.getElementById('qty-desktop');if(el.value>1){el.value=parseInt(el.value)-1;}">−</button>
+            <input
+              type="number"
+              name="quantity"
+              id="qty-desktop"
+              value="1"
+              min="1"
+              class="w-11 h-[48px] flex items-center justify-center font-body text-[0.95rem] font-[400] text-[#131314] border-x border-[#131314]/8 bg-transparent text-center focus:outline-none"
+            >
+            <button type="button" class="qty-btn w-11 h-[48px] flex items-center justify-center font-body text-base text-[#2d3338]" onclick="var el=document.getElementById('qty-desktop');el.value=parseInt(el.value)+1;">+</button>
+          </div>
+          <button
+            type="submit"
+            name="add"
+            {% unless current_variant.available %}disabled aria-disabled="true"{% endunless %}
+            class="flex-1 py-3.5 font-body text-[0.8rem] uppercase tracking-[0.14em] text-[#F9F9FB] font-[500] bg-[#131314] hover:bg-[#C5A059] transition-colors"
+          >
+            {%- if current_variant.available -%}
+              Add to Bag
+            {%- else -%}
+              Sold Out
+            {%- endif -%}
+          </button>
+        </div>
+      {% endform %}
+
+      {% render 'product-details', product: product, variant: current_variant, suffix: 'desktop', blocks: section.blocks %}
+    </div>
+  </div>
+</div>
+
+{%- comment -%} Mobile product layout {%- endcomment -%}
+<div class="md:hidden" style="background-color:#F9F9FB;">
+  {%- comment -%} Gallery — Variation A: Editorial Clean {%- endcomment -%}
+  {%- assign img_total = product.images.size -%}
+  {%- if img_total == 0 -%}{%- assign img_total = 1 -%}{%- endif -%}
+
+  <style>
+    .mob-thumb { opacity: 0.45; transition: opacity 0.3s ease; position: relative; }
+    .mob-thumb.active { opacity: 1; }
+    .mob-thumb::after { content:''; position:absolute; bottom:0; left:0; right:0; height:2px; background:#C5A059; transform:scaleX(0); transition:transform 0.35s cubic-bezier(0.25,1,0.5,1); }
+    .mob-thumb.active::after { transform:scaleX(1); }
+  </style>
+
+  <!-- Main sliding image -->
+  <div class="relative overflow-hidden aspect-square bg-[#ebeef2]" id="mob-slider" style="margin:8px;">
+    <span id="mob-counter" style="position:absolute;top:14px;right:14px;z-index:2;font-family:'Newsreader',serif;font-weight:300;font-size:0.75rem;color:rgba(19,19,20,0.3);letter-spacing:0.05em;">1 / {{ img_total }}</span>
+    <div class="flex h-full" id="mob-slides" style="width:{{ img_total | times: 100 }}%; transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);">
+      {%- if product.images.size > 0 -%}
+        {%- for image in product.images -%}
+          <div class="h-full" style="width:{{ 100.0 | divided_by: img_total }}%;">
+            <img
+              src="{{ image | image_url: width: 900 }}"
+              alt="{{ image.alt | escape }}"
+              class="w-full h-full object-cover"
+              {% if forloop.first %}loading="eager" fetchpriority="high"{% else %}loading="lazy"{% endif %}
+              width="900" height="900"
+            >
+          </div>
+        {%- endfor -%}
+      {%- else -%}
+        <div class="w-full h-full bg-[#ebeef2]"></div>
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- if product.images.size > 1 -%}
+    <!-- Progress bar -->
+    <div style="margin:0 8px; height:1px; background:rgba(19,19,20,0.06); position:relative;">
+      <div id="mob-progress" style="height:100%; background:#C5A059; position:absolute; left:0; top:0; width:{{ 100.0 | divided_by: img_total }}%; transition: width 0.5s cubic-bezier(0.25,1,0.5,1);"></div>
+    </div>
+    <!-- Thumbnail strip -->
+    <div style="padding:10px 8px 4px;">
+      <div class="flex overflow-x-auto scroll-hide" id="mob-thumbstrip" style="gap:6px;overscroll-behavior-x:contain;touch-action:pan-x;">
+        {%- for image in product.images -%}
+          <button
+            type="button"
+            data-slide="{{ forloop.index0 }}"
+            class="mob-thumb shrink-0 aspect-square overflow-hidden{% if forloop.first %} active{% endif %}"
+            style="width:calc(25% - 5px); border:none; padding:0; background:none; cursor:pointer;"
+            onclick="mobGoTo({{ forloop.index0 }})"
+          >
+            <img src="{{ image | image_url: width: 200 }}" alt="{{ image.alt | escape }}" class="w-full h-full object-cover" loading="lazy" width="200" height="200">
+          </button>
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- endif -%}
+
+  <script>
+  (function(){
+    var current = 0;
+    var total = {{ img_total }};
+    var slides = document.getElementById('mob-slides');
+    var slider = document.getElementById('mob-slider');
+    if (!slides || total <= 1) return;
+
+    window.mobGoTo = function(idx) {
+      if (idx < 0) idx = 0;
+      if (idx >= total) idx = total - 1;
+      current = idx;
+      slides.style.transform = 'translateX(-' + (current * (100 / total)) + '%)';
+      document.getElementById('mob-counter').textContent = (current+1) + ' / ' + total;
+      document.getElementById('mob-progress').style.width = ((current+1)/total*100) + '%';
+      document.querySelectorAll('#mob-thumbstrip .mob-thumb').forEach(function(t, i) {
+        t.classList.toggle('active', i === current);
+      });
+      var thumb = document.querySelector('#mob-thumbstrip button[data-slide="'+idx+'"]');
+      if (thumb) thumb.scrollIntoView({ behavior:'smooth', inline:'center', block:'nearest' });
+    };
+
+    var startX=0, deltaX=0;
+    slider.addEventListener('touchstart', function(e){ startX=e.touches[0].clientX; deltaX=0; }, {passive:true});
+    slider.addEventListener('touchmove', function(e){ deltaX=e.touches[0].clientX-startX; }, {passive:true});
+    slider.addEventListener('touchend', function(){
+      if(Math.abs(deltaX)>40){ deltaX<0 ? mobGoTo(current+1) : mobGoTo(current-1); }
+    });
+  })();
+  </script>
+
+  {%- comment -%} Mobile details {%- endcomment -%}
+  <div class="px-5 pt-5 pb-7">
+    {%- comment -%} Reviews badge {%- endcomment -%}
+    <div style="padding-bottom:10px;margin-bottom:10px;border-bottom:1px solid rgba(19,19,20,0.06);">
+      <div class="outlight-review-badge" data-product-handle="{{ product.handle }}"></div>
+    </div>
+
+    {%- comment -%} Name left + price right {%- endcomment -%}
+    <div class="flex items-start justify-between" style="margin-bottom:4px;">
+      <div>
+        <h1 class="font-headline font-[200] text-[#131314] tracking-tight leading-[1]" style="font-size:2rem;">{{ product.title | split: ' ' | first }}</h1>
+        {%- if product.metafields.descriptors.subtitle != blank -%}
+          <p class="font-body font-[300]" style="font-size:0.9rem;color:#4a5056;margin-top:3px;">{{ product.metafields.descriptors.subtitle.value }}</p>
+        {%- elsif product.metafields.custom.subtitle != blank -%}
+          <p class="font-body font-[300]" style="font-size:0.9rem;color:#4a5056;margin-top:3px;">{{ product.metafields.custom.subtitle }}</p>
+        {%- elsif product.type != blank -%}
+          <p class="font-body font-[300]" style="font-size:0.9rem;color:#4a5056;margin-top:3px;">{{ product.type }}</p>
+        {%- endif -%}
+      </div>
+      <div class="text-right">
+        <span class="font-body font-[400] text-[#131314] tracking-tight" id="product-price-mobile" style="font-size:1.4rem;">{{ clearance_price | money }}</span>
+        {%- if current_variant.price > 0 -%}
+          <span class="block font-body font-[300] line-through" id="compare-price-mobile" style="font-size:0.78rem;color:rgba(45,51,56,0.35);">{{ current_variant.price | money }}</span>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <div class="ol-balanced-offer">
+        <span class="ol-balanced-offer__badge">{{ 'clearance.discount_badge' | t: percent: clearance_percent }}</span>
+        <div><strong>{{ 'clearance.title' | t }}</strong><span>{{ 'clearance.no_code' | t }}</span></div>
+        <span class="ol-balanced-offer__saving" data-clearance-savings>{% assign savings = current_variant.price | minus: clearance_price | money %}{{ 'clearance.save_amount' | t: amount: savings }}</span>
+      </div>
+      {% render 'clearance-stock', product: product, variant: current_variant %}
+    {% form 'product', product, id: 'product-form-mobile', data-type: 'add-to-cart-form' %}
+      <input type="hidden" name="id" value="{{ current_variant.id }}" id="variant-id-mobile">
+
+      {%- unless product.has_only_default_variant -%}
+        {%- for option in product.options_with_values -%}
+          <span class="font-label text-[0.7rem] uppercase text-[#131314] font-medium block mb-2">{{ option.name }}</span>
+          <select
+            class="w-full border border-[#131314]/15 bg-transparent px-4 py-3 font-body text-[0.9rem] font-[300] text-[#131314] focus:border-[#C5A059] focus:ring-0 outline-none mb-3 pr-10"
+            name="options[{{ option.name | escape }}]"
+            id="option-{{ option.position }}-mobile"
+          >
+            {%- for value in option.values -%}
+              <option value="{{ value | escape }}" {% if option.selected_value == value %}selected{% endif %}>
+                {{ value }}
+              </option>
+            {%- endfor -%}
+          </select>
+        {%- endfor -%}
+      {%- endunless -%}
+
+      <div class="flex gap-2 mb-4">
+        <div class="flex items-center border border-[#131314]/15">
+          <button type="button" class="qty-btn w-11 h-[46px] flex items-center justify-center font-body text-sm text-[#2d3338]" onclick="var el=document.getElementById('qty-mobile');if(el.value>1){el.value=parseInt(el.value)-1;}">−</button>
+          <input
+            type="number"
+            name="quantity"
+            id="qty-mobile"
+            value="1"
+            min="1"
+            class="w-10 h-[46px] flex items-center justify-center font-body text-[0.9rem] font-[400] text-[#131314] border-x border-[#131314]/8 bg-transparent text-center focus:outline-none"
+          >
+          <button type="button" class="qty-btn w-11 h-[46px] flex items-center justify-center font-body text-sm text-[#2d3338]" onclick="var el=document.getElementById('qty-mobile');el.value=parseInt(el.value)+1;">+</button>
+        </div>
+        <button
+          type="submit"
+          name="add"
+            {% unless current_variant.available %}disabled aria-disabled="true"{% endunless %}
+          class="flex-1 py-3 font-body text-[0.78rem] uppercase tracking-[0.14em] text-[#F9F9FB] font-[500] bg-[#131314] hover:bg-[#C5A059] transition-colors"
+        >
+          {%- if current_variant.available -%}
+            Add to Bag
+          {%- else -%}
+            Sold Out
+          {%- endif -%}
+        </button>
+      </div>
+    {% endform %}
+
+    {% render 'product-details', product: product, variant: current_variant, suffix: 'mobile', blocks: section.blocks %}
+  </div>
+</div>
+
+{%- comment -%} Mobile sticky Add to Bag — appears after the main CTA scrolls away {%- endcomment -%}
+<div id="sticky-atb" class="md:hidden fixed bottom-0 left-0 right-0 z-[60]" style="transform:translateY(110%);transition:transform 0.32s cubic-bezier(0.16,1,0.3,1);">
+  <div class="flex items-center gap-3 px-4 py-3 bg-[#F9F9FB]" style="border-top:1px solid rgba(19,19,20,0.1);box-shadow:0 -6px 24px rgba(19,19,20,0.08);">
+    <div class="min-w-0 flex-1">
+      <span class="block truncate font-headline font-[300] text-[#131314]" style="font-size:0.95rem;line-height:1.2;">{{ product.title | split: ' ' | first }}</span>
+      <span id="sticky-atb-price" class="font-body font-[400] text-[#131314]" style="font-size:0.85rem;">{{ clearance_price | money }}</span>
+    </div>
+    <button
+      type="submit"
+      form="product-form-mobile"
+      class="shrink-0 py-3 px-7 font-body text-[0.78rem] uppercase tracking-[0.14em] text-[#F9F9FB] font-[500] bg-[#131314] hover:bg-[#C5A059] transition-colors"
+      {% unless current_variant.available %}disabled style="opacity:0.45;"{% endunless %}
+    >
+      {%- if current_variant.available -%}Add to Bag{%- else -%}Sold Out{%- endif -%}
+    </button>
+  </div>
+</div>
+<script>
+  (function(){
+    var bar = document.getElementById('sticky-atb');
+    var anchor = document.getElementById('qty-mobile');
+    if (!bar || !anchor || !('IntersectionObserver' in window)) return;
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        bar.style.transform = en.isIntersecting ? 'translateY(110%)' : 'translateY(0)';
+        bar.dataset.visible = String(!en.isIntersecting);
+        document.documentElement.style.setProperty('--ol-sticky-atb-height', bar.offsetHeight + 'px');
+      });
+    }, { rootMargin: '0px 0px -40px 0px' });
+    io.observe(anchor);
+    if ('ResizeObserver' in window) {
+      new ResizeObserver(function() {
+        document.documentElement.style.setProperty('--ol-sticky-atb-height', bar.offsetHeight + 'px');
+      }).observe(bar);
+    }
+  })();
+</script>
+
+<script type="application/json" data-variant-dimensions>
+{ {%- for variant in product.variants -%}"{{ variant.id }}": {{ variant.metafields.custom.variant_dimension.value | default: product.metafields.custom.variant_dimension.value | default: '' | json }}{% unless forloop.last %},{% endunless %}{%- endfor -%} }
+</script>
+<script type="application/json" data-variant-light-source>
+{ {%- for variant in product.variants -%}"{{ variant.id }}": {{ variant.metafields.custom.light_source.value | default: product.metafields.custom.light_source.value | default: '' | json }}{% unless forloop.last %},{% endunless %}{%- endfor -%} }
+</script>
+<script type="application/json" data-variant-finish>
+{ {%- for variant in product.variants -%}"{{ variant.id }}": {{ variant.metafields.custom.finish.value | default: product.metafields.custom.finish.value | default: '' | json }}{% unless forloop.last %},{% endunless %}{%- endfor -%} }
+</script>
+<script type="application/json" data-variant-color-temperature>
+{ {%- for variant in product.variants -%}"{{ variant.id }}": {{ variant.metafields.custom.color_temperature.value | default: product.metafields.custom.color_temperature.value | default: '' | json }}{% unless forloop.last %},{% endunless %}{%- endfor -%} }
+</script>
+
+<script>
+  // Variant selection — sync both forms, update price display, update specs
+  function formatMoney(cents) {
+    return new Intl.NumberFormat({{ request.locale.iso_code | json }}, {style:'currency',currency:{{ cart.currency.iso_code | json }}}).format(cents / 100);
+  }
+
+  (function() {
+    var variants = {{ product.variants | json }};
+    var stockEligible = ['aven','olin','fira'].includes({{ product.handle | json }});
+    var stockLabels = {sold:{{ 'clearance.sold_out' | t | json }},low:{{ 'clearance.low_stock' | t | json }},available:{{ 'clearance.available' | t | json }}};
+    var stockData = { {%- for v in product.variants -%}"{{ v.id }}": {quantity:{{ v.inventory_quantity | json }}, tracked:{% if v.inventory_management != blank %}true{% else %}false{% endif %}, policy:{{ v.inventory_policy | json }}, text:{{ 'clearance.remaining' | t: count: v.inventory_quantity | json }}}{% unless forloop.last %},{% endunless %}{%- endfor -%} };
+    function updateAvailability(variant) {
+      document.querySelectorAll('#product-form-desktop [name="add"], #product-form-mobile [name="add"], #sticky-atb button').forEach(function(button) {
+        button.disabled = !variant.available;
+        button.setAttribute('aria-disabled', String(!variant.available));
+        button.textContent = variant.available ? 'Add to Bag' : stockLabels.sold;
+        button.style.opacity = variant.available ? '' : '.45';
+      });
+      var stock = stockData[variant.id], text = '', low = false;
+      if (!variant.available) text = stockLabels.sold;
+      else if (stockEligible && stock && stock.tracked && stock.policy === 'deny' && stock.quantity > 0) {
+        low = stock.quantity <= 50;
+        text = low ? stockLabels.low : '';
+      }
+      document.querySelectorAll('[data-clearance-stock]').forEach(function(el) {el.textContent = text;el.hidden = !text;el.classList.toggle('ol-stock--low',low);el.classList.toggle('ol-stock--sold',!variant.available);});
+    }
+
+    var dimensionsData = JSON.parse(document.querySelector('[data-variant-dimensions]').textContent);
+    var lightSourceData = JSON.parse(document.querySelector('[data-variant-light-source]').textContent);
+    var finishData = JSON.parse(document.querySelector('[data-variant-finish]').textContent);
+    var colorTempData = JSON.parse(document.querySelector('[data-variant-color-temperature]').textContent);
+
+    function getSelectedOptions(formId) {
+      var selects = document.querySelectorAll('#' + formId + ' select');
+      var opts = [];
+      selects.forEach(function(s) { opts.push(s.value); });
+      return opts;
+    }
+
+    function findVariant(options) {
+      return variants.find(function(v) {
+        return v.options.every(function(o, i) { return o === options[i]; });
+      });
+    }
+
+    function updateSpecs(variantId) {
+      ['desktop', 'mobile'].forEach(function(suffix) {
+        var dimEl = document.getElementById('spec-dimensions-' + suffix);
+        var lsEl = document.getElementById('spec-lightsource-' + suffix);
+        var finEl = document.getElementById('spec-finish-' + suffix);
+        var ctEl = document.getElementById('spec-colortemp-' + suffix);
+        if (dimEl) { var value = dimensionsData[variantId] || ''; dimEl.textContent = value; dimEl.parentElement.hidden = !value; }
+        if (lsEl) { var value = lightSourceData[variantId] || ''; lsEl.textContent = value; lsEl.parentElement.hidden = !value; }
+        if (finEl) { var value = finishData[variantId] || ''; finEl.textContent = value; finEl.parentElement.hidden = !value; }
+        if (ctEl) { var value = colorTempData[variantId] || ''; ctEl.textContent = value; ctEl.parentElement.hidden = !value; }
+      });
+    }
+
+    function updateForms(variant) {
+      if (!variant) return;
+      ['desktop', 'mobile'].forEach(function(suffix) {
+        var idInput = document.getElementById('variant-id-' + suffix);
+        if (idInput) idInput.value = variant.id;
+      });
+      // Update price on every surface: desktop, mobile, sticky bar
+      var priceText = formatMoney(Math.round(variant.price * {{ clearance_remaining | divided_by: 100.0 }}));
+      ['product-price', 'product-price-mobile', 'sticky-atb-price'].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) el.textContent = priceText;
+      });
+      ['compare-price', 'compare-price-mobile'].forEach(function(id) {
+        var compareEl = document.getElementById(id);
+        if (!compareEl) return;
+        if (variant.price > 0) {
+          compareEl.textContent = formatMoney(variant.price);
+          compareEl.style.display = '';
+        } else {
+          compareEl.style.display = 'none';
+        }
+      });
+      document.querySelectorAll('[data-clearance-savings]').forEach(function(el) {el.textContent = {{ 'clearance.save_amount' | t: amount: '__AMOUNT__' | json }}.replace('__AMOUNT__',formatMoney(variant.price - Math.round(variant.price * {{ clearance_remaining | divided_by: 100.0 }})));});
+      updateSpecs(variant.id);
+      updateAvailability(variant);
+      ['product-form-desktop','product-form-mobile'].forEach(function(id) {
+        document.querySelectorAll('#'+id+' select').forEach(function(select,index) {select.value=variant.options[index];});
+      });
+    }
+
+    updateAvailability(variants.find(function(v){return v.id === {{ current_variant.id }};}));
+    ['product-form-desktop', 'product-form-mobile'].forEach(function(formId) {
+      var selects = document.querySelectorAll('#' + formId + ' select');
+      selects.forEach(function(s) {
+        s.addEventListener('change', function() {
+          var opts = getSelectedOptions(formId);
+          var variant = findVariant(opts);
+          if (variant) updateForms(variant);
+        });
+      });
+    });
+  })();
+
+  /* ── AJAX Add to Cart → refreshes & opens cart drawer ────────── */
+  document.querySelectorAll('form[data-type="add-to-cart-form"]').forEach(function(form) {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      var formData = new FormData(form);
+      fetch('/cart/add.js', {
+        method: 'POST',
+        body: formData
+      })
+      .then(function(res) { return res.json().then(function(data) {if (!res.ok) throw new Error(data.description || {{ 'clearance.cart_error' | t | json }});return data;}); })
+      .then(function() {
+        /* Refresh cart drawer contents via Section Rendering API */
+        fetch('/?sections=cart-drawer')
+          .then(function(r) { return r.json(); })
+          .then(function(sections) {
+            var drawerEl = document.getElementById('cart-drawer');
+            if (drawerEl && sections['cart-drawer']) {
+              var tmp = document.createElement('div');
+              tmp.innerHTML = sections['cart-drawer'];
+              var newDrawer = tmp.querySelector('#cart-drawer') || tmp.firstElementChild;
+              if (newDrawer) {
+                drawerEl.innerHTML = newDrawer.innerHTML;
+              }
+            }
+          });
+        /* Update cart count badge */
+        fetch('/cart.js').then(function(r){return r.json();}).then(function(cart){
+          var badge = document.getElementById('cart-count-badge');
+          if (badge) {
+            badge.textContent = cart.item_count;
+            badge.style.display = '';
+          } else {
+            var bagBtn = document.querySelector('button[aria-label="Open cart"]');
+            if (bagBtn) {
+              var b = document.createElement('span');
+              b.id = 'cart-count-badge';
+              b.className = 'absolute -top-1 -right-1 w-4 h-4 flex items-center justify-center bg-[#C5A059] text-white font-label text-[0.45rem] leading-none';
+              b.textContent = cart.item_count;
+              bagBtn.style.position = 'relative';
+              bagBtn.appendChild(b);
+            }
+          }
+        });
+        /* Open cart drawer */
+        var drawer = document.getElementById('cart-drawer');
+        var backdrop = document.getElementById('cart-backdrop');
+        if (drawer) drawer.classList.add('open');
+        if (backdrop) backdrop.classList.add('open');
+      })
+      .catch(function(err) { var error = form.querySelector('[data-cart-error]');if (!error) {error=document.createElement('p');error.setAttribute('data-cart-error','');error.setAttribute('role','alert');form.appendChild(error);}error.textContent=err.message; });
+    });
+  });
+</script>
+
+<script src="{{ 'outlight-review-badge.js' | asset_url }}" data-backend-url="https://shopify-ai-chatbot-production-9ab4.up.railway.app" defer></script>
+
+{%- comment -%} Specifications Modal (Variation A) {%- endcomment -%}
+{% schema %}
+{
+  "name": "Product Main",
+  "tag": "section",
+  "class": "product-main",
+  "settings": [
+    {
+      "type": "text",
+      "id": "promo_label",
+      "label": "Promo label",
+      "info": "Text shown before the promo code (e.g. 'Clearance Sale: 60% Off', 'Seasonal offer').",
+      "default": "Clearance Sale: 60% Off"
+    },
+    {
+      "type": "text",
+      "id": "promo_code",
+      "label": "Promo code",
+      "info": "Shown next to the sale badge. Clicking copies it to clipboard. Leave blank to hide.",
+      "default": "CLEARANCE60"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "spec_item",
+      "name": "Spec Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "spec_label",
+          "label": "Label",
+          "default": "Dimensions"
+        },
+        {
+          "type": "text",
+          "id": "spec_value",
+          "label": "Value",
+          "default": "45\" × 11\" × 11\""
+        }
+      ]
+    },
+    {
+      "type": "accordion_tab",
+      "name": "Accordion Tab",
+      "settings": [
+        {
+          "type": "text",
+          "id": "tab_title",
+          "label": "Tab Title",
+          "default": "Installation"
+        },
+        {
+          "type": "textarea",
+          "id": "tab_content",
+          "label": "Tab Content",
+          "default": "Simply place on any flat surface and plug in. No assembly required."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Main",
+      "blocks": [
+        {
+          "type": "spec_item",
+          "settings": {
+            "spec_label": "Dimensions",
+            "spec_value": "45\" × 11\" × 11\""
+          }
+        },
+        {
+          "type": "spec_item",
+          "settings": {
+            "spec_label": "Light Source",
+            "spec_value": "E27 LED Bulb"
+          }
+        },
+        {
+          "type": "spec_item",
+          "settings": {
+            "spec_label": "Finish",
+            "spec_value": "Wood, Metal"
+          }
+        },
+        {
+          "type": "spec_item",
+          "settings": {
+            "spec_label": "Color Temp",
+            "spec_value": "3-Color Switch"
+          }
+        },
+        {
+          "type": "accordion_tab",
+          "settings": {
+            "tab_title": "Installation",
+            "tab_content": "Simply place on any flat surface and plug in. No assembly required. The tripod base provides stable support on all floor types."
+          }
+        },
+        {
+          "type": "accordion_tab",
+          "settings": {
+            "tab_title": "Description & Features",
+            "tab_content": "Hand-woven wooden ribbons form a sculptural silhouette with 3-color temperature switch for versatile ambiance."
+          }
+        },
+        {
+          "type": "accordion_tab",
+          "settings": {
+            "tab_title": "Shipping & Returns",
+            "tab_content": "Free US shipping. Estimated delivery in 4 days. Return requests within 30 days; shipping charges and restocking fees may apply. See our refund policy."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,65 @@
+{% comment %}
+  Outlight V20 — Full-Bleed Photo Review Carousel
+  Thin shell — all rendering logic is in the hosted v20-carousel.js
+  Changes deploy automatically via Railway, no need to re-paste code.
+{% endcomment %}
+
+{%- assign v20_skip = 'all,best-sellers,top-sellers,outdoor-lighting,new-arrivals' | split: ',' -%}
+{%- assign v20_collection = '' -%}
+{%- for col in product.collections -%}
+  {%- unless v20_skip contains col.handle -%}
+    {%- if v20_collection == '' -%}
+      {%- assign v20_collection = col.title -%}
+    {%- endif -%}
+  {%- endunless -%}
+{%- endfor -%}
+{%- if v20_collection == '' -%}
+  {%- assign v20_collection = product.type | default: 'Lighting' -%}
+{%- endif -%}
+{%- assign v20_heading = product.title | split: ' ' | first | append: ' — ' | append: v20_collection -%}
+
+<div id="outlight-v20-carousel"
+  data-heading="{{ v20_heading }}"
+  data-accent="{{ section.settings.star_color | default: '#C5A059' }}"
+  data-max-cards="{{ section.settings.max_cards | default: 12 }}"
+  data-no-photo-bg="{{ section.settings.no_photo_bg | default: '#f4f0eb' }}">
+</div>
+
+<script src="https://shopify-ai-chatbot-production-9ab4.up.railway.app/widget/v20-carousel.js?v=2" defer></script>
+
+{% schema %}
+{
+  "name": "Review Carousel V20",
+  "tag": "section",
+  "class": "section-v20-reviews",
+  "settings": [
+    {
+      "type": "color",
+      "id": "star_color",
+      "label": "Star / accent color",
+      "default": "#C5A059"
+    },
+    {
+      "type": "color",
+      "id": "no_photo_bg",
+      "label": "No-photo card background",
+      "default": "#f4f0eb"
+    },
+    {
+      "type": "range",
+      "id": "max_cards",
+      "label": "Max cards to show",
+      "min": 4,
+      "max": 20,
+      "step": 1,
+      "default": 12
+    }
+  ],
+  "presets": [
+    {
+      "name": "Review Carousel V20"
+    }
+  ],
+  "enabled_on": { "templates": ["product"] }
+}
+{% endschema %}

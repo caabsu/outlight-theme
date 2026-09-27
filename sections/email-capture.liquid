@@ -1,0 +1,146 @@
+{%- comment -%}
+  email-capture.liquid — Homepage email capture (catalog redesign round 2, variation 1)
+  Dark band, copy left + real Shopify newsletter form right. Stacks below 600px.
+{%- endcomment -%}
+
+{%- assign s = section.settings -%}
+
+<style>
+  #ol-email-{{ section.id }}{
+    --ink:#131314;--paper:#F9F9FB;--gold:#C5A059;--warm:#f4f0eb;--body:#2d3338;
+    --serif:'Newsreader',Georgia,serif;
+    --sans:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    display:block;
+    background:var(--ink);
+    color:var(--paper);
+    font-family:var(--sans);
+    padding:64px 0;
+  }
+  #ol-email-{{ section.id }} *{box-sizing:border-box;margin:0;padding:0;}
+  #ol-email-{{ section.id }} .ol-container{
+    width:100%;max-width:1360px;margin:0 auto;padding:0 32px;
+    display:flex;align-items:center;justify-content:space-between;
+    gap:48px;flex-wrap:wrap;
+  }
+  #ol-email-{{ section.id }} .email-text h2{
+    font-family:var(--serif);font-weight:200;
+    font-size:clamp(24px,2.6vw,32px);line-height:1.15;color:var(--paper);
+  }
+  #ol-email-{{ section.id }} .email-text h2 em{font-style:italic;color:var(--gold);}
+  #ol-email-{{ section.id }} .email-text p{
+    font-size:13px;color:rgba(249,249,251,.65);margin-top:6px;
+  }
+  #ol-email-{{ section.id }} .email-form{
+    display:flex;gap:0;flex:1;max-width:440px;min-width:300px;
+  }
+  #ol-email-{{ section.id }} .email-form input{
+    flex:1;font-family:var(--sans);font-size:14px;padding:15px 18px;
+    background:transparent;border:1px solid rgba(249,249,251,.28);border-right:none;
+    color:var(--paper);min-height:50px;
+  }
+  #ol-email-{{ section.id }} .email-form input::placeholder{color:rgba(249,249,251,.5);}
+  #ol-email-{{ section.id }} .email-form input:focus{outline:none;border-color:var(--gold);}
+  #ol-email-{{ section.id }} .email-form button{
+    font-family:var(--sans);background:var(--gold);color:var(--ink);
+    font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+    padding:0 26px;min-height:50px;border:none;cursor:pointer;
+    transition:background .2s;white-space:nowrap;
+  }
+  #ol-email-{{ section.id }} .email-form button:hover{background:var(--paper);}
+  #ol-email-{{ section.id }} .email-success{
+    font-family:var(--serif);font-style:italic;font-weight:300;
+    font-size:18px;color:var(--gold);flex:1;max-width:440px;min-width:300px;
+  }
+  #ol-email-{{ section.id }} .email-error{
+    margin-top:10px;font-size:12px;color:#e0a3a3;
+    flex-basis:100%;
+  }
+  @media (max-width:900px){
+    #ol-email-{{ section.id }} .ol-container{padding:0 24px;}
+  }
+  @media (max-width:600px){
+    #ol-email-{{ section.id }} .ol-container{
+      padding:0 20px;flex-direction:column;align-items:flex-start;gap:24px;
+    }
+    #ol-email-{{ section.id }} .email-form,
+    #ol-email-{{ section.id }} .email-success{max-width:none;width:100%;min-width:0;}
+  }
+</style>
+
+<section id="ol-email-{{ section.id }}">
+  <div class="ol-container">
+    <div class="email-text">
+      <h2>{{ s.heading }}</h2>
+      {%- if s.subheading != blank -%}
+        <p>{{ s.subheading | escape }}</p>
+      {%- endif -%}
+    </div>
+
+    {%- form 'customer' -%}
+      <input type="hidden" name="contact[tags]" value="newsletter">
+      <input type="hidden" name="contact[accepts_marketing]" value="true">
+      {%- if form.posted_successfully? -%}
+        <p class="email-success">{{ s.success_text | escape }}</p>
+      {%- else -%}
+        <div class="email-form">
+          <input
+            type="email"
+            name="contact[email]"
+            placeholder="{{ s.placeholder | escape }}"
+            aria-label="{{ s.placeholder | escape }}"
+            autocomplete="email"
+            required>
+          <button type="submit">{{ s.button_text | escape }}</button>
+        </div>
+        {%- if form.errors -%}
+          <p class="email-error">{{ form.errors | default_errors }}</p>
+        {%- endif -%}
+      {%- endif -%}
+    {%- endform -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Email Capture",
+  "tag": "section",
+  "class": "ol-email-section",
+  "settings": [
+    {
+      "type": "richtext",
+      "id": "heading",
+      "label": "Heading (italic = gold accent)",
+      "default": "<p>Get <em>15% off</em> your first order.</p>"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Warm lighting for the season ahead."
+    },
+    {
+      "type": "text",
+      "id": "placeholder",
+      "label": "Input placeholder",
+      "default": "Email address"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Subscribe"
+    },
+    {
+      "type": "text",
+      "id": "success_text",
+      "label": "Success message",
+      "default": "Thank you — you're on the list."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Email Capture"
+    }
+  ]
+}
+{% endschema %}

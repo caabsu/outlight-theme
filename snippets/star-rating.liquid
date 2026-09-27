@@ -1,0 +1,12 @@
+{%- comment -%}
+  Star rating snippet
+  Usage: {% render 'star-rating', count: 5, size: 'sm' %}
+  Sizes: 'xs', 'sm', 'base', 'lg'
+{%- endcomment -%}
+
+{%- assign star_size = size | default: 'sm' -%}
+<div class="flex gap-0.5">
+  {%- for i in (1..count) -%}
+    <span class="material-symbols-outlined text-[#C5A059] text-{{ star_size }}" style="font-variation-settings:'FILL' 1,'wght' 400;">star</span>
+  {%- endfor -%}
+</div>

@@ -1,0 +1,30 @@
+{%- comment -%}
+  Default Page Content — renders page title and rich text body
+{%- endcomment -%}
+
+<section class="bg-[#F9F9FB]">
+  <div class="max-w-[1920px] mx-auto px-5 md:px-12 py-16 md:py-24">
+
+    <div class="max-w-3xl mx-auto">
+      <h1 class="font-headline text-3xl md:text-5xl font-[200] text-[#131314] tracking-tight mb-8 md:mb-12">{{ page.title | escape }}</h1>
+      <div class="font-body text-[0.9rem] font-light text-[#2d3338] leading-relaxed prose prose-headings:font-headline prose-headings:font-[200] prose-headings:text-[#131314] prose-a:text-[#C5A059] prose-a:underline">
+        {{ page.content }}
+      </div>
+    </div>
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Page Content",
+  "tag": "section",
+  "class": "page-content-section",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Page Content"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,9 @@
+{% comment %}Outlight PopupOS. Enable its saved campaign only after Shopify signup and welcome-code checks pass.{% endcomment %}
+{% unless request.design_mode or template.name == 'password' %}
+  <script
+    src="https://misu-subscription-automation.vercel.app/popupos/runtime.js?v=outlight-20260916-3"
+    data-brand="outlight"
+    data-customer="{% if customer %}true{% else %}false{% endif %}"
+    defer
+  ></script>
+{% endunless %}

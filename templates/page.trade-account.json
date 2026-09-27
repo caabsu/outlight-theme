@@ -1,9 +1,25 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
-    "main": {
+    "trade-account": {
       "type": "trade-account",
-      "settings": {}
+      "settings": {
+        "concierge_name": "Sebastien",
+        "concierge_email": "sebastien@outlight.dk",
+        "concierge_location": "Copenhagen Studio · GMT+1",
+        "concierge_hours": "Monday through Friday, 9–18 CET"
+      }
     }
   },
-  "order": ["main"]
+  "order": [
+    "trade-account"
+  ]
 }

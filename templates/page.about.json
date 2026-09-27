@@ -12,187 +12,132 @@
     "about-hero": {
       "type": "about-hero",
       "settings": {
-        "image": "shopify://shop_images/Karo_11.png",
-        "image_mobile": "shopify://shop_images/Elan_6.png",
-        "overlay_opacity": 40,
-        "label": "OUR PHILOSOPHY",
-        "title": "Curated Sanctuary",
-        "subtitle": "We believe lighting isn't just about utility. It's about sculpting the atmosphere of your most sacred spaces.",
-        "height_mobile": 40,
-        "height_desktop": 80,
-        "label_color": "#ebe8e0",
-        "label_size": 12,
-        "title_color": "#ffffff",
-        "title_size_mobile": 40,
-        "title_size_desktop": 72,
-        "subtitle_color": "#ffffff",
-        "subtitle_size_mobile": 16,
-        "subtitle_size_desktop": 18
+        "image": "shopify://shop_images/custom_nano-banana-2_1774222068436.png",
+        "eyebrow": "About Outlight — Est. Los Angeles, 2024",
+        "heading": "<p>A room isn't finished <em>until the light is.</em></p>",
+        "subheading": "Outlight is a Los Angeles lighting brand with one point of view: most homes look decorated by daylight, then go flat after dark. We curate the warm, sculptural lighting that finishes the room.",
+        "caption_quote": "The hour the lights take over.",
+        "caption_fig": "Fig. 01"
       }
     },
     "about-story": {
       "type": "about-story",
       "settings": {
-        "label": "OUR STORY",
-        "title_prefix": "Born from",
-        "title_accent": "Silence",
-        "text_1": "Outlight began with a simple observation: modern life is loud. Our visual environments are cluttered. We sought to create a counter-balance.",
-        "text_2": "Founded in 2024, our studio focuses on stripping away the non-essential. We work exclusively with ceramic and sandstone—materials that ground us and interact beautifully with light.",
-        "image": "shopify://shop_images/custom_nano-banana-pro_1765259549549.png",
-        "quote": "Light is the first element of design; without it there is no form.",
-        "background_color": "#f7f5f0",
-        "label_color": "#d97706",
-        "title_color": "#1c1917",
-        "title_accent_color": "#d97706",
-        "text_color": "#57534e",
-        "quote_background": "#ffffff",
-        "quote_color": "#1c1917",
-        "padding_mobile": 60,
-        "padding_desktop": 100
+        "label": "01 — Our point of view",
+        "heading": "<p>Decorated by daylight. <em>Abandoned after dark.</em></p>",
+        "paragraph_1": "Most homes are styled for the day. The furniture is chosen, the room is composed — and then the sun goes down and a single overhead fixture takes over. Flat, even, a little anonymous. The room is still there, but the evening version of it never quite arrives.",
+        "paragraph_2": "Outlight exists for that hour. We believe a living room, an entry, or a bedside should feel as considered at 9pm as it does at noon — warm, layered, and finished. That conviction is the whole brief: lighting chosen for how a room feels once the lamps are the only thing on.",
+        "pull_quote": "The enemy was never the dark. It was flat overhead glare standing in for atmosphere.",
+        "image": "shopify://shop_images/custom_nano-banana-pro_1771576048348.png",
+        "image_caption": "Fig. 02 — The room, after dark"
       }
     },
-    "problem_solution_Mf649h": {
-      "type": "problem-solution",
-      "name": "Problem/Solution",
-      "settings": {
-        "label": "THE PROBLEM",
-        "heading": "The \"Big Light\" is the",
-        "heading_italic": "enemy of calm.",
-        "icon_left": "eye-off",
-        "card_title_left": "STANDARD LIGHTING",
-        "card_text_left": "Overhead. Harsh. Creates anxiety and flattens architectural details. It turns your home into a waiting room.",
-        "icon_right": "sunrise",
-        "card_title_right": "THE OUTLIGHT WAY",
-        "card_text_right": "Layered. Diffused. Low-level. It mimics the safety of a campfire, signaling your brain to rest.",
-        "section_bg": "#1c1917",
-        "overlay_opacity": 85,
-        "padding_top": 80,
-        "padding_bottom": 80,
-        "label_bg": "#292524",
-        "label_color": "#a3b5ab",
-        "heading_color": "#e8ebe9",
-        "heading_italic_color": "#d97706",
-        "heading_size_desktop": 52,
-        "heading_size_mobile": 32,
-        "card_bg": "#292524",
-        "card_border_color": "#3a4a44",
-        "card_text_color": "#dbd6cc",
-        "card_icon_color_left": "#dbd6cc",
-        "card_title_color_left": "#dbd6cc",
-        "card_icon_color_right": "#d97706",
-        "card_title_color_right": "#d97706"
-      }
-    },
-    "about-values": {
-      "type": "about-values",
+    "about-philosophy": {
+      "type": "about-philosophy",
       "blocks": {
+        "value-1": {
+          "type": "value",
+          "settings": {
+            "number": "01",
+            "title": "Selected for warm light",
+            "description": "Every lamp earns its place by one test — a soft, warm glow that flatters a room, never a cool, clinical wash."
+          }
+        },
         "value-2": {
           "type": "value",
           "settings": {
-            "icon": "grid",
-            "title": "Diffused Light",
-            "text": "Every fixture is engineered to soften harsh lumens into a gentle, ambient wash."
+            "number": "02",
+            "title": "Sculptural, not loud",
+            "description": "We look for forms that hold a corner and age with a space — quiet silhouettes that read considered, not decorative."
           }
         },
         "value-3": {
           "type": "value",
           "settings": {
-            "icon": "figure",
-            "title": "Timeless Form",
-            "text": "Silhouettes that transcend trends, designed to bring balance to any era of interior."
+            "number": "03",
+            "title": "Quality-checked, then backed",
+            "description": "Each piece is inspected before it ships and supported by our customer care team. Outdoor fixtures carry a two-year warranty under our published policy."
           }
         }
       },
       "block_order": [
+        "value-1",
         "value-2",
         "value-3"
       ],
       "settings": {
-        "heading": "Core Values",
-        "background_color": "#fbfaf9",
-        "heading_color": "#1c1917",
-        "icon_color": "#d97706",
-        "title_color": "#1c1917",
-        "text_color": "#78716c",
-        "padding_mobile": 60,
-        "padding_desktop": 80
+        "marker": "02",
+        "label": "What we curate",
+        "heading": "<p>We don't make the light. <em>We choose it well.</em></p>",
+        "aside_text": "Outlight is a curated range. We select for one quality of light, quality-check every piece, and stand behind what we ship."
       }
     },
-    "about_showcase_t7XgFD": {
-      "type": "about-showcase",
-      "name": "About showcase",
+    "about-quote": {
+      "type": "about-quote",
       "settings": {
-        "video": "shopify://files/videos/kling_20251212_Image_to_Video_The_scene__3497_0.mp4",
-        "video_url": "",
-        "video_desktop": "shopify://files/videos/kling_20251212_Image_to_Video_The_scene__3720_0.mp4",
-        "overlay_opacity": 0,
-        "label_left": "FIG. 04",
-        "label_right": "SHADOW STUDY",
-        "heading_desktop": "Distinctive Form",
-        "heading_mobile": "No labels needed.",
-        "text_mobile": "A shape so unique it acts as a signature for the room, even when the light is off.",
-        "min_height_desktop": 100,
-        "min_height_mobile": 65,
-        "label_color": "#6b6b6b",
-        "heading_color": "#f7f5f0",
-        "heading_size_desktop": 72,
-        "mobile_accent_color": "#c9a227",
-        "mobile_heading_color": "#ffffff",
-        "mobile_text_color": "#a0a0a0",
-        "heading_size_mobile": 32
-      }
-    },
-    "about-founder": {
-      "type": "about-founder",
-      "settings": {
-        "image": "shopify://shop_images/custom_nano-banana-pro_1765519693194.png",
-        "image_mobile": "shopify://shop_images/custom_nano-banana-p11ro_1765519693194.png",
-        "quote": "We don't just sell lamps. We sell the backdrop for your morning coffee, your late-night reading, and your quiet moments of reflection.",
-        "name": "DAVID C.",
-        "title": "Creative Director",
-        "background_color": "#f7f5f0",
-        "frame_color": "#d97706",
-        "quotemark_color": "#d97706",
-        "quote_color": "#1c1917",
-        "name_color": "#d97706",
-        "title_color": "#57534e",
-        "quote_size_mobile": 20,
-        "quote_size_desktop": 32,
-        "padding_mobile": 60,
-        "padding_desktop": 100
+        "quote": "<p>We're not selling lamps so much as the <em>evening version of a room</em> — the backdrop for a late book, a slow morning, the quiet hours.</p>",
+        "attribution_name": "Outlight",
+        "attribution_role": "Los Angeles, Est. 2024"
       }
     },
     "about-cta": {
       "type": "about-cta",
+      "blocks": {
+        "promise-1": {
+          "type": "promise",
+          "settings": {
+            "number": "01",
+            "emphasis": "Estimated 4-day",
+            "text": "shipping from a US warehouse."
+          }
+        },
+        "promise-2": {
+          "type": "promise",
+          "settings": {
+            "number": "02",
+            "emphasis": "30-day",
+            "text": "return request window; policy terms apply."
+          }
+        },
+        "promise-3": {
+          "type": "promise",
+          "settings": {
+            "number": "03",
+            "emphasis": "2-year",
+            "text": "warranty on outdoor fixtures."
+          }
+        },
+        "promise-4": {
+          "type": "promise",
+          "settings": {
+            "number": "04",
+            "emphasis": "24-hour",
+            "text": "support, from real people."
+          }
+        }
+      },
+      "block_order": [
+        "promise-1",
+        "promise-2",
+        "promise-3",
+        "promise-4"
+      ],
       "settings": {
-        "background_color": "#fbfaf9",
-        "overlay_opacity": 10,
-        "title": "Bring Calm Home",
-        "button_text": "EXPLORE COLLECTION",
-        "button_url": "shopify://collections/best-sellers",
-        "height_mobile": 300,
-        "height_desktop": 400,
-        "title_color": "#1c1917",
-        "title_size_mobile": 32,
-        "title_size_desktop": 48,
-        "button_background": "#1c1917",
-        "button_text_color": "#ffffff",
-        "secondary_button_1_text": "CONTACT",
-        "secondary_button_1_url": "shopify://pages/contact",
-        "secondary_button_2_text": "SUPPORT HUB",
-        "secondary_button_2_url": "shopify://pages/support-center",
-        "secondary_button_border": "#1c1917",
-        "secondary_button_text": "#1c1917"
+        "label": "03 — The standards we hold",
+        "heading": "<p>An LA brand, est. 2024 — <em>here to finish the room.</em></p>",
+        "subheading": "We're a young brand, and we'd rather be honest about that than dress it up. What we promise is concrete: a curated range, every piece quality-checked, and a service backbone built to make buying lighting online feel safe.",
+        "primary_button_label": "Shop the collection",
+        "primary_button_url": "shopify://collections/best-sellers",
+        "secondary_button_label": "Reviews & guarantees",
+        "secondary_button_url": "shopify://pages/reviews"
       }
     }
   },
   "order": [
     "about-hero",
     "about-story",
-    "problem_solution_Mf649h",
-    "about-values",
-    "about_showcase_t7XgFD",
-    "about-founder",
+    "about-philosophy",
+    "about-quote",
     "about-cta"
   ]
 }

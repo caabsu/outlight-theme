@@ -1,0 +1,16 @@
+{% doc %}
+  Reassures clearance customers that existing policy coverage continues after sellout.
+{% enddoc %}
+<details class="ol-clearance-protection">
+  <summary>{{ 'clearance.protection_title' | t }}</summary>
+  <p>{{ 'clearance.protection_copy' | t }}</p>
+  <div><a href="{{ shop.refund_policy.url }}">{{ 'clearance.protection_policy' | t }}</a><a href="mailto:info@outlight.us">{{ 'clearance.protection_support' | t }}</a></div>
+</details>
+{% stylesheet %}
+.ol-clearance-protection{margin:12px 0 18px;padding:12px 14px;border:1px solid #dedfd9;border-radius:3px;background:#f8f8f5;color:#44483f;font:400 12px/1.65 'Manrope',sans-serif;text-align:left}
+.ol-clearance-protection summary{cursor:pointer;font-weight:500;min-height:24px;list-style:revert;padding:0!important;border:0!important;font-size:12px!important;letter-spacing:normal!important}
+.ol-clearance-protection p{margin:10px 0;font:inherit;color:inherit}
+.ol-clearance-protection div{display:flex;gap:18px;flex-wrap:wrap}
+.ol-clearance-protection a{text-decoration:underline;text-underline-offset:3px;min-height:30px;display:inline-flex;align-items:center}
+.ol-clearance-protection summary:focus-visible,.ol-clearance-protection a:focus-visible{outline:2px solid #626950;outline-offset:3px}
+{% endstylesheet %}

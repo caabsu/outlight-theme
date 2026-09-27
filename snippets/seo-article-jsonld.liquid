@@ -1,0 +1,74 @@
+{% if template.name == 'article' and article %}
+  {% assign article_description = article.excerpt_or_content | strip_html | strip_newlines | truncate: 180 %}
+  {% assign faq_section_html = blank %}
+  {% if article.content contains '<h2>FAQ</h2>' %}
+    {% assign faq_section_html = article.content | split: '<h2>FAQ</h2>' | last %}
+    {% if faq_section_html contains '<h2>' %}
+      {% assign faq_section_html = faq_section_html | split: '<h2>' | first %}
+    {% endif %}
+  {% endif %}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": {{ canonical_url | json }}
+      },
+      "headline": {{ article.title | json }},
+      "description": {{ article_description | json }},
+      "datePublished": {{ article.published_at | date: "%Y-%m-%dT%H:%M:%S%:z" | json }},
+      "dateModified": {{ article.updated_at | date: "%Y-%m-%dT%H:%M:%S%:z" | json }},
+      "author": {
+        "@type": "Person",
+        "name": {{ article.author | default: shop.name | json }}
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": {{ shop.name | json }},
+        "url": {{ shop.url | json }}{% if settings.logo != blank %},
+        "logo": {
+          "@type": "ImageObject",
+          "url": {{ settings.logo | image_url: width: 600 | prepend: 'https:' | json }}
+        }{% endif %}
+      }{% if article.image %},
+      "image": [
+        {{ article.image | image_url: width: 1600 | prepend: 'https:' | json }}
+      ]{% endif %}
+    }
+  </script>
+  {% if faq_section_html != blank and faq_section_html contains '<h3>' %}
+    {% assign faq_blocks = faq_section_html | split: '<h3>' %}
+    {% assign rendered_faq_count = 0 %}
+    {% capture article_faq_entities %}
+      {% for faq_block in faq_blocks offset: 1 %}
+        {% assign faq_parts = faq_block | split: '</h3>' %}
+        {% assign question_text = faq_parts[0] | strip_html | strip %}
+        {% assign answer_text = faq_parts[1] | strip_html | strip_newlines | replace: '&nbsp;', ' ' | replace: 'Â ', ' ' | replace: '  ', ' ' | strip %}
+        {% if question_text != blank and answer_text != blank %}
+          {% if rendered_faq_count > 0 %},{% endif %}
+          {
+            "@type": "Question",
+            "name": {{ question_text | json }},
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": {{ answer_text | json }}
+            }
+          }
+          {% assign rendered_faq_count = rendered_faq_count | plus: 1 %}
+        {% endif %}
+      {% endfor %}
+    {% endcapture %}
+    {% if rendered_faq_count > 0 %}
+      <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            {{ article_faq_entities | strip }}
+          ]
+        }
+      </script>
+    {% endif %}
+  {% endif %}
+{% endif %}

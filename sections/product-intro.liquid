@@ -1,402 +1,123 @@
-{% comment %}
-  Product Intro Section - Uses product metafields
-  Metafields used:
-  - custom.intro_title
-  - custom.intro_strap_text
-  - custom.intro_subheading
-  - custom.intro_main_image
-  - custom.intro_image_text
-  - custom.intro_image1
-  - custom.intro_image2
-{% endcomment %}
-
-{% liquid
-  assign intro_title = product.metafields.custom.intro_title
-  assign intro_strap = product.metafields.custom.intro_strap_text
-  assign intro_subheading = product.metafields.custom.intro_subheading
-  assign intro_main_image = product.metafields.custom.intro_main_image.value
-  assign intro_image_text = product.metafields.custom.intro_image_text
-  assign intro_image1 = product.metafields.custom.intro_image1.value
-  assign intro_image2 = product.metafields.custom.intro_image2.value
-%}
-
-{% if intro_title != blank or intro_main_image != blank %}
-<div class="product-intro" style="
-  --intro-bg: {{ section.settings.background_color }};
-  --intro-strap-color: {{ section.settings.strap_color }};
-  --intro-strap-size: {{ section.settings.strap_size }}px;
-  --intro-title-color: {{ section.settings.title_color }};
-  --intro-title-size-mobile: {{ section.settings.title_size_mobile }}px;
-  --intro-title-size-desktop: {{ section.settings.title_size_desktop }}px;
-  --intro-subheading-color: {{ section.settings.subheading_color }};
-  --intro-subheading-size-mobile: {{ section.settings.subheading_size_mobile }}px;
-  --intro-subheading-size-desktop: {{ section.settings.subheading_size_desktop }}px;
-  --intro-text-color: {{ section.settings.text_color }};
-  --intro-text-size: {{ section.settings.text_size }}px;
-  --intro-accent-color: {{ section.settings.accent_color }};
-  --intro-padding-mobile: {{ section.settings.padding_mobile }}px;
-  --intro-padding-desktop: {{ section.settings.padding_desktop }}px;
-  --intro-padding-x-mobile: {{ section.settings.padding_x_mobile }}px;
-  --intro-padding-x-desktop: {{ section.settings.padding_x_desktop }}px;
-">
-  {% render 'scroll-animation' %}
-  <div class="product-intro__container">
-    {%- comment -%} Header Content {%- endcomment -%}
-    <div class="product-intro__header">
-      {% if intro_title != blank %}
-        <p class="product-intro__strap">{{ intro_title }}</p>
-      {% endif %}
-
-      {% if intro_strap != blank %}
-        <h2 class="product-intro__title">{{ intro_strap }}</h2>
-      {% endif %}
-
-      {% if intro_subheading != blank %}
-        <blockquote class="product-intro__subheading">
-          "{{ intro_subheading }}"
-        </blockquote>
-      {% endif %}
+{%- if product.metafields.custom.intro_title.value != blank -%}
+<!-- Product Intro Section — Variation A: Padded Gallery -->
+<!-- Desktop -->
+<div class="hidden md:block" style="background-color:#F9F9FB;">
+    <div class="max-w-[1920px] mx-auto px-12 pt-24 pb-0">
+        <div class="grid grid-cols-2" style="gap:4rem;">
+            <div class="flex flex-col justify-center py-10">
+                <span class="font-label text-[0.65rem] uppercase tracking-[0.2em] text-[#C5A059] block mb-6">{{ product.metafields.custom.intro_title.value }}</span>
+                <h2 class="heading-thin text-5xl text-[#131314] tracking-tight leading-[1.1] mb-6">{{ product.metafields.custom.intro_strap_text.value }}</h2>
+                <p class="heading-thin text-lg text-[#2d3338]/65 leading-relaxed mb-8">"{{ product.metafields.custom.intro_subheading.value }}"</p>
+                <div class="h-px bg-[#131314]/6 mb-8"></div>
+                <p class="font-body text-[0.95rem] font-light text-[#2d3338]/65 leading-[1.9]">{{ product.metafields.custom.intro_image_text.value }}</p>
+            </div>
+            <div class="py-6">
+                {%- if product.metafields.custom.intro_main_image.value -%}
+                    <img
+                        src="{{ product.metafields.custom.intro_main_image.value | image_url: width: 1400 }}"
+                        alt="{{ product.metafields.custom.intro_title.value }}"
+                        class="w-full object-cover"
+                        style="aspect-ratio:4/5;"
+                        loading="lazy"
+                        width="1400"
+                        height="1750"
+                    >
+                {%- endif -%}
+            </div>
+        </div>
     </div>
-
-    {%- comment -%} Full-width Image 1 {%- endcomment -%}
-    {% if intro_main_image %}
-      <div class="product-intro__full-image">
-        {{ intro_main_image | image_url: width: 1600 | image_tag: loading: 'lazy' }}
-      </div>
-    {% endif %}
-
-    {%- comment -%} Body Text {%- endcomment -%}
-    {% if intro_image_text != blank %}
-      <div class="product-intro__body">
-        <p class="product-intro__text">{{ intro_image_text }}</p>
-      </div>
-    {% endif %}
-
-    {%- comment -%} Full-width Image 2 {%- endcomment -%}
-    {% if intro_image1 %}
-      <div class="product-intro__full-image">
-        {{ intro_image1 | image_url: width: 1600 | image_tag: loading: 'lazy' }}
-      </div>
-    {% endif %}
-
-    {%- comment -%} Optional additional image {%- endcomment -%}
-    {% if intro_image2 %}
-      <div class="product-intro__full-image product-intro__full-image--last">
-        {{ intro_image2 | image_url: width: 1600 | image_tag: loading: 'lazy' }}
-      </div>
-    {% endif %}
-  </div>
+    <div class="max-w-[1920px] mx-auto px-12 pt-10 pb-24">
+        <div class="h-px bg-[#131314]/6 mb-10"></div>
+        <div class="grid grid-cols-2" style="gap:2rem;">
+            <div>
+                {%- if product.metafields.custom.intro_image1.value -%}
+                    <img
+                        src="{{ product.metafields.custom.intro_image1.value | image_url: width: 1400 }}"
+                        alt="{{ product.title }} — detail 1"
+                        class="w-full object-cover"
+                        style="aspect-ratio:1/1;"
+                        loading="lazy"
+                        width="1400"
+                        height="1400"
+                    >
+                {%- endif -%}
+            </div>
+            <div>
+                {%- if product.metafields.custom.intro_image2.value -%}
+                    <img
+                        src="{{ product.metafields.custom.intro_image2.value | image_url: width: 1400 }}"
+                        alt="{{ product.title }} — detail 2"
+                        class="w-full object-cover"
+                        style="aspect-ratio:1/1;"
+                        loading="lazy"
+                        width="1400"
+                        height="1400"
+                    >
+                {%- endif -%}
+            </div>
+        </div>
+    </div>
 </div>
-{% endif %}
 
-{% stylesheet %}
-  .product-intro {
-    background-color: var(--intro-bg, #F7F5F0);
-    padding: var(--intro-padding-mobile, 40px) 0;
-  }
-
-  .product-intro__container {
-    max-width: 1400px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-  }
-
-  /* Header Content */
-  .product-intro__header {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    padding: 0 var(--intro-padding-x-mobile, 20px);
-    margin-bottom: 40px;
-  }
-
-  .product-intro__strap {
-    font-family: var(--font-body-family), sans-serif;
-    font-size: var(--intro-strap-size, 12px);
-    font-weight: 400;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--intro-strap-color, #9CA3AF);
-    margin: 0;
-  }
-
-  .product-intro__title {
-    font-family: var(--font-heading-family), serif;
-    font-size: var(--intro-title-size-mobile, 40px);
-    font-weight: 400;
-    color: var(--intro-title-color, #000000);
-    margin: 0;
-    line-height: 1.1;
-    text-transform: none;
-    letter-spacing: normal;
-  }
-
-  .product-intro__subheading {
-    font-family: var(--font-heading-family), serif;
-    font-size: var(--intro-subheading-size-mobile, 18px);
-    font-style: italic;
-    font-weight: 400;
-    color: var(--intro-subheading-color, #57534E);
-    margin: 0;
-    padding-left: 20px;
-    border-left: 3px solid var(--intro-accent-color, #D97706);
-    line-height: 1.5;
-  }
-
-  /* Full-width Images */
-  .product-intro__full-image {
-    width: 100%;
-    overflow: hidden;
-    margin-bottom: 24px;
-  }
-
-  .product-intro__full-image--last {
-    margin-bottom: 0;
-  }
-
-  .product-intro__full-image img {
-    width: 100%;
-    height: auto;
-    display: block;
-  }
-
-  /* Body Text */
-  .product-intro__body {
-    padding: 40px var(--intro-padding-x-mobile, 20px);
-  }
-
-  .product-intro__text {
-    font-family: var(--font-body-family), sans-serif;
-    font-size: var(--intro-text-size, 15px);
-    font-weight: 400;
-    color: var(--intro-text-color, #78716C);
-    margin: 0;
-    line-height: 1.7;
-    max-width: 680px;
-  }
-
-  /* Desktop Styles */
-  @media (min-width: 768px) {
-    .product-intro {
-      padding: var(--intro-padding-desktop, 80px) 0;
-    }
-
-    .product-intro__header {
-      padding: 0 var(--intro-padding-x-desktop, 80px);
-      margin-bottom: 60px;
-      max-width: 1000px;
-      margin-left: auto;
-      margin-right: auto;
-      gap: 24px;
-      text-align: center;
-      align-items: center;
-    }
-
-    .product-intro__title {
-      font-size: var(--intro-title-size-desktop, 56px);
-    }
-
-    .product-intro__subheading {
-      font-size: var(--intro-subheading-size-desktop, 22px);
-      border-left: none;
-      padding-left: 0;
-    }
-
-    .product-intro__full-image {
-      margin-bottom: 40px;
-    }
-
-    .product-intro__full-image--last {
-      margin-bottom: 0;
-    }
-
-    .product-intro__body {
-      padding: 60px var(--intro-padding-x-desktop, 80px);
-      max-width: 900px;
-      margin-left: auto;
-      margin-right: auto;
-      text-align: center;
-    }
-
-    .product-intro__text {
-      max-width: 720px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .product-intro__header {
-      padding: 0 120px;
-      gap: 28px;
-    }
-
-    .product-intro__body {
-      padding: 80px 120px;
-    }
-  }
-{% endstylesheet %}
+<!-- Mobile -->
+<div class="md:hidden" style="background-color:#F9F9FB;">
+    <div class="px-5 pt-14 pb-8">
+        <span class="font-label text-[0.55rem] uppercase tracking-[0.2em] text-[#C5A059] block mb-5">{{ product.metafields.custom.intro_title.value }}</span>
+        <h2 class="heading-thin text-3xl text-[#131314] tracking-tight leading-[1.15] mb-5">{{ product.metafields.custom.intro_strap_text.value }}</h2>
+        <p class="heading-thin text-base text-[#2d3338]/65 leading-relaxed">"{{ product.metafields.custom.intro_subheading.value }}"</p>
+    </div>
+    {%- if product.metafields.custom.intro_main_image.value -%}
+        <img
+            src="{{ product.metafields.custom.intro_main_image.value | image_url: width: 1200 }}"
+            alt="{{ product.metafields.custom.intro_title.value }}"
+            class="aspect-[4/3] w-full object-cover"
+            loading="lazy"
+            width="1200"
+            height="900"
+        >
+    {%- endif -%}
+    <div class="px-5 py-10">
+        <p class="font-body text-[0.9rem] font-light text-[#2d3338]/60 leading-[1.8]">{{ product.metafields.custom.intro_image_text.value }}</p>
+    </div>
+    <div class="grid grid-cols-2" style="gap:1px;">
+        <div>
+            {%- if product.metafields.custom.intro_image1.value -%}
+                <img
+                    src="{{ product.metafields.custom.intro_image1.value | image_url: width: 800 }}"
+                    alt="{{ product.title }} — detail 1"
+                    class="w-full aspect-square object-cover"
+                    loading="lazy"
+                    width="800"
+                    height="800"
+                >
+            {%- endif -%}
+        </div>
+        <div>
+            {%- if product.metafields.custom.intro_image2.value -%}
+                <img
+                    src="{{ product.metafields.custom.intro_image2.value | image_url: width: 800 }}"
+                    alt="{{ product.title }} — detail 2"
+                    class="w-full aspect-square object-cover"
+                    loading="lazy"
+                    width="800"
+                    height="800"
+                >
+            {%- endif -%}
+        </div>
+    </div>
+    <div class="h-10" style="background-color:#F9F9FB;"></div>
+</div>
+{%- endif -%}
 
 {% schema %}
 {
-  "name": "Product Intro",
-  "settings": [
-    {
-      "type": "header",
-      "content": "Colors"
-    },
-    {
-      "type": "color",
-      "id": "background_color",
-      "label": "Background color",
-      "default": "#F7F5F0"
-    },
-    {
-      "type": "color",
-      "id": "strap_color",
-      "label": "Strap text color",
-      "default": "#9CA3AF"
-    },
-    {
-      "type": "color",
-      "id": "title_color",
-      "label": "Title color",
-      "default": "#000000"
-    },
-    {
-      "type": "color",
-      "id": "subheading_color",
-      "label": "Subheading color",
-      "default": "#57534E"
-    },
-    {
-      "type": "color",
-      "id": "text_color",
-      "label": "Body text color",
-      "default": "#78716C"
-    },
-    {
-      "type": "color",
-      "id": "accent_color",
-      "label": "Accent color (border)",
-      "default": "#D97706"
-    },
-    {
-      "type": "header",
-      "content": "Typography"
-    },
-    {
-      "type": "range",
-      "id": "strap_size",
-      "label": "Strap text size",
-      "min": 10,
-      "max": 24,
-      "step": 1,
-      "unit": "px",
-      "default": 16
-    },
-    {
-      "type": "range",
-      "id": "title_size_mobile",
-      "label": "Title size (mobile)",
-      "min": 28,
-      "max": 56,
-      "step": 2,
-      "unit": "px",
-      "default": 40
-    },
-    {
-      "type": "range",
-      "id": "title_size_desktop",
-      "label": "Title size (desktop)",
-      "min": 36,
-      "max": 100,
-      "step": 2,
-      "unit": "px",
-      "default": 72
-    },
-    {
-      "type": "range",
-      "id": "subheading_size_mobile",
-      "label": "Subheading size (mobile)",
-      "min": 14,
-      "max": 24,
-      "step": 1,
-      "unit": "px",
-      "default": 18
-    },
-    {
-      "type": "range",
-      "id": "subheading_size_desktop",
-      "label": "Subheading size (desktop)",
-      "min": 18,
-      "max": 40,
-      "step": 1,
-      "unit": "px",
-      "default": 26
-    },
-    {
-      "type": "range",
-      "id": "text_size",
-      "label": "Body text size",
-      "min": 13,
-      "max": 24,
-      "step": 1,
-      "unit": "px",
-      "default": 18
-    },
-    {
-      "type": "header",
-      "content": "Spacing"
-    },
-    {
-      "type": "range",
-      "id": "padding_mobile",
-      "label": "Top/bottom padding (mobile)",
-      "min": 0,
-      "max": 80,
-      "step": 4,
-      "unit": "px",
-      "default": 40
-    },
-    {
-      "type": "range",
-      "id": "padding_desktop",
-      "label": "Top/bottom padding (desktop)",
-      "min": 0,
-      "max": 120,
-      "step": 4,
-      "unit": "px",
-      "default": 80
-    },
-    {
-      "type": "range",
-      "id": "padding_x_mobile",
-      "label": "Side padding (mobile)",
-      "min": 0,
-      "max": 40,
-      "step": 2,
-      "unit": "px",
-      "default": 20
-    },
-    {
-      "type": "range",
-      "id": "padding_x_desktop",
-      "label": "Side padding (desktop)",
-      "min": 0,
-      "max": 80,
-      "step": 4,
-      "unit": "px",
-      "default": 0
-    }
-  ],
-  "presets": [
-    {
-      "name": "Product Intro"
-    }
-  ],
-  "templates": ["product"]
+    "name": "Product Introduction",
+    "tag": "section",
+    "class": "product-intro-section",
+    "presets": [
+        {
+            "name": "Product Introduction"
+        }
+    ]
 }
 {% endschema %}

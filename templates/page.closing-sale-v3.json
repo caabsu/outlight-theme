@@ -1,0 +1,31 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "closing-sale-landing-v3",
+      "settings": {
+        "eyebrow": "Outlight Clearance Sale",
+        "heading": "<p>The Clearance Sale.<br>60% off all lighting.</p>",
+        "lede": "Create a welcoming home for the season with sculptural lighting. Your 60% discount applies automatically at checkout.",
+        "sale_code": "CLEARANCE60",
+        "discount_percent": 60,
+        "hero_product_handle": "aven",
+        "reason_label": "A new season at home",
+        "reason_heading": "<p>Settle into a warmer home.</p>",
+        "reason_copy": "<p>Bring a warmer glow to the places you gather, read, and unwind. Explore sculptural lights for familiar rooms and outdoor spaces.</p><p>Our Clearance Sale offers 60% off lighting, applied automatically at checkout.</p>",
+        "product_handles": "aven,cade,calen,cielo,eira,fira,noa,olin,mira,aurevo"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

@@ -1,0 +1,93 @@
+{% doc %}
+  Renders FAQPage JSON-LD for the current product page.
+  Mirrors the type-driven FAQ set rendered by sections/product-faq.liquid.
+  Detection: product.type + collections + optional metafield custom.faq_type.
+
+  @param {product} product - The current product
+{% enddoc %}
+
+{% if template.name == 'product' and product.metafields.custom.faq_hide != true %}
+  {%- liquid
+    assign type_lc = product.type | downcase
+    assign product_faq_type = 'plug-in'
+
+    if type_lc contains 'outdoor' or type_lc contains 'path' or type_lc contains 'landscape'
+      assign product_faq_type = 'outdoor'
+    elsif type_lc contains 'wall' or type_lc contains 'sconce'
+      assign product_faq_type = 'wall-indoor'
+    elsif type_lc contains 'floor' or type_lc contains 'table' or type_lc contains 'desk' or type_lc contains 'bedside' or type_lc contains 'lamp'
+      assign product_faq_type = 'plug-in'
+    endif
+
+    for col in product.collections
+      assign h = col.handle | downcase
+      if h == 'outdoor-lighting' or h == 'wall-lights' or h == 'path-lights' or h contains 'outdoor'
+        assign product_faq_type = 'outdoor'
+      elsif h == 'indoor-wall-lights'
+        if product_faq_type != 'outdoor'
+          assign product_faq_type = 'wall-indoor'
+        endif
+      endif
+    endfor
+
+    assign faq_type_override = product.metafields.custom.faq_type.value | downcase
+    if faq_type_override == 'plug-in' or faq_type_override == 'wall-indoor' or faq_type_override == 'outdoor'
+      assign product_faq_type = faq_type_override
+    endif
+
+    if product_faq_type == 'outdoor'
+      assign q1 = "What's included in the box?"
+      assign a1 = "The fixture, mounting plate, weather gasket, all required hardware, and a printed installation guide. Bulb included only where specifically noted on the product page."
+      assign q2 = "What's the IP rating, and where can I install it?"
+      assign a2 = "Built for outdoor use — the full IP rating is listed on each product page. Suitable for porches, exterior walls, patios, driveways, and entryways. Covered placement extends finish life in harsh weather."
+      assign q3 = "Does it require an electrician to install?"
+      assign a3 = "Yes — outdoor hardwiring should always be done by a licensed electrician. The fixture mounts to a standard outdoor-rated junction box; supplied gaskets and weather-sealed fittings protect the connection."
+      assign q4 = "How fast does it ship?"
+      assign a4 = 'clearance.delivery_faq' | t
+      assign q5 = "Can I return it if it's not right?"
+      assign a5 = 'policies.returns' | t
+      assign q6 = "What's the warranty?"
+      assign a6 = 'policies.warranty' | t
+    elsif product_faq_type == 'wall-indoor'
+      assign q1 = "What's included in the box?"
+      assign a1 = "The fixture, mounting plate, all required hardware (screws, anchors, wire nuts), and a printed installation guide. Bulb included only where specifically noted on the product page."
+      assign q2 = "Does it require an electrician to install?"
+      assign a2 = "Yes — this is a hardwired fixture, and we strongly recommend a licensed electrician. It mounts to a standard US junction box; most installs take under 30 minutes once the box is exposed."
+      assign q3 = "What bulb does it use, and is it dimmable?"
+      assign a3 = "Bulb base and quantity are listed on the product page (typically E12, E14, or G9 for sconces). The fixture is fully dimmable when wired to a compatible dimmer with a dimmable bulb."
+      assign q4 = "How fast does it ship?"
+      assign a4 = 'clearance.delivery_faq' | t
+      assign q5 = "Can I return it if it's not right?"
+      assign a5 = 'policies.returns' | t
+      assign q6 = "What's the warranty?"
+      assign a6 = 'policies.warranty' | t
+    else
+      assign q1 = "What's included in the box?"
+      assign a1 = "The lamp body, an attached inline-switch cord ready to plug into any standard US outlet, and a warm LED bulb. Setup takes about a minute — no tools required."
+      assign q2 = "What bulb does it use, and is it dimmable?"
+      assign a2 = "Standard Edison-screw fitting (E26 for most floor and table lamps, E14 for smaller desk lamps — see the product page for the exact base). Ships with a warm LED (about 2700 to 3000 K) and is dimmable when paired with a standard wall dimmer or a smart bulb."
+      assign q3 = "How long is the cord, and where does the switch sit?"
+      assign a3 = "Approximately 6 ft / 1.8 m — long enough to reach a wall outlet from a sofa-side, nightstand, or desk position. The on/off switch sits inline on the cord, within easy reach."
+      assign q4 = "How fast does it ship?"
+      assign a4 = 'clearance.delivery_faq' | t
+      assign q5 = "Can I return it if it's not right?"
+      assign a5 = 'policies.returns' | t
+      assign q6 = "What's the warranty?"
+      assign a6 = 'policies.warranty' | t
+    endif
+  -%}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": {{ q1 | json }}, "acceptedAnswer": { "@type": "Answer", "text": {{ a1 | json }} } },
+        { "@type": "Question", "name": {{ q2 | json }}, "acceptedAnswer": { "@type": "Answer", "text": {{ a2 | json }} } },
+        { "@type": "Question", "name": {{ q3 | json }}, "acceptedAnswer": { "@type": "Answer", "text": {{ a3 | json }} } },
+        { "@type": "Question", "name": {{ q4 | json }}, "acceptedAnswer": { "@type": "Answer", "text": {{ a4 | json }} } },
+        { "@type": "Question", "name": {{ q5 | json }}, "acceptedAnswer": { "@type": "Answer", "text": {{ a5 | json }} } },
+        { "@type": "Question", "name": {{ q6 | json }}, "acceptedAnswer": { "@type": "Answer", "text": {{ a6 | json }} } }
+      ]
+    }
+  </script>
+{% endif %}

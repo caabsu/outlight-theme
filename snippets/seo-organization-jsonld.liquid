@@ -1,0 +1,52 @@
+{% doc %}
+  Renders Organization and WebSite JSON-LD for the storefront.
+{% enddoc %}
+
+{% liquid
+  assign organization_name = shop.name
+  assign organization_url = shop.url
+  assign organization_description = page_description | default: shop.description
+  assign search_url = shop.url | append: routes.search_url | append: '?q={search_term_string}'
+  assign support_email = 'support@outlight.us'
+%}
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": {{ shop.url | append: '#organization' | json }},
+        "name": {{ organization_name | json }},
+        "url": {{ organization_url | json }}{% if organization_description != blank %},
+        "description": {{ organization_description | strip_html | strip_newlines | json }}{% endif %},
+        "contactPoint": [
+          {
+            "@type": "ContactPoint",
+            "contactType": "customer support",
+            "email": {{ support_email | json }},
+            "availableLanguage": ["English"],
+            "areaServed": "US"
+          }
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": {{ shop.url | append: '#website' | json }},
+        "url": {{ organization_url | json }},
+        "name": {{ organization_name | json }},
+        "publisher": {
+          "@id": {{ shop.url | append: '#organization' | json }}
+        },
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": {{ search_url | json }}
+          },
+          "query-input": "required name=search_term_string"
+        }
+      }
+    ]
+  }
+</script>

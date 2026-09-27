@@ -9,68 +9,12 @@
  */
 {
   "sections": {
-    "main": {
-      "type": "collection",
-      "settings": {
-        "hero_height_mobile": 300,
-        "hero_height_desktop": 450,
-        "overlay_opacity": 20,
-        "show_filter_bar": true,
-        "filter_bar_bg": "#f7f5f0",
-        "filter_bar_border_color": "#1c1917",
-        "filter_bar_text_size": 12,
-        "filter_bar_text_color": "#1c1917",
-        "filter_bar_text_weight": "400",
-        "filter_bar_icon_size": 16,
-        "filter_text": "FILTER",
-        "sort_text": "SORT",
-        "search_placeholder": "Search...",
-        "filter_collection_1": "path-lights",
-        "filter_collection_1_text": "",
-        "filter_collection_2": "ceiling-lights",
-        "filter_collection_2_text": "",
-        "filter_collection_3": "indoor-lighting",
-        "filter_collection_3_text": "",
-        "filter_collection_4": "outdoor-lighting",
-        "filter_collection_4_text": "",
-        "filter_collection_5": "floor-table-lamps",
-        "filter_collection_5_text": "",
-        "filter_collection_6": "desk-lamp",
-        "filter_collection_6_text": "",
-        "filter_collection_7": "chandeliers",
-        "filter_collection_7_text": "",
-        "filter_collection_8": "wall-lights",
-        "filter_collection_8_text": "",
-        "content_padding_x_mobile": 40,
-        "content_padding_x_desktop": 60,
-        "content_padding_bottom_mobile": 24,
-        "content_padding_bottom_desktop": 60,
-        "custom_title": "",
-        "title_size_mobile": 36,
-        "title_size_desktop": 56,
-        "title_color": "#ffffff",
-        "title_weight": "400",
-        "subtitle": "Explore our collection.",
-        "subtitle_size_mobile": 14,
-        "subtitle_size_desktop": 16,
-        "subtitle_color": "#ffffff",
-        "subtitle_weight": "400",
-        "products_per_page": 12,
-        "products_gap": 12,
-        "products_padding_x_mobile": 4,
-        "products_padding_x_desktop": 16,
-        "products_padding_top": 24,
-        "products_padding_bottom": 48,
-        "product_title_size": 18,
-        "product_title_color": "#1c1917",
-        "product_title_weight": "400",
-        "product_price_size": 14,
-        "product_price_color": "#57534e",
-        "product_price_weight": "400"
-      }
+    "collection-product-grid": {
+      "type": "collection-product-grid",
+      "settings": {}
     }
   },
   "order": [
-    "main"
+    "collection-product-grid"
   ]
 }
