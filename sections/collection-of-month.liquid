@@ -1,0 +1,360 @@
+<section class="bg-[#F9F9FB]" id="section-{{ section.id }}">
+  <div class="max-w-[1920px] mx-auto">
+
+    {%- assign featured = section.settings.featured_product -%}
+    {%- assign col       = section.settings.collection -%}
+    {%- assign limit     = section.settings.products_to_show -%}
+
+    <!-- ============================================================
+         DESKTOP LAYOUT — Variation F
+    ============================================================ -->
+    <div class="hidden md:block px-12 pt-24 pb-16">
+
+      <!-- Section header -->
+      <div class="mb-14">
+        <div class="flex items-center gap-4 mb-5">
+          <div class="w-8 h-px bg-[#C5A059]"></div>
+          <span class="font-label text-[0.7rem] uppercase tracking-[0.25em] text-[#C5A059]">{{ section.settings.label | escape }}</span>
+        </div>
+        <div class="flex items-baseline justify-between">
+          <h2 class="heading-thin text-5xl text-[#131314] tracking-tight">{{ section.settings.heading | escape }}</h2>
+          {%- if col != blank -%}
+            <a href="{{ col.url }}" class="font-label text-[0.7rem] uppercase tracking-[0.15em] text-[#2d3338]/55 hover:text-[#131314] transition-colors duration-300">View All →</a>
+          {%- endif -%}
+        </div>
+      </div>
+
+      <!-- Featured product — bordered container with gap-4 -->
+      {%- if featured != blank -%}
+        <a href="{{ featured.url }}" class="v3-featured group block border border-[#131314]/6 p-4 mb-10">
+          <div class="grid grid-cols-12 gap-4">
+
+            <!-- Product image -->
+            <div class="col-span-7 relative overflow-hidden">
+              {%- assign cotm_desk_img = section.settings.featured_image_override | default: featured.featured_image -%}
+              {%- if cotm_desk_img != blank -%}
+                <div class="relative cotm-aspect-16-10 w-full h-full overflow-hidden">
+                  <img
+                    src="{{ cotm_desk_img | image_url: width: 1400 }}"
+                    alt="{{ featured.title | escape }}"
+                    loading="lazy"
+                    class="product-img w-full h-full object-cover"
+                  >
+                  <div class="absolute inset-5 pointer-events-none">
+                    <div class="border-draw-v3 w-full h-full border border-white/10"></div>
+                  </div>
+                </div>
+              {%- else -%}
+                <div class="product-img cotm-aspect-16-10 w-full h-full" style="background: linear-gradient(165deg, #e8ddd0 0%, #d4c4b0 100%);">
+                  <div class="absolute inset-5 pointer-events-none">
+                    <div class="border-draw-v3 w-full h-full border border-white/10"></div>
+                  </div>
+                </div>
+              {%- endif -%}
+            </div>
+
+            <!-- Info panel -->
+            <div class="col-span-5 bg-[#f4f0eb] px-10 py-10 flex flex-col justify-center">
+              <span class="font-label text-[0.6rem] uppercase tracking-[0.25em] text-[#C5A059]/60 block mb-4">Featured</span>
+              <span class="font-headline text-3xl font-[200] text-[#131314] tracking-tight block mb-1">{{ featured.title | escape }}</span>
+              {%- if section.settings.featured_description != blank -%}
+                <span class="font-body text-[0.85rem] font-light text-[#2d3338]/60 block mb-6">{{ section.settings.featured_description | escape }}</span>
+              {%- elsif featured.description != blank -%}
+                <span class="font-body text-[0.85rem] font-light text-[#2d3338]/60 block mb-6">{{ featured.description | strip_html | truncate: 120 }}</span>
+              {%- else -%}
+                <span class="block mb-6"></span>
+              {%- endif -%}
+              <div class="flex items-baseline gap-2 mb-6">
+                <span class="font-headline text-2xl font-[200] text-[#131314]">{{ featured.price | money }}</span>
+                {%- if featured.compare_at_price > featured.price -%}
+                  <span class="font-body text-[0.85rem] font-light text-[#2d3338]/45 line-through">{{ featured.compare_at_price | money }}</span>
+                {%- endif -%}
+              </div>
+              <!-- Specs -->
+              <div class="grid grid-cols-2 gap-4 mb-6">
+                {%- if featured.metafields.custom.height.value != blank -%}
+                  <div class="border-l-2 border-[#C5A059]/25 pl-3 py-0.5">
+                    <span class="font-label text-[0.65rem] uppercase text-[#2d3338]/55 block mb-0.5">Height</span>
+                    <span class="font-body text-[0.8rem] font-[300] text-[#131314]">{{ featured.metafields.custom.height.value }}</span>
+                  </div>
+                {%- else -%}
+                  <div class="border-l-2 border-[#C5A059]/25 pl-3 py-0.5">
+                    <span class="font-label text-[0.65rem] uppercase text-[#2d3338]/55 block mb-0.5">Collection</span>
+                    <span class="font-body text-[0.8rem] font-[300] text-[#131314]">{{ section.settings.label | escape }}</span>
+                  </div>
+                {%- endif -%}
+                {%- if featured.metafields.custom.finish.value != blank -%}
+                  <div class="border-l-2 border-[#C5A059]/25 pl-3 py-0.5">
+                    <span class="font-label text-[0.65rem] uppercase text-[#2d3338]/55 block mb-0.5">Material</span>
+                    <span class="font-body text-[0.8rem] font-[300] text-[#131314]">{{ featured.metafields.custom.finish.value }}</span>
+                  </div>
+                {%- else -%}
+                  <div class="border-l-2 border-[#C5A059]/25 pl-3 py-0.5">
+                    <span class="font-label text-[0.65rem] uppercase text-[#2d3338]/55 block mb-0.5">Availability</span>
+                    <span class="font-body text-[0.8rem] font-[300] text-[#131314]">
+                      {%- if featured.available -%}In Stock{%- else -%}Out of Stock{%- endif -%}
+                    </span>
+                  </div>
+                {%- endif -%}
+              </div>
+              <span class="font-label text-[0.7rem] uppercase tracking-[0.1em] text-[#C5A059] group-hover:text-[#131314] transition-colors">View Product →</span>
+            </div>
+
+          </div>
+        </a>
+      {%- else -%}
+        <!-- Editor placeholder -->
+        <div class="border border-[#131314]/6 p-4 mb-10 opacity-30">
+          <div class="grid grid-cols-12 gap-4">
+            <div class="col-span-7 cotm-aspect-16-10" style="background: linear-gradient(165deg, #e8ddd0 0%, #d4c4b0 100%);"></div>
+            <div class="col-span-5 bg-[#f4f0eb] px-10 py-10 flex flex-col justify-center">
+              <span class="font-label text-[0.6rem] uppercase tracking-[0.25em] text-[#C5A059]/60 block mb-4">Featured</span>
+              <span class="font-headline text-3xl font-[200] text-[#131314] block mb-2">Product Name</span>
+              <span class="font-body text-[0.85rem] font-light text-[#2d3338]/60 block mb-6">Select a product in the theme editor.</span>
+            </div>
+          </div>
+        </div>
+      {%- endif -%}
+
+      <!-- Gallery shelf — gap-4, 3:4 ratio -->
+      {%- if col != blank -%}
+        <div class="grid grid-cols-5 gap-4">
+          {%- for product in col.products limit: limit -%}
+            <a href="{{ product.url }}" class="product-card group block">
+              <div class="relative overflow-hidden cotm-aspect-3-4 bg-[#f4f0eb]">
+                {%- if product.featured_image -%}
+                  <img
+                    src="{{ product.featured_image | image_url: width: 600 }}"
+                    alt="{{ product.featured_image.alt | escape }}"
+                    class="product-img w-full h-full object-cover"
+                    loading="lazy"
+                    width="600"
+                    height="800"
+                  >
+                {%- else -%}
+                  <div class="w-full h-full" style="background: linear-gradient(165deg, #e8ddd0 0%, #d4c4b0 100%);"></div>
+                {%- endif -%}
+              </div>
+              <div class="pt-3 flex items-baseline justify-between">
+                <span class="font-headline text-[1.05rem] font-[200] text-[#131314]">{{ product.title | split: ' ' | first }}</span>
+                <span class="font-body text-[0.75rem] font-light text-[#2d3338]/55">{{ product.price | money_without_trailing_zeros }}</span>
+              </div>
+              <div class="mt-2 h-px bg-[#131314]/4 relative">
+                <div class="product-line absolute top-0 left-0 h-full bg-[#C5A059]"></div>
+              </div>
+            </a>
+          {%- endfor -%}
+        </div>
+        <div class="pt-5">
+          <span class="font-body text-[0.75rem] font-light text-[#2d3338]/55">
+            Showing {{ col.products.size | at_most: limit }} of {{ col.products_count }} {{ section.settings.label | downcase | escape }}
+          </span>
+        </div>
+      {%- endif -%}
+
+    </div><!-- /desktop -->
+
+
+    <!-- ============================================================
+         MOBILE LAYOUT — Variation F
+    ============================================================ -->
+    <div class="md:hidden">
+
+      <!-- Header -->
+      <div class="px-5 pt-14 pb-6">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-5 h-px bg-[#C5A059]"></div>
+          <span class="font-label text-[0.6rem] uppercase tracking-[0.25em] text-[#C5A059]">{{ section.settings.label | escape }}</span>
+        </div>
+        <div class="flex items-baseline justify-between">
+          <h2 class="heading-thin text-[1.7rem] text-[#131314] tracking-tight">{{ section.settings.heading | newline_to_br }}</h2>
+          {%- if col != blank -%}
+            <a href="{{ col.url }}" class="font-label text-[0.6rem] uppercase text-[#2d3338]/55 shrink-0 ml-4">View All →</a>
+          {%- endif -%}
+        </div>
+      </div>
+
+      <!-- Featured product — bordered stacked card -->
+      {%- if featured != blank -%}
+        <div class="px-5 mb-6">
+          <a href="{{ featured.url }}" class="v3-featured group block border border-[#131314]/6 p-3">
+            <!-- Image -->
+            <div class="relative overflow-hidden cotm-aspect-4-3 mb-3">
+              {%- assign cotm_mob_img = section.settings.featured_image_override | default: featured.featured_image -%}
+              {%- if cotm_mob_img != blank -%}
+                <img
+                  src="{{ cotm_mob_img | image_url: width: 800 }}"
+                  alt="{{ featured.title | escape }}"
+                  loading="lazy"
+                  class="product-img w-full h-full object-cover"
+                >
+              {%- else -%}
+                <div class="w-full h-full" style="background: linear-gradient(165deg, #e8ddd0 0%, #d4c4b0 100%);"></div>
+              {%- endif -%}
+              <div class="absolute inset-3 border border-white/10 pointer-events-none"></div>
+            </div>
+            <!-- Info panel -->
+            <div class="bg-[#f4f0eb] px-5 py-5">
+              <span class="font-label text-[0.45rem] uppercase tracking-[0.2em] text-[#C5A059]/50 block mb-2">Featured</span>
+              <div class="flex items-baseline justify-between mb-1.5">
+                <span class="font-headline text-xl font-[200] text-[#131314]">{{ featured.title | escape }}</span>
+                <span class="font-headline text-base font-[200] text-[#131314]">{{ featured.price | money }}</span>
+              </div>
+              {%- if section.settings.featured_description != blank -%}
+                <span class="font-body text-[0.78rem] font-light text-[#2d3338]/55 block mb-4">{{ section.settings.featured_description | escape }}</span>
+              {%- elsif featured.description != blank -%}
+                <span class="font-body text-[0.78rem] font-light text-[#2d3338]/55 block mb-4">{{ featured.description | strip_html | truncate: 90 }}</span>
+              {%- else -%}
+                <span class="block mb-4"></span>
+              {%- endif -%}
+              <div class="grid grid-cols-2 mb-5" style="gap:0;border-top:1px solid rgba(19,19,20,0.06);">
+                {%- if featured.metafields.custom.height.value != blank -%}
+                  <div style="padding:10px 0 10px 12px;border-left:2px solid rgba(197,160,89,0.2);border-bottom:1px solid rgba(19,19,20,0.06);">
+                    <span class="font-label uppercase block" style="font-size:0.48rem;letter-spacing:0.06em;color:rgba(45,51,56,0.45);margin-bottom:3px;">Collection</span>
+                    <span class="font-body font-[300] text-[#131314]" style="font-size:0.78rem;">{{ featured.metafields.custom.height.value }}</span>
+                  </div>
+                {%- else -%}
+                  <div style="padding:10px 0 10px 12px;border-left:2px solid rgba(197,160,89,0.2);border-bottom:1px solid rgba(19,19,20,0.06);">
+                    <span class="font-label uppercase block" style="font-size:0.48rem;letter-spacing:0.06em;color:rgba(45,51,56,0.45);margin-bottom:3px;">Collection</span>
+                    <span class="font-body font-[300] text-[#131314]" style="font-size:0.78rem;">{{ section.settings.label | escape }}</span>
+                  </div>
+                {%- endif -%}
+                {%- if featured.metafields.custom.finish.value != blank -%}
+                  <div style="padding:10px 0 10px 12px;border-left:2px solid rgba(197,160,89,0.2);border-bottom:1px solid rgba(19,19,20,0.06);">
+                    <span class="font-label uppercase block" style="font-size:0.48rem;letter-spacing:0.06em;color:rgba(45,51,56,0.45);margin-bottom:3px;">Material</span>
+                    <span class="font-body font-[300] text-[#131314]" style="font-size:0.78rem;">{{ featured.metafields.custom.finish.value }}</span>
+                  </div>
+                {%- else -%}
+                  <div style="padding:10px 0 10px 12px;border-left:2px solid rgba(197,160,89,0.2);border-bottom:1px solid rgba(19,19,20,0.06);">
+                    <span class="font-label uppercase block" style="font-size:0.48rem;letter-spacing:0.06em;color:rgba(45,51,56,0.45);margin-bottom:3px;">Material</span>
+                    <span class="font-body font-[300] text-[#131314]" style="font-size:0.78rem;">
+                      {%- if featured.available -%}In Stock{%- else -%}Out of Stock{%- endif -%}
+                    </span>
+                  </div>
+                {%- endif -%}
+              </div>
+              <span class="font-label uppercase text-[#C5A059]" style="font-size:0.6rem;letter-spacing:0.1em;">View Product →</span>
+            </div>
+          </a>
+        </div>
+      {%- endif -%}
+
+      <!-- Horizontal scroll shelf -->
+      {%- if col != blank -%}
+        <div class="flex gap-3 px-5 pb-2 overflow-x-auto scroll-hide">
+          {%- for product in col.products limit: limit -%}
+            <a href="{{ product.url }}" class="product-card group block shrink-0" style="width:150px;min-width:150px;">
+              <div class="relative overflow-hidden cotm-aspect-3-4 mb-2.5 bg-[#f4f0eb]">
+                {%- if product.featured_image != blank -%}
+                  <img
+                    src="{{ product.featured_image | image_url: width: 400 }}"
+                    alt="{{ product.featured_image.alt | escape }}"
+                    width="150"
+                    height="200"
+                    loading="lazy"
+                    class="product-img w-full h-full object-cover"
+                  >
+                {%- else -%}
+                  <div class="product-img w-full h-full" style="background: linear-gradient(165deg, #e8ddd0 0%, #d4c4b0 100%);"></div>
+                {%- endif -%}
+              </div>
+              <div class="flex items-baseline justify-between">
+                <span class="font-headline text-[0.9rem] font-[200] text-[#131314]">{{ product.title | split: ' ' | first }}</span>
+                <span class="font-body text-[0.68rem] font-light text-[#2d3338]/55">{{ product.price | money_without_trailing_zeros }}</span>
+              </div>
+              <div class="mt-1.5 h-px bg-[#131314]/4 relative">
+                <div class="product-line absolute top-0 left-0 h-full bg-[#C5A059]"></div>
+              </div>
+            </a>
+          {%- endfor -%}
+        </div>
+        <div class="px-5 pt-3 pb-10">
+          <span class="font-body text-[0.72rem] font-light text-[#2d3338]/55">
+            Showing {{ col.products.size | at_most: limit }} of {{ col.products_count }} {{ section.settings.label | downcase | escape }}
+          </span>
+        </div>
+      {%- endif -%}
+
+    </div><!-- /mobile -->
+
+  </div>
+</section>
+
+<style>
+  .heading-thin { font-family: 'Newsreader', serif; font-weight: 200; font-variation-settings: 'opsz' 72; }
+  .scroll-hide  { scrollbar-width: none; }
+  .scroll-hide::-webkit-scrollbar { display: none; }
+  .product-card .product-img { transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+  .product-card:hover .product-img { transform: scale(1.04); }
+  .product-line { width: 0; transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+  .product-card:hover .product-line { width: 100%; }
+  .border-draw-v3 { position: relative; }
+  .border-draw-v3::before { content: ''; position: absolute; top: 0; left: 0; width: 0; height: 1px; background: #C5A059; transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+  .border-draw-v3::after  { content: ''; position: absolute; bottom: 0; right: 0; width: 0; height: 1px; background: #C5A059; transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+  .v3-featured:hover .border-draw-v3::before,
+  .v3-featured:hover .border-draw-v3::after { width: 100%; }
+  .v3-featured .product-img { transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+  .v3-featured:hover .product-img { transform: scale(1.03); }
+  /* Arbitrary aspect ratios missing from compiled CSS */
+  .cotm-aspect-16-10 { aspect-ratio: 16/10; }
+  .cotm-aspect-4-3 { aspect-ratio: 4/3; }
+  .cotm-aspect-3-4 { aspect-ratio: 3/4; }
+</style>
+
+{% schema %}
+{
+  "name": "Collection of the Month",
+  "tag": "section",
+  "class": "section-collection-of-month",
+  "settings": [
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Category label",
+      "default": "Desk Lamps"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Collection of the Month"
+    },
+    {
+      "type": "product",
+      "id": "featured_product",
+      "label": "Featured product"
+    },
+    {
+      "type": "image_picker",
+      "id": "featured_image_override",
+      "label": "Featured product image (override)",
+      "info": "Overrides the product's default image. Use for a custom lifestyle or editorial shot."
+    },
+    {
+      "type": "text",
+      "id": "featured_description",
+      "label": "Featured product description",
+      "info": "Overrides the product's own description. Keep it short (one line)."
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Shelf collection"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "label": "Products to show in shelf",
+      "min": 3,
+      "max": 8,
+      "step": 1,
+      "default": 5
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection of the Month"
+    }
+  ]
+}
+{% endschema %}

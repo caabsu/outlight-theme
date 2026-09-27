@@ -1,0 +1,18 @@
+<style>
+ .outlight-return{max-width:680px;margin:0 auto;padding:54px 20px 72px;color:#242426}.outlight-return h1{font-size:clamp(28px,5vw,38px);margin:0 0 12px}.outlight-return p{font-size:16px;line-height:1.6}.outlight-return label{display:block;font-size:14px;margin:22px 0 7px}.outlight-return input,.outlight-return textarea{width:100%;box-sizing:border-box;border:1px solid #c9c9c9;border-radius:5px;background:#fff;padding:13px;font:inherit;font-size:16px}.outlight-return button{margin-top:22px;border:0;border-radius:5px;padding:14px 26px;background:#242426;color:#fff;font:inherit;cursor:pointer}.outlight-return .return-status{padding:16px;background:#f1eee7;border-left:3px solid #ad8b48}.outlight-return a{color:inherit;text-decoration:underline}.outlight-return .return-help{margin-top:30px;font-size:14px}
+</style>
+<main class="outlight-return">
+ <h1>Start a return</h1>
+ <p>Enter your order details and tell us what you’d like to return. Our team will review your request and email you the next steps.</p>
+ {% form 'contact', id: 'OutlightReturnRequest' %}
+  {% if form.posted_successfully? %}<p class="return-status" role="status">Your return request has been sent. Please wait for our email before shipping anything back.</p>{% else %}
+   {% if form.errors %}<div class="return-status" role="alert">{{ form.errors | default_errors }}</div>{% endif %}
+   <input type="hidden" name="contact[Request type]" value="Return request">
+   <label for="ReturnEmail">Email used for your order</label><input id="ReturnEmail" name="contact[email]" type="email" autocomplete="email" required value="{{ form.email | default: customer.email | escape }}">
+   <label for="ReturnOrder">Order number</label><input id="ReturnOrder" name="contact[Order number]" placeholder="#1234" maxlength="40" required>
+   <label for="ReturnDetails">Item and reason for return</label><textarea id="ReturnDetails" name="contact[body]" rows="5" maxlength="5000" required>{{ form.body | escape }}</textarea>
+   <button type="submit">Send return request</button>
+  {% endif %}
+ {% endform %}
+ <p class="return-help">Review our <a href="{{ shop.url }}/policies/refund-policy">return policy</a>. Need help? <a href="mailto:info@outlight.us?subject=Outlight%20return%20request">Email info@outlight.us</a>.</p>
+</main>

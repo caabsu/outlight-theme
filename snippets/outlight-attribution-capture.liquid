@@ -1,0 +1,108 @@
+{% comment %}Campaign handoff only. Does not emit Shopify checkout or purchase events.{% endcomment %}
+<script>
+(function () {
+  'use strict';
+  var KEY = 'outlight_attribution_v1';
+  var FIELDS = ['source','medium','campaign','campaign_id','ad_id','content','term','landing_page','referrer','gclid','gbraid','wbraid','fbclid','click_id','ts'];
+  var CLICKS = ['gclid','gbraid','wbraid','fbclid','click_id'];
+  var TTL = 30 * 86400000;
+  var SESSION = 30 * 60000;
+  var running = false;
+  var rerun = false;
+  var memory = {};
+  var entry = new URL(window.location.href);
+  var referral = safeUrl(document.referrer);
+
+  function clean(value) { return typeof value === 'string' ? value.replace(/[\u0000-\u001f\u007f]/g, '').trim().slice(0,240) : ''; }
+  function safeUrl(value) {
+    try { var u = new URL(value, window.location.origin); return /^https?:$/.test(u.protocol) && value ? u.origin + u.pathname : ''; } catch (_) { return ''; }
+  }
+  function allowed() {
+    var p = window.Shopify && window.Shopify.customerPrivacy;
+    return {analytics: !!(p && p.analyticsProcessingAllowed && p.analyticsProcessingAllowed()), marketing: !!(p && p.marketingAllowed && p.marketingAllowed())};
+  }
+  function read() {
+    try { return JSON.parse(window.localStorage.getItem(KEY) || '{}') || {}; } catch (_) { return memory; }
+  }
+  function write(value) {
+    memory = value;
+    try { window.localStorage.setItem(KEY, JSON.stringify(value)); } catch (_) {}
+  }
+  function validTouch(value, permission) {
+    if (!value || typeof value !== 'object' || !Number.isFinite(Date.parse(value.ts)) || Date.parse(value.ts) < Date.now() - TTL || Date.parse(value.ts) > Date.now() + 60000) return null;
+    var result = {};
+    FIELDS.forEach(function (field) {
+      if (!permission.marketing && CLICKS.indexOf(field) >= 0) return;
+      var v = /landing_page|referrer/.test(field) ? safeUrl(value[field]) : clean(value[field]);
+      if (v) result[field] = v;
+    });
+    return result;
+  }
+  function buildTouch(state, permission) {
+    var q = entry.searchParams;
+    var touch = {};
+    ['source','medium','campaign','content','term'].forEach(function (field) { touch[field] = clean(q.get('utm_' + field)); });
+    ['campaign_id','ad_id'].forEach(function (field) { touch[field] = clean(q.get(field)); });
+    if (permission.marketing) CLICKS.slice(0,4).forEach(function (field) { touch[field] = clean(q.get(field)); });
+    touch.click_id = touch.gclid || touch.gbraid || touch.wbraid || touch.fbclid || '';
+    var tagged = !!(touch.source || touch.medium || touch.campaign || touch.content || touch.term || touch.campaign_id || touch.ad_id || touch.click_id);
+    var refHost = referral ? new URL(referral).hostname.replace(/^www\./,'') : '';
+    var internal = !refHost || ['outlight.us','put1rp-iq.myshopify.com','outlight-checkout-lab.caabsu.chatgpt.site','checkout.outlight.us'].indexOf(refHost) >= 0;
+    // Internal navigation must not replace the acquisition touch.
+    if (!tagged && internal && state.lt && state.last_seen > Date.now() - SESSION) return null;
+    if (!touch.source) touch.source = touch.fbclid ? 'facebook' : (!internal ? refHost : 'direct');
+    if (!touch.medium) touch.medium = touch.fbclid ? 'social' : (!internal ? (/^(www\.)?(google\.[a-z.]+|bing\.com|search\.yahoo\.com|duckduckgo\.com)$/.test(refHost) ? 'organic' : 'referral') : 'none');
+    touch.landing_page = entry.origin + entry.pathname;
+    touch.referrer = internal ? '' : referral;
+    touch.ts = new Date().toISOString();
+    return validTouch(touch, permission);
+  }
+  function attributes(state) {
+    var result = {};
+    ['ft','lt'].forEach(function (prefix) {
+      FIELDS.forEach(function (field) { var value = clean(state[prefix] && state[prefix][field]); if (value) result['oa_' + prefix + '_' + field] = value; });
+    });
+    if (result.oa_lt_click_id) {
+      result.oa_click_id = result.oa_lt_click_id;
+      result.oa_click_ts = result.oa_lt_ts;
+      ['source','medium','campaign'].forEach(function (field) { if (result['oa_lt_' + field]) result['oa_' + field] = result['oa_lt_' + field]; });
+    }
+    return result;
+  }
+  async function syncCart(next) {
+    var root = window.Shopify && window.Shopify.routes && window.Shopify.routes.root || '/';
+    var response = await fetch(root + 'cart.js', {credentials:'same-origin',cache:'no-store',signal:AbortSignal.timeout(3500)});
+    if (!response.ok) return;
+    var cart = await response.json();
+    var patch = {};
+    Object.keys(cart.attributes || {}).forEach(function (key) { if (key.indexOf('oa_') === 0 && !Object.prototype.hasOwnProperty.call(next,key)) patch[key] = ''; });
+    Object.keys(next).forEach(function (key) { if ((cart.attributes || {})[key] !== next[key]) patch[key] = next[key]; });
+    if (!Object.keys(patch).length) return;
+    await fetch(root + 'cart/update.js', {method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({attributes:patch}),signal:AbortSignal.timeout(3500)});
+  }
+  async function capture() {
+    if (running) { rerun = true; return; }
+    var permission = allowed();
+    var old = read();
+    if (!permission.analytics && !permission.marketing) {
+      try { window.localStorage.removeItem(KEY); } catch (_) {}
+      memory = {};
+      if (old.ft || old.lt) { running = true; try { await syncCart({}); } catch (_) {} finally { running = false; if (rerun) { rerun = false; void capture(); } } }
+      return;
+    }
+    var state = {ft:validTouch(old.ft,permission),lt:validTouch(old.lt,permission),last_seen:Number(old.last_seen)||0};
+    var touch = buildTouch(state,permission);
+    if (touch) { state.ft = state.ft || touch; state.lt = touch; }
+    state.last_seen = Date.now();
+    write(state);
+    running = true;
+    try { await syncCart(attributes(state)); } catch (_) {} finally { running = false; if (rerun) { rerun = false; void capture(); } }
+  }
+  function start() {
+    if (window.Shopify && window.Shopify.customerPrivacy) { void capture(); return; }
+    if (window.Shopify && window.Shopify.loadFeatures) window.Shopify.loadFeatures([{name:'consent-tracking-api',version:'0.1'}],function (error) { if (!error) void capture(); });
+  }
+  document.addEventListener('visitorConsentCollected', function () { void capture(); });
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded',start); else start();
+})();
+</script>

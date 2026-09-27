@@ -1,0 +1,28 @@
+{% liquid
+  assign support_email = 'support@outlight.us'
+%}
+
+{% if request.path contains '/pages/contact' or request.path contains '/pages/contact-us' %}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ContactPage",
+      "name": {{ page.title | default: 'Contact Outlight' | json }},
+      "url": {{ canonical_url | json }},
+      "description": {{ seo_page_description | default: page_description | json }},
+      "mainEntity": {
+        "@type": "Organization",
+        "@id": {{ shop.url | append: '#organization' | json }},
+        "name": {{ shop.name | json }},
+        "url": {{ shop.url | json }},
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "contactType": "customer support",
+          "email": {{ support_email | json }},
+          "availableLanguage": ["English"],
+          "areaServed": "US"
+        }
+      }
+    }
+  </script>
+{% endif %}

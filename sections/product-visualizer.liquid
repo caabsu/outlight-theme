@@ -1,0 +1,104 @@
+{{ 'product-visualizer.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'product-visualizer.js' | asset_url }}" type="module"></script>
+
+{%- assign pv_config_id = 'ProductVisualizerConfig-' | append: section.id -%}
+{%- assign pv_root_id = 'ProductVisualizerRoot-' | append: section.id -%}
+
+<div
+  id="{{ pv_root_id }}"
+  data-product-visualizer-root
+  data-config-id="{{ pv_config_id }}"
+></div>
+
+<script id="{{ pv_config_id }}" type="application/json">
+{
+  "apiBaseUrl": {{ section.settings.api_base_url | strip | json }},
+  "proxyBase": {{ section.settings.proxy_base | default: '/apps/space-funnel' | json }},
+  "product": {
+    "id": {{ product.id | json }},
+    "handle": {{ product.handle | json }},
+    "title": {{ product.title | json }},
+    "url": {{ product.url | json }},
+    "price": {{ product.selected_or_first_available_variant.price | divided_by: 100.0 | json }},
+    "variantId": {{ product.selected_or_first_available_variant.id | json }},
+    "productType": {{ product.type | json }},
+    "featuredImage": {%- if product.featured_image != blank -%}{{ product.featured_image | image_url: width: 1200 | json }}{%- else -%}null{%- endif -%},
+    "variants": [
+      {%- for variant in product.variants -%}
+        {
+          "id": {{ variant.id | json }},
+          "title": {{ variant.title | json }},
+          "price": {{ variant.price | divided_by: 100.0 | json }},
+          "available": {{ variant.available | json }}
+        }{%- unless forloop.last -%},{%- endunless -%}
+      {%- endfor -%}
+    ]
+  },
+  "showcaseBefore": {%- if product.metafields.custom.visualizer_before != blank -%}{{ product.metafields.custom.visualizer_before | image_url: width: 800 | json }}{%- else -%}null{%- endif -%},
+  "showcaseAfter": {%- if product.metafields.custom.visualizer_after != blank -%}{{ product.metafields.custom.visualizer_after | image_url: width: 800 | json }}{%- else -%}null{%- endif -%},
+  "copy": {
+    "eyebrow": {{ section.settings.eyebrow | json }},
+    "title": {{ section.settings.title | json }},
+    "lede": {{ section.settings.lede | json }},
+    "ctaLabel": {{ section.settings.cta_label | json }},
+    "ctaMicrocopy": {{ section.settings.cta_microcopy | json }}
+  }
+}
+</script>
+
+{% schema %}
+{
+  "name": "Product Visualizer",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Try it in your room"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "See this lamp in your space."
+    },
+    {
+      "type": "textarea",
+      "id": "lede",
+      "label": "Intro copy",
+      "default": "Upload a room photo and we'll show you exactly how this lamp looks — in under a minute."
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Upload button label",
+      "default": "Upload a Room Photo"
+    },
+    {
+      "type": "text",
+      "id": "cta_microcopy",
+      "label": "CTA microcopy",
+      "default": "Free. No account needed. Your photo is never stored."
+    },
+    {
+      "type": "text",
+      "id": "api_base_url",
+      "label": "Direct API base URL",
+      "info": "Optional. Set this to a public backend URL for testing without an app proxy."
+    },
+    {
+      "type": "text",
+      "id": "proxy_base",
+      "label": "App proxy base path",
+      "default": "/apps/space-funnel",
+      "info": "Leave default unless your app uses a different proxy path."
+    }
+  ],
+  "enabled_on": { "templates": ["product"] },
+  "presets": [
+    {
+      "name": "Product Visualizer"
+    }
+  ]
+}
+{% endschema %}

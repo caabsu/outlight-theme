@@ -1,0 +1,77 @@
+{% doc %}
+Compact, accessible product information below the purchase controls.
+@param {product} product - Current product
+@param {variant} variant - Selected variant
+@param {string} suffix - Unique desktop or mobile suffix
+@param blocks - Product section blocks
+{% enddoc %}
+{%- liquid
+  assign dimension = variant.metafields.custom.variant_dimension.value | default: product.metafields.custom.variant_dimension.value
+  assign light_source = variant.metafields.custom.light_source.value | default: product.metafields.custom.light_source.value
+  assign finish = variant.metafields.custom.finish.value | default: product.metafields.custom.finish.value
+  assign temperature = variant.metafields.custom.color_temperature.value | default: product.metafields.custom.color_temperature.value
+-%}
+<div class="ol-purchase-reassurance"><span class="material-symbols-outlined" aria-hidden="true">local_shipping</span><span>{{ 'clearance.reassurance' | t }}</span></div>
+<div class="ol-product-details">
+  <details name="product-details-{{ suffix }}">
+    <summary>{{ 'clearance.specifications' | t }}<span aria-hidden="true">+</span></summary>
+    <div class="ol-details-body">
+      <dl class="ol-spec-list">
+        <div{% if dimension == blank %} hidden{% endif %}><dt>{{ 'clearance.dimensions' | t }}</dt><dd id="spec-dimensions-{{ suffix }}">{{ dimension }}</dd></div>
+        <div{% if light_source == blank %} hidden{% endif %}><dt>{{ 'clearance.light_source' | t }}</dt><dd id="spec-lightsource-{{ suffix }}">{{ light_source }}</dd></div>
+        <div{% if finish == blank %} hidden{% endif %}><dt>{{ 'clearance.finish' | t }}</dt><dd id="spec-finish-{{ suffix }}">{{ finish }}</dd></div>
+        <div{% if temperature == blank %} hidden{% endif %}><dt>{{ 'clearance.color_temperature' | t }}</dt><dd id="spec-colortemp-{{ suffix }}">{{ temperature }}</dd></div>
+      </dl>
+      {%- if product.metafields.custom.collapsible_measurement != blank -%}<div class="ol-detailed-measurements">{{ product.metafields.custom.collapsible_measurement | metafield_tag }}</div>{%- endif -%}
+    </div>
+  </details>
+  {%- assign detail_titles = 'Description & Features|Installation' | split: '|' -%}
+  {%- for title in detail_titles -%}
+    {%- capture detail_content -%}
+      {%- if title == 'Description & Features' and product.metafields.custom.collapsible_description != blank -%}
+        {{ product.metafields.custom.collapsible_description | metafield_tag }}
+      {%- elsif title == 'Installation' and product.metafields.custom.installation_guide != blank -%}
+        {{ product.metafields.custom.installation_guide | metafield_tag }}
+      {%- else -%}
+        {%- for block in blocks -%}{%- if block.type == 'accordion_tab' and block.settings.tab_title == title -%}{{ block.settings.tab_content }}{%- endif -%}{%- endfor -%}
+      {%- endif -%}
+    {%- endcapture -%}
+    {%- if detail_content != blank -%}
+      <details name="product-details-{{ suffix }}">
+        <summary>{% if title == 'Installation' %}{{ 'clearance.installation' | t }}{% else %}{{ 'clearance.details' | t }}{% endif %}<span aria-hidden="true">+</span></summary>
+        <div class="ol-details-body">{{ detail_content }}</div>
+      </details>
+    {%- endif -%}
+  {%- endfor -%}
+  <details name="product-details-{{ suffix }}">
+    <summary>{{ 'clearance.shipping_returns' | t }}<span aria-hidden="true">+</span></summary>
+    <div class="ol-details-body">
+      <p>{{ 'clearance.shipping_copy' | t }}</p>
+      <p>{{ 'clearance.delivery_four_days' | t }}</p>
+      <p>{{ 'clearance.returns_copy' | t }}</p>
+    </div>
+  </details>
+</div>
+{% stylesheet %}
+.ol-purchase-reassurance{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 0 23px;color:#61655a;font:400 11px/1.5 'Manrope',sans-serif}
+.ol-purchase-reassurance .material-symbols-outlined{font-size:17px;color:#7c806f}
+.ol-product-details{border-top:1px solid #dcded6;margin-bottom:20px}
+.ol-product-details details{border-bottom:1px solid #dcded6}
+.ol-product-details summary{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:19px 0;cursor:pointer;list-style:none;font:500 13px/1.5 'Manrope',sans-serif;color:#30352c;letter-spacing:.005em}
+.ol-product-details summary::-webkit-details-marker{display:none}
+.ol-product-details summary>span{font-size:21px;line-height:1;font-weight:400;color:#7a806f;transition:transform .18s}
+.ol-product-details details[open]>summary>span{transform:rotate(45deg)}
+.ol-product-details summary:focus-visible{outline:2px solid #8c7859;outline-offset:3px}
+.ol-details-body{padding:0 0 22px;font:400 12px/1.8 'Manrope',sans-serif;color:#62665c;overflow-wrap:anywhere}
+.ol-details-body p+p{margin-top:10px}
+.ol-details-body ul{list-style:disc;padding-left:18px}
+.ol-details-body strong{font-weight:500;color:#343a2e}
+.ol-details-body h1,.ol-details-body h2,.ol-details-body h3{font:500 13px/1.6 'Manrope',sans-serif!important;letter-spacing:0!important;margin:12px 0 6px}
+.ol-details-body :is(p,h1,h2,h3):empty{display:none}
+.ol-spec-list>div{display:grid;grid-template-columns:110px minmax(0,1fr);gap:18px;padding:8px 0}
+.ol-spec-list>div[hidden]{display:none}
+.ol-spec-list dt{color:#777b71}
+.ol-spec-list dd{margin:0;color:#353b30;text-align:right}
+.ol-detailed-measurements{margin-top:14px;padding-top:14px;border-top:1px solid #e9eae4}
+@media(max-width:767px){.ol-product-details summary{padding:17px 0;font-size:13px}.ol-purchase-reassurance{padding:12px 0 20px}.ol-details-body{font-size:12px}}
+{% endstylesheet %}

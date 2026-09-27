@@ -1,0 +1,9 @@
+{%- comment -%}
+  Gold rule + label pattern
+  Usage: {% render 'gold-rule', label: 'Reviews' %}
+{%- endcomment -%}
+
+<div class="flex items-center gap-3 md:gap-4 mb-4 md:mb-5">
+  <div class="w-5 md:w-8 h-px bg-[#C5A059]"></div>
+  <span class="font-label text-[0.6rem] md:text-[0.7rem] uppercase tracking-[0.25em] text-[#C5A059]">{{ label }}</span>
+</div>

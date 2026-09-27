@@ -1,1475 +1,722 @@
-{% comment %}
-  Cart drawer section that slides in from the right.
-  Triggered by clicking the cart icon in the header.
-{% endcomment %}
+{%- comment -%}
+  Cart Drawer — Outlight Theme v2
+  Slides in from the right on desktop (420px), full-width on mobile.
+  Integrated with Shopify Cart API via Section Rendering API.
+{%- endcomment -%}
 
-<div class="cart-drawer" data-cart-drawer style="
-  --variant-size: {{ section.settings.variant_text_size }}px;
-  --discount-bg: {{ section.settings.discount_bg }};
-  --discount-text-color: {{ section.settings.discount_text_color }};
-  --discount-btn-bg: {{ section.settings.discount_btn_bg }};
-  --discount-btn-color: {{ section.settings.discount_btn_color }};
-  --protection-bg: {{ section.settings.protection_bg }};
-  --protection-text-color: {{ section.settings.protection_text_color }};
-  --gift-bg: {{ section.settings.gift_bg }};
-  --gift-text-color: {{ section.settings.gift_text_color }};
-  --gift-btn-bg: {{ section.settings.gift_btn_bg }};
-  --gift-btn-color: {{ section.settings.gift_btn_color }};
-">
-  <div class="cart-drawer__overlay" data-cart-drawer-close></div>
-  <div class="cart-drawer__panel">
-    {%- comment -%} Header - Desktop vs Mobile {%- endcomment -%}
-    <div class="cart-drawer__header">
-      <h2 class="cart-drawer__title cart-drawer__title--desktop">{{ section.settings.drawer_title | default: 'Your Sanctuary' }}</h2>
-      <h2 class="cart-drawer__title cart-drawer__title--mobile">{{ 'cart.title' | t }} ({{ cart.item_count }})</h2>
-      <button class="cart-drawer__close" data-cart-drawer-close aria-label="{{ 'general.close' | t }}">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M18 6L6 18M6 6l12 12"/>
-        </svg>
-      </button>
-    </div>
+{%- comment -%} Free shipping calculation {%- endcomment -%}
+{%- assign free_shipping_cents = settings.free_shipping_threshold | times: 100 -%}
+{%- assign remaining_cents = free_shipping_cents | minus: cart.total_price -%}
+{%- if remaining_cents < 0 -%}{%- assign remaining_cents = 0 -%}{%- endif -%}
+{%- assign progress_pct = cart.total_price | times: 100 | divided_by: free_shipping_cents -%}
+{%- if progress_pct > 100 -%}{%- assign progress_pct = 100 -%}{%- endif -%}
 
-    {%- comment -%} Cart Items {%- endcomment -%}
-    <div class="cart-drawer__content" data-cart-drawer-content>
+{%- comment -%} Gift product check {%- endcomment -%}
+{%- assign gift_product = settings.gift_product -%}
+{%- assign gift_in_cart = false -%}
+{%- if gift_product != blank -%}
+  {%- for item in cart.items -%}
+    {%- if item.product.id == gift_product.id -%}
+      {%- assign gift_in_cart = true -%}
+      {%- break -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endif -%}
+
+{%- comment -%} Shipping protection check {%- endcomment -%}
+{%- assign protection_product = settings.shipping_protection_product -%}
+{%- assign protection_in_cart = false -%}
+{%- if protection_product != blank -%}
+  {%- for item in cart.items -%}
+    {%- if item.product.id == protection_product.id -%}
+      {%- assign protection_in_cart = true -%}
+      {%- break -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endif -%}
+
+<!-- Backdrop -->
+<div
+  id="cart-backdrop"
+  class="overlay-backdrop fixed inset-0 bg-[#131314]/40 z-[75]"
+  data-cart-drawer-close
+  aria-hidden="true"
+></div>
+
+<!-- Cart Drawer Panel -->
+<div
+  id="cart-drawer"
+  class="cart-drawer fixed top-0 right-0 bottom-0 w-full md:w-[420px] bg-[#F9F9FB] z-[80] flex flex-col shadow-2xl"
+  aria-label="Shopping cart"
+  role="dialog"
+  aria-modal="true"
+  data-cart-drawer
+>
+
+  <!-- ── Header ── -->
+  <div class="flex items-center justify-between px-6 py-5 border-b border-[#131314]/5 shrink-0">
+    <div class="flex items-center gap-3">
+      <h2 class="heading-thin text-xl text-[#131314] tracking-tight">Your Cart</h2>
       {%- if cart.item_count > 0 -%}
-        <div class="cart-drawer__items">
-          {%- for item in cart.items -%}
-            <div class="cart-drawer__item" data-cart-item data-line-item-key="{{ item.key }}">
-              <a href="{{ item.url }}" class="cart-drawer__item-image">
-                {%- if item.image -%}
-                  {{ item.image | image_url: width: 200, height: 200, crop: 'center' | image_tag }}
-                {%- else -%}
-                  <div class="cart-drawer__item-placeholder"></div>
-                {%- endif -%}
-              </a>
-
-              <div class="cart-drawer__item-details">
-                <div class="cart-drawer__item-info">
-                  <a href="{{ item.url }}" class="cart-drawer__item-title">{{ item.product.title }}</a>
-                  {%- if item.variant.title != 'Default Title' -%}
-                    <p class="cart-drawer__item-variant">{{ item.variant.title }}</p>
-                  {%- endif -%}
-
-                  {%- comment -%} Quantity selector {%- endcomment -%}
-                  <div class="cart-drawer__item-quantity">
-                    <button
-                      class="cart-drawer__quantity-btn"
-                      data-quantity-minus
-                      data-line="{{ forloop.index }}"
-                      aria-label="{{ 'cart.decrease_quantity' | t }}"
-                    >-</button>
-                    <span class="cart-drawer__quantity-value" data-quantity-value>{{ item.quantity }}</span>
-                    <button
-                      class="cart-drawer__quantity-btn"
-                      data-quantity-plus
-                      data-line="{{ forloop.index }}"
-                      aria-label="{{ 'cart.increase_quantity' | t }}"
-                    >+</button>
-                  </div>
-                </div>
-
-                <div class="cart-drawer__item-right">
-                  <div class="cart-drawer__item-price">
-                    {{ item.final_line_price | money }}
-                  </div>
-                  <button
-                    class="cart-drawer__remove-btn"
-                    data-remove-item
-                    data-line="{{ forloop.index }}"
-                    aria-label="{{ 'cart.remove' | t }}"
-                  >
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-                      <path d="M2 4h12M5.333 4V2.667a1.333 1.333 0 011.334-1.334h2.666a1.333 1.333 0 011.334 1.334V4m2 0v9.333a1.333 1.333 0 01-1.334 1.334H4.667a1.333 1.333 0 01-1.334-1.334V4h9.334z"/>
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            </div>
-          {%- endfor -%}
-        </div>
-      {%- else -%}
-        <div class="cart-drawer__empty">
-          <p>{{ 'cart.empty' | t }}</p>
-          <button type="button" class="cart-drawer__continue-btn" data-cart-drawer-close>
-            {{ 'cart.continue_shopping' | t }}
-          </button>
-        </div>
+        <span class="font-label text-[0.55rem] uppercase tracking-[0.1em] text-[#2d3338]/60 bg-[#131314]/5 px-2 py-0.5" data-cart-item-count>
+          {{ cart.item_count }} {{ cart.item_count | pluralize: 'Item', 'Items' }}
+        </span>
       {%- endif -%}
     </div>
+    <button
+      class="w-8 h-8 flex items-center justify-center text-[#2d3338]/55 hover:text-[#131314] transition-colors duration-200"
+      data-cart-drawer-close
+      aria-label="Close cart"
+    >
+      <span class="material-symbols-outlined text-lg">close</span>
+    </button>
+  </div>
 
-    {%- comment -%} Footer {%- endcomment -%}
-    {%- if cart.item_count > 0 -%}
-      <div class="cart-drawer__footer">
-        {%- comment -%} Free Gift Product {%- endcomment -%}
-        {%- if section.settings.show_free_gift and section.settings.gift_product != blank -%}
-          {%- assign gift_product = section.settings.gift_product -%}
-          {%- assign gift_in_cart = false -%}
-          {%- for item in cart.items -%}
-            {%- if item.product.id == gift_product.id -%}
-              {%- assign gift_in_cart = true -%}
-              {%- break -%}
-            {%- endif -%}
-          {%- endfor -%}
-          {%- unless gift_in_cart -%}
-            <div class="cart-drawer__gift">
-              <div class="cart-drawer__gift-image">
-                {%- if gift_product.featured_image -%}
-                  {{ gift_product.featured_image | image_url: width: 120 | image_tag }}
-                {%- endif -%}
-              </div>
-              <div class="cart-drawer__gift-info">
-                <span class="cart-drawer__gift-title">{{ section.settings.gift_title | default: gift_product.title }}</span>
-                <span class="cart-drawer__gift-price">{{ 0 | money }}</span>
-              </div>
-              <button type="button" class="cart-drawer__gift-btn" data-add-gift data-variant-id="{{ gift_product.first_available_variant.id }}">
-                {{ section.settings.gift_btn_text | default: 'Add' }}
-              </button>
-            </div>
-          {%- endunless -%}
-        {%- endif -%}
+  {%- if cart.item_count > 0 -%}
 
-        {%- comment -%} Shipping Protection {%- endcomment -%}
-        {%- if section.settings.show_shipping_protection and section.settings.protection_product != blank -%}
-          {%- assign protection_product = section.settings.protection_product -%}
-          {%- assign protection_in_cart = false -%}
-          {%- for item in cart.items -%}
-            {%- if item.product.id == protection_product.id -%}
-              {%- assign protection_in_cart = true -%}
-              {%- break -%}
-            {%- endif -%}
-          {%- endfor -%}
-          <div class="cart-drawer__protection">
-            <div class="cart-drawer__protection-info">
-              <span class="cart-drawer__protection-title">{{ section.settings.protection_title | default: 'Shipping Protection' }}</span>
-              <span class="cart-drawer__protection-desc">{{ section.settings.protection_description | default: 'Protect your order from damage, loss or theft during shipping' }}</span>
-            </div>
-            <label class="cart-drawer__protection-toggle">
-              <input type="checkbox" data-protection-toggle data-variant-id="{{ protection_product.first_available_variant.id }}" {% if protection_in_cart %}checked{% endif %}>
-              <span class="cart-drawer__protection-slider"></span>
-            </label>
-          </div>
-        {%- endif -%}
-
-        {%- comment -%} Discount Code {%- endcomment -%}
-        {%- if section.settings.show_discount_code -%}
-          <div class="cart-drawer__discount" data-discount-wrapper>
-            <form class="cart-drawer__discount-form" data-discount-form>
-              <input type="text" name="discount" class="cart-drawer__discount-input" placeholder="{{ section.settings.discount_placeholder | default: 'Discount code' }}">
-              <button type="submit" class="cart-drawer__discount-btn" data-discount-btn>{{ section.settings.discount_btn_text | default: 'Apply' }}</button>
-            </form>
-            {%- if cart.discount_applications.size > 0 -%}
-              <div class="cart-drawer__discount-codes">
-                {%- for discount in cart.discount_applications -%}
-                  <div class="cart-drawer__discount-tag">
-                    <svg class="cart-drawer__discount-tag-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/>
-                      <line x1="7" y1="7" x2="7.01" y2="7"/>
-                    </svg>
-                    <span class="cart-drawer__discount-tag-code">{{ discount.title }}</span>
-                    <span class="cart-drawer__discount-tag-savings">-{{ discount.total_allocated_amount | money }}</span>
-                    <button type="button" class="cart-drawer__discount-tag-remove" data-discount-tag-remove>×</button>
-                  </div>
-                {%- endfor -%}
-              </div>
-            {%- endif -%}
-            <p class="cart-drawer__discount-note">{{ section.settings.discount_note | default: 'Apply additional discount codes at checkout' }}</p>
-          </div>
-        {%- endif -%}
-
-        {%- comment -%} Desktop footer {%- endcomment -%}
-        <div class="cart-drawer__footer--desktop">
-          <div class="cart-drawer__totals">
-            <div class="cart-drawer__subtotal">
-              <span class="cart-drawer__subtotal-label">{{ 'cart.subtotal' | t }}</span>
-              {%- if cart.total_discount > 0 -%}
-                <span class="cart-drawer__subtotal-value cart-drawer__subtotal-value--original">{{ cart.original_total_price | money }}</span>
-              {%- else -%}
-                <span class="cart-drawer__subtotal-value">{{ cart.total_price | money }}</span>
-              {%- endif -%}
-            </div>
-            {%- if cart.total_discount > 0 -%}
-              <div class="cart-drawer__discount-row">
-                <span class="cart-drawer__discount-label">Discount</span>
-                <span class="cart-drawer__discount-value">-{{ cart.total_discount | money }}</span>
-              </div>
-              <div class="cart-drawer__total-row">
-                <span class="cart-drawer__total-label">Total</span>
-                <span class="cart-drawer__total-value">{{ cart.total_price | money }}</span>
-              </div>
-            {%- endif -%}
-          </div>
-          <p class="cart-drawer__shipping-note">{{ 'cart.shipping_note' | t }}</p>
-          <a href="{{ routes.cart_url }}/checkout" class="cart-drawer__checkout-btn cart-drawer__checkout-btn--desktop">
-            {{ 'cart.checkout' | t | upcase }}
-          </a>
-        </div>
-
-        {%- comment -%} Mobile footer - fixed at bottom {%- endcomment -%}
-        <a href="{{ routes.cart_url }}/checkout" class="cart-drawer__checkout-btn cart-drawer__checkout-btn--mobile">
-          <span>{{ 'cart.checkout' | t | upcase }}</span>
-          {%- if cart.total_discount > 0 -%}
-            <span class="cart-drawer__mobile-price">
-              <span class="cart-drawer__mobile-price--original">{{ cart.original_total_price | money }}</span>
-              <span>{{ cart.total_price | money }}</span>
+    <!-- ── Free Shipping ── -->
+    {%- if settings.free_shipping_threshold > 0 -%}
+      <div class="px-6 py-3 border-b border-[#131314]/5 shrink-0">
+        <div class="flex items-center justify-between mb-2">
+          {%- if remaining_cents <= 0 -%}
+            <span class="font-body text-[0.8rem] font-light text-[#2d3338]/65">
+              You've unlocked <span class="text-[#C5A059] font-[400]">free shipping</span>
             </span>
           {%- else -%}
-            <span>{{ cart.total_price | money }}</span>
+            <span class="font-body text-[0.8rem] font-light text-[#2d3338]/65">
+              You're <span class="text-[#C5A059] font-[400]">{{ remaining_cents | money }}</span> away from free shipping
+            </span>
           {%- endif -%}
-        </a>
+          <span class="material-symbols-outlined text-[#C5A059] text-sm">local_shipping</span>
+        </div>
+        <div class="w-full h-[2px] bg-[#131314]/6 relative overflow-hidden">
+          <div
+            class="absolute top-0 left-0 h-full bg-[#C5A059] transition-all duration-500"
+            style="width: {{ progress_pct }}%;"
+          ></div>
+        </div>
+      </div>
+    {%- else -%}
+      <div class="px-6 py-3 border-b border-[#131314]/5 shrink-0 flex items-center gap-2">
+        <span class="material-symbols-outlined text-[#C5A059] text-sm">local_shipping</span>
+        <span class="font-body text-[0.8rem] font-light text-[#2d3338]/65">
+          <span class="text-[#C5A059] font-[400]">Free shipping</span> included on every order
+        </span>
       </div>
     {%- endif -%}
-  </div>
-</div>
 
-{% stylesheet %}
-  .cart-drawer {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 1000;
-    pointer-events: none;
-  }
-
-  .cart-drawer.is-open {
-    pointer-events: auto;
-  }
-
-  .cart-drawer__overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.4);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-
-  .cart-drawer.is-open .cart-drawer__overlay {
-    opacity: 1;
-  }
-
-  .cart-drawer__panel {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: 100%;
-    max-width: 420px;
-    background-color: #ffffff;
-    transform: translateX(100%);
-    transition: transform 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
-  }
-
-  .cart-drawer.is-open .cart-drawer__panel {
-    transform: translateX(0);
-  }
-
-  /* Header */
-  .cart-drawer__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1.5rem 1.5rem 1rem;
-    border-bottom: 1px solid #f0f0f0;
-  }
-
-  .cart-drawer__title {
-    font-size: 1.5rem;
-    font-weight: 400;
-    margin: 0;
-    color: #1C1917;
-  }
-
-  .cart-drawer__title--desktop {
-    font-family: serif;
-    font-style: italic;
-  }
-
-  .cart-drawer__title--mobile {
-    font-family: serif;
-    font-style: italic;
-    display: none;
-  }
-
-  .cart-drawer__close {
-    background: none;
-    border: none;
-    padding: 0.5rem;
-    margin: -0.5rem;
-    cursor: pointer;
-    color: #1C1917;
-    transition: opacity 0.2s ease;
-  }
-
-  .cart-drawer__close:hover {
-    opacity: 0.6;
-  }
-
-  /* Content */
-  .cart-drawer__content {
-    flex: 1;
-    overflow-y: auto;
-    padding: 1.5rem;
-  }
-
-  .cart-drawer__items {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-
-  /* Cart Item */
-  .cart-drawer__item {
-    display: flex;
-    gap: 1rem;
-  }
-
-  .cart-drawer__item-image {
-    flex-shrink: 0;
-    width: 80px;
-    height: 80px;
-    background-color: #f5f5f5;
-    overflow: hidden;
-  }
-
-  .cart-drawer__item-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .cart-drawer__item-placeholder {
-    width: 100%;
-    height: 100%;
-    background-color: #eee;
-  }
-
-  .cart-drawer__item-details {
-    flex: 1;
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-  }
-
-  .cart-drawer__item-info {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-  }
-
-  .cart-drawer__item-title {
-    font-family: serif;
-    font-size: 1rem;
-    font-weight: 500;
-    color: #1C1917;
-    text-decoration: none;
-    line-height: 1.3;
-  }
-
-  .cart-drawer__item-title:hover {
-    text-decoration: underline;
-  }
-
-  .cart-drawer__item-variant {
-    font-size: var(--variant-size, 0.75rem);
-    color: #78716C;
-    margin: 0;
-  }
-
-  .cart-drawer__item-right {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 0.5rem;
-  }
-
-  .cart-drawer__item-price {
-    font-size: 1rem;
-    font-weight: 500;
-    color: #1C1917;
-    white-space: nowrap;
-  }
-
-  .cart-drawer__remove-btn {
-    background: none;
-    border: none;
-    padding: 0.25rem;
-    cursor: pointer;
-    color: #9CA3AF;
-    transition: color 0.2s ease;
-  }
-
-  .cart-drawer__remove-btn:hover {
-    color: #DC2626;
-  }
-
-  /* Quantity Selector */
-  .cart-drawer__item-quantity {
-    display: inline-flex;
-    align-items: center;
-    gap: 0;
-    border: 1px solid #e5e5e5;
-    border-radius: 4px;
-    margin-top: 0.5rem;
-    width: fit-content;
-  }
-
-  .cart-drawer__quantity-btn {
-    background: none;
-    border: none;
-    width: 28px;
-    height: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 1rem;
-    color: #1C1917;
-    transition: background-color 0.2s ease;
-  }
-
-  .cart-drawer__quantity-btn:hover {
-    background-color: #f5f5f5;
-  }
-
-  .cart-drawer__quantity-value {
-    min-width: 24px;
-    text-align: center;
-    font-size: 0.875rem;
-    color: #1C1917;
-  }
-
-  /* Empty Cart */
-  .cart-drawer__empty {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 3rem 1rem;
-    gap: 1.5rem;
-  }
-
-  .cart-drawer__empty p {
-    font-size: 1rem;
-    color: #78716C;
-    margin: 0;
-  }
-
-  .cart-drawer__continue-btn {
-    display: inline-block;
-    background-color: #1C1917;
-    color: #ffffff;
-    text-decoration: none;
-    padding: 0.875rem 2rem;
-    border-radius: 9999px;
-    font-size: 0.875rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    transition: opacity 0.2s ease;
-  }
-
-  .cart-drawer__continue-btn:hover {
-    opacity: 0.9;
-  }
-
-  /* Free Gift */
-  .cart-drawer__gift {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 1rem 1.5rem;
-    background-color: var(--gift-bg, #FFFBEB);
-    border-bottom: 1px solid #f0f0f0;
-  }
-
-  .cart-drawer__gift-image {
-    width: 48px;
-    height: 48px;
-    flex-shrink: 0;
-    overflow: hidden;
-    background: #f5f5f5;
-  }
-
-  .cart-drawer__gift-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .cart-drawer__gift-info {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 0.125rem;
-  }
-
-  .cart-drawer__gift-title {
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--gift-text-color, #1C1917);
-  }
-
-  .cart-drawer__gift-price {
-    font-size: 0.75rem;
-    color: var(--gift-text-color, #1C1917);
-    opacity: 0.7;
-  }
-
-  .cart-drawer__gift-btn {
-    padding: 0.5rem 1rem;
-    background-color: var(--gift-btn-bg, #1C1917);
-    color: var(--gift-btn-color, #ffffff);
-    border: none;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    cursor: pointer;
-    transition: opacity 0.2s ease;
-  }
-
-  .cart-drawer__gift-btn:hover {
-    opacity: 0.9;
-  }
-
-  /* Shipping Protection */
-  .cart-drawer__protection {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 1rem 1.5rem;
-    background-color: var(--protection-bg, #F5F5F4);
-    border-bottom: 1px solid #f0f0f0;
-  }
-
-  .cart-drawer__protection-info {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    flex: 1;
-  }
-
-  .cart-drawer__protection-title {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: var(--protection-text-color, #1C1917);
-  }
-
-  .cart-drawer__protection-desc {
-    font-size: 0.6875rem;
-    color: var(--protection-text-color, #1C1917);
-    opacity: 0.7;
-    line-height: 1.4;
-  }
-
-  .cart-drawer__protection-toggle {
-    position: relative;
-    width: 44px;
-    height: 24px;
-    flex-shrink: 0;
-  }
-
-  .cart-drawer__protection-toggle input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-  }
-
-  .cart-drawer__protection-slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #D6D3D1;
-    transition: 0.2s;
-    border-radius: 24px;
-  }
-
-  .cart-drawer__protection-slider:before {
-    position: absolute;
-    content: "";
-    height: 18px;
-    width: 18px;
-    left: 3px;
-    bottom: 3px;
-    background-color: white;
-    transition: 0.2s;
-    border-radius: 50%;
-  }
-
-  .cart-drawer__protection-toggle input:checked + .cart-drawer__protection-slider {
-    background-color: #1C1917;
-  }
-
-  .cart-drawer__protection-toggle input:checked + .cart-drawer__protection-slider:before {
-    transform: translateX(20px);
-  }
-
-  /* Discount Code */
-  .cart-drawer__discount {
-    padding: 1rem 1.5rem;
-    background-color: var(--discount-bg, #ffffff);
-    border-bottom: 1px solid #f0f0f0;
-  }
-
-  .cart-drawer__discount-form {
-    display: flex;
-    gap: 0.5rem;
-  }
-
-  .cart-drawer__discount-input {
-    flex: 1;
-    padding: 0.625rem 0.875rem;
-    border: 1px solid #e5e5e5;
-    font-size: 0.8125rem;
-    color: var(--discount-text-color, #1C1917);
-    background: transparent;
-  }
-
-  .cart-drawer__discount-input::placeholder {
-    color: #9CA3AF;
-  }
-
-  .cart-drawer__discount-btn {
-    padding: 0.625rem 1rem;
-    background-color: var(--discount-btn-bg, #1C1917);
-    color: var(--discount-btn-color, #ffffff);
-    border: none;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    cursor: pointer;
-    transition: opacity 0.2s ease;
-  }
-
-  .cart-drawer__discount-btn:hover {
-    opacity: 0.9;
-  }
-
-  .cart-drawer__discount-note {
-    margin: 0.5rem 0 0;
-    font-size: 0.6875rem;
-    color: var(--discount-text-color, #78716C);
-    opacity: 0.8;
-  }
-
-  .cart-drawer__discount-codes {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-top: 0.75rem;
-  }
-
-  .cart-drawer__discount-codes:empty {
-    display: none;
-  }
-
-  .cart-drawer__discount-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 0.75rem;
-    background: #ECFDF5;
-    border-radius: 4px;
-  }
-
-  .cart-drawer__discount-tag-icon {
-    color: #059669;
-  }
-
-  .cart-drawer__discount-tag-code {
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: #059669;
-    text-transform: uppercase;
-  }
-
-  .cart-drawer__discount-tag-savings {
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: #059669;
-  }
-
-  .cart-drawer__discount-tag-remove {
-    background: none;
-    border: none;
-    color: #059669;
-    cursor: pointer;
-    padding: 0;
-    font-size: 1rem;
-    line-height: 1;
-    display: flex;
-    align-items: center;
-  }
-
-  .cart-drawer__discount-tag-remove:hover {
-    opacity: 0.7;
-  }
-
-  /* Footer */
-  .cart-drawer__footer {
-    border-top: 1px solid #f0f0f0;
-    background-color: #ffffff;
-  }
-
-  .cart-drawer__footer--desktop {
-    padding: 1.5rem;
-  }
-
-  .cart-drawer__totals {
-    display: flex;
-    flex-direction: column;
-    gap: 0.375rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .cart-drawer__subtotal {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .cart-drawer__subtotal-label {
-    font-size: 1rem;
-    color: #78716C;
-  }
-
-  .cart-drawer__subtotal-value {
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: #1C1917;
-  }
-
-  .cart-drawer__subtotal-value--original {
-    text-decoration: line-through;
-    color: #9CA3AF;
-    font-weight: 400;
-  }
-
-  .cart-drawer__discount-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .cart-drawer__discount-label {
-    font-size: 0.875rem;
-    color: #059669;
-  }
-
-  .cart-drawer__discount-value {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #059669;
-  }
-
-  .cart-drawer__total-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: 0.5rem;
-    border-top: 1px solid #f0f0f0;
-    margin-top: 0.25rem;
-  }
-
-  .cart-drawer__total-label {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #1C1917;
-  }
-
-  .cart-drawer__total-value {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: #1C1917;
-  }
-
-  .cart-drawer__shipping-note {
-    font-size: 0.75rem;
-    color: #9CA3AF;
-    margin: 0 0 1.25rem;
-  }
-
-  /* Desktop Checkout Button */
-  .cart-drawer__checkout-btn--desktop {
-    display: block;
-    width: 100%;
-    background-color: #D97706;
-    color: #ffffff;
-    text-decoration: none;
-    text-align: center;
-    padding: 1rem;
-    border-radius: 9999px;
-    font-size: 0.875rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    transition: opacity 0.2s ease;
-  }
-
-  .cart-drawer__checkout-btn--desktop:hover {
-    opacity: 0.9;
-  }
-
-  /* Mobile Checkout Button - hidden on desktop */
-  .cart-drawer__checkout-btn--mobile {
-    display: none;
-  }
-
-  /* Mobile Styles - Bottom sheet that slides up */
-  @media screen and (max-width: 768px) {
-    .cart-drawer__panel {
-      top: auto;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      width: 100%;
-      max-width: 100%;
-      height: 80vh;
-      max-height: 80vh;
-      border-radius: 24px 24px 0 0;
-      transform: translateY(100%);
-      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
-    }
-
-    .cart-drawer.is-open .cart-drawer__panel {
-      transform: translateY(0);
-    }
-
-    .cart-drawer__header {
-      padding: 1.25rem 1.5rem 1rem;
-    }
-
-    .cart-drawer__title--desktop {
-      display: none;
-    }
-
-    .cart-drawer__title--mobile {
-      display: block;
-    }
-
-    .cart-drawer__footer--desktop {
-      display: none;
-    }
-
-    .cart-drawer__footer {
-      border-top: none;
-      padding: 0;
-    }
-
-    .cart-drawer__checkout-btn--mobile {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: calc(100% - 2rem);
-      margin: 0 1rem 2.5rem;
-      background-color: #1C1917;
-      color: #ffffff;
-      text-decoration: none;
-      padding: 1rem 1.5rem;
-      font-size: 0.875rem;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      border-radius: 9999px;
-    }
-
-    .cart-drawer__mobile-price {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .cart-drawer__mobile-price--original {
-      text-decoration: line-through;
-      opacity: 0.6;
-      font-size: 0.75rem;
-      font-weight: 400;
-    }
-
-    .cart-drawer__content {
-      flex: 1;
-      padding: 1rem 1.5rem;
-      overflow-y: auto;
-    }
-  }
-
-  /* Hide body scroll when cart is open */
-  body.cart-drawer-open {
-    overflow: hidden;
-  }
-{% endstylesheet %}
-
-{% javascript %}
-  const cartDrawer = document.querySelector('[data-cart-drawer]');
-
+    <!-- ── Cart Items ── -->
+    <div class="flex-1 overflow-y-auto px-6 py-5 space-y-5" data-cart-items-container>
+      {%- for item in cart.items -%}
+        <div class="flex gap-4" data-cart-item data-line="{{ forloop.index }}">
+          <!-- Product image -->
+          <a href="{{ item.url }}" class="shrink-0 w-20 h-20 bg-[#EFEDE8] overflow-hidden block">
+            {%- if item.image -%}
+              <img src="{{ item.image | image_url: width: 160 }}" alt="{{ item.image.alt | escape }}" class="w-full h-full object-cover" loading="lazy" width="80" height="80">
+            {%- else -%}
+              <div class="w-full h-full flex items-center justify-center">
+                <span class="material-symbols-outlined text-[#2d3338]/20 text-2xl">light</span>
+              </div>
+            {%- endif -%}
+          </a>
+
+          <!-- Item details -->
+          <div class="flex-1 min-w-0">
+            <div class="flex items-start justify-between gap-2 mb-1">
+              <div class="min-w-0">
+                <a
+                  href="{{ item.url }}"
+                  class="font-headline text-[0.95rem] font-[300] text-[#131314] block leading-snug hover:text-[#C5A059] transition-colors duration-200 truncate"
+                >{{ item.product.title | split: ' ' | first }}</a>
+                {%- unless item.variant.title == 'Default Title' -%}
+                  <span class="font-label text-[0.55rem] uppercase tracking-[0.08em] text-[#2d3338]/65 mt-0.5 block">
+                    {{ item.variant.title }}
+                  </span>
+                {%- endunless -%}
+                {%- if item.selling_plan_allocation -%}
+                  <span class="font-label text-[0.55rem] uppercase tracking-[0.08em] text-[#C5A059] mt-0.5 block">
+                    {{ item.selling_plan_allocation.selling_plan.name }}
+                  </span>
+                {%- endif -%}
+              </div>
+              <!-- Price -->
+              <div class="text-right shrink-0">
+                {% render 'cart-line-price', item: item %}
+              </div>
+            </div>
+
+            <!-- Line item properties -->
+            {%- if item.properties.size > 0 -%}
+              {%- for property in item.properties -%}
+                {%- unless property.last == blank or property.first contains '_' -%}
+                  <span class="font-body text-[0.65rem] text-[#2d3338]/55 block">
+                    {{ property.first }}: {{ property.last }}
+                  </span>
+                {%- endunless -%}
+              {%- endfor -%}
+            {%- endif -%}
+
+            <!-- Quantity + remove -->
+            <div class="flex items-center justify-between mt-3">
+              <div class="flex items-center border border-[#131314]/10">
+                <button
+                  class="qty-btn w-8 h-8 flex items-center justify-center font-body text-xs text-[#2d3338] hover:bg-[#131314]/5 transition-colors"
+                  data-qty-minus
+                  data-line="{{ forloop.index }}"
+                  data-quantity="{{ item.quantity }}"
+                  aria-label="Decrease quantity"
+                >−</button>
+                <span
+                  class="w-8 h-8 flex items-center justify-center font-body text-[0.8rem] font-[400] text-[#131314] border-x border-[#131314]/6"
+                  data-qty-display
+                >{{ item.quantity }}</span>
+                <button
+                  class="qty-btn w-8 h-8 flex items-center justify-center font-body text-xs text-[#2d3338] hover:bg-[#131314]/5 transition-colors"
+                  data-qty-plus
+                  data-line="{{ forloop.index }}"
+                  data-quantity="{{ item.quantity }}"
+                  aria-label="Increase quantity"
+                >+</button>
+              </div>
+              <button
+                class="text-[#2d3338]/40 hover:text-[#131314] transition-colors duration-200 p-1"
+                data-remove-item
+                data-line="{{ forloop.index }}"
+                aria-label="Remove {{ item.product.title | escape }} from cart"
+              >
+                <span class="material-symbols-outlined text-base">delete</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {%- unless forloop.last -%}
+          <div class="h-px bg-[#131314]/5"></div>
+        {%- endunless -%}
+      {%- endfor -%}
+    </div>
+
+    <!-- ── Footer ── -->
+    <div class="border-t border-[#131314]/5 shrink-0">
+
+      <!-- Spring Gift Banner -->
+      {%- if gift_product != blank and gift_in_cart == false -%}
+        <div class="bg-[#f4f0eb] px-6 py-3 flex items-center justify-between border-b border-[#131314]/5">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 shrink-0 bg-[#e8e3dc] overflow-hidden">
+              {%- if gift_product.featured_image -%}
+                <img src="{{ gift_product.featured_image | image_url: width: 80 }}" alt="{{ gift_product.title | escape }}" class="w-full h-full object-cover" loading="lazy" width="40" height="40">
+              {%- else -%}
+                <div class="w-full h-full flex items-center justify-center">
+                  <span class="material-symbols-outlined text-[#2d3338]/30 text-sm">redeem</span>
+                </div>
+              {%- endif -%}
+            </div>
+            <div>
+              <span class="font-body text-[0.8rem] font-[400] text-[#131314] block">{{ gift_product.title | split: ' ' | first }}</span>
+              <span class="font-body text-[0.68rem] font-light text-[#2d3338]/55">Free with order</span>
+            </div>
+          </div>
+          <button
+            class="font-label text-[0.6rem] uppercase tracking-[0.1em] text-[#131314] border border-[#131314]/15 px-4 py-1.5 hover:bg-[#131314] hover:text-[#F9F9FB] transition-all duration-200"
+            data-add-gift
+            data-variant-id="{{ gift_product.first_available_variant.id }}"
+            aria-label="Add {{ gift_product.title | escape }} to cart"
+          >Add</button>
+        </div>
+      {%- endif -%}
+
+      <!-- Shipping Protection Toggle -->
+      {%- if protection_product != blank -%}
+        <div class="px-6 py-3 border-b border-[#131314]/5 flex items-center justify-between gap-4">
+          <div>
+            <span class="font-body text-[0.8rem] font-[400] text-[#131314] block">Shipping Protection</span>
+            <span class="font-body text-[0.65rem] font-light text-[#2d3338]/55">Protect from damage, loss or theft</span>
+          </div>
+          <label class="relative cursor-pointer shrink-0" aria-label="Toggle shipping protection">
+            <input
+              type="checkbox"
+              class="sr-only"
+              data-protection-toggle
+              data-variant-id="{{ protection_product.first_available_variant.id }}"
+              {% if protection_in_cart %}checked{% endif %}
+            >
+            <div
+              class="toggle-track w-10 h-[22px] rounded-full transition-colors duration-200 {% if protection_in_cart %}on{% endif %}"
+              aria-hidden="true"
+            >
+              <div class="toggle-dot"></div>
+            </div>
+          </label>
+        </div>
+      {%- endif -%}
+
+      <!-- Discount Code -->
+      <div class="px-6 py-3 border-b border-[#131314]/5">
+        <div class="flex gap-2" data-discount-wrapper>
+          <input
+            type="text"
+            id="cart-discount-input"
+            placeholder="Discount code"
+            class="flex-1 border border-[#131314]/8 bg-transparent px-3 py-2 font-body text-[0.78rem] font-[300] text-[#131314] placeholder:text-[#131314]/20 focus:border-[#C5A059] focus:ring-0 outline-none transition-colors duration-200"
+            data-discount-input
+            autocomplete="off"
+            autocapitalize="characters"
+          >
+          <button
+            class="px-5 py-2 font-label text-[0.6rem] uppercase tracking-[0.1em] text-[#F9F9FB] bg-[#131314] hover:bg-[#C5A059] transition-colors duration-200"
+            data-discount-apply
+            aria-label="Apply discount code"
+          >Apply</button>
+        </div>
+        {%- if cart.discount_applications.size > 0 -%}
+          <div class="mt-2 flex flex-wrap gap-1.5">
+            {%- for discount in cart.discount_applications -%}
+              <div class="inline-flex items-center gap-1.5 bg-[#C5A059]/10 px-2.5 py-1 text-[#C5A059]">
+                <span class="material-symbols-outlined text-xs" style="font-variation-settings:'FILL' 1;">sell</span>
+                <span class="font-label text-[0.6rem] uppercase tracking-[0.05em] font-[600]">{{ discount.title }}</span>
+                {%- if discount.total_allocated_amount > 0 -%}
+                  <span class="font-body text-[0.6rem]">−{{ discount.total_allocated_amount | money }}</span>
+                {%- endif -%}
+              </div>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+        <p class="font-body text-[0.62rem] font-light text-[#2d3338]/40 mt-1.5" data-discount-message></p>
+      </div>
+
+      <!-- Subtotal + Checkout -->
+      <div class="px-6 py-5">
+        <div class="flex items-baseline justify-between mb-1">
+          <span class="font-body text-[0.9rem] font-[400] text-[#131314]">Subtotal</span>
+          <div class="text-right">
+            {%- if cart.total_discount > 0 -%}
+              <span class="font-headline text-sm font-[300] text-[#2d3338]/45 line-through block">
+                {{ cart.original_total_price | money }}
+              </span>
+            {%- endif -%}
+            <span class="font-headline text-xl font-[300] text-[#131314]" data-cart-subtotal>
+              {{ cart.total_price | money }}
+            </span>
+          </div>
+        </div>
+        {%- if cart.total_discount > 0 -%}
+          <p class="font-body text-[0.65rem] font-light text-[#C5A059] mb-1">
+            You save {{ cart.total_discount | money }}
+          </p>
+        {%- endif -%}
+        <span class="font-body text-[0.65rem] font-light text-[#2d3338]/55 block mb-4">
+          {{ 'cart.shipping_note' | t }}
+        </span>
+        <a
+          href="{{ routes.cart_url }}/checkout"
+          class="w-full py-4 font-label text-[0.72rem] uppercase tracking-[0.15em] text-[#F9F9FB] bg-[#131314] hover:bg-[#C5A059] transition-colors duration-300 flex items-center justify-center"
+          data-checkout-btn
+        >
+          Checkout — {{ cart.total_price | money }}
+        </a>
+        <p class="font-body text-[0.6rem] font-light text-[#2d3338]/35 text-center mt-2.5">
+          Secure checkout &nbsp;·&nbsp; Free returns &nbsp;·&nbsp; 2-year warranty
+        </p>
+      </div>
+
+    </div><!-- /footer -->
+
+  {%- else -%}
+
+    <!-- ── Empty State ── -->
+    <div class="flex-1 flex flex-col items-center justify-center px-6 text-center gap-5">
+      <div class="w-16 h-16 border border-[#131314]/8 flex items-center justify-center">
+        <span class="material-symbols-outlined text-[#2d3338]/25 text-3xl">shopping_bag</span>
+      </div>
+      <div>
+        <p class="font-headline text-xl font-[300] text-[#131314] mb-1">Your cart is empty</p>
+        <p class="font-body text-[0.8rem] font-light text-[#2d3338]/55">Discover our architectural lighting collections.</p>
+      </div>
+      <button
+        class="font-label text-[0.7rem] uppercase tracking-[0.15em] text-[#F9F9FB] bg-[#131314] hover:bg-[#C5A059] transition-colors duration-200 px-10 py-4 mt-2"
+        data-cart-drawer-close
+      >Continue Shopping</button>
+    </div>
+
+  {%- endif -%}
+
+</div><!-- /cart-drawer -->
+
+<script>
+(function () {
+  'use strict';
+
+  // ── DOM references ──────────────────────────────────────────────────────────
+  const drawer   = document.getElementById('cart-drawer');
+  const backdrop = document.getElementById('cart-backdrop');
+
+  if (!drawer) return;
+
+  // ── Open / Close ────────────────────────────────────────────────────────────
   function openCartDrawer() {
-    if (cartDrawer) {
-      cartDrawer.classList.add('is-open');
-      document.body.classList.add('cart-drawer-open');
-    }
+    drawer.classList.add('open');
+    backdrop.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    drawer.setAttribute('aria-hidden', 'false');
   }
 
   function closeCartDrawer() {
-    if (cartDrawer) {
-      cartDrawer.classList.remove('is-open');
-      document.body.classList.remove('cart-drawer-open');
-    }
+    drawer.classList.remove('open');
+    backdrop.classList.remove('open');
+    document.body.style.overflow = '';
+    drawer.setAttribute('aria-hidden', 'true');
   }
 
-  // Use event delegation for all cart drawer interactions
-  // This ensures buttons work even after content is dynamically replaced
-  if (cartDrawer) {
-    cartDrawer.addEventListener('click', async (e) => {
-      // Close button handler
-      if (e.target.closest('[data-cart-drawer-close]')) {
-        closeCartDrawer();
-        return;
-      }
+  // ── Cart API helpers ────────────────────────────────────────────────────────
 
-      // Quantity minus handler
-      const minusBtn = e.target.closest('[data-quantity-minus]');
-      if (minusBtn) {
-        e.preventDefault();
-        await handleQuantityChange(minusBtn, -1);
-        return;
-      }
-
-      // Quantity plus handler
-      const plusBtn = e.target.closest('[data-quantity-plus]');
-      if (plusBtn) {
-        e.preventDefault();
-        await handleQuantityChange(plusBtn, 1);
-        return;
-      }
-
-      // Remove item handler
-      const removeBtn = e.target.closest('[data-remove-item]');
-      if (removeBtn) {
-        e.preventDefault();
-        await handleRemoveItem(removeBtn);
-        return;
-      }
-
-      // Add gift handler
-      const giftBtn = e.target.closest('[data-add-gift]');
-      if (giftBtn) {
-        e.preventDefault();
-        await handleAddGift(giftBtn);
-        return;
-      }
+  /**
+   * Add an item to the cart.
+   * @param {number|string} variantId
+   * @param {number} quantity
+   * @param {object} [properties]
+   */
+  async function addToCart(variantId, quantity, properties) {
+    const body = {
+      items: [{ id: parseInt(variantId, 10), quantity: quantity || 1 }]
+    };
+    if (properties && Object.keys(properties).length) {
+      body.items[0].properties = properties;
+    }
+    const response = await fetch('/cart/add.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+      credentials: 'same-origin',
+      body: JSON.stringify(body)
     });
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(err.description || 'Failed to add to cart');
+    }
+    return response.json();
+  }
 
-    // Discount form handler
-    cartDrawer.addEventListener('submit', async (e) => {
-      const form = e.target.closest('[data-discount-form]');
-      if (form) {
-        e.preventDefault();
-        const input = form.querySelector('input[name="discount"]');
-        const btn = form.querySelector('[data-discount-btn]');
-        if (input && input.value.trim()) {
-          const code = input.value.trim().toUpperCase();
-          btn.disabled = true;
-          btn.textContent = '...';
-          await applyDiscountCode(code);
-          input.value = '';
-          btn.disabled = false;
-          btn.textContent = 'Apply';
+  /**
+   * Change the quantity of a line item (1-based index).
+   * @param {number} line   1-based line index
+   * @param {number} quantity
+   */
+  async function updateCartItem(line, quantity) {
+    const response = await fetch('/cart/change.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+      credentials: 'same-origin',
+      body: JSON.stringify({ line: line, quantity: quantity })
+    });
+    if (!response.ok) throw new Error('Failed to update cart');
+    return response.json();
+  }
+
+  /**
+   * Remove a line item by 1-based index.
+   * @param {number} line
+   */
+  async function removeCartItem(line) {
+    return updateCartItem(line, 0);
+  }
+
+  /**
+   * Sync the header cart-count badge with the live item count.
+   * Creates the badge if missing, removes it when the cart is empty.
+   * @param {number} count
+   */
+  function updateHeaderCount(count) {
+    let badge = document.getElementById('cart-count-badge');
+    if (count > 0) {
+      if (badge) {
+        badge.textContent = count;
+        badge.style.display = '';
+      } else {
+        const bagBtn = document.querySelector('button[aria-label="Open cart"]');
+        if (bagBtn) {
+          badge = document.createElement('span');
+          badge.id = 'cart-count-badge';
+          badge.className = 'absolute -top-1 -right-1 w-4 h-4 flex items-center justify-center bg-[#C5A059] text-white font-label text-[0.45rem] leading-none';
+          badge.textContent = count;
+          bagBtn.style.position = 'relative';
+          bagBtn.appendChild(badge);
         }
       }
-    });
-
-    // Discount remove handler
-    cartDrawer.addEventListener('click', async (e) => {
-      const removeBtn = e.target.closest('[data-discount-tag-remove]');
-      if (removeBtn) {
-        await clearDiscountCode();
-      }
-    });
-  }
-
-  async function applyDiscountCode(code) {
-    try {
-      // Apply discount code via Shopify's discount endpoint
-      await fetch('/discount/' + encodeURIComponent(code), {
-        method: 'GET',
-        credentials: 'same-origin'
-      });
-
-      // Refresh cart drawer to show updated prices
-      await refreshCartDrawer();
-    } catch (error) {
-      console.error('Error applying discount:', error);
+    } else if (badge) {
+      badge.remove();
     }
+    // Legacy hook — any element opting in by class
+    document.querySelectorAll('.cart-count').forEach(el => { el.textContent = count; });
   }
 
-  async function clearDiscountCode() {
-    try {
-      // Clear discount by applying empty code
-      await fetch('/discount/', {
-        method: 'GET',
-        credentials: 'same-origin'
-      });
+  /**
+   * Re-render the cart drawer via the Section Rendering API.
+   * Updates the drawer HTML and the header cart-count badge.
+   */
+  async function refreshCart() {
+    const [sectionsRes, cartRes] = await Promise.all([
+      fetch('/?sections=cart-drawer', { credentials: 'same-origin' }),
+      fetch('/cart.js',               { credentials: 'same-origin' })
+    ]);
 
-      // Refresh cart drawer
-      await refreshCartDrawer();
-    } catch (error) {
-      console.error('Error clearing discount:', error);
-    }
-  }
-
-  async function refreshCartDrawer() {
-    const sectionResponse = await fetch('/?sections=cart-drawer');
-    if (sectionResponse.ok) {
-      const sections = await sectionResponse.json();
-      const cartDrawerHtml = sections['cart-drawer'];
-      if (cartDrawer && cartDrawerHtml) {
+    if (sectionsRes.ok) {
+      const sections = await sectionsRes.json();
+      const html = sections['cart-drawer'];
+      if (html) {
         const temp = document.createElement('div');
-        temp.innerHTML = cartDrawerHtml;
-        const newContent = temp.querySelector('[data-cart-drawer]');
-        if (newContent) {
-          cartDrawer.innerHTML = newContent.innerHTML;
+        temp.innerHTML = html;
+        const newDrawer = temp.querySelector('[data-cart-drawer]');
+        if (newDrawer) {
+          // Swap inner content, preserving the outer element so event listeners stay
+          drawer.innerHTML = newDrawer.innerHTML;
         }
       }
     }
-    // Update header cart count
-    const cartResponse = await fetch('/cart.js');
-    if (cartResponse.ok) {
-      const cart = await cartResponse.json();
-      updateCartCount(cart.item_count);
+
+    if (cartRes.ok) {
+      const data = await cartRes.json();
+      updateHeaderCount(data.item_count);
     }
   }
 
-  // Protection toggle handler
-  if (cartDrawer) {
-    cartDrawer.addEventListener('change', async (e) => {
-      const toggle = e.target.closest('[data-protection-toggle]');
-      if (toggle) {
-        await handleProtectionToggle(toggle);
-      }
+  /**
+   * Apply a discount code by redirecting through /discount/{code} then refreshing.
+   * @param {string} code
+   */
+  async function applyDiscount(code) {
+    if (!code || !code.trim()) return false;
+    const trimmed = code.trim().toUpperCase();
+    const before = await (await fetch('/cart.js', { credentials: 'same-origin' })).json();
+    const beforeDiscount = before.total_discount || 0;
+    // Hit the discount endpoint (sets the session discount; fetch follows the redirect)
+    await fetch('/discount/' + encodeURIComponent(trimmed), {
+      method: 'GET',
+      credentials: 'same-origin'
     });
+    const after = await (await fetch('/cart.js', { credentials: 'same-origin' })).json();
+    await refreshCart();
+    const titles = (after.cart_level_discount_applications || []).map(function (d) {
+      return (d.title || '').toUpperCase();
+    });
+    return (after.total_discount || 0) > beforeDiscount || titles.indexOf(trimmed) !== -1;
   }
 
-  // Protection toggle handler
-  async function handleProtectionToggle(toggle) {
+  // ── Event delegation on the drawer ─────────────────────────────────────────
+
+  function setLoading(btn, loading) {
+    btn.disabled = loading;
+    if (loading) btn.setAttribute('data-loading', '');
+    else btn.removeAttribute('data-loading');
+  }
+
+  drawer.addEventListener('click', async function (e) {
+
+    // Close button / backdrop click
+    if (e.target.closest('[data-cart-drawer-close]')) {
+      closeCartDrawer();
+      return;
+    }
+
+    // Quantity minus
+    const minusBtn = e.target.closest('[data-qty-minus]');
+    if (minusBtn) {
+      e.preventDefault();
+      const line = parseInt(minusBtn.dataset.line, 10);
+      const item = minusBtn.closest('[data-cart-item]');
+      const display = item ? item.querySelector('[data-qty-display]') : null;
+      const currentQty = display ? parseInt(display.textContent, 10) : parseInt(minusBtn.dataset.quantity, 10);
+      const newQty = Math.max(0, currentQty - 1);
+      setLoading(minusBtn, true);
+      try {
+        await updateCartItem(line, newQty);
+        await refreshCart();
+      } catch (err) {
+        console.error('[cart-drawer] updateCartItem failed:', err);
+      }
+      // Button may no longer exist after refreshCart re-renders — no need to re-enable
+      return;
+    }
+
+    // Quantity plus
+    const plusBtn = e.target.closest('[data-qty-plus]');
+    if (plusBtn) {
+      e.preventDefault();
+      const line = parseInt(plusBtn.dataset.line, 10);
+      const item = plusBtn.closest('[data-cart-item]');
+      const display = item ? item.querySelector('[data-qty-display]') : null;
+      const currentQty = display ? parseInt(display.textContent, 10) : parseInt(plusBtn.dataset.quantity, 10);
+      setLoading(plusBtn, true);
+      try {
+        await updateCartItem(line, currentQty + 1);
+        await refreshCart();
+      } catch (err) {
+        console.error('[cart-drawer] updateCartItem failed:', err);
+      }
+      return;
+    }
+
+    // Remove item
+    const removeBtn = e.target.closest('[data-remove-item]');
+    if (removeBtn) {
+      e.preventDefault();
+      const line = parseInt(removeBtn.dataset.line, 10);
+      setLoading(removeBtn, true);
+      try {
+        await removeCartItem(line);
+        await refreshCart();
+      } catch (err) {
+        console.error('[cart-drawer] removeCartItem failed:', err);
+      }
+      return;
+    }
+
+    // Add spring gift
+    const giftBtn = e.target.closest('[data-add-gift]');
+    if (giftBtn) {
+      e.preventDefault();
+      const variantId = giftBtn.dataset.variantId;
+      const origText = giftBtn.textContent;
+      setLoading(giftBtn, true);
+      giftBtn.textContent = '...';
+      try {
+        await addToCart(variantId, 1, { _gift: 'true' });
+        await refreshCart();
+      } catch (err) {
+        console.error('[cart-drawer] addToCart (gift) failed:', err);
+        giftBtn.disabled = false;
+        giftBtn.textContent = origText;
+      }
+      return;
+    }
+
+    // Apply discount button
+    const discountApplyBtn = e.target.closest('[data-discount-apply]');
+    if (discountApplyBtn) {
+      e.preventDefault();
+      const input = drawer.querySelector('[data-discount-input]');
+      const msgEl = drawer.querySelector('[data-discount-message]');
+      const code  = input ? input.value.trim() : '';
+      if (!code) {
+        if (msgEl) { msgEl.textContent = 'Please enter a discount code.'; }
+        return;
+      }
+      setLoading(discountApplyBtn, true);
+      discountApplyBtn.textContent = '...';
+      let applied = false;
+      try {
+        applied = await applyDiscount(code);
+      } catch (err) {
+        console.error('[cart-drawer] applyDiscount failed:', err);
+        const msgErr = drawer.querySelector('[data-discount-message]');
+        if (msgErr) { msgErr.textContent = 'Could not apply code. Please try again.'; msgErr.style.color = '#b4232a'; }
+        return;
+      }
+      // refreshCart re-rendered the drawer — re-query the (now fresh) message element
+      const msgAfter = drawer.querySelector('[data-discount-message]');
+      if (msgAfter) {
+        if (applied) {
+          msgAfter.textContent = 'Code applied — discount added below.';
+          msgAfter.style.color = '#C5A059';
+        } else {
+          msgAfter.textContent = 'That code isn’t valid for the items in your cart.';
+          msgAfter.style.color = '#b4232a';
+        }
+      }
+      if (!applied) {
+        const inputAfter = drawer.querySelector('[data-discount-input]');
+        if (inputAfter) inputAfter.value = code;
+      }
+      return;
+    }
+
+  });
+
+  // Backdrop close
+  if (backdrop) {
+    backdrop.addEventListener('click', closeCartDrawer);
+  }
+
+  // Shipping protection toggle (change event)
+  drawer.addEventListener('change', async function (e) {
+    const toggle = e.target.closest('[data-protection-toggle]');
+    if (!toggle) return;
+
     const variantId = toggle.dataset.variantId;
     if (!variantId) return;
 
     toggle.disabled = true;
-
     try {
       if (toggle.checked) {
-        // Add protection to cart
-        await fetch('/cart/add.js', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            items: [{ id: parseInt(variantId), quantity: 1 }]
-          })
-        });
+        await addToCart(variantId, 1, {});
       } else {
-        // Remove protection from cart
-        const cartResponse = await fetch('/cart.js');
-        const cart = await cartResponse.json();
-        const item = cart.items.find(i => i.variant_id === parseInt(variantId));
-        if (item) {
+        // Find the item in the live cart by variant ID, then remove by key
+        const cartRes = await fetch('/cart.js', { credentials: 'same-origin' });
+        const cart = await cartRes.json();
+        const found = cart.items.find(i => String(i.variant_id) === String(variantId));
+        if (found) {
           await fetch('/cart/change.js', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: item.key, quantity: 0 })
+            credentials: 'same-origin',
+            body: JSON.stringify({ id: found.key, quantity: 0 })
           });
         }
       }
-
-      // Refresh cart drawer
-      const sectionResponse = await fetch('/?sections=cart-drawer');
-      if (sectionResponse.ok) {
-        const sections = await sectionResponse.json();
-        const cartDrawerHtml = sections['cart-drawer'];
-        if (cartDrawer && cartDrawerHtml) {
-          const temp = document.createElement('div');
-          temp.innerHTML = cartDrawerHtml;
-          const newContent = temp.querySelector('[data-cart-drawer]');
-          if (newContent) {
-            cartDrawer.innerHTML = newContent.innerHTML;
-          }
-        }
-      }
-      // Update header cart count
-      const cartResp = await fetch('/cart.js');
-      if (cartResp.ok) {
-        const cart = await cartResp.json();
-        updateCartCount(cart.item_count);
-      }
-    } catch (error) {
-      console.error('Error toggling protection:', error);
+      await refreshCart();
+    } catch (err) {
+      console.error('[cart-drawer] protection toggle failed:', err);
+      // Revert the visual toggle state
       toggle.checked = !toggle.checked;
+      toggle.disabled = false;
     }
-    toggle.disabled = false;
-  }
+  });
 
-  // Add gift handler
-  async function handleAddGift(btn) {
-    const variantId = btn.dataset.variantId;
-    if (!variantId) return;
-
-    btn.disabled = true;
-    btn.textContent = '...';
-
-    try {
-      const response = await fetch('/cart/add.js', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          items: [{
-            id: parseInt(variantId),
-            quantity: 1,
-            properties: { '_gift': 'true' }
-          }]
-        })
-      });
-
-      if (response.ok) {
-        // Refresh cart drawer
-        const sectionResponse = await fetch('/?sections=cart-drawer');
-        if (sectionResponse.ok) {
-          const sections = await sectionResponse.json();
-          const cartDrawerHtml = sections['cart-drawer'];
-          if (cartDrawer && cartDrawerHtml) {
-            const temp = document.createElement('div');
-            temp.innerHTML = cartDrawerHtml;
-            const newContent = temp.querySelector('[data-cart-drawer]');
-            if (newContent) {
-              cartDrawer.innerHTML = newContent.innerHTML;
-            }
-          }
-        }
-        // Update header cart count
-        const cartResponse = await fetch('/cart.js');
-        if (cartResponse.ok) {
-          const cart = await cartResponse.json();
-          updateCartCount(cart.item_count);
-        }
-      }
-    } catch (error) {
-      console.error('Error adding gift:', error);
-      btn.disabled = false;
-      btn.textContent = 'Add';
-    }
-  }
-
-  function updateCartCount(count) {
-    const cartCount = document.querySelector('.header__cart-count');
-    if (cartCount) {
-      if (count > 0) {
-        cartCount.textContent = count;
-      } else {
-        cartCount.remove();
+  // Discount input — apply on Enter key
+  drawer.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') {
+      const input = e.target.closest('[data-discount-input]');
+      if (input) {
+        e.preventDefault();
+        const applyBtn = drawer.querySelector('[data-discount-apply]');
+        if (applyBtn) applyBtn.click();
       }
     }
-  }
+  });
 
-  // Quantity change handler
-  async function handleQuantityChange(btn, delta) {
-    const line = parseInt(btn.dataset.line);
-    const item = btn.closest('[data-cart-item]');
-    const valueEl = item.querySelector('[data-quantity-value]');
-    const currentQty = parseInt(valueEl.textContent);
-    const newQty = Math.max(0, currentQty + delta);
-
-    if (newQty !== currentQty) {
-      try {
-        const response = await fetch('/cart/change.js', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            line: line,
-            quantity: newQty
-          })
-        });
-
-        if (response.ok) {
-          // Refresh cart drawer content
-          const sectionResponse = await fetch('/?sections=cart-drawer');
-          if (sectionResponse.ok) {
-            const sections = await sectionResponse.json();
-            const cartDrawerHtml = sections['cart-drawer'];
-            if (cartDrawer && cartDrawerHtml) {
-              const temp = document.createElement('div');
-              temp.innerHTML = cartDrawerHtml;
-              const newContent = temp.querySelector('[data-cart-drawer]');
-              if (newContent) {
-                cartDrawer.innerHTML = newContent.innerHTML;
-              }
-            }
-          }
-          // Update header cart count
-          const cartResponse = await fetch('/cart.js');
-          if (cartResponse.ok) {
-            const cart = await cartResponse.json();
-            const cartCount = document.querySelector('.header__cart-count');
-            if (cartCount) {
-              if (cart.item_count > 0) {
-                cartCount.textContent = cart.item_count;
-              } else {
-                cartCount.remove();
-              }
-            }
-          }
-        }
-      } catch (error) {
-        console.error('Error updating cart:', error);
-      }
-    }
-  }
-
-  // Remove item handler
-  async function handleRemoveItem(btn) {
-    const line = parseInt(btn.dataset.line);
-
-    try {
-      const response = await fetch('/cart/change.js', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          line: line,
-          quantity: 0
-        })
-      });
-
-      if (response.ok) {
-        // Refresh cart drawer content
-        const sectionResponse = await fetch('/?sections=cart-drawer');
-        if (sectionResponse.ok) {
-          const sections = await sectionResponse.json();
-          const cartDrawerHtml = sections['cart-drawer'];
-          if (cartDrawer && cartDrawerHtml) {
-            const temp = document.createElement('div');
-            temp.innerHTML = cartDrawerHtml;
-            const newContent = temp.querySelector('[data-cart-drawer]');
-            if (newContent) {
-              cartDrawer.innerHTML = newContent.innerHTML;
-            }
-          }
-        }
-        // Update header cart count
-        const cartResponse = await fetch('/cart.js');
-        if (cartResponse.ok) {
-          const cart = await cartResponse.json();
-          const cartCount = document.querySelector('.header__cart-count');
-          if (cartCount) {
-            if (cart.item_count > 0) {
-              cartCount.textContent = cart.item_count;
-            } else {
-              cartCount.remove();
-            }
-          }
-        }
-      }
-    } catch (error) {
-      console.error('Error removing item:', error);
-    }
-  }
-
-  // Cart trigger handlers (from header) - use event delegation on document
-  document.addEventListener('click', (e) => {
-    const trigger = e.target.closest('[data-cart-trigger]');
-    if (trigger) {
+  // ── Cart trigger in header (data-cart-trigger) ───────────────────────────
+  document.addEventListener('click', function (e) {
+    if (e.target.closest('[data-cart-trigger]')) {
       e.preventDefault();
       openCartDrawer();
     }
   });
 
-  // Listen for custom event to open cart (for add to cart actions)
+  // ── Custom event listener (dispatched by add-to-cart JS, etc.) ──────────
   document.addEventListener('cart:open', openCartDrawer);
 
-  // Expose function globally for add to cart forms
-  window.openCartDrawer = openCartDrawer;
+  // ── Keyboard: Escape to close ────────────────────────────────────────────
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && drawer.classList.contains('open')) {
+      closeCartDrawer();
+    }
+  });
+
+  // ── Global API surface ───────────────────────────────────────────────────
+  window.openCartDrawer  = openCartDrawer;
   window.closeCartDrawer = closeCartDrawer;
-{% endjavascript %}
+  window.addToCart       = addToCart;
+  window.updateCartItem  = updateCartItem;
+  window.removeCartItem  = removeCartItem;
+  window.refreshCart     = refreshCart;
+  window.applyDiscount   = applyDiscount;
+
+})();
+</script>
 
 {% schema %}
 {
-  "name": "Cart drawer",
-  "settings": [
-    {
-      "type": "text",
-      "id": "drawer_title",
-      "label": "Drawer title (desktop)",
-      "default": "Your Sanctuary"
-    },
-    {
-      "type": "header",
-      "content": "Variant text"
-    },
-    {
-      "type": "range",
-      "id": "variant_text_size",
-      "label": "Variant text size",
-      "min": 10,
-      "max": 16,
-      "step": 1,
-      "default": 12,
-      "unit": "px"
-    },
-    {
-      "type": "header",
-      "content": "Free gift"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_free_gift",
-      "label": "Show free gift",
-      "default": false
-    },
-    {
-      "type": "product",
-      "id": "gift_product",
-      "label": "Gift product"
-    },
-    {
-      "type": "text",
-      "id": "gift_title",
-      "label": "Gift title",
-      "info": "Leave blank to use product title"
-    },
-    {
-      "type": "text",
-      "id": "gift_btn_text",
-      "label": "Button text",
-      "default": "Add"
-    },
-    {
-      "type": "color",
-      "id": "gift_bg",
-      "label": "Background",
-      "default": "#FFFBEB"
-    },
-    {
-      "type": "color",
-      "id": "gift_text_color",
-      "label": "Text color",
-      "default": "#1C1917"
-    },
-    {
-      "type": "color",
-      "id": "gift_btn_bg",
-      "label": "Button background",
-      "default": "#1C1917"
-    },
-    {
-      "type": "color",
-      "id": "gift_btn_color",
-      "label": "Button text color",
-      "default": "#ffffff"
-    },
-    {
-      "type": "header",
-      "content": "Shipping protection"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_shipping_protection",
-      "label": "Show shipping protection",
-      "default": false
-    },
-    {
-      "type": "product",
-      "id": "protection_product",
-      "label": "Protection product"
-    },
-    {
-      "type": "text",
-      "id": "protection_title",
-      "label": "Title",
-      "default": "Shipping Protection"
-    },
-    {
-      "type": "textarea",
-      "id": "protection_description",
-      "label": "Description",
-      "default": "Protect your order from damage, loss or theft during shipping"
-    },
-    {
-      "type": "color",
-      "id": "protection_bg",
-      "label": "Background",
-      "default": "#F5F5F4"
-    },
-    {
-      "type": "color",
-      "id": "protection_text_color",
-      "label": "Text color",
-      "default": "#1C1917"
-    },
-    {
-      "type": "header",
-      "content": "Discount code"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_discount_code",
-      "label": "Show discount code field",
-      "default": false
-    },
-    {
-      "type": "text",
-      "id": "discount_placeholder",
-      "label": "Placeholder text",
-      "default": "Discount code"
-    },
-    {
-      "type": "text",
-      "id": "discount_btn_text",
-      "label": "Button text",
-      "default": "Apply"
-    },
-    {
-      "type": "text",
-      "id": "discount_note",
-      "label": "Note text",
-      "default": "Apply additional discount codes at checkout"
-    },
-    {
-      "type": "color",
-      "id": "discount_bg",
-      "label": "Background",
-      "default": "#ffffff"
-    },
-    {
-      "type": "color",
-      "id": "discount_text_color",
-      "label": "Text color",
-      "default": "#1C1917"
-    },
-    {
-      "type": "color",
-      "id": "discount_btn_bg",
-      "label": "Button background",
-      "default": "#1C1917"
-    },
-    {
-      "type": "color",
-      "id": "discount_btn_color",
-      "label": "Button text color",
-      "default": "#ffffff"
-    }
-  ]
+  "name": "Cart Drawer",
+  "class": "cart-drawer-section",
+  "settings": []
 }
 {% endschema %}

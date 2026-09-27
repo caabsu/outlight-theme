@@ -1,0 +1,26 @@
+User-agent: Googlebot
+Disallow: /search
+Disallow: /cart
+Disallow: /account
+
+User-agent: Googlebot-Image
+Disallow: /search
+Disallow: /cart
+Disallow: /account
+
+{% for group in robots.default_groups %}
+{{- group.user_agent }}
+{%- for rule in group.rules -%}
+{{ rule }}
+{%- endfor -%}
+{%- if group.user_agent.value == '*' -%}
+{{ 'Disallow: /search' }}
+{{ 'Disallow: /cart' }}
+{{ 'Disallow: /account' }}
+{{ 'Disallow: /*?q=*' }}
+{{ 'Disallow: /*?*sort_by=*' }}
+{%- endif -%}
+{%- if group.sitemap != blank -%}
+{{ group.sitemap }}
+{%- endif -%}
+{% endfor %}

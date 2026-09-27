@@ -1,0 +1,137 @@
+{%- comment -%}
+  trust-strip.liquid — Homepage trust strip (catalog redesign round 2, variation 1)
+  Dark band: rating cell + three trust items. Wraps below 900px.
+{%- endcomment -%}
+
+{%- assign s = section.settings -%}
+
+<style>
+  #ol-trust-{{ section.id }}{
+    --ink:#131314;--paper:#F9F9FB;--gold:#C5A059;--warm:#f4f0eb;--body:#2d3338;
+    --serif:'Newsreader',Georgia,serif;
+    --sans:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    display:block;
+    background:var(--ink);
+    color:var(--paper);
+    font-family:var(--sans);
+  }
+  #ol-trust-{{ section.id }} *{box-sizing:border-box;margin:0;padding:0;}
+  #ol-trust-{{ section.id }} svg{display:block;}
+  #ol-trust-{{ section.id }} .ol-container{
+    width:100%;max-width:1360px;margin:0 auto;padding:32px;
+    display:flex;align-items:center;flex-wrap:wrap;gap:16px 48px;
+  }
+  #ol-trust-{{ section.id }} .trust-rating{
+    display:flex;align-items:center;gap:12px;
+    padding-right:48px;border-right:1px solid rgba(249,249,251,.16);
+  }
+  #ol-trust-{{ section.id }} .stars{
+    color:var(--gold);font-size:15px;letter-spacing:2px;line-height:1;
+  }
+  #ol-trust-{{ section.id }} .trust-rating .rt{font-size:13px;line-height:1.3;}
+  #ol-trust-{{ section.id }} .trust-rating .rt b{font-weight:600;}
+  #ol-trust-{{ section.id }} .trust-rating .rt span{color:rgba(249,249,251,.6);}
+  #ol-trust-{{ section.id }} .trust-items{
+    display:flex;flex-wrap:wrap;gap:16px 48px;flex:1;
+  }
+  #ol-trust-{{ section.id }} .trust-item{
+    display:flex;align-items:center;gap:10px;
+    font-size:13px;font-weight:400;color:rgba(249,249,251,.92);
+  }
+  #ol-trust-{{ section.id }} .trust-item svg{
+    width:17px;height:17px;color:var(--gold);flex-shrink:0;
+  }
+  @media (max-width:900px){
+    #ol-trust-{{ section.id }} .ol-container{padding:32px 24px;}
+    #ol-trust-{{ section.id }} .trust-rating{
+      border-right:none;padding-right:0;width:100%;
+      padding-bottom:16px;margin-bottom:8px;
+      border-bottom:1px solid rgba(249,249,251,.16);
+    }
+  }
+  @media (max-width:600px){
+    #ol-trust-{{ section.id }} .ol-container{padding:32px 20px;}
+  }
+</style>
+
+<section id="ol-trust-{{ section.id }}">
+  <div class="ol-container">
+    <div class="trust-rating">
+      <span class="stars" aria-hidden="true">★★★★★</span>
+      <span class="rt"><b>{{ s.rating_text | escape }}</b><br><span>{{ s.rating_sub | escape }}</span></span>
+    </div>
+    <div class="trust-items">
+      {%- if s.item1 != blank -%}
+        <div class="trust-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7" stroke-linejoin="round"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>
+          {{ s.item1 | escape }}
+        </div>
+      {%- endif -%}
+      {%- if s.item2 != blank -%}
+        <div class="trust-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 12a9 9 0 1 1 3 6.7" stroke-linecap="round"/><path d="M3 19v-5h5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          {{ s.item2 | escape }}
+        </div>
+      {%- endif -%}
+      {%- if s.item3 != blank -%}
+        <div class="trust-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 3l7 3v6c0 5-3.4 8-7 9-3.6-1-7-4-7-9V6l7-3Z" stroke-linejoin="round"/><path d="m9 12 2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          {{ s.item3 | escape }}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Trust Strip",
+  "tag": "section",
+  "class": "ol-trust-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Rating"
+    },
+    {
+      "type": "text",
+      "id": "rating_text",
+      "label": "Rating headline",
+      "default": "4.7 average"
+    },
+    {
+      "type": "text",
+      "id": "rating_sub",
+      "label": "Rating subtext",
+      "default": "2,000+ verified reviews"
+    },
+    {
+      "type": "header",
+      "content": "Trust items"
+    },
+    {
+      "type": "text",
+      "id": "item1",
+      "label": "Item 1",
+      "default": "Free shipping · Estimated delivery in 4 days"
+    },
+    {
+      "type": "text",
+      "id": "item2",
+      "label": "Item 2",
+      "default": "30-day returns"
+    },
+    {
+      "type": "text",
+      "id": "item3",
+      "label": "Item 3",
+      "default": "2-year warranty"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Trust Strip"
+    }
+  ]
+}
+{% endschema %}

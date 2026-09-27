@@ -1,259 +1,151 @@
-{% comment %}
-  About Story Section - Two-column layout with image and quote overlay
-{% endcomment %}
+{%- comment -%}
+  about-story.liquid — Editorial About story
+  Split image + copy with a label, serif heading, body paragraphs and a pull quote.
+{%- endcomment -%}
 
-<section class="about-story full-width" style="
-  --about-story-bg: {{ section.settings.background_color }};
-  --about-story-label-color: {{ section.settings.label_color }};
-  --about-story-title-color: {{ section.settings.title_color }};
-  --about-story-title-accent: {{ section.settings.title_accent_color }};
-  --about-story-text-color: {{ section.settings.text_color }};
-  --about-story-quote-bg: {{ section.settings.quote_background }};
-  --about-story-quote-color: {{ section.settings.quote_color }};
-  --about-story-padding-mobile: {{ section.settings.padding_mobile }}px;
-  --about-story-padding-desktop: {{ section.settings.padding_desktop }}px;
-">
-  <div class="about-story__container">
-    <div class="about-story__content">
-      {%- if section.settings.label != blank -%}
-        <span class="about-story__label">{{ section.settings.label }}</span>
-      {%- endif -%}
+{%- assign s = section.settings -%}
 
-      {%- if section.settings.title != blank -%}
-        <h2 class="about-story__title">
-          {{ section.settings.title_prefix }}
-          {%- if section.settings.title_accent != blank -%}
-            <em>{{ section.settings.title_accent }}</em>
-          {%- endif -%}
-        </h2>
-      {%- endif -%}
+<style>
+  #ed-aboutstory-{{ section.id }}{
+    --ink:#131314;--paper:#F9F9FB;--gold:#C5A059;--warm:#f4f0eb;
+    --body:#2d3338;--hairline:rgba(19,19,20,.14);
+    display:block;background:var(--paper);font-family:'Manrope',sans-serif;
+    padding-top:96px;
+  }
+  #ed-aboutstory-{{ section.id }} *{box-sizing:border-box;}
+  #ed-aboutstory-{{ section.id }} .aboutstory{
+    display:grid;grid-template-columns:1fr 1fr;align-items:stretch;
+  }
+  #ed-aboutstory-{{ section.id }} .aboutstory__img{
+    position:relative;overflow:hidden;min-height:580px;margin:0;
+  }
+  #ed-aboutstory-{{ section.id }} .aboutstory__img img{
+    width:100%;height:100%;object-fit:cover;position:absolute;inset:0;
+  }
+  #ed-aboutstory-{{ section.id }} .aboutstory__ph{
+    position:absolute;inset:0;
+    background:linear-gradient(155deg,#3a342a 0%,#1a160f 100%);
+  }
+  #ed-aboutstory-{{ section.id }} .aboutstory__img figcaption{
+    position:absolute;left:30px;bottom:28px;color:var(--paper);
+    font-family:'Manrope',sans-serif;font-weight:400;font-size:10.5px;
+    letter-spacing:.18em;text-transform:uppercase;
+  }
+  #ed-aboutstory-{{ section.id }} .aboutstory__copy{
+    padding:84px 80px;display:flex;flex-direction:column;justify-content:center;
+  }
+  #ed-aboutstory-{{ section.id }} .ed-label{
+    font-family:'Manrope',sans-serif;font-weight:500;font-size:11px;
+    letter-spacing:.26em;text-transform:uppercase;color:var(--body);
+  }
+  #ed-aboutstory-{{ section.id }} .aboutstory__copy h2{
+    font-family:'Newsreader',serif;font-weight:200;
+    font-size:clamp(2.2rem,3.6vw,3.3rem);line-height:1.08;letter-spacing:-.01em;
+    margin:22px 0 0;color:var(--ink);
+  }
+  #ed-aboutstory-{{ section.id }} .aboutstory__copy h2 em{
+    font-style:italic;font-weight:300;color:var(--gold);
+  }
+  #ed-aboutstory-{{ section.id }} .aboutstory__body p{
+    font-size:15.5px;line-height:1.78;color:var(--body);font-weight:300;
+    margin:24px 0 0;
+  }
+  #ed-aboutstory-{{ section.id }} .aboutstory__pull{
+    font-family:'Newsreader',serif;font-style:italic;font-weight:300;
+    font-size:clamp(1.25rem,1.9vw,1.55rem);line-height:1.45;color:var(--ink);
+    margin:32px 0 0;padding-left:24px;border-left:1px solid var(--gold);
+  }
+  @media (max-width:880px){
+    #ed-aboutstory-{{ section.id }}{padding-top:64px;}
+    #ed-aboutstory-{{ section.id }} .aboutstory{grid-template-columns:1fr;}
+    #ed-aboutstory-{{ section.id }} .aboutstory__img{min-height:340px;order:-1;}
+    #ed-aboutstory-{{ section.id }} .aboutstory__copy{padding:52px 24px;}
+  }
+  @media (max-width:680px){
+    #ed-aboutstory-{{ section.id }} .aboutstory__copy{padding:44px 20px;}
+    #ed-aboutstory-{{ section.id }} .aboutstory__body p{font-size:15px;margin-top:20px;}
+    #ed-aboutstory-{{ section.id }} .aboutstory__pull{margin-top:26px;padding-left:18px;}
+  }
+</style>
 
-      {%- if section.settings.text_1 != blank -%}
-        <p class="about-story__text">{{ section.settings.text_1 }}</p>
-      {%- endif -%}
-
-      {%- if section.settings.text_2 != blank -%}
-        <p class="about-story__text">{{ section.settings.text_2 }}</p>
-      {%- endif -%}
-    </div>
-
-    <div class="about-story__image-wrapper">
-      {%- if section.settings.image != blank -%}
-        <div class="about-story__image">
-          {{ section.settings.image | image_url: width: 800 | image_tag: loading: 'lazy' }}
-        </div>
+<section id="ed-aboutstory-{{ section.id }}">
+  <div class="aboutstory">
+    <figure class="aboutstory__img">
+      {%- if s.image != blank -%}
+        <img
+          src="{{ s.image | image_url: width: 1200 }}"
+          srcset="{{ s.image | image_url: width: 700 }} 700w, {{ s.image | image_url: width: 1200 }} 1200w"
+          sizes="(max-width:880px) 100vw, 50vw"
+          alt="{{ s.image.alt | escape | default: 'A warm room lit by Outlight lamps after dark' }}"
+          width="{{ s.image.width }}"
+          height="{{ s.image.height }}"
+          loading="lazy"
+        >
       {%- else -%}
-        <div class="about-story__image about-story__placeholder"></div>
+        <div class="aboutstory__ph"></div>
       {%- endif -%}
+      {%- if s.image_caption != blank -%}
+        <figcaption>{{ s.image_caption | escape }}</figcaption>
+      {%- endif -%}
+    </figure>
 
-      {%- if section.settings.quote != blank -%}
-        <blockquote class="about-story__quote">
-          <p>"{{ section.settings.quote }}"</p>
-        </blockquote>
+    <div class="aboutstory__copy">
+      {%- if s.label != blank -%}
+        <span class="ed-label">{{ s.label | escape }}</span>
+      {%- endif -%}
+      {%- if s.heading != blank -%}
+        <h2>{{ s.heading }}</h2>
+      {%- endif -%}
+      <div class="aboutstory__body">
+        {%- if s.paragraph_1 != blank -%}
+          <p>{{ s.paragraph_1 | escape }}</p>
+        {%- endif -%}
+        {%- if s.paragraph_2 != blank -%}
+          <p>{{ s.paragraph_2 | escape }}</p>
+        {%- endif -%}
+      </div>
+      {%- if s.pull_quote != blank -%}
+        <blockquote class="aboutstory__pull">{{ s.pull_quote | escape }}</blockquote>
       {%- endif -%}
     </div>
   </div>
 </section>
 
-{% stylesheet %}
-  .about-story {
-    background-color: var(--about-story-bg, #FAF9F7);
-    padding: var(--about-story-padding-mobile, 60px) 16px;
-  }
-
-  .about-story__container {
-    max-width: 1400px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 40px;
-  }
-
-  .about-story__content {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .about-story__label {
-    font-family: var(--font-body-family), sans-serif;
-    font-size: 12px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    color: var(--about-story-label-color, #D97706);
-  }
-
-  .about-story__title {
-    font-family: var(--font-heading-family), serif;
-    font-size: 32px;
-    font-weight: 400;
-    color: var(--about-story-title-color, #1C1917);
-    margin: 0;
-    line-height: 1.2;
-  }
-
-  .about-story__title em {
-    font-style: italic;
-    color: var(--about-story-title-accent, #D97706);
-  }
-
-  .about-story__text {
-    font-family: var(--font-body-family), sans-serif;
-    font-size: 15px;
-    font-weight: 400;
-    color: var(--about-story-text-color, #57534E);
-    margin: 0;
-    line-height: 1.7;
-  }
-
-  .about-story__image-wrapper {
-    position: relative;
-  }
-
-  .about-story__image {
-    width: 100%;
-    overflow: hidden;
-  }
-
-  .about-story__image img {
-    width: 100%;
-    height: auto;
-    display: block;
-  }
-
-  .about-story__placeholder {
-    aspect-ratio: 3/4;
-    background: linear-gradient(135deg, #E7E5E4 0%, #D6D3D1 100%);
-  }
-
-  .about-story__quote {
-    background: var(--about-story-quote-bg, #ffffff);
-    padding: 24px;
-    margin: -40px 16px 0;
-    position: relative;
-    z-index: 1;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  }
-
-  .about-story__quote p {
-    font-family: var(--font-heading-family), serif;
-    font-size: 18px;
-    font-style: italic;
-    font-weight: 400;
-    color: var(--about-story-quote-color, #1C1917);
-    margin: 0;
-    line-height: 1.5;
-  }
-
-  @media (min-width: 768px) {
-    .about-story {
-      padding: var(--about-story-padding-desktop, 100px) 40px;
-    }
-
-    .about-story__container {
-      flex-direction: row;
-      align-items: flex-start;
-      gap: 60px;
-    }
-
-    .about-story__content {
-      flex: 1;
-      max-width: 45%;
-      padding-top: 40px;
-      gap: 24px;
-    }
-
-    .about-story__title {
-      font-size: 42px;
-    }
-
-    .about-story__text {
-      font-size: 16px;
-    }
-
-    .about-story__image-wrapper {
-      flex: 1;
-      max-width: 50%;
-    }
-
-    .about-story__quote {
-      padding: 32px;
-      margin: -60px 0 0 -40px;
-      max-width: 380px;
-    }
-
-    .about-story__quote p {
-      font-size: 20px;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .about-story__container {
-      gap: 80px;
-    }
-
-    .about-story__content {
-      padding-top: 60px;
-    }
-
-    .about-story__title {
-      font-size: 48px;
-    }
-
-    .about-story__quote {
-      margin: -80px 0 0 -60px;
-    }
-  }
-
-  @media (min-width: 1200px) {
-    .about-story {
-      padding: var(--about-story-padding-desktop, 100px) 60px;
-    }
-  }
-{% endstylesheet %}
-
 {% schema %}
 {
   "name": "About Story",
+  "tag": "section",
+  "class": "ed-aboutstory-section",
   "settings": [
-    {
-      "type": "header",
-      "content": "Content"
-    },
     {
       "type": "text",
       "id": "label",
       "label": "Label",
-      "default": "OUR STORY"
+      "default": "01 — Our point of view"
     },
     {
-      "type": "text",
-      "id": "title_prefix",
-      "label": "Title (first part)",
-      "default": "Born from"
-    },
-    {
-      "type": "text",
-      "id": "title_accent",
-      "label": "Title (italic accent)",
-      "default": "Silence"
+      "type": "richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "<p>Decorated by daylight. <em>Abandoned after dark.</em></p>"
     },
     {
       "type": "textarea",
-      "id": "text_1",
+      "id": "paragraph_1",
       "label": "Paragraph 1",
-      "default": "Outlight began with a simple observation: modern life is loud. Our visual environments are cluttered. We sought to create a counter-balance."
+      "default": "Most homes are styled for the day. The furniture is chosen, the room is composed — and then the sun goes down and a single overhead fixture takes over. Flat, even, a little anonymous. The room is still there, but the evening version of it never quite arrives."
     },
     {
       "type": "textarea",
-      "id": "text_2",
+      "id": "paragraph_2",
       "label": "Paragraph 2",
-      "default": "Founded in 2020, our studio focuses on stripping away the non-essential. We work exclusively with ceramic and sandstone—materials that ground us and interact beautifully with light."
+      "default": "Outlight exists for that hour. We believe a living room, an entry, or a bedside should feel as considered at 9pm as it does at noon — warm, layered, and finished. That conviction is the whole brief: lighting chosen for how a room feels once the lamps are the only thing on."
     },
     {
-      "type": "header",
-      "content": "Image"
+      "type": "textarea",
+      "id": "pull_quote",
+      "label": "Pull quote",
+      "default": "The enemy was never the dark. It was flat overhead glare standing in for atmosphere."
     },
     {
       "type": "image_picker",
@@ -261,80 +153,10 @@
       "label": "Image"
     },
     {
-      "type": "textarea",
-      "id": "quote",
-      "label": "Quote text",
-      "default": "Light is the first element of design; without it there is no form."
-    },
-    {
-      "type": "header",
-      "content": "Colors"
-    },
-    {
-      "type": "color",
-      "id": "background_color",
-      "label": "Background color",
-      "default": "#FAF9F7"
-    },
-    {
-      "type": "color",
-      "id": "label_color",
-      "label": "Label color",
-      "default": "#D97706"
-    },
-    {
-      "type": "color",
-      "id": "title_color",
-      "label": "Title color",
-      "default": "#1C1917"
-    },
-    {
-      "type": "color",
-      "id": "title_accent_color",
-      "label": "Title accent color",
-      "default": "#D97706"
-    },
-    {
-      "type": "color",
-      "id": "text_color",
-      "label": "Text color",
-      "default": "#57534E"
-    },
-    {
-      "type": "color",
-      "id": "quote_background",
-      "label": "Quote background",
-      "default": "#ffffff"
-    },
-    {
-      "type": "color",
-      "id": "quote_color",
-      "label": "Quote text color",
-      "default": "#1C1917"
-    },
-    {
-      "type": "header",
-      "content": "Spacing"
-    },
-    {
-      "type": "range",
-      "id": "padding_mobile",
-      "label": "Padding (mobile)",
-      "min": 40,
-      "max": 100,
-      "step": 10,
-      "unit": "px",
-      "default": 60
-    },
-    {
-      "type": "range",
-      "id": "padding_desktop",
-      "label": "Padding (desktop)",
-      "min": 60,
-      "max": 150,
-      "step": 10,
-      "unit": "px",
-      "default": 100
+      "type": "text",
+      "id": "image_caption",
+      "label": "Image caption",
+      "default": "Fig. 02 — The room, after dark"
     }
   ],
   "presets": [

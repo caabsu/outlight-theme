@@ -1,0 +1,52 @@
+{%- comment -%}
+  Product card snippet
+  Usage: {% render 'product-card', product: product, show_price: true %}
+{%- endcomment -%}
+
+{%- assign show_price = show_price | default: true -%}
+{%- assign card_on_sale = false -%}
+{%- if product.compare_at_price_max > product.price -%}{%- assign card_on_sale = true -%}{%- endif -%}
+<a
+  href="{{ product.url }}"
+  class="product-card group block bg-[#F9F9FB]"
+  data-collections="{% for c in product.collections %}{{ c.handle }}{% unless forloop.last %},{% endunless %}{% endfor %}"
+  data-price="{{ product.price | money_without_currency | replace: ',', '' }}"
+  data-created="{{ product.created_at | date: '%s' }}"
+>
+  <div class="relative overflow-hidden aspect-[3/4]">
+    {% if product.featured_image %}
+      <img
+        src="{{ product.featured_image | image_url: width: 600 }}"
+        alt="{{ product.featured_image.alt | escape }}"
+        class="product-img w-full h-full object-cover"
+        loading="lazy"
+        width="600"
+        height="800"
+      >
+    {% else %}
+      <div class="w-full h-full" style="background: linear-gradient(165deg, #e8ddd0 0%, #d4c4b0 100%);"></div>
+    {% endif %}
+    {%- if card_on_sale -%}
+      {%- assign card_save_pct = product.compare_at_price_max | minus: product.price | times: 100 | divided_by: product.compare_at_price_max -%}
+      <span class="absolute top-3 left-3 font-label text-[0.55rem] uppercase tracking-[0.1em] text-[#F9F9FB] bg-[#131314] px-2 py-1">Save {{ card_save_pct }}%</span>
+    {%- endif -%}
+    {%- unless product.available -%}
+      <span class="absolute top-3 right-3 font-label text-[0.55rem] uppercase tracking-[0.1em] text-[#131314] bg-[#F9F9FB] px-2 py-1">Sold Out</span>
+    {%- endunless -%}
+  </div>
+  <div class="outlight-review-badge px-3 pt-3 empty:hidden" data-product-handle="{{ product.handle }}"></div>
+  <div class="flex items-baseline justify-between gap-2 px-3 pt-1 pb-3">
+    <span class="font-headline text-[1.05rem] font-[200] text-[#131314]">{{ product.title | split: ' ' | first }}</span>
+    {% if show_price %}
+      <span class="flex items-baseline gap-1.5 shrink-0">
+        {%- if card_on_sale -%}
+          <span class="font-body text-[0.72rem] font-light text-[#2d3338]/35 line-through">{{ product.compare_at_price_max | money }}</span>
+        {%- endif -%}
+        <span class="font-body text-[0.82rem] font-light {% if card_on_sale %}text-[#C5A059]{% else %}text-[#2d3338]/65{% endif %}">{{ product.price | money }}</span>
+      </span>
+    {% endif %}
+  </div>
+  <div class="h-px bg-[#131314]/4 mx-3 relative">
+    <div class="product-line absolute top-0 left-0 h-full bg-[#C5A059]"></div>
+  </div>
+</a>

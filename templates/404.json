@@ -7,14 +7,19 @@
  * made to this file may be overwritten.
  * ------------------------------------------------------------
  */
- {
+{
   "sections": {
-    "main": {
+    "404": {
       "type": "404",
-      "settings": {}
+      "settings": {
+        "heading": "Page Not Found",
+        "subheading": "The page you're looking for has moved, or never existed. Let's get you back on track.",
+        "button_label": "Back to Homepage",
+        "button_url": "/"
+      }
     }
   },
   "order": [
-    "main"
+    "404"
   ]
 }

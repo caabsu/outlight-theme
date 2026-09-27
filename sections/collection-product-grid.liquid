@@ -1,0 +1,1243 @@
+{% assign clearance_percent = settings.clearance_discount_percent | default: 60 %}
+{% assign clearance_remaining = 100 | minus: clearance_percent %}
+{% comment %}
+  Collection Product Grid Section
+  Outlight Theme v2 — Editorial design language
+  Filter / sort JS hooks preserved verbatim:
+    .product-card[data-collections|data-price|data-created],
+    .ol-col-filter, .ol-price-filter, [data-result-count],
+    olToggleCol / olSetPrice / olClearCols / applyFilters / restoreState,
+    sessionStorage key olFilters_*
+{% endcomment %}
+
+<style>
+  #ed-coll-{{ section.id }}{
+    --ink:#131314;--paper:#F9F9FB;--gold:#C5A059;--warm:#f4f0eb;
+    --body:#2d3338;--hairline:rgba(19,19,20,.14);--measure:1320px;
+    display:block;background:var(--paper);font-family:'Manrope',sans-serif;
+    color:var(--ink);
+  }
+  #ed-coll-{{ section.id }} *{box-sizing:border-box;}
+  #ed-coll-{{ section.id }} .ed-wrap{
+    max-width:var(--measure);margin:0 auto;padding:0 40px;
+  }
+  #ed-coll-{{ section.id }} .ed-label{
+    font-family:'Manrope',sans-serif;font-weight:500;font-size:11px;
+    letter-spacing:.26em;text-transform:uppercase;color:var(--body);
+  }
+  #ed-coll-{{ section.id }} .ed-label--gold{color:var(--gold);}
+
+  #ed-coll-{{ section.id }} .ol-clearance-intro{margin-top:28px;padding:24px 28px;background:var(--warm);border-left:2px solid var(--gold)}
+  #ed-coll-{{ section.id }} .ol-clearance-intro h2{font-family:'Newsreader',serif;font-size:clamp(26px,3vw,36px);font-weight:300;line-height:1.1;margin:10px 0}
+  #ed-coll-{{ section.id }} .ol-clearance-intro p{font-size:12px;line-height:1.7;margin:0;color:var(--body)}
+  /* ── Header ───────────────────────────────── */
+  #ed-coll-{{ section.id }} .ed-head{padding:74px 0 0;}
+  #ed-coll-{{ section.id }} .ed-crumb{
+    display:flex;align-items:center;gap:9px;margin-bottom:34px;flex-wrap:wrap;
+  }
+  #ed-coll-{{ section.id }} .ed-crumb a,
+  #ed-coll-{{ section.id }} .ed-crumb span{
+    font-family:'Manrope',sans-serif;font-weight:500;font-size:10px;
+    letter-spacing:.18em;text-transform:uppercase;text-decoration:none;
+  }
+  #ed-coll-{{ section.id }} .ed-crumb a{color:var(--body);transition:color .3s ease;}
+  #ed-coll-{{ section.id }} .ed-crumb a:hover{color:var(--ink);}
+  #ed-coll-{{ section.id }} .ed-crumb .sep{color:var(--hairline);letter-spacing:0;}
+  #ed-coll-{{ section.id }} .ed-crumb .cur{color:var(--gold);}
+  #ed-coll-{{ section.id }} .ed-head__eyebrow{
+    display:flex;align-items:center;gap:14px;margin-bottom:26px;
+  }
+  #ed-coll-{{ section.id }} .ed-head__eyebrow .rule{height:1px;width:48px;background:var(--gold);}
+  #ed-coll-{{ section.id }} .ed-head__grid{
+    display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:end;
+  }
+  #ed-coll-{{ section.id }} h1.ed-title{
+    font-family:'Newsreader',serif;font-weight:200;
+    font-size:clamp(2.8rem,5.4vw,5rem);line-height:1;letter-spacing:-.018em;
+    color:var(--ink);margin:0;
+  }
+  #ed-coll-{{ section.id }} h1.ed-title em{font-style:italic;font-weight:300;color:var(--gold);}
+  #ed-coll-{{ section.id }} .ed-head__sub{padding-bottom:6px;}
+  #ed-coll-{{ section.id }} .ed-outcome{
+    font-family:'Newsreader',serif;font-style:italic;font-weight:300;
+    font-size:clamp(1.15rem,1.7vw,1.42rem);line-height:1.5;color:var(--ink);
+    margin:0;padding-left:22px;border-left:1px solid var(--gold);max-width:42ch;
+  }
+  #ed-coll-{{ section.id }} .ed-head__h2{
+    font-family:'Newsreader',serif;font-weight:200;
+    font-size:clamp(1.5rem,2.4vw,2rem);line-height:1.12;letter-spacing:-.01em;
+    color:var(--ink);margin:30px 0 0;max-width:20ch;
+  }
+  #ed-coll-{{ section.id }} .ed-head__h2 em{font-style:italic;font-weight:300;color:var(--gold);}
+  #ed-coll-{{ section.id }} .ed-head__lede{
+    margin:18px 0 0;max-width:62ch;font-size:15.5px;line-height:1.74;
+    color:var(--body);font-weight:300;
+  }
+
+  /* ── Collection guide disclosure ──────────── */
+  #ed-coll-{{ section.id }} .ed-guide{margin-top:24px;max-width:760px;}
+  #ed-coll-{{ section.id }} .ed-guide summary{
+    list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:9px;
+  }
+  #ed-coll-{{ section.id }} .ed-guide summary::-webkit-details-marker{display:none;}
+  #ed-coll-{{ section.id }} .ed-guide__toggle{
+    font-family:'Manrope',sans-serif;font-weight:500;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--body);
+    transition:color .3s ease;
+  }
+  #ed-coll-{{ section.id }} .ed-guide[open] .ed-guide__toggle,
+  #ed-coll-{{ section.id }} .ed-guide summary:hover .ed-guide__toggle{color:var(--ink);}
+  #ed-coll-{{ section.id }} .ed-guide__icon{
+    width:22px;height:22px;border:1px solid var(--hairline);border-radius:50%;
+    display:flex;align-items:center;justify-content:center;color:var(--gold);
+    font-size:14px;transition:transform .35s cubic-bezier(.16,.84,.44,1);
+  }
+  #ed-coll-{{ section.id }} .ed-guide[open] .ed-guide__icon{transform:rotate(45deg);}
+  #ed-coll-{{ section.id }} .ed-guide__body{
+    margin-top:20px;padding-top:20px;border-top:1px solid var(--hairline);
+    font-size:14.5px;line-height:1.9;color:var(--body);font-weight:300;
+  }
+  #ed-coll-{{ section.id }} .ed-guide__body p{margin:0 0 1rem;}
+  #ed-coll-{{ section.id }} .ed-guide__body p:last-child{margin-bottom:0;}
+  #ed-coll-{{ section.id }} .ed-guide__body a{color:var(--ink);text-decoration:underline;text-underline-offset:2px;}
+
+  /* ── Filter / sort bar ────────────────────── */
+  #ed-coll-{{ section.id }} .ed-bar{
+    position:relative;margin-top:48px;
+    border-top:1px solid var(--ink);border-bottom:1px solid var(--hairline);
+  }
+  #ed-coll-{{ section.id }} .ed-bar__inner{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:16px 0;gap:18px;flex-wrap:wrap;
+  }
+  #ed-coll-{{ section.id }} .ed-bar__left,
+  #ed-coll-{{ section.id }} .ed-bar__right{
+    display:flex;align-items:center;gap:16px;
+  }
+  #ed-coll-{{ section.id }} .ed-count{
+    font-family:'Manrope',sans-serif;font-weight:400;font-size:11px;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--body);
+  }
+  #ed-coll-{{ section.id }} .ed-sortlabel{
+    font-family:'Manrope',sans-serif;font-weight:400;font-size:10px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--body);opacity:.6;
+  }
+  #ed-coll-{{ section.id }} .ed-trigger{
+    font-family:'Manrope',sans-serif;font-weight:500;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--ink);
+    background:transparent;border:1px solid var(--hairline);
+    padding:9px 16px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;
+    transition:border-color .3s ease;
+  }
+  #ed-coll-{{ section.id }} .ed-trigger:hover{border-color:var(--ink);}
+  #ed-coll-{{ section.id }} .ed-trigger .material-symbols-outlined{font-size:15px;color:var(--gold);}
+
+  /* sort dropdown */
+  #ed-coll-{{ section.id }} .ed-sortwrap{position:relative;}
+  #ed-coll-{{ section.id }} .ed-sortmenu{
+    display:none;position:absolute;right:0;top:calc(100% + 6px);z-index:30;
+    min-width:210px;background:var(--paper);border:1px solid var(--ink);
+    box-shadow:0 14px 34px rgba(19,19,20,.12);
+  }
+  #ed-coll-{{ section.id }} .ed-sortmenu.open{display:block;}
+  #ed-coll-{{ section.id }} .ed-sortmenu a{
+    display:block;padding:13px 18px;text-decoration:none;
+    font-family:'Manrope',sans-serif;font-weight:500;font-size:10.5px;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--body);
+    border-bottom:1px solid var(--hairline);transition:background .25s ease,color .25s ease;
+  }
+  #ed-coll-{{ section.id }} .ed-sortmenu a:last-child{border-bottom:none;}
+  #ed-coll-{{ section.id }} .ed-sortmenu a:hover{background:var(--warm);color:var(--ink);}
+
+  /* filter panel */
+  #ed-coll-{{ section.id }} .ed-filterpanel{
+    display:none;border-top:1px solid var(--hairline);
+  }
+  #ed-coll-{{ section.id }} .ed-filterpanel.open{display:block;}
+  #ed-coll-{{ section.id }} .ed-filtergrid{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--hairline);
+  }
+  #ed-coll-{{ section.id }} .ed-filtercol{background:var(--paper);padding:28px 26px;}
+  #ed-coll-{{ section.id }} .ed-filtercol:first-child{padding-left:0;}
+  #ed-coll-{{ section.id }} .ed-filtercol:last-child{padding-right:0;}
+  #ed-coll-{{ section.id }} .ed-filtercol__head{
+    display:block;margin-bottom:16px;
+    font-family:'Manrope',sans-serif;font-weight:500;font-size:10px;
+    letter-spacing:.2em;text-transform:uppercase;color:var(--gold);
+  }
+  #ed-coll-{{ section.id }} .ed-filterlist{display:flex;flex-direction:column;gap:11px;}
+  #ed-coll-{{ section.id }} .ed-filteropt{
+    font-family:'Newsreader',serif;font-weight:300;font-size:17px;line-height:1.2;
+    color:var(--body);background:transparent;border:none;padding:0;margin:0;
+    text-align:left;cursor:pointer;text-decoration:none;transition:color .25s ease;
+  }
+  #ed-coll-{{ section.id }} .ed-filteropt:hover{color:var(--ink);}
+  #ed-coll-{{ section.id }} .ed-filteropt.active{color:var(--gold);font-weight:400;}
+  #ed-coll-{{ section.id }} .ed-filterclear{
+    font-family:'Manrope',sans-serif;font-weight:500;font-size:9.5px;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--gold);
+    background:transparent;border:none;padding:0;margin-top:4px;
+    text-align:left;cursor:pointer;transition:color .25s ease;
+  }
+  #ed-coll-{{ section.id }} .ed-filterclear:hover{color:var(--ink);}
+
+  /* ── Product grid ─────────────────────────── */
+  #ed-coll-{{ section.id }} .ed-gridwrap{padding:44px 0 96px;}
+  #ed-coll-{{ section.id }} .ed-grid{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:34px 28px;
+  }
+  #ed-coll-{{ section.id }} .ed-card{
+    background:var(--paper);display:flex;flex-direction:column;
+    position:relative;text-decoration:none;
+  }
+  #ed-coll-{{ section.id }} .ed-card__media{
+    position:relative;aspect-ratio:4/5;overflow:hidden;background:var(--warm);
+  }
+  #ed-coll-{{ section.id }} .ed-card__media img{
+    position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+    transition:transform .9s cubic-bezier(.16,.84,.44,1);
+  }
+  #ed-coll-{{ section.id }} .ed-card__ph{
+    position:absolute;inset:0;
+    background:linear-gradient(165deg,#e8ddd0 0%,#d4c4b0 100%);
+  }
+  #ed-coll-{{ section.id }} .ed-card:hover .ed-card__media img{transform:scale(1.045);}
+  #ed-coll-{{ section.id }} .ed-card__cat{
+    position:absolute;left:14px;top:14px;background:rgba(249,249,251,.92);
+    -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);
+    font-family:'Manrope',sans-serif;font-weight:500;font-size:9.5px;
+    letter-spacing:.15em;text-transform:uppercase;color:var(--ink);padding:6px 10px;
+  }
+  #ed-coll-{{ section.id }} .ed-card__flag{
+    position:absolute;right:14px;top:14px;
+    font-family:'Manrope',sans-serif;font-weight:500;font-size:9px;
+    letter-spacing:.12em;text-transform:uppercase;padding:5px 9px;
+  }
+  #ed-coll-{{ section.id }} .ed-card__flag--sale{background:var(--ink);color:var(--paper);}
+  #ed-coll-{{ section.id }} .ed-card__flag--sold{background:var(--paper);color:var(--ink);border:1px solid var(--hairline);}
+  #ed-coll-{{ section.id }} .ed-card__arrow{
+    position:absolute;right:14px;bottom:14px;width:38px;height:38px;
+    display:flex;align-items:center;justify-content:center;
+    background:var(--ink);color:var(--paper);border-radius:50%;
+    font-size:14px;line-height:1;opacity:0;transform:translateY(8px);
+    transition:opacity .4s ease,transform .4s cubic-bezier(.16,.84,.44,1);
+  }
+  #ed-coll-{{ section.id }} .ed-card:hover .ed-card__arrow{opacity:1;transform:none;}
+  #ed-coll-{{ section.id }} .ed-card__body{
+    padding:16px 2px 0;display:flex;flex-direction:column;gap:8px;
+  }
+  #ed-coll-{{ section.id }} .ed-card h3{
+    font-family:'Newsreader',serif;font-weight:300;font-size:25px;
+    line-height:1.1;letter-spacing:.005em;color:var(--ink);margin:0;
+  }
+  #ed-coll-{{ section.id }} .ed-card__price{
+    font-family:'Newsreader',serif;font-weight:300;font-size:20px;color:var(--ink);
+    display:flex;align-items:baseline;gap:9px;
+  }
+  #ed-coll-{{ section.id }} .ed-card__price .was{
+    font-size:14px;color:var(--body);opacity:.55;text-decoration:line-through;
+  }
+  #ed-coll-{{ section.id }} .ed-card__price .now--sale{color:var(--gold);}
+  #ed-coll-{{ section.id }} .outlight-review-badge:empty{display:none;}
+  #ed-coll-{{ section.id }} .outlight-review-badge{font-family:'Manrope',sans-serif;}
+  #ed-coll-{{ section.id }} .ed-empty{
+    grid-column:1 / -1;padding:64px 0;text-align:center;
+    font-size:14px;color:var(--body);font-weight:300;
+  }
+
+  /* ── Pagination ───────────────────────────── */
+  #ed-coll-{{ section.id }} .ed-pager{
+    margin-top:56px;display:flex;align-items:center;justify-content:center;gap:8px;
+    flex-wrap:wrap;
+  }
+  #ed-coll-{{ section.id }} .ed-pager a,
+  #ed-coll-{{ section.id }} .ed-pager span{
+    font-family:'Manrope',sans-serif;font-weight:500;font-size:11px;
+    letter-spacing:.1em;text-transform:uppercase;text-decoration:none;
+    min-width:42px;height:42px;display:flex;align-items:center;
+    justify-content:center;padding:0 8px;
+  }
+  #ed-coll-{{ section.id }} .ed-pager a{
+    color:var(--body);border:1px solid var(--hairline);transition:border-color .3s ease,color .3s ease;
+  }
+  #ed-coll-{{ section.id }} .ed-pager a:hover{border-color:var(--ink);color:var(--ink);}
+  #ed-coll-{{ section.id }} .ed-pager .cur{border:1px solid var(--gold);color:var(--ink);}
+  #ed-coll-{{ section.id }} .ed-pager .gap{color:var(--body);opacity:.4;}
+  #ed-coll-{{ section.id }} .ed-pager .nav{gap:6px;}
+  #ed-coll-{{ section.id }} .ed-pager .nav .material-symbols-outlined{font-size:15px;}
+
+  /* ── FAQ ──────────────────────────────────── */
+  #ed-coll-{{ section.id }} .ed-faq{padding:0 0 96px;}
+  #ed-coll-{{ section.id }} .ed-faq__inner{border-top:1px solid var(--ink);padding-top:56px;}
+  #ed-coll-{{ section.id }} .ed-faq__head{
+    display:flex;align-items:flex-start;gap:30px;margin-bottom:14px;
+  }
+  #ed-coll-{{ section.id }} .ed-faq__marker{
+    font-family:'Newsreader',serif;font-weight:200;font-style:italic;
+    font-size:clamp(2rem,4vw,3.1rem);color:var(--gold);line-height:1;flex:none;
+  }
+  #ed-coll-{{ section.id }} .ed-faq__headtext{flex:1;}
+  #ed-coll-{{ section.id }} .ed-faq__label{display:block;margin-bottom:16px;}
+  #ed-coll-{{ section.id }} .ed-faq__head h2{
+    font-family:'Newsreader',serif;font-weight:200;
+    font-size:clamp(2rem,3.6vw,3rem);line-height:1.05;letter-spacing:-.012em;
+    color:var(--ink);margin:0;max-width:18ch;
+  }
+  #ed-coll-{{ section.id }} .ed-faq__list{max-width:920px;margin-top:24px;}
+  #ed-coll-{{ section.id }} .ed-faq__item{
+    border-top:1px solid var(--hairline);padding:22px 0;
+  }
+  #ed-coll-{{ section.id }} .ed-faq__item:last-child{border-bottom:1px solid var(--hairline);}
+  #ed-coll-{{ section.id }} .ed-faq__item summary{
+    list-style:none;cursor:pointer;display:flex;align-items:flex-start;
+    justify-content:space-between;gap:24px;
+  }
+  #ed-coll-{{ section.id }} .ed-faq__item summary::-webkit-details-marker{display:none;}
+  #ed-coll-{{ section.id }} .ed-faq__q{
+    font-family:'Newsreader',serif;font-weight:300;font-size:clamp(1.05rem,1.5vw,1.25rem);
+    line-height:1.34;color:var(--ink);
+  }
+  #ed-coll-{{ section.id }} .ed-faq__icon{
+    flex:none;width:26px;height:26px;border:1px solid var(--hairline);border-radius:50%;
+    display:flex;align-items:center;justify-content:center;color:var(--gold);
+    font-size:15px;transition:transform .35s cubic-bezier(.16,.84,.44,1);
+  }
+  #ed-coll-{{ section.id }} .ed-faq__item[open] .ed-faq__icon{transform:rotate(45deg);}
+  #ed-coll-{{ section.id }} .ed-faq__a{
+    padding:16px 52px 0 0;font-size:14.5px;line-height:1.9;
+    color:var(--body);font-weight:300;
+  }
+  #ed-coll-{{ section.id }} .ed-faq__a p{margin:0 0 .9rem;}
+  #ed-coll-{{ section.id }} .ed-faq__a p:last-child{margin-bottom:0;}
+  #ed-coll-{{ section.id }} .ed-faq__a a{color:var(--ink);text-decoration:underline;text-underline-offset:2px;}
+
+  /* ── Responsive ───────────────────────────── */
+  @media (max-width:1100px){
+    #ed-coll-{{ section.id }} .ed-grid{grid-template-columns:repeat(3,1fr);gap:30px 24px;}
+  }
+  @media (max-width:880px){
+    #ed-coll-{{ section.id }} .ed-wrap{padding:0 22px;}
+    #ed-coll-{{ section.id }} .ed-head{padding:46px 0 0;}
+    #ed-coll-{{ section.id }} .ed-head__grid{grid-template-columns:1fr;gap:26px;}
+    #ed-coll-{{ section.id }} .ed-head__sub{padding-bottom:0;}
+    #ed-coll-{{ section.id }} .ed-faq__head{flex-direction:column;gap:14px;}
+    #ed-coll-{{ section.id }} .ed-faq__head h2{max-width:none;}
+  }
+  @media (max-width:680px){
+    #ed-coll-{{ section.id }} .ed-wrap{padding:0 20px;}
+    #ed-coll-{{ section.id }} .ed-head{padding:30px 0 0;}
+    #ed-coll-{{ section.id }} .ed-crumb{margin-bottom:22px;gap:7px;}
+    #ed-coll-{{ section.id }} .ed-crumb a,
+    #ed-coll-{{ section.id }} .ed-crumb span{font-size:9px;letter-spacing:.14em;}
+    #ed-coll-{{ section.id }} .ed-head__eyebrow{margin-bottom:18px;gap:11px;}
+    #ed-coll-{{ section.id }} .ed-head__eyebrow .rule{width:32px;}
+    #ed-coll-{{ section.id }} .ed-outcome{padding-left:16px;max-width:none;}
+    #ed-coll-{{ section.id }} .ed-bar{margin-top:32px;}
+    #ed-coll-{{ section.id }} .ed-bar__inner{padding:14px 0;gap:12px;}
+    #ed-coll-{{ section.id }} .ed-bar__left{flex:1;}
+    #ed-coll-{{ section.id }} .ed-trigger{font-size:10px;padding:8px 12px;letter-spacing:.12em;}
+    #ed-coll-{{ section.id }} .ed-sortlabel{display:none;}
+    #ed-coll-{{ section.id }} .ed-filtergrid{grid-template-columns:1fr;background:transparent;}
+    #ed-coll-{{ section.id }} .ed-filtercol{padding:20px 0;border-top:1px solid var(--hairline);}
+    #ed-coll-{{ section.id }} .ed-filtercol:first-child{border-top:none;}
+    #ed-coll-{{ section.id }} .ed-gridwrap{padding:28px 0 56px;}
+    #ed-coll-{{ section.id }} .ed-grid{grid-template-columns:repeat(2,1fr);gap:26px 14px;}
+    #ed-coll-{{ section.id }} .ed-card__cat{left:9px;top:9px;font-size:8.5px;padding:5px 8px;}
+    #ed-coll-{{ section.id }} .ed-card__flag{right:9px;top:9px;font-size:8px;padding:4px 7px;}
+    #ed-coll-{{ section.id }} .ed-card__arrow{width:32px;height:32px;right:9px;bottom:9px;font-size:12px;}
+    #ed-coll-{{ section.id }} .ed-card__body{padding:12px 0 0;gap:6px;}
+    #ed-coll-{{ section.id }} .ed-card h3{font-size:19px;}
+    #ed-coll-{{ section.id }} .ed-card__price{font-size:17px;}
+    #ed-coll-{{ section.id }} .ed-card__price .was{font-size:12px;}
+    #ed-coll-{{ section.id }} .ed-pager{margin-top:40px;}
+    #ed-coll-{{ section.id }} .ed-faq{padding:0 0 56px;}
+    #ed-coll-{{ section.id }} .ed-faq__inner{padding-top:40px;}
+    #ed-coll-{{ section.id }} .ed-faq__a{padding-right:24px;}
+  }
+  @media (max-width:380px){
+    #ed-coll-{{ section.id }} .ed-card h3{font-size:17px;}
+    #ed-coll-{{ section.id }} .ed-card__price{font-size:15px;}
+  }
+
+#ed-coll-{{ section.id }} .ed-head{padding:30px 0 0}
+#ed-coll-{{ section.id }} .ed-crumb{margin-bottom:32px}
+#ed-coll-{{ section.id }} .ed-crumb a,#ed-coll-{{ section.id }} .ed-crumb span{font-size:10px;letter-spacing:.08em;color:#73756f}
+#ed-coll-{{ section.id }} .ol-collection-heading{display:grid;grid-template-columns:1fr auto;align-items:center;gap:48px;padding-bottom:34px}
+#ed-coll-{{ section.id }} .ol-collection-heading .ed-label{font-size:10px;letter-spacing:.17em;color:#78705f}
+#ed-coll-{{ section.id }} h1.ed-title{font-size:clamp(42px,4.5vw,64px);font-weight:400;letter-spacing:-.04em;line-height:1.05;margin:13px 0 12px}
+#ed-coll-{{ section.id }} .ol-collection-heading__note{font-size:13px;line-height:1.6;color:#6b6d65}
+#ed-coll-{{ section.id }} .ol-clearance-intro{padding:4px 0 4px 38px;margin:0;background:none;border:0;border-left:1px solid #d5d1c8;min-width:310px}
+#ed-coll-{{ section.id }} .ol-clearance-intro__label{font-size:10px;text-transform:uppercase;letter-spacing:.16em;color:#78705f}
+#ed-coll-{{ section.id }} .ol-clearance-intro h2{display:flex;align-items:baseline;gap:12px;font-family:'Manrope',sans-serif;font-size:12px;font-weight:400;margin:7px 0 8px;color:#4f514b}
+#ed-coll-{{ section.id }} .ol-clearance-intro h2 span{font-family:'Newsreader',Georgia,serif;font-size:60px;font-weight:400;line-height:1;letter-spacing:-.055em;color:#252622}
+#ed-coll-{{ section.id }} .ol-clearance-intro p{font-size:11px;line-height:1.5;color:#6b6d65}
+#ed-coll-{{ section.id }} .ed-bar{margin-top:0;border-top:1px solid #d8d9d4;border-bottom:0}
+#ed-coll-{{ section.id }} .ed-bar__inner{padding:18px 0}
+#ed-coll-{{ section.id }} .ed-trigger{border:0;background:none;padding:8px 0;letter-spacing:.08em}
+#ed-coll-{{ section.id }} .ed-count{font-size:10px;letter-spacing:.07em;color:#74766f}
+#ed-coll-{{ section.id }} .ed-grid{padding-top:10px}
+@media(max-width:680px){
+#ed-coll-{{ section.id }} .ed-wrap{padding:0 20px}
+#ed-coll-{{ section.id }} .ed-head{padding-top:20px}
+#ed-coll-{{ section.id }} .ed-crumb{margin-bottom:25px;gap:6px}
+#ed-coll-{{ section.id }} .ed-crumb a,#ed-coll-{{ section.id }} .ed-crumb span{font-size:9px}
+#ed-coll-{{ section.id }} .ol-collection-heading{grid-template-columns:1fr;gap:22px;padding-bottom:24px}
+#ed-coll-{{ section.id }} h1.ed-title{font-size:44px;margin:10px 0}
+#ed-coll-{{ section.id }} .ol-collection-heading__note{font-size:12px}
+#ed-coll-{{ section.id }} .ol-clearance-intro{min-width:0;padding:16px 0 0;border-left:0;border-top:1px solid #dedbd4;display:grid;grid-template-columns:1fr auto;align-items:center;column-gap:12px}
+#ed-coll-{{ section.id }} .ol-clearance-intro__label{grid-column:1;grid-row:1}
+#ed-coll-{{ section.id }} .ol-clearance-intro h2{grid-column:2;grid-row:1 / 3;gap:7px;font-size:10px;margin:0}
+#ed-coll-{{ section.id }} .ol-clearance-intro h2 span{font-size:42px}
+#ed-coll-{{ section.id }} .ol-clearance-intro p:last-child{grid-column:1;grid-row:2;font-size:10px;max-width:150px}
+#ed-coll-{{ section.id }} .ed-bar__inner{gap:8px;padding:12px 0}
+#ed-coll-{{ section.id }} .ed-bar__left,#ed-coll-{{ section.id }} .ed-bar__right{gap:10px}
+#ed-coll-{{ section.id }} .ed-sortlabel{display:none}
+#ed-coll-{{ section.id }} .ed-trigger{font-size:10px}
+}
+
+#ed-coll-{{ section.id }} .ol-clearance-intro{padding:20px 24px;background:#f1ebe2;border-left:3px solid #a2472e;border-radius:0 5px 5px 0}
+#ed-coll-{{ section.id }} .ol-clearance-intro h2 span{color:#923e29}
+#ed-coll-{{ section.id }} .ol-clearance-intro__label{color:#713a29;font-weight:500}
+@media(max-width:680px){#ed-coll-{{ section.id }} .ol-clearance-intro{padding:15px;border-top:0;border-left:3px solid #a2472e;column-gap:8px}#ed-coll-{{ section.id }} .ol-clearance-intro h2 span{font-size:40px}}
+</style>
+{% assign card_scope_id = 'ed-coll-' | append: section.id %}
+{% render 'integrated-card-styles', scope_id: card_scope_id %}
+
+{% liquid
+  assign matched_intro_block = blank
+  assign editor_collection_faq_count = 0
+  assign default_collection_faq_count = 0
+
+  for block in section.blocks
+    if block.settings.collection != blank and block.settings.collection.handle == collection.handle
+      if block.type == 'collection_intro'
+        assign matched_intro_block = block
+      elsif block.type == 'collection_faq_item'
+        assign editor_collection_faq_count = editor_collection_faq_count | plus: 1
+      endif
+    endif
+  endfor
+
+  assign collection_faq_count = editor_collection_faq_count
+  assign collection_intro_label = section.settings.intro_label
+  assign collection_intro_heading = collection.title
+  assign collection_intro_lede = blank
+  assign collection_intro_body = collection.description
+  assign collection_outcome = blank
+
+  case collection.handle
+    when 'indoor-lighting'
+      assign collection_outcome = 'Layered indoor lighting is what makes a room read finished after dark — warmth and depth where a single overhead fixture leaves it flat.'
+    when 'floor-table-lamps'
+      assign collection_outcome = 'A floor lamp is what anchors a corner — it gives a room height, a pool of warm light, and a reason the space feels resolved at night.'
+    when 'desk-lamp'
+      assign collection_outcome = 'A table lamp is what warms a surface — calm, low light beside a bed or chair that turns a nightstand into the quietest part of the room.'
+    when 'wall-lights'
+      assign collection_outcome = 'An outdoor wall light is what frames an entrance — it guides the approach, settles the architecture, and makes a home easier to walk up to after dark.'
+    when 'outdoor-lighting'
+      assign collection_outcome = 'Outdoor lighting is what makes an exterior feel cared for — clearer paths, a warmer entry, and a first impression that holds once the sun is down.'
+  endcase
+
+  if matched_intro_block == blank
+    case collection.handle
+      when 'indoor-lighting'
+        assign collection_intro_label = 'Layered lighting'
+        assign collection_intro_heading = 'Modern indoor lighting for rooms that feel finished'
+        assign collection_intro_lede = 'Your lighting should do more than brighten a room. The right mix of floor lamps, desk lamps, ceiling lights, and wall lighting shapes how a space feels from the moment you walk in.'
+        assign default_collection_faq_count = 4
+        capture collection_intro_body
+          echo '<p>Outlight&rsquo;s indoor lighting collection is designed for homes that want warmth, clarity, and a stronger sense of atmosphere. Whether you are styling a living room, refining a bedroom, or improving task lighting in a workspace, these pieces are meant to balance function with sculptural presence.</p><p>Explore modern floor lamps for ambient glow, desk lamps for focused work, chandeliers for statement overhead lighting, and wall sconces for softer layered light. Bestsellers like <a href="/products/aven">Aven</a>, <a href="/products/fira">Fira</a>, and <a href="/products/noa">Noa</a> work well in spaces that need both practical illumination and a cleaner visual rhythm.</p><p>If you are building an indoor lighting setup from scratch, start by combining a primary light source with one or two secondary fixtures. That layered approach makes a room feel more comfortable, more flexible, and more intentional throughout the day.</p>'
+        endcapture
+      when 'floor-table-lamps'
+        assign collection_intro_label = 'Everyday essentials'
+        assign collection_intro_heading = 'Modern floor lamps that add light without visual clutter'
+        assign collection_intro_lede = 'A great floor lamp should make a room easier to live in while still feeling like part of the design. The best ones give you usable light, cleaner proportions, and enough presence to anchor a corner without overwhelming it.'
+        assign default_collection_faq_count = 4
+        capture collection_intro_body
+          echo '<p>Outlight&rsquo;s floor lamp collection is built for living rooms, bedrooms, reading corners, and workspaces that need more warmth and flexibility. These designs are made to add ambient light, support task lighting, and create a more balanced room at night without relying entirely on overhead fixtures.</p><p>Styles in this collection range from understated modern silhouettes to more sculptural statement pieces, with favorites like <a href="/products/aven">Aven</a>, <a href="/products/fira">Fira</a>, <a href="/products/olin">Olin</a>, and <a href="/products/vero">Vero</a>. Whether you are styling a sofa corner, brightening a bedroom, or choosing a lamp for reading, the goal is the same: useful light that also improves the shape and mood of the room.</p><p>If you are unsure where to begin, focus on placement, lamp height, and the kind of light you need most. A floor lamp can act as a visual anchor, a reading light, or a softer evening source depending on the space around it.</p>'
+        endcapture
+      when 'desk-lamp'
+        assign collection_intro_label = 'Bedside lighting'
+        assign collection_intro_heading = 'Modern table lamps for bedrooms, nightstands, and reading corners'
+        assign collection_intro_lede = 'A great table lamp should make the room feel calmer while still being useful at night. The best bedside and desk lamps balance proportion, glow, and surface fit so the light feels intentional instead of improvised.'
+        assign default_collection_faq_count = 4
+        capture collection_intro_body
+          echo '<p>Outlight&rsquo;s desk lamp collection is built for bedrooms, bedside tables, reading corners, and quieter work surfaces that need more than a generic accent light. These table lamps are chosen for warm evening atmosphere, practical bedside use, and modern silhouettes that feel intentional even when the lamp is off.</p><p>If you are shopping for a bedside lamp, start by thinking about scale, glare, and how the light needs to behave at night. Compact options like <a href="/products/dell">Dell</a> and <a href="/products/fenn">Fenn</a> work well on smaller nightstands, while <a href="/products/elm">Elm</a> adds softer Japandi warmth, <a href="/products/vea">Vea</a> gives you dimmable bedside reading support, and <a href="/products/blair">Blair</a> brings a stronger travertine-and-glass statement to larger side tables and styled bedrooms.</p><p>This collection works best when you match the lamp to the room instead of choosing by shape alone. Use lower, softer lamps for calm bedside glow, choose dimmable options when the same lamp needs to handle reading and winding down, and compare taller sculptural designs when the table lamp also needs to anchor the room visually. For deeper buying help, start with the <a href="/blogs/read/complete-guide-to-table-lamps">complete table lamp guide</a>, the <a href="/blogs/read/bedside-table-lamp-height-and-size-guide">bedside lamp height chart</a>, or the <a href="/blogs/read/table-lamp-vs-floor-lamp-decision-matrix">table lamp vs floor lamp decision matrix</a>.</p>'
+        endcapture
+      when 'wall-lights'
+        assign collection_intro_label = 'Exterior wall lighting'
+        assign collection_intro_heading = 'Modern outdoor wall lights for entryways, patios, and exterior walls'
+        assign collection_intro_lede = 'Outdoor wall lights should make a home easier to approach, easier to navigate, and more finished after dark. The right fixture improves visibility, frames the architecture, and adds warmth without turning the exterior harsh.'
+        assign default_collection_faq_count = 4
+        capture collection_intro_body
+          echo '<p>Outlight&rsquo;s wall lights collection is built for entryways, porches, garages, patios, garden-facing walls, and exterior paths that need clearer night visibility without losing atmosphere. These fixtures are chosen for weather-ready performance, cleaner silhouettes, and lighting that makes the outside of the home feel more intentional from the street to the door.</p><p>Use slimmer sconces like <a href="/products/aurevo">Aurevo</a>, <a href="/products/mira">Mira</a>, <a href="/products/sora">Sora</a>, and <a href="/products/arctra">Arctra</a> when you want the fixture to frame the wall and guide movement after dark. The strongest setups start by identifying where people walk, where the doorway needs clearer light, and where the exterior still feels flat once the sun is down.</p><p>If you are planning an outdoor wall-light layout, think about entry visibility first, then spacing, mounting height, and whether the light needs to feel focused or ambient. For deeper buying help, continue into the <a href="/blogs/read/complete-guide-to-modern-wall-lights">complete wall light guide</a>, the <a href="/blogs/read/best-wall-lights-for-bedrooms">best wall lights guide</a>, or the <a href="/blogs/read/wall-lights-vs-table-lamps-for-bedside-use">wall lights vs table lamps comparison</a>.</p>'
+        endcapture
+      when 'outdoor-lighting'
+        assign collection_intro_label = 'Exterior lighting'
+        assign collection_intro_heading = 'Modern outdoor lighting for safer, warmer exterior spaces'
+        assign collection_intro_lede = 'Outdoor lighting should make a home easier to navigate, easier to enjoy, and more welcoming after dark. Good exterior fixtures improve visibility, highlight architecture, and create a cleaner first impression from the street to the entryway.'
+        assign default_collection_faq_count = 4
+        capture collection_intro_body
+          echo '<p>Outlight&rsquo;s outdoor lighting collection includes modern fixtures designed for patios, paths, driveways, garden edges, and front entrances. The goal is simple: give your exterior spaces more clarity and warmth without making them feel harsh or overlit.</p><p>This collection includes a range of shapes and mounting styles, with products like <a href="/products/mira">Mira</a>, <a href="/products/aurevo">Aurevo</a>, <a href="/products/sora">Sora</a>, and <a href="/products/halo">Halo</a> suited to different exterior layouts. Some work well for entry lighting and wall-mounted illumination, while others help define walkways, landscaping, and outdoor gathering areas.</p><p>If you are planning an exterior lighting layout, start by identifying where people walk, where visibility drops at night, and which architectural features you want to highlight. The right mix of functional and ambient lighting will make the outside of your home feel more intentional as well as more secure.</p>'
+        endcapture
+    endcase
+  endif
+
+  if matched_intro_block != blank
+    assign collection_intro_label = matched_intro_block.settings.label | default: section.settings.intro_label
+    assign collection_intro_heading = matched_intro_block.settings.heading | default: collection.title
+    assign collection_intro_lede = matched_intro_block.settings.lede
+
+    if matched_intro_block.settings.outcome != blank
+      assign collection_outcome = matched_intro_block.settings.outcome
+    endif
+
+    if matched_intro_block.settings.body != blank
+      assign collection_intro_body = matched_intro_block.settings.body
+    endif
+  endif
+
+  if collection_faq_count == 0 and default_collection_faq_count > 0
+    assign collection_faq_count = default_collection_faq_count
+  endif
+%}
+
+{%- comment -%} Load up to 50 products so the in-page filter sees the whole collection {%- endcomment -%}
+{% paginate collection.products by 50 %}
+{%- assign grid_products = collection.products -%}
+{%- assign grid_product_count = collection.products_count -%}
+{%- if collection.handle == 'best-sellers' -%}
+  {%- assign grid_products = grid_products | where: 'available' -%}
+  {%- assign grid_product_count = grid_products.size -%}
+{%- endif -%}
+
+<section id="ed-coll-{{ section.id }}">
+  <div class="ed-wrap">
+
+    {%- comment -%} ── Header ───────────────────────────────── {%- endcomment -%}
+    <header class="ed-head">
+
+      <nav class="ed-crumb" aria-label="Breadcrumb">
+        <a href="{{ routes.root_url }}">Home</a>
+        <span class="sep">/</span>
+        <a href="{{ routes.collections_url }}">Collections</a>
+        <span class="sep">/</span>
+        <span class="cur">{{ collection.title }}</span>
+      </nav>
+
+      <div class="ol-collection-heading">
+        <div class="ol-collection-heading__title">
+          <p class="ed-label">{{ 'clearance.edit' | t }}</p>
+          <h1 class="ed-title">{{ collection.title }}</h1>
+          <p class="ol-collection-heading__note">{{ 'clearance.collection_note' | t }}</p>
+        </div>
+        <div class="ol-clearance-intro">
+          <p class="ol-clearance-intro__label">{{ 'clearance.title' | t }}</p>
+          <h2><span>{{ clearance_percent }}%</span> {{ 'clearance.off' | t }}</h2>
+          <p>{{ 'clearance.automatic_note' | t }}</p>
+        </div>
+      </div>
+      {%- if collection_intro_body != blank -%}
+        <details class="ed-guide">
+          <summary><span class="ed-guide__icon material-symbols-outlined">add</span><span class="ed-guide__toggle">Read collection guide</span></summary>
+          <div class="ed-guide__body rte">{{ collection_intro_body }}</div>
+        </details>
+      {%- endif -%}
+      <div class="ed-bar">
+        <div class="ed-bar__inner">
+          <div class="ed-bar__left">
+            <button
+              type="button"
+              class="ed-trigger"
+              aria-expanded="false"
+              onclick="var p=document.getElementById('ed-filterpanel-{{ section.id }}');var o=p.classList.toggle('open');this.setAttribute('aria-expanded',o);"
+            >
+              <span class="material-symbols-outlined">tune</span> Filter
+            </button>
+            <span class="ed-count"><span data-result-count>{{ grid_product_count }} Results</span></span>
+          </div>
+          <div class="ed-bar__right">
+            <span class="ed-sortlabel">Sort</span>
+            <div class="ed-sortwrap">
+              <button
+                type="button"
+                class="ed-trigger"
+                aria-expanded="false"
+                onclick="var o=this.nextElementSibling.classList.toggle('open');this.setAttribute('aria-expanded',o);"
+              >
+                {%- assign active_sort = collection.sort_by | default: collection.default_sort_by -%}
+                {%- assign active_sort_option = collection.sort_options | where: 'value', active_sort | first -%}
+                {{ active_sort_option.name | default: 'Featured' | escape }} <span class="material-symbols-outlined">expand_more</span>
+              </button>
+              <div class="ed-sortmenu">
+                <a href="?sort_by=manual">Featured</a>
+                <a href="?sort_by=price-ascending">Price: Low to High</a>
+                <a href="?sort_by=price-descending">Price: High to Low</a>
+                <a href="?sort_by=created-descending">Newest</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {%- comment -%} Filter panel — JS-powered, multi-select, in-page {%- endcomment -%}
+        <div id="ed-filterpanel-{{ section.id }}" class="ed-filterpanel">
+          <div class="ed-filtergrid">
+            <div class="ed-filtercol">
+              <span class="ed-filtercol__head">Collection</span>
+              <div class="ed-filterlist">
+                {%- for block in section.blocks -%}
+                  {%- if block.type == 'filter_collection' and block.settings.collection != blank -%}
+                    <button type="button" onclick="olToggleCol(this,'{{ block.settings.collection.handle }}')" class="ol-col-filter ed-filteropt">{{ block.settings.label | default: block.settings.collection.title }}</button>
+                  {%- endif -%}
+                {%- endfor -%}
+                <button type="button" onclick="olClearCols()" class="ed-filterclear">Clear collection filters</button>
+              </div>
+            </div>
+            <div class="ed-filtercol">
+              <span class="ed-filtercol__head">Price</span>
+              <div class="ed-filterlist">
+                <button type="button" onclick="olSetPrice(this,0,Infinity)" class="ol-price-filter ed-filteropt active">All Prices</button>
+                <button type="button" onclick="olSetPrice(this,0,40000)" class="ol-price-filter ed-filteropt">Under $400</button>
+                <button type="button" onclick="olSetPrice(this,40000,60000)" class="ol-price-filter ed-filteropt">$400 &ndash; $600</button>
+                <button type="button" onclick="olSetPrice(this,60000,Infinity)" class="ol-price-filter ed-filteropt">$600+</button>
+              </div>
+            </div>
+            <div class="ed-filtercol">
+              <span class="ed-filtercol__head">Sort By</span>
+              <div class="ed-filterlist">
+                <a href="?sort_by=manual" class="ed-filteropt">Featured</a>
+                <a href="?sort_by=price-ascending" class="ed-filteropt">Price: Low to High</a>
+                <a href="?sort_by=price-descending" class="ed-filteropt">Price: High to Low</a>
+                <a href="?sort_by=created-descending" class="ed-filteropt">Newest</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    {%- comment -%} ── Product grid ─────────────────────────── {%- endcomment -%}
+    <div class="ed-gridwrap">
+      <div class="ed-grid ol-card-grid">
+        {%- for product in grid_products -%}
+          {%- assign card_variant = product.selected_or_first_available_variant -%}
+          {%- assign card_sale_price = card_variant.price | times: clearance_remaining | divided_by: 100.0 | round -%}
+          <div
+            role="group"{% unless product.available %} aria-disabled="true"{% endunless %}
+            class="ed-card product-card ol-integrated-card{% unless product.available %} ol-card-sold{% endunless %}"
+            aria-label="{{ product.title | escape }}{% unless product.available %} — {{ 'clearance.sold_out' | t }}{% endunless %}"
+            data-collections="{% for c in product.collections %}{{ c.handle }}{% unless forloop.last %},{% endunless %}{% endfor %}"
+            data-price="{{ card_sale_price | money_without_currency | replace: ',', '' }}"
+            data-created="{{ product.created_at | date: '%s' }}"
+          >
+            {% if product.available %}<a class="ol-card-media-link" href="{{ product.url }}" aria-label="{{ product.title | escape }}">{% endif %}
+            <div class="ed-card__media ol-card-media">
+              {% if product.available %}<span class="ol-sale-badge">{{ 'clearance.discount_badge' | t: percent: clearance_percent }}</span>{% endif %}
+              {%- if product.featured_image -%}
+                <img
+                  src="{{ product.featured_image | image_url: width: 700 }}"
+                  srcset="{{ product.featured_image | image_url: width: 400 }} 400w, {{ product.featured_image | image_url: width: 700 }} 700w"
+                  sizes="(max-width:680px) 50vw, 320px"
+                  alt="{{ product.featured_image.alt | escape | default: product.title }}"
+                  width="{{ product.featured_image.width }}"
+                  height="{{ product.featured_image.height }}"
+                  loading="lazy"
+                  class="ol-product-image"
+                >
+              {%- else -%}
+                <div class="ed-card__ph"></div>
+              {%- endif -%}
+              <span class="ed-card__cat ol-card-category">{{ product.type | default: 'Lighting' | escape }}</span>
+              {% unless product.available %}{% render 'clearance-stock', product: product, placement: 'image' %}{% endunless %}
+              <span class="ed-card__arrow" aria-hidden="true">&rarr;</span>
+            </div>
+            {% if product.available %}</a>{% endif %}
+            <div class="ed-card__body ol-card-info">
+              <h3 class="ol-card-name">{% if product.available %}<a href="{{ product.url }}">{% endif %}{{ product.title | split: ' ' | first }}{% if product.available %}</a>{% endif %}</h3>
+              {% if product.available %}<div class="outlight-review-badge" data-product-handle="{{ product.handle }}"></div>{% endif %}
+              <span class="ed-card__price ol-card-price">
+                <span class="now--sale" aria-label="{{ 'clearance.sale_price' | t }}">{{ card_sale_price | money }}</span>
+                <s class="was" aria-label="{{ 'clearance.original_price' | t }}">{{ card_variant.price | money }}</s>
+              </span>
+              {% render 'clearance-stock', product: product %}
+            </div>
+          </div>
+        {%- else -%}
+          <p class="ed-empty">No products found in this collection.</p>
+        {%- endfor -%}
+      </div>
+
+      {%- comment -%} Pagination {%- endcomment -%}
+      {%- if paginate.pages > 1 -%}
+        <nav class="ed-pager" aria-label="Pagination">
+          {%- if paginate.previous -%}
+            <a href="{{ paginate.previous.url }}" class="nav" rel="prev">
+              <span class="material-symbols-outlined">chevron_left</span> Prev
+            </a>
+          {%- endif -%}
+          {%- for part in paginate.parts -%}
+            {%- if part.is_link -%}
+              <a href="{{ part.url }}">{{ part.title }}</a>
+            {%- elsif part.title == paginate.current_page -%}
+              <span class="cur" aria-current="page">{{ part.title }}</span>
+            {%- else -%}
+              <span class="gap">{{ part.title }}</span>
+            {%- endif -%}
+          {%- endfor -%}
+          {%- if paginate.next -%}
+            <a href="{{ paginate.next.url }}" class="nav" rel="next">
+              Next <span class="material-symbols-outlined">chevron_right</span>
+            </a>
+          {%- endif -%}
+        </nav>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} ── Collection FAQ ───────────────────────── {%- endcomment -%}
+    {%- if collection_faq_count > 0 -%}
+      <section class="ed-faq">
+        <div class="ed-faq__inner">
+          <div class="ed-faq__head">
+            <span class="ed-faq__marker">02</span>
+            <div class="ed-faq__headtext">
+              {%- if section.settings.faq_label != blank -%}
+                <span class="ed-faq__label ed-label ed-label--gold">{{ section.settings.faq_label }}</span>
+              {%- endif -%}
+              <h2>{{ section.settings.faq_heading }}</h2>
+            </div>
+          </div>
+
+          <div class="ed-faq__list">
+            {%- if editor_collection_faq_count > 0 -%}
+              {%- for block in section.blocks -%}
+                {%- if block.type == 'collection_faq_item' and block.settings.collection != blank and block.settings.collection.handle == collection.handle -%}
+                  <details class="ed-faq__item" {{ block.shopify_attributes }}>
+                    <summary>
+                      <span class="ed-faq__q">{{ block.settings.question }}</span>
+                      <span class="ed-faq__icon material-symbols-outlined">add</span>
+                    </summary>
+                    <div class="ed-faq__a rte">{{ block.settings.answer }}</div>
+                  </details>
+                {%- endif -%}
+              {%- endfor -%}
+            {%- else -%}
+              {%- case collection.handle -%}
+                {%- when 'indoor-lighting' -%}
+                  <details class="ed-faq__item">
+                    <summary>
+                      <span class="ed-faq__q">What type of indoor lighting should I start with for a living room?</span>
+                      <span class="ed-faq__icon material-symbols-outlined">add</span>
+                    </summary>
+                    <div class="ed-faq__a rte"><p>Start with one main source of ambient light, then add a floor lamp or wall light for softer layering. In most living rooms, a combination of overhead lighting and a warm floor lamp creates better depth and makes the space feel more relaxed at night.</p></div>
+                  </details>
+                  <details class="ed-faq__item">
+                    <summary>
+                      <span class="ed-faq__q">How do I choose between a floor lamp, desk lamp, and wall light?</span>
+                      <span class="ed-faq__icon material-symbols-outlined">add</span>
+                    </summary>
+                    <div class="ed-faq__a rte"><p>Choose based on how the room is used. Floor lamps are best for ambient lighting and reading corners, desk lamps help with task lighting and focused work, and wall lights are useful when you want softer illumination without taking up floor or table space.</p></div>
+                  </details>
+                  <details class="ed-faq__item">
+                    <summary>
+                      <span class="ed-faq__q">What color temperature is best for indoor lighting?</span>
+                      <span class="ed-faq__icon material-symbols-outlined">add</span>
+                    </summary>
+                    <div class="ed-faq__a rte"><p>For most homes, warm lighting creates the most comfortable atmosphere in bedrooms, living rooms, and dining spaces. Neutral light can work better in offices, kitchens, or areas where you need sharper visibility. The best choice depends on whether you want the room to feel calmer or more functional.</p></div>
+                  </details>
+                  <details class="ed-faq__item">
+                    <summary>
+                      <span class="ed-faq__q">How can I make a room feel warmer with lighting?</span>
+                      <span class="ed-faq__icon material-symbols-outlined">add</span>
+                    </summary>
+                    <div class="ed-faq__a rte"><p>Use multiple light sources instead of relying on a single bright fixture. Layering floor lamps, wall sconces, and table or desk lamps creates softer contrast, reduces harsh shadows, and makes the room feel more welcoming and complete.</p></div>
+                  </details>
+                {%- when 'floor-table-lamps' -%}
+                  <details class="ed-faq__item">
+                    <summary>
+                      <span class="ed-faq__q">How do I choose the right floor lamp for my living room?</span>
+                      <span class="ed-faq__icon material-symbols-outlined">add</span>
+                    </summary>
+                    <div class="ed-faq__a rte"><p>Look at three things first: the height of the lamp, the size of the room, and the role it needs to play. A living room floor lamp should feel proportional to the furniture around it and provide either ambient light for the full space or focused light for one seating area.</p></div>
+                  </details>
+                  <details class="ed-faq__item">
+                    <summary>
+                      <span class="ed-faq__q">What is the best floor lamp for reading?</span>
+                      <span class="ed-faq__icon material-symbols-outlined">add</span>
+                    </summary>
+                    <div class="ed-faq__a rte"><p>The best reading floor lamp gives directed light without glare and sits close enough to a chair or sofa to be useful every day. If you want a lamp for reading, prioritize practical light placement and stable proportions over purely decorative form.</p></div>
+                  </details>
+                  <details class="ed-faq__item">
+                    <summary>
+                      <span class="ed-faq__q">Where should a floor lamp be placed in a room?</span>
+                      <span class="ed-faq__icon material-symbols-outlined">add</span>
+                    </summary>
+                    <div class="ed-faq__a rte"><p>Floor lamps usually work best beside a sofa, accent chair, console, or bed. Place the lamp where it can add height and soft light without blocking movement. Corners that feel dark or visually unfinished are often the strongest placement options.</p></div>
+                  </details>
+                  <details class="ed-faq__item">
+                    <summary>
+                      <span class="ed-faq__q">Can a floor lamp replace overhead lighting?</span>
+                      <span class="ed-faq__icon material-symbols-outlined">add</span>
+                    </summary>
+                    <div class="ed-faq__a rte"><p>A floor lamp can improve a room dramatically, but it usually works best as part of a layered setup rather than as the only source of light. In bedrooms, lounges, and small apartments, a strong floor lamp can carry much of the atmosphere while overhead lighting is used only when needed.</p></div>
+                  </details>
+                {%- when 'desk-lamp' -%}
+                  <details class="ed-faq__item">
+                    <summary>
+                      <span class="ed-faq__q">How tall should a bedside table lamp be?</span>
+                      <span class="ed-faq__icon material-symbols-outlined">add</span>
+                    </summary>
+                    <div class="ed-faq__a rte"><p>A bedside lamp should usually place the shade or main light source close to seated eye level when you are sitting up in bed. That keeps the setup more comfortable, keeps glare lower, and helps the lamp feel proportional to the nightstand and mattress height.</p></div>
+                  </details>
+                  <details class="ed-faq__item">
+                    <summary>
+                      <span class="ed-faq__q">Are desk lamps good for nightstands and bedrooms?</span>
+                      <span class="ed-faq__icon material-symbols-outlined">add</span>
+                    </summary>
+                    <div class="ed-faq__a rte"><p>Yes, as long as the lamp fits the scale of the nightstand and the light matches the job. Lower and softer lamps work well for mood and wind-down lighting, while dimmable or more directed lamps are stronger when the same bedside setup also needs to support reading.</p></div>
+                  </details>
+                  <details class="ed-faq__item">
+                    <summary>
+                      <span class="ed-faq__q">What color temperature is best for a bedside lamp?</span>
+                      <span class="ed-faq__icon material-symbols-outlined">add</span>
+                    </summary>
+                    <div class="ed-faq__a rte"><p>Warm light is usually the best starting point for bedside use because it feels calmer at night and helps the room stay softer after the overhead light is off. If the lamp also needs to support reading, a dimmable design gives you more control without making the room feel clinical.</p></div>
+                  </details>
+                  <details class="ed-faq__item">
+                    <summary>
+                      <span class="ed-faq__q">When is a table lamp better than a floor lamp in a bedroom?</span>
+                      <span class="ed-faq__icon material-symbols-outlined">add</span>
+                    </summary>
+                    <div class="ed-faq__a rte"><p>A table lamp is usually better when the room already has a useful nightstand or side table and the goal is lower, calmer light close to the bed. A floor lamp becomes the better choice when there is no surface in the right place or when the room needs more reach and vertical presence.</p></div>
+                  </details>
+                {%- when 'wall-lights' -%}
+                  <details class="ed-faq__item">
+                    <summary>
+                      <span class="ed-faq__q">What type of outdoor wall light is best for an entryway?</span>
+                      <span class="ed-faq__icon material-symbols-outlined">add</span>
+                    </summary>
+                    <div class="ed-faq__a rte"><p>For an entryway, choose an outdoor wall light that clearly frames the door, improves visibility around the threshold, and still feels warm instead of overlit. Slim wall-mounted sconces usually work best because they improve safety and make the entrance feel more intentional after dark.</p></div>
+                  </details>
+                  <details class="ed-faq__item">
+                    <summary>
+                      <span class="ed-faq__q">How high should outdoor wall lights be mounted?</span>
+                      <span class="ed-faq__icon material-symbols-outlined">add</span>
+                    </summary>
+                    <div class="ed-faq__a rte"><p>Outdoor wall lights should be mounted high enough to spread light cleanly across the approach area without shining directly into the eyes. The right mounting height depends on the doorway, the wall scale, and whether the fixture is framing an entrance, a garage, or a patio wall.</p></div>
+                  </details>
+                  <details class="ed-faq__item">
+                    <summary>
+                      <span class="ed-faq__q">How bright should exterior wall lighting be?</span>
+                      <span class="ed-faq__icon material-symbols-outlined">add</span>
+                    </summary>
+                    <div class="ed-faq__a rte"><p>Exterior wall lighting should be bright enough to improve navigation and visibility, but not so intense that it creates glare or makes the home feel harsh. Entry doors, steps, and patios usually benefit from warm controlled light rather than a single overly bright fixture.</p></div>
+                  </details>
+                  <details class="ed-faq__item">
+                    <summary>
+                      <span class="ed-faq__q">What is the difference between outdoor wall lights and general outdoor lighting?</span>
+                      <span class="ed-faq__icon material-symbols-outlined">add</span>
+                    </summary>
+                    <div class="ed-faq__a rte"><p>Outdoor wall lights are mounted directly on the home and are best for entryways, porches, garage walls, and architectural framing. Broader outdoor lighting can also include path lights, landscape lighting, and other fixtures that guide movement across the full exterior.</p></div>
+                  </details>
+                {%- when 'outdoor-lighting' -%}
+                  <details class="ed-faq__item">
+                    <summary>
+                      <span class="ed-faq__q">What kind of outdoor lighting is best for an entryway or front door?</span>
+                      <span class="ed-faq__icon material-symbols-outlined">add</span>
+                    </summary>
+                    <div class="ed-faq__a rte"><p>For entryways, choose outdoor lighting that improves visibility around the door while still feeling warm and inviting. Wall-mounted fixtures are often the best option because they frame the entrance clearly and help guests move safely after dark.</p></div>
+                  </details>
+                  <details class="ed-faq__item">
+                    <summary>
+                      <span class="ed-faq__q">How bright should outdoor lighting be?</span>
+                      <span class="ed-faq__icon material-symbols-outlined">add</span>
+                    </summary>
+                    <div class="ed-faq__a rte"><p>Outdoor lighting should be bright enough to improve visibility and safety, but not so intense that it creates glare. Pathways, stairs, and entrances usually need the most functional light, while patios and garden edges benefit from a softer ambient approach.</p></div>
+                  </details>
+                  <details class="ed-faq__item">
+                    <summary>
+                      <span class="ed-faq__q">How do I choose outdoor lights for pathways and landscaping?</span>
+                      <span class="ed-faq__icon material-symbols-outlined">add</span>
+                    </summary>
+                    <div class="ed-faq__a rte"><p>Focus on guidance first. Path and landscape lighting should help define edges, changes in elevation, and major walk routes. Even spacing and a warm, controlled glow usually look better than a small number of overly bright fixtures.</p></div>
+                  </details>
+                  <details class="ed-faq__item">
+                    <summary>
+                      <span class="ed-faq__q">Can outdoor lighting stay exposed to weather year-round?</span>
+                      <span class="ed-faq__icon material-symbols-outlined">add</span>
+                    </summary>
+                    <div class="ed-faq__a rte"><p>Outdoor fixtures are designed for exterior use, but the right placement still matters. Covered or partially protected installation can help extend the finish and overall lifespan, especially in locations with heavy rain, intense sun, or severe seasonal weather.</p></div>
+                  </details>
+              {%- endcase -%}
+            {%- endif -%}
+          </div>
+        </div>
+      </section>
+
+      <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [{% if editor_collection_faq_count > 0 %}{% assign faq_started = false %}{% for block in section.blocks %}{% if block.type == 'collection_faq_item' and block.settings.collection != blank and block.settings.collection.handle == collection.handle %}{% if faq_started %},{% endif %}{
+            "@type": "Question",
+            "name": {{ block.settings.question | strip | json }},
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": {{ block.settings.answer | strip_html | strip_newlines | strip | json }}
+            }
+          }{% assign faq_started = true %}{% endif %}{% endfor %}{% else %}{% case collection.handle %}{% when 'indoor-lighting' %}{
+            "@type": "Question",
+            "name": "What type of indoor lighting should I start with for a living room?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Start with one main source of ambient light, then add a floor lamp or wall light for softer layering. In most living rooms, a combination of overhead lighting and a warm floor lamp creates better depth and makes the space feel more relaxed at night."
+            }
+          },{
+            "@type": "Question",
+            "name": "How do I choose between a floor lamp, desk lamp, and wall light?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Choose based on how the room is used. Floor lamps are best for ambient lighting and reading corners, desk lamps help with task lighting and focused work, and wall lights are useful when you want softer illumination without taking up floor or table space."
+            }
+          },{
+            "@type": "Question",
+            "name": "What color temperature is best for indoor lighting?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "For most homes, warm lighting creates the most comfortable atmosphere in bedrooms, living rooms, and dining spaces. Neutral light can work better in offices, kitchens, or areas where you need sharper visibility. The best choice depends on whether you want the room to feel calmer or more functional."
+            }
+          },{
+            "@type": "Question",
+            "name": "How can I make a room feel warmer with lighting?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Use multiple light sources instead of relying on a single bright fixture. Layering floor lamps, wall sconces, and table or desk lamps creates softer contrast, reduces harsh shadows, and makes the room feel more welcoming and complete."
+            }
+          }{% when 'floor-table-lamps' %}{
+            "@type": "Question",
+            "name": "How do I choose the right floor lamp for my living room?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Look at three things first: the height of the lamp, the size of the room, and the role it needs to play. A living room floor lamp should feel proportional to the furniture around it and provide either ambient light for the full space or focused light for one seating area."
+            }
+          },{
+            "@type": "Question",
+            "name": "What is the best floor lamp for reading?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The best reading floor lamp gives directed light without glare and sits close enough to a chair or sofa to be useful every day. If you want a lamp for reading, prioritize practical light placement and stable proportions over purely decorative form."
+            }
+          },{
+            "@type": "Question",
+            "name": "Where should a floor lamp be placed in a room?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Floor lamps usually work best beside a sofa, accent chair, console, or bed. Place the lamp where it can add height and soft light without blocking movement. Corners that feel dark or visually unfinished are often the strongest placement options."
+            }
+          },{
+            "@type": "Question",
+            "name": "Can a floor lamp replace overhead lighting?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "A floor lamp can improve a room dramatically, but it usually works best as part of a layered setup rather than as the only source of light. In bedrooms, lounges, and small apartments, a strong floor lamp can carry much of the atmosphere while overhead lighting is used only when needed."
+            }
+          }{% when 'desk-lamp' %}{
+            "@type": "Question",
+            "name": "How tall should a bedside table lamp be?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "A bedside lamp should usually place the shade or main light source close to seated eye level when you are sitting up in bed. That keeps the setup more comfortable, keeps glare lower, and helps the lamp feel proportional to the nightstand and mattress height."
+            }
+          },{
+            "@type": "Question",
+            "name": "Are desk lamps good for nightstands and bedrooms?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, as long as the lamp fits the scale of the nightstand and the light matches the job. Lower and softer lamps work well for mood and wind-down lighting, while dimmable or more directed lamps are stronger when the same bedside setup also needs to support reading."
+            }
+          },{
+            "@type": "Question",
+            "name": "What color temperature is best for a bedside lamp?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Warm light is usually the best starting point for bedside use because it feels calmer at night and helps the room stay softer after the overhead light is off. If the lamp also needs to support reading, a dimmable design gives you more control without making the room feel clinical."
+            }
+          },{
+            "@type": "Question",
+            "name": "When is a table lamp better than a floor lamp in a bedroom?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "A table lamp is usually better when the room already has a useful nightstand or side table and the goal is lower, calmer light close to the bed. A floor lamp becomes the better choice when there is no surface in the right place or when the room needs more reach and vertical presence."
+            }
+          }{% when 'wall-lights' %}{
+            "@type": "Question",
+            "name": "What type of outdoor wall light is best for an entryway?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "For an entryway, choose an outdoor wall light that clearly frames the door, improves visibility around the threshold, and still feels warm instead of overlit. Slim wall-mounted sconces usually work best because they improve safety and make the entrance feel more intentional after dark."
+            }
+          },{
+            "@type": "Question",
+            "name": "How high should outdoor wall lights be mounted?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Outdoor wall lights should be mounted high enough to spread light cleanly across the approach area without shining directly into the eyes. The right mounting height depends on the doorway, the wall scale, and whether the fixture is framing an entrance, a garage, or a patio wall."
+            }
+          },{
+            "@type": "Question",
+            "name": "How bright should exterior wall lighting be?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Exterior wall lighting should be bright enough to improve navigation and visibility, but not so intense that it creates glare or makes the home feel harsh. Entry doors, steps, and patios usually benefit from warm controlled light rather than a single overly bright fixture."
+            }
+          },{
+            "@type": "Question",
+            "name": "What is the difference between outdoor wall lights and general outdoor lighting?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Outdoor wall lights are mounted directly on the home and are best for entryways, porches, garage walls, and architectural framing. Broader outdoor lighting can also include path lights, landscape lighting, and other fixtures that guide movement across the full exterior."
+            }
+          }{% when 'outdoor-lighting' %}{
+            "@type": "Question",
+            "name": "What kind of outdoor lighting is best for an entryway or front door?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "For entryways, choose outdoor lighting that improves visibility around the door while still feeling warm and inviting. Wall-mounted fixtures are often the best option because they frame the entrance clearly and help guests move safely after dark."
+            }
+          },{
+            "@type": "Question",
+            "name": "How bright should outdoor lighting be?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Outdoor lighting should be bright enough to improve visibility and safety, but not so intense that it creates glare. Pathways, stairs, and entrances usually need the most functional light, while patios and garden edges benefit from a softer ambient approach."
+            }
+          },{
+            "@type": "Question",
+            "name": "How do I choose outdoor lights for pathways and landscaping?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Focus on guidance first. Path and landscape lighting should help define edges, changes in elevation, and major walk routes. Even spacing and a warm, controlled glow usually look better than a small number of overly bright fixtures."
+            }
+          },{
+            "@type": "Question",
+            "name": "Can outdoor lighting stay exposed to weather year-round?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Outdoor fixtures are designed for exterior use, but the right placement still matters. Covered or partially protected installation can help extend the finish and overall lifespan, especially in locations with heavy rain, intense sun, or severe seasonal weather."
+            }
+          }{% endcase %}{% endif %}]
+        }
+      </script>
+    {%- endif -%}
+
+  </div>
+</section>
+
+{% endpaginate %}
+
+{%- comment -%} Client-side filter JS — multi-select; filter state persists across sort reloads {%- endcomment -%}
+<script>
+(function(){
+  var STORE_KEY = 'olFilters_' + {{ collection.handle | json }};
+  var activeCols = [];
+  var priceMin = 0, priceMax = Infinity;
+
+  function applyFilters(){
+    var cards = document.querySelectorAll('.product-card[data-collections]');
+    var shown = 0;
+    cards.forEach(function(card){
+      var cols = (card.getAttribute('data-collections') || '').split(',');
+      var price = parseFloat(card.getAttribute('data-price') || '0') * 100;
+      var colMatch = activeCols.length === 0 || activeCols.some(function(h){ return cols.indexOf(h) !== -1; });
+      var priceMatch = price >= priceMin && price <= priceMax;
+      if(colMatch && priceMatch){ card.style.display = ''; shown++; }
+      else { card.style.display = 'none'; }
+    });
+    document.querySelectorAll('[data-result-count]').forEach(function(el){ el.textContent = shown + ' Results'; });
+  }
+
+  function saveState(){
+    try {
+      sessionStorage.setItem(STORE_KEY, JSON.stringify({
+        cols: activeCols,
+        pMin: priceMin,
+        pMax: priceMax === Infinity ? 'Inf' : priceMax
+      }));
+    } catch(e){}
+  }
+
+  function syncColButtons(){
+    document.querySelectorAll('.ol-col-filter').forEach(function(b){
+      var h = b.getAttribute('onclick').match(/'([^']+)'/);
+      if(h && h[1] && activeCols.indexOf(h[1]) !== -1){ b.classList.add('active'); }
+      else { b.classList.remove('active'); }
+    });
+  }
+
+  function syncPriceButtons(){
+    document.querySelectorAll('.ol-price-filter').forEach(function(b){
+      b.classList.remove('active');
+      var m = b.getAttribute('onclick').match(/olSetPrice\(this,\s*([^,]+),\s*([^\)]+)\)/);
+      if(m){
+        var bMin = m[1].trim() === 'Infinity' ? Infinity : parseFloat(m[1]);
+        var bMax = m[2].trim() === 'Infinity' ? Infinity : parseFloat(m[2]);
+        if(bMin === priceMin && bMax === priceMax){ b.classList.add('active'); }
+      }
+    });
+  }
+
+  window.olToggleCol = function(btn, handle){
+    var idx = activeCols.indexOf(handle);
+    if(idx === -1){ activeCols.push(handle); }
+    else { activeCols.splice(idx, 1); }
+    syncColButtons();
+    applyFilters();
+    saveState();
+  };
+
+  window.olClearCols = function(){
+    activeCols = [];
+    syncColButtons();
+    applyFilters();
+    saveState();
+  };
+
+  window.olSetPrice = function(btn, min, max){
+    priceMin = min; priceMax = max;
+    syncPriceButtons();
+    applyFilters();
+    saveState();
+  };
+
+  function restoreState(){
+    var raw;
+    try { raw = sessionStorage.getItem(STORE_KEY); } catch(e){ return; }
+    if(!raw) return;
+    var st;
+    try { st = JSON.parse(raw); } catch(e){ return; }
+    if(!st) return;
+    activeCols = st.cols || [];
+    priceMin = typeof st.pMin === 'number' ? st.pMin : 0;
+    priceMax = st.pMax === 'Inf' ? Infinity : (typeof st.pMax === 'number' ? st.pMax : Infinity);
+    syncColButtons();
+    syncPriceButtons();
+    applyFilters();
+  }
+
+  restoreState();
+})();
+</script>
+
+{%- comment -%} Review-rating badges for product cards (same widget as the product page) {%- endcomment -%}
+<script src="{{ 'outlight-review-badge.js' | asset_url }}" data-backend-url="https://shopify-ai-chatbot-production-9ab4.up.railway.app" defer></script>
+
+{% schema %}
+{
+  "name": "Collection Product Grid",
+  "tag": "section",
+  "class": "collection-product-grid",
+  "settings": [
+    {
+      "type": "text",
+      "id": "intro_label",
+      "label": "Intro label",
+      "default": "Collection overview"
+    },
+    {
+      "type": "text",
+      "id": "faq_label",
+      "label": "FAQ label",
+      "default": "Questions"
+    },
+    {
+      "type": "text",
+      "id": "faq_heading",
+      "label": "FAQ heading",
+      "default": "What shoppers ask before they buy"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "filter_collection",
+      "name": "Filter collection",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label override",
+          "info": "Leave blank to use collection title"
+        }
+      ]
+    },
+    {
+      "type": "collection_intro",
+      "name": "Collection intro",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Eyebrow label"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading override",
+          "info": "Leave blank to use the collection title"
+        },
+        {
+          "type": "textarea",
+          "id": "outcome",
+          "label": "Outcome statement",
+          "info": "One editorial line on what this category is for. Shows beside the title."
+        },
+        {
+          "type": "textarea",
+          "id": "lede",
+          "label": "Lead paragraph"
+        },
+        {
+          "type": "richtext",
+          "id": "body",
+          "label": "Body copy",
+          "info": "Leave blank to fall back to the collection description"
+        }
+      ]
+    },
+    {
+      "type": "collection_faq_item",
+      "name": "Collection FAQ item",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        },
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection Product Grid"
+    }
+  ]
+}
+{% endschema %}

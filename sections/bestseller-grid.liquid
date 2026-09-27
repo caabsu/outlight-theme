@@ -1,0 +1,211 @@
+{% assign clearance_percent = settings.clearance_discount_percent | default: 60 %}
+{% assign clearance_remaining = 100 | minus: clearance_percent %}
+{%- comment -%}
+  bestseller-grid.liquid — Homepage best sellers (catalog redesign round 2, variation 1)
+  Dynamic product grid: 4 cols, 3 at <=1100px, 2 at <=600px.
+{%- endcomment -%}
+
+{%- assign s = section.settings -%}
+{%- assign grid_collection = s.collection -%}
+{%- if grid_collection == blank or grid_collection.products_count == 0 -%}
+  {%- assign grid_collection = collections['best-sellers'] -%}
+{%- endif -%}
+{%- assign show_count = s.products_to_show | default: 12 -%}
+{%- assign available_products = grid_collection.products | where: 'available' -%}
+
+<style>
+  #ol-best-{{ section.id }}{
+    --ink:#131314;--paper:#F9F9FB;--gold:#C5A059;--warm:#f4f0eb;--body:#2d3338;
+    --serif:'Newsreader',Georgia,serif;
+    --sans:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    display:block;
+    background:var(--paper);
+    font-family:var(--sans);
+    padding:80px 0;
+  }
+  #ol-best-{{ section.id }} *{box-sizing:border-box;margin:0;padding:0;}
+  #ol-best-{{ section.id }} .ol-stock.ol-stock--image.ol-stock--low{padding:9px 12px;}
+  #ol-best-{{ section.id }} img{display:block;max-width:100%;}
+  #ol-best-{{ section.id }} a{color:inherit;text-decoration:none;}
+  #ol-best-{{ section.id }} .ol-container{
+    width:100%;max-width:1360px;margin:0 auto;padding:0 32px;
+  }
+  #ol-best-{{ section.id }} .section-head{
+    display:flex;align-items:flex-end;justify-content:space-between;
+    gap:32px;margin-bottom:48px;
+  }
+  #ol-best-{{ section.id }} .eyebrow{
+    font-family:var(--sans);font-size:11px;font-weight:600;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--gold);
+  }
+  #ol-best-{{ section.id }} .section-head h2{
+    font-family:var(--serif);font-weight:200;
+    font-size:clamp(28px,3.4vw,42px);line-height:1.08;letter-spacing:-0.01em;
+    margin-top:16px;color:var(--ink);
+  }
+  #ol-best-{{ section.id }} .section-head h2 em{font-style:italic;color:var(--gold);}
+  #ol-best-{{ section.id }} .head-link{
+    font-size:13px;font-weight:500;letter-spacing:.04em;white-space:nowrap;
+    padding-bottom:3px;border-bottom:1px solid var(--ink);
+    transition:color .2s,border-color .2s;color:var(--ink);
+  }
+  #ol-best-{{ section.id }} .head-link:hover{color:var(--gold);border-color:var(--gold);}
+  #ol-best-{{ section.id }} .product-grid{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:32px 24px;
+  }
+  #ol-best-{{ section.id }} .product-card{
+    display:flex;flex-direction:column;background:var(--paper);
+    transition:transform .25s ease;
+  }
+  #ol-best-{{ section.id }} .product-card .img-wrap{
+    aspect-ratio:4/5;background:var(--warm);overflow:hidden;position:relative;
+    border:1px solid rgba(19,19,20,.06);
+  }
+  #ol-best-{{ section.id }} .product-card .img-wrap img{
+    width:100%;height:100%;object-fit:contain;padding:14px;
+    transition:transform .45s cubic-bezier(.22,.61,.36,1);
+  }
+  #ol-best-{{ section.id }} .product-card .quick{
+    position:absolute;left:14px;right:14px;bottom:14px;
+    background:var(--ink);color:var(--paper);text-align:center;
+    font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+    padding:11px;opacity:0;transform:translateY(8px);
+    transition:opacity .25s ease,transform .25s ease;
+  }
+  #ol-best-{{ section.id }} .product-card:hover{transform:translateY(-4px);}
+  #ol-best-{{ section.id }} .product-card:hover .img-wrap img{transform:scale(1.05);}
+  #ol-best-{{ section.id }} .product-card:hover .quick{opacity:1;transform:translateY(0);}
+  #ol-best-{{ section.id }} .product-info{
+    padding:16px 2px 0;display:flex;flex-direction:column;gap:3px;
+  }
+  #ol-best-{{ section.id }} .product-info .cat{
+    font-size:10.5px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;
+    color:var(--body);opacity:.7;
+  }
+  #ol-best-{{ section.id }} .product-info .name{
+    font-family:var(--serif);font-weight:300;font-size:23px;line-height:1.1;
+    color:var(--ink);
+  }
+  #ol-best-{{ section.id }} .product-info .price{
+    font-family:var(--sans);font-weight:600;font-size:14px;color:var(--gold);
+    margin-top:2px;
+  }
+  @media (max-width:1100px){
+    #ol-best-{{ section.id }} .product-grid{grid-template-columns:repeat(3,1fr);}
+  }
+  @media (max-width:900px){
+    #ol-best-{{ section.id }} .ol-container{padding:0 24px;}
+  }
+  @media (max-width:600px){
+    #ol-best-{{ section.id }} .ol-container{padding:0 20px;}
+    #ol-best-{{ section.id }} .product-grid{
+      grid-template-columns:repeat(2,1fr);gap:32px 16px;
+    }
+    #ol-best-{{ section.id }} .product-info .name{font-size:20px;}
+    #ol-best-{{ section.id }} .product-card .quick{display:none;}
+    #ol-best-{{ section.id }} .section-head{
+      flex-direction:column;align-items:flex-start;gap:16px;
+    }
+    #ol-best-{{ section.id }} .section-head h2{margin-top:8px;}
+  }
+</style>
+{% assign card_scope_id = 'ol-best-' | append: section.id %}
+{% render 'integrated-card-styles', scope_id: card_scope_id %}
+
+<section id="ol-best-{{ section.id }}">
+  <div class="ol-container">
+    <div class="section-head">
+      <div>
+        {%- if s.eyebrow != blank -%}
+          <span class="eyebrow">{{ s.eyebrow | escape }}</span>
+        {%- endif -%}
+        <h2>{{ s.heading }}</h2>
+      </div>
+      {%- if s.link_text != blank -%}
+        <a href="{{ s.link_url | default: '/collections/best-sellers' }}" class="head-link">{{ s.link_text | escape }}</a>
+      {%- endif -%}
+    </div>
+
+    {%- if available_products.size > 0 -%}
+      <div class="product-grid ol-card-grid">
+        {%- for product in available_products limit: show_count -%}
+          <a class="product-card ol-integrated-card{% unless product.available %} ol-card-sold{% endunless %}" {% if product.available %}href="{{ product.url }}"{% else %}role="group" aria-disabled="true"{% endif %}>
+            <div class="img-wrap ol-card-media">
+              {% if product.available %}<span class="ol-sale-badge">{{ 'clearance.discount_badge' | t: percent: clearance_percent }}</span>{% endif %}
+              <span class="cat ol-card-category">{{ product.type | default: 'Lighting' | escape }}</span>
+              {% unless product.available %}{% render 'clearance-stock', product: product, placement: 'image' %}{% endunless %}
+              {%- if product.featured_image != blank -%}
+                <img class="ol-product-image"
+                  src="{{ product.featured_image | image_url: width: 600 }}"
+                  srcset="{{ product.featured_image | image_url: width: 400 }} 400w, {{ product.featured_image | image_url: width: 600 }} 600w, {{ product.featured_image | image_url: width: 900 }} 900w"
+                  sizes="(max-width:600px) 50vw, (max-width:1100px) 33vw, 25vw"
+                  width="600"
+                  height="750"
+                  alt="{{ product.featured_image.alt | default: product.title | escape }}"
+                  loading="lazy">
+              {%- endif -%}
+              <span class="quick">View product</span>
+            </div>
+            <div class="product-info ol-card-info">
+              <span class="name ol-card-name">{{ product.title | split: ' ' | first | escape }}</span>
+              {%- assign tile_variant = product.selected_or_first_available_variant -%}<span class="price ol-card-price"><span>{{ tile_variant.price | times: clearance_remaining | divided_by: 100.0 | round | money }}</span> <s style="font-size:.7em;opacity:.55;margin-left:6px">{{ tile_variant.price | money }}</s></span>{% render 'clearance-stock', product: product %}
+            </div>
+          </a>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Best Seller Grid",
+  "tag": "section",
+  "class": "ol-bestseller-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "The Collection"
+    },
+    {
+      "type": "richtext",
+      "id": "heading",
+      "label": "Heading (italic = gold accent)",
+      "default": "<p>Best <em>Sellers</em></p>"
+    },
+    {
+      "type": "text",
+      "id": "link_text",
+      "label": "View-all link text",
+      "default": "View all lighting"
+    },
+    {
+      "type": "url",
+      "id": "link_url",
+      "label": "View-all link"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection",
+      "info": "Falls back to the best-sellers collection when blank."
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "label": "Products to show",
+      "min": 4,
+      "max": 12,
+      "step": 1,
+      "default": 12
+    }
+  ],
+  "presets": [
+    {
+      "name": "Best Seller Grid"
+    }
+  ]
+}
+{% endschema %}

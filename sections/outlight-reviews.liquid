@@ -1,0 +1,27 @@
+<div id="outlight-reviews" data-product-handle="{{ product.handle }}"></div>
+
+<script src="https://shopify-ai-chatbot-production-9ab4.up.railway.app/widget/review-widget.js" defer></script>
+
+{% schema %}
+{
+  "name": "Product Reviews",
+  "class": "outlight-reviews-section",
+  "settings": [
+    {
+      "type": "range",
+      "id": "reviews_per_page",
+      "label": "Reviews per page",
+      "min": 4,
+      "max": 20,
+      "step": 2,
+      "default": 10
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Reviews"
+    }
+  ],
+  "enabled_on": { "templates": ["product"] }
+}
+{% endschema %}

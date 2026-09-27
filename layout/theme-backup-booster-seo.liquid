@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+<head>
+  {%- comment -%}
+    OpenAI Ads pixel initialization only. Conversion events should fire from real
+    conversion surfaces, not on every page load.
+  {%- endcomment -%}
+  <script>
+    !function(w, d, s, u) {
+      if (w.oaiq) return;
+      var q = function() {
+        q.q.push(arguments);
+      };
+      q.q = [];
+      w.oaiq = q;
+      var j = d.createElement(s);
+      j.async = 1;
+      j.src = u;
+      var f = d.getElementsByTagName(s)[0];
+      f.parentNode.insertBefore(j, f);
+    }(window, document, "script", "https://bzrcdn.openai.com/sdk/oaiq.min.js");
+
+    oaiq("init", {
+      pixelId: "WaPWXsyzy6iVCDmQAq98e3",
+      debug: false
+    });
+  </script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  {%- comment -%} CSS Variables from theme settings {%- endcomment -%}
+  {% render 'css-variables' %}
+
+  {%- comment -%} Speed up the deferred review/chat widget host {%- endcomment -%}
+  <link rel="preconnect" href="https://shopify-ai-chatbot-production-9ab4.up.railway.app" crossorigin>
+  <link rel="dns-prefetch" href="https://shopify-ai-chatbot-production-9ab4.up.railway.app">
+
+  {%- comment -%} Google Fonts — Newsreader + Manrope + Material Symbols {%- endcomment -%}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200;0,6..72,300;0,6..72,400;1,6..72,200;1,6..72,300;1,6..72,400&family=Manrope:wght@200;300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&icon_names=add,architecture,arrow_forward,arrow_outward,calendar_today,chat_bubble_outline,check_circle,chevron_left,chevron_right,close,delete,design_services,eco,expand_more,grid_view,group,groups,headset_mic,help,home_work,hotel,info,inventory_2,light,light_mode,local_offer,local_shipping,location_on,lock,mail,menu,open_in_new,person,photo_camera,play_arrow,receipt_long,redeem,schedule,search,sell,shopping_bag,star,star_half,support_agent,tune,undo,verified&display=swap" rel="stylesheet">
+
+  {%- comment -%} Theme CSS (Tailwind compiled) {%- endcomment -%}
+  {{ 'theme.css' | asset_url | stylesheet_tag: preload: true }}
+
+  {%- liquid
+    assign suppress_sale_apps = false
+    if request.page_type == 'page' and page
+      case page.handle
+        when 'fall-sale', 'closing-sale', 'closing-final-sale', 'final-sale', 'final-stock-sale'
+          assign suppress_sale_apps = true
+      endcase
+    endif
+  -%}
+  {%- if suppress_sale_apps -%}
+    <style>
+      [id^="alia-root-"]{display:none!important;visibility:hidden!important;pointer-events:none!important;}
+    </style>
+  {%- endif -%}
+
+  {%- liquid
+    assign seo_page_title = page_title
+    assign seo_page_description = page_description
+    assign seo_canonical_url = canonical_url
+    assign seo_robots = 'index,follow'
+    assign seo_og_type = 'website'
+    assign seo_image_url = blank
+
+    if request.page_type == 'index'
+      assign seo_page_title = 'Outlight | Modern Floor Lamps, Wall Lights & Outdoor Lighting'
+      assign seo_page_description = 'Shop modern indoor and outdoor lighting, from sculptural floor lamps and wall lights to chandeliers and outdoor fixtures designed to add warmth, atmosphere, and clarity.'
+    endif
+
+    if request.page_type == 'product' and product and product.featured_image
+      assign seo_image_url = product.featured_image | image_url: width: 1600 | prepend: 'https:'
+    elsif request.page_type == 'collection' and collection
+      if collection.image
+        assign seo_image_url = collection.image | image_url: width: 1600 | prepend: 'https:'
+      elsif collection.products.first.featured_image
+        assign seo_image_url = collection.products.first.featured_image | image_url: width: 1600 | prepend: 'https:'
+      endif
+    elsif request.page_type == 'article' and article and article.image
+      assign seo_image_url = article.image | image_url: width: 1600 | prepend: 'https:'
+    elsif request.page_type == 'page' and page and page.image
+      assign seo_image_url = page.image | image_url: width: 1600 | prepend: 'https:'
+    endif
+
+    if request.page_type == 'product' and product
+      assign seo_og_type = 'product'
+      assign product_descriptor = ''
+      if product.metafields.descriptors.subtitle != blank
+        assign product_descriptor = product.metafields.descriptors.subtitle.value
+      elsif product.metafields.custom.subtitle != blank
+        assign product_descriptor = product.metafields.custom.subtitle
+      elsif product.type != blank
+        assign product_descriptor = product.type
+      endif
+
+      assign descriptor_downcase = product_descriptor | downcase
+      assign product_title_downcase = product.title | downcase
+
+      capture candidate_product_title
+        echo product.title
+        if product_descriptor != blank
+          unless descriptor_downcase contains product_title_downcase
+            echo ' '
+            echo product_descriptor
+          endunless
+        endif
+      endcapture
+
+      assign cleaned_product_title = candidate_product_title | strip | strip_html
+      if cleaned_product_title != blank
+        assign seo_page_title = cleaned_product_title | truncate: 58, ''
+      endif
+
+      assign product_meta_source = product.description | strip_html | strip_newlines | replace: '&nbsp;', ' ' | replace: ' ', ' ' | replace: '  ', ' ' | strip
+      if product_meta_source == blank and product_descriptor != blank
+        assign product_meta_source = product_descriptor
+      endif
+
+      capture product_meta_tail
+        echo ' Free shipping.'
+        if product.metafields.custom.delivery_time != blank
+          echo ' Ships in '
+          echo product.metafields.custom.delivery_time
+          echo ' days.'
+        endif
+        echo ' 30-day returns.'
+      endcapture
+
+      assign seo_page_description = product_meta_source
+      if seo_page_description.size < 120
+        assign seo_page_description = seo_page_description | append: product_meta_tail
+      endif
+      assign seo_page_description = seo_page_description | truncate: 160, ''
+
+      case product.handle
+        when 'aven'
+          assign seo_page_title = 'Aven Wooden Floor Lamp | Wabi-Sabi Modern Floor Lamp'
+          assign seo_page_description = 'Shop the Aven wooden floor lamp, a wabi-sabi modern floor lamp with natural wood warmth, sculptural form, and soft ambient lighting for living rooms and bedrooms.'
+        when 'noa'
+          assign seo_page_title = 'Noa Contemporary Floor Lamp | Modern Globe Floor Lamp'
+          assign seo_page_description = 'Discover the Noa contemporary floor lamp, a modern globe floor lamp with polished chrome, luminous glass spheres, and statement lighting for living rooms and reading corners.'
+        when 'aurevo'
+          assign seo_page_title = 'Aurevo Outdoor Wall Sconce | Modern Up Down Light'
+          assign seo_page_description = 'Shop the Aurevo outdoor wall sconce, a modern up down light with Nordic lines, aluminum construction, and IP65 weather resistance for entryways and patios.'
+        when 'mira'
+          assign seo_page_title = 'Mira Outdoor Wall Lantern | Modern Exterior Wall Light'
+          assign seo_page_description = 'Explore the Mira outdoor wall lantern, a modern exterior wall light with a stainless-steel frame and soft diffused glow for porches, patios, and entryways.'
+        when 'olin'
+          assign seo_page_title = 'Olin Wooden Floor Lamp | Sculptural Modern Floor Lamp'
+          assign seo_page_description = 'Shop the Olin wooden floor lamp, a sculptural modern floor lamp with organic curves, a suspended diffuser, and warm ambient lighting for living rooms and bedrooms.'
+      endcase
+    elsif request.page_type == 'collection' and collection
+      assign selected_sort = collection.sort_by | default: collection.default_sort_by
+      capture collection_meta_source
+        echo collection.description | strip_html | strip_newlines | replace: '&nbsp;', ' ' | replace: 'Â ', ' ' | replace: '  ', ' ' | strip
+      endcapture
+
+      case collection.handle
+        when 'indoor-lighting'
+          assign seo_page_title = 'Modern Indoor Lighting for Living Rooms & Bedrooms'
+          assign collection_meta_source = 'Modern indoor lighting with floor lamps, wall lights, chandeliers, and layered lighting for living rooms, bedrooms, and workspaces.'
+        when 'floor-table-lamps'
+          assign seo_page_title = 'Modern Floor & Table Lamps for Every Room'
+          assign collection_meta_source = 'Modern floor and table lamps for living rooms, bedrooms, reading corners, and workspaces, with warm ambient light and sculptural silhouettes.'
+        when 'desk-lamp'
+          assign seo_page_title = 'Modern Bedside & Table Lamps for Bedrooms and Reading'
+          assign collection_meta_source = 'Shop modern bedside and table lamps for bedrooms, nightstands, reading corners, and calmer evening light, with dimmable and sculptural options for different room sizes.'
+        when 'outdoor-lighting'
+          assign seo_page_title = 'Modern Outdoor Lighting for Entryways & Patios'
+          assign collection_meta_source = 'Modern outdoor lighting for entryways, pathways, patios, driveways, and exterior spaces that need clearer, warmer illumination after dark.'
+        when 'wall-lights'
+          assign seo_page_title = 'Modern Outdoor Wall Lights for Entryways, Patios & Exterior Walls'
+          assign collection_meta_source = 'Shop modern outdoor wall lights and exterior sconces for entryways, patios, porches, garages, and exterior walls that need safer, warmer light after dark.'
+      endcase
+
+      if collection_meta_source != blank
+        assign seo_page_description = collection_meta_source | truncate: 160, ''
+      endif
+
+      if current_tags or selected_sort != collection.default_sort_by
+        assign seo_robots = 'noindex,follow'
+        assign seo_canonical_url = shop.url | append: collection.url
+      endif
+    elsif request.page_type == 'article' and article
+      assign seo_og_type = 'article'
+      assign article_meta_source = article.excerpt_or_content | strip_html | strip_newlines | replace: '&nbsp;', ' ' | replace: 'Â ', ' ' | replace: '  ', ' ' | strip
+      assign seo_page_title = article.title
+      if article_meta_source != blank
+        assign seo_page_description = article_meta_source | truncate: 160, ''
+      endif
+    elsif request.page_type == 'blog' and blog
+      assign seo_page_title = blog.title | append: ' | Lighting Guides & Design Notes'
+      assign seo_page_description = 'Lighting guides, buying advice, and design notes from Outlight to support stronger category discovery and more informed product selection.'
+    elsif request.page_type == 'page' and page
+      case page.handle
+        when 'support-center'
+          assign seo_page_title = 'Outlight Support Center | Shipping, Returns, Warranty & Order Help'
+          assign seo_page_description = 'Find Outlight shipping times, free shipping details, return policy terms, exchange steps, warranty coverage, order tracking, and customer support contact information.'
+        when 'contact', 'contact-us'
+          assign seo_page_title = 'Contact Outlight | Customer Support, Orders & Product Questions'
+          assign seo_page_description = 'Contact Outlight for order help, product questions, returns, trade inquiries, or custom-project support. Our team replies within 24 hours.'
+        when 'return-new'
+          assign seo_page_title = 'Outlight Returns Portal | Start a Return or Exchange'
+          assign seo_page_description = 'Start an Outlight return or exchange, check eligibility, and submit your request with your order number and email.'
+        when 'fall-sale', 'closing-sale', 'closing-final-sale', 'final-sale', 'final-stock-sale'
+          assign seo_page_title = 'Outlight Clearance Sale | 60% Off Lighting'
+          assign seo_page_description = 'Explore the Outlight Clearance Sale. Save 60% on sculptural indoor and outdoor lighting, automatically applied at checkout.'
+      endcase
+    elsif request.page_type == 'search'
+      assign seo_robots = 'noindex,follow'
+      assign seo_canonical_url = shop.url | append: routes.search_url
+    elsif template.name == 'cart' or request.path contains '/cart'
+      assign seo_robots = 'noindex,nofollow'
+    endif
+
+    if request.path contains '/account' or request.path contains '/apps/tracking'
+      assign seo_robots = 'noindex,nofollow'
+    endif
+
+    if request.path contains '/collections/indoor-lighting'
+      assign seo_page_title = 'Modern Indoor Lighting for Living Rooms & Bedrooms'
+      assign seo_page_description = 'Modern indoor lighting with floor lamps, wall lights, chandeliers, and layered lighting for living rooms, bedrooms, and workspaces.'
+    elsif request.path contains '/collections/floor-table-lamps'
+      assign seo_page_title = 'Modern Floor & Table Lamps for Every Room'
+      assign seo_page_description = 'Modern floor and table lamps for living rooms, bedrooms, reading corners, and workspaces, with warm ambient light and sculptural silhouettes.'
+    elsif request.path contains '/collections/desk-lamp'
+      assign seo_page_title = 'Modern Bedside & Table Lamps for Bedrooms and Reading'
+      assign seo_page_description = 'Shop modern bedside and table lamps for bedrooms, nightstands, reading corners, and calmer evening light, with dimmable and sculptural options for different room sizes.'
+    elsif request.path contains '/collections/outdoor-lighting'
+      assign seo_page_title = 'Modern Outdoor Lighting for Entryways & Patios'
+      assign seo_page_description = 'Modern outdoor lighting for entryways, pathways, patios, driveways, and exterior spaces that need clearer, warmer illumination after dark.'
+    elsif request.path contains '/collections/wall-lights'
+      assign seo_page_title = 'Modern Outdoor Wall Lights for Entryways, Patios & Exterior Walls'
+      assign seo_page_description = 'Shop modern outdoor wall lights and exterior sconces for entryways, patios, porches, garages, and exterior walls that need safer, warmer light after dark.'
+    elsif request.path contains '/products/aven'
+      assign seo_page_title = 'Aven Wooden Floor Lamp | Wabi-Sabi Modern Floor Lamp'
+      assign seo_page_description = 'Shop the Aven wooden floor lamp, a wabi-sabi modern floor lamp with natural wood warmth, sculptural form, and soft ambient lighting for living rooms and bedrooms.'
+    elsif request.path contains '/products/noa'
+      assign seo_page_title = 'Noa Contemporary Floor Lamp | Modern Globe Floor Lamp'
+      assign seo_page_description = 'Discover the Noa contemporary floor lamp, a modern globe floor lamp with polished chrome, luminous glass spheres, and statement lighting for living rooms and reading corners.'
+    elsif request.path contains '/products/aurevo'
+      assign seo_page_title = 'Aurevo Outdoor Wall Sconce | Modern Up Down Light'
+      assign seo_page_description = 'Shop the Aurevo outdoor wall sconce, a modern up down light with Nordic lines, aluminum construction, and IP65 weather resistance for entryways and patios.'
+    elsif request.path contains '/products/mira'
+      assign seo_page_title = 'Mira Outdoor Wall Lantern | Modern Exterior Wall Light'
+      assign seo_page_description = 'Explore the Mira outdoor wall lantern, a modern exterior wall light with a stainless-steel frame and soft diffused glow for porches, patios, and entryways.'
+    elsif request.path contains '/products/olin'
+      assign seo_page_title = 'Olin Wooden Floor Lamp | Sculptural Modern Floor Lamp'
+      assign seo_page_description = 'Shop the Olin wooden floor lamp, a sculptural modern floor lamp with organic curves, a suspended diffuser, and warm ambient lighting for living rooms and bedrooms.'
+    elsif request.path contains '/pages/support-center'
+      assign seo_page_title = 'Outlight Support Center | Shipping, Returns, Warranty & Order Help'
+      assign seo_page_description = 'Find Outlight shipping times, free shipping details, return policy terms, exchange steps, warranty coverage, order tracking, and customer support contact information.'
+    elsif request.path contains '/pages/contact' or request.path contains '/pages/contact-us'
+      assign seo_page_title = 'Contact Outlight | Customer Support, Orders & Product Questions'
+      assign seo_page_description = 'Contact Outlight for order help, product questions, returns, trade inquiries, or custom-project support. Our team replies within 24 hours.'
+    elsif request.path contains '/pages/return-new'
+      assign seo_page_title = 'Outlight Returns Portal | Start a Return or Exchange'
+      assign seo_page_description = 'Start an Outlight return or exchange, check eligibility, and submit your request with your order number and email.'
+    elsif request.path contains '/policies/refund-policy'
+      assign seo_page_title = 'Outlight Return Policy | Returns, Exchanges & Restocking Fees'
+      assign seo_page_description = 'Read the Outlight return policy, including the 30-day return window, exchanges, damaged-item support, and the restocking-fee rules for eligible returns.'
+    elsif request.path contains '/policies/shipping-policy'
+      assign seo_page_title = 'Outlight Shipping Policy | Delivery Times, Free Shipping & Fulfillment'
+      assign seo_page_description = 'Read the Outlight shipping policy for delivery timelines, free shipping details, fulfillment information, and what to expect after placing an order.'
+    endif
+  -%}
+
+  <meta name="robots" content="{{ seo_robots }}">
+
+  {%- comment -%} Page title {%- endcomment -%}
+  <title>{{ seo_page_title }}{% if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif %}{% if current_page != 1 %} &ndash; Page {{ current_page }}{% endif %}{% unless seo_page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless %}</title>
+
+  {% if seo_page_description %}
+    <meta name="description" content="{{ seo_page_description | escape }}">
+  {% endif %}
+
+  <link rel="canonical" href="{{ seo_canonical_url }}">
+  <meta property="og:site_name" content="{{ shop.name | escape }}">
+  <meta property="og:url" content="{{ seo_canonical_url | escape }}">
+  <meta property="og:title" content="{{ seo_page_title | escape }}">
+  <meta property="og:type" content="{{ seo_og_type }}">
+  {% if seo_page_description %}
+    <meta property="og:description" content="{{ seo_page_description | escape }}">
+  {% endif %}
+  {% if seo_image_url %}
+    <meta property="og:image" content="{{ seo_image_url | escape }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="{{ seo_image_url | escape }}">
+  {% else %}
+    <meta name="twitter:card" content="summary">
+  {% endif %}
+  <meta name="twitter:title" content="{{ seo_page_title | escape }}">
+  {% if seo_page_description %}
+    <meta name="twitter:description" content="{{ seo_page_description | escape }}">
+  {% endif %}
+  {% render 'seo-organization-jsonld' %}
+  {% render 'seo-support-jsonld' %}
+  {% if template.name == 'product' or template.name == 'collection' or template.name == 'article' %}
+    {% render 'seo-breadcrumb-jsonld' %}
+  {% endif %}
+  {% render 'seo-article-jsonld' %}
+
+  {{ content_for_header }}
+  {% render 'outlight-attribution-capture' %}
+</head>
+
+<body class="antialiased overflow-x-hidden">
+
+  {%- comment -%} Header {%- endcomment -%}
+  {% sections 'header-group' %}
+
+  <main id="main-content" role="main">
+    {{ content_for_layout }}
+  </main>
+
+  {%- comment -%} Footer {%- endcomment -%}
+  {% sections 'footer-group' %}
+
+  {%- comment -%} Cart drawer (always rendered) {%- endcomment -%}
+  {% section 'cart-drawer' %}
+
+  <script>
+    (function() {
+      var widgetLoaded = false;
+      var widgetUrl = 'https://shopify-ai-chatbot-production-9ab4.up.railway.app/widget/widget.js';
+      var interactionEvents = ['pointerdown', 'keydown', 'touchstart', 'scroll'];
+
+      function detachListeners() {
+        interactionEvents.forEach(function(eventName) {
+          window.removeEventListener(eventName, loadWidget, passiveListener);
+        });
+      }
+
+      function loadWidget() {
+        if (widgetLoaded) return;
+        widgetLoaded = true;
+        detachListeners();
+
+        var script = document.createElement('script');
+        script.src = widgetUrl;
+        script.defer = true;
+        script.async = true;
+        document.head.appendChild(script);
+      }
+
+      function queueIdleLoad() {
+        if ('requestIdleCallback' in window) {
+          window.requestIdleCallback(loadWidget, { timeout: 4000 });
+        } else {
+          window.setTimeout(loadWidget, 3500);
+        }
+      }
+
+      var passiveListener = { passive: true };
+      interactionEvents.forEach(function(eventName) {
+        window.addEventListener(eventName, loadWidget, passiveListener);
+      });
+
+      window.addEventListener('load', queueIdleLoad, { once: true });
+    })();
+  </script>
+</body>
+</html>

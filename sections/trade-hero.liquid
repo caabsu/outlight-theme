@@ -1,0 +1,113 @@
+<style>
+  @keyframes olFadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .ol-fade-up-1 { animation: olFadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both; }
+  .ol-fade-up-2 { animation: olFadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both; }
+  .ol-fade-up-3 { animation: olFadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both; }
+  .ol-fade-up-4 { animation: olFadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.7s both; }
+</style>
+
+<section class="bg-[#131314] py-28 md:py-40 relative overflow-hidden">
+  <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(ellipse at 70% 50%, rgba(197,160,89,0.06) 0%, transparent 55%), radial-gradient(ellipse at 10% 80%, rgba(197,160,89,0.04) 0%, transparent 50%);"></div>
+
+  <div class="relative z-10 max-w-[1920px] mx-auto px-5 md:px-12">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-0">
+
+      <!-- Left: col-span-7 content -->
+      <div class="md:col-span-7">
+        <div class="ol-fade-up-1 flex items-center gap-3 mb-8 md:mb-10">
+          <div class="w-8 h-px bg-[#C5A059]/50"></div>
+          <span class="font-label text-[0.6rem] md:text-[0.65rem] uppercase tracking-[0.25em] text-[#C5A059]">{{ section.settings.eyebrow }}</span>
+        </div>
+
+        <h1 class="ol-fade-up-2 heading-thin text-[2.8rem] md:text-[5rem] lg:text-[6.5rem] text-[#F9F9FB] tracking-tight leading-[1.01] mb-6 md:mb-7">
+          {{ section.settings.heading | newline_to_br }}
+        </h1>
+
+        <p class="ol-fade-up-3 quote-thin text-xl md:text-2xl lg:text-3xl text-[#C5A059] mb-7 md:mb-9">
+          {{ section.settings.subline }}
+        </p>
+
+        <p class="ol-fade-up-3 font-body text-[0.95rem] md:text-[1rem] font-[300] text-[#F9F9FB]/55 leading-[1.85] mb-10 md:mb-12 max-w-xl">
+          {{ section.settings.body }}
+        </p>
+
+        <div class="ol-fade-up-4 flex flex-col sm:flex-row items-start gap-3 md:gap-4">
+          <a href="{{ section.settings.primary_url | default: '#apply' }}" class="w-full sm:w-auto px-8 py-4 font-label text-[0.75rem] uppercase tracking-[0.15em] text-[#131314] font-medium hover:opacity-90 transition-opacity inline-flex items-center justify-center gap-2" style="background: #C5A059; min-width: 200px;">
+            {{ section.settings.primary_label }}
+            <span class="material-symbols-outlined" style="font-size:16px;">arrow_forward</span>
+          </a>
+          <a href="{{ section.settings.secondary_url | default: '#benefits' }}" class="w-full sm:w-auto px-8 py-4 font-label text-[0.75rem] uppercase tracking-[0.15em] text-[#F9F9FB] font-medium border border-[#F9F9FB]/25 hover:border-[#F9F9FB]/60 transition-all duration-300 inline-flex items-center justify-center" style="min-width: 200px;">
+            {{ section.settings.secondary_label }}
+          </a>
+        </div>
+      </div>
+
+      <!-- Right: deliberate negative space -->
+      <div class="hidden md:block md:col-span-5"></div>
+
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Trade Hero",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow label",
+      "default": "Trade Program"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Outlight Trade\nProgram."
+    },
+    {
+      "type": "text",
+      "id": "subline",
+      "label": "Italic gold subline",
+      "default": "Save 30% on every order."
+    },
+    {
+      "type": "textarea",
+      "id": "body",
+      "label": "Body paragraph",
+      "default": "Wholesale pricing designed for interior designers, architects, and trade professionals. No minimums. No hoops. Just better margins on every project."
+    },
+    {
+      "type": "text",
+      "id": "primary_label",
+      "label": "Primary button label",
+      "default": "Join for Free"
+    },
+    {
+      "type": "url",
+      "id": "primary_url",
+      "label": "Primary button URL"
+    },
+    {
+      "type": "text",
+      "id": "secondary_label",
+      "label": "Secondary button label",
+      "default": "See What's Included"
+    },
+    {
+      "type": "url",
+      "id": "secondary_url",
+      "label": "Secondary button URL"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Trade Hero"
+    }
+  ]
+}
+{% endschema %}

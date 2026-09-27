@@ -1,0 +1,4098 @@
+{%- comment -%} cb-1777187633 {%- endcomment -%}
+{%- comment -%}
+  Kit Configurator — Bedroom Kit
+  Ported from website/pages/kit-configurator.html. Markup, CSS, and JS are
+  preserved as-is. Shopify wiring replaces hardcoded product data with data
+  pulled from a collection (section.settings.kit_collection) and replaces
+  the starter-kit tier list with section.blocks of type "starter_product".
+
+  The placeholder <nav class="nav"> from the mock is intentionally omitted —
+  the theme provides its own header that wraps page templates.
+{%- endcomment -%}
+
+{%- liquid
+  # section.settings.kit_collection is a Collection drop (type: collection), not a handle string.
+  # Assign it directly — don't double-index through `collections[]`.
+  assign kit_collection = section.settings.kit_collection
+  assign use_default_pair = false
+  if kit_collection == blank or kit_collection.products.size == 0
+    assign use_default_pair = true
+  endif
+  assign floor_collection = collections['floor-lamps']
+  assign table_collection = collections['table-lamps']
+
+  assign starter_blocks = section.blocks | where: 'type', 'starter_product'
+
+  assign hero_warm_url = ''
+  if section.settings.compare_hero_warm_image != blank
+    assign hero_warm_url = section.settings.compare_hero_warm_image | image_url: width: 2000
+  else
+    assign hero_warm_url = 'hero-evening-bedroom.jpeg' | asset_url
+  endif
+
+  assign hero_cold_url = ''
+  if section.settings.compare_hero_image != blank
+    assign hero_cold_url = section.settings.compare_hero_image | image_url: width: 2000
+  else
+    assign hero_cold_url = 'hero-cold-bedroom.jpeg' | asset_url
+  endif
+
+  # Hero background image is independent of the Kelvin-slider images.
+  # Falls back to the warm slider image, then to the legacy asset.
+  assign hero_image_url = ''
+  if section.settings.hero_image != blank
+    assign hero_image_url = section.settings.hero_image | image_url: width: 2400
+  else
+    assign hero_image_url = hero_warm_url
+  endif
+
+  # Optional bridge hero image — falls back to the hero image.
+  assign bridge_image_url = ''
+  if section.settings.bridge_image != blank
+    assign bridge_image_url = section.settings.bridge_image | image_url: width: 1800
+  else
+    assign bridge_image_url = hero_image_url
+  endif
+
+  # ----------------------------------------------------------------
+  # WARM WALLET — read active credit from customer metafield
+  # ----------------------------------------------------------------
+  # Metafield shape (namespace: custom, key: warm_wallet, type: json):
+  #   { "code": "WARM150-C123-AB7F", "balance": 150, "expires_at": "2026-07-22", "issued_at": "2026-04-22" }
+  # The backend app's orders/create webhook writes this when a tier-2 kit is purchased.
+  # Theme only reads it — no mutation, no API call.
+  assign wallet_code = ''
+  assign wallet_balance = 0
+  assign wallet_expires = ''
+  assign wallet_active = false
+  if customer and customer.metafields.custom.warm_wallet
+    assign wallet_code = customer.metafields.custom.warm_wallet.value.code | default: ''
+    assign wallet_balance = customer.metafields.custom.warm_wallet.value.balance | default: 0 | plus: 0
+    assign wallet_expires = customer.metafields.custom.warm_wallet.value.expires_at | default: ''
+    if wallet_code != '' and wallet_balance > 0
+      assign wallet_active = true
+    endif
+  endif
+
+  # ----------------------------------------------------------------
+  # FIRST-PURCHASE WELCOME — 10% off for new customers
+  # ----------------------------------------------------------------
+  # Shopify discount code (FIRSTROOM10) is scoped admin-side to the "first-time
+  # customers" segment (number_of_orders = 0). We only append the code to the
+  # checkout URL when the logged-in user is eligible (0 orders) OR they're
+  # anonymous (likely first-time). If they're not eligible, Shopify will just
+  # reject the code at checkout — but we avoid that awkward state by omitting
+  # the code for customers who've already bought.
+  assign first_purchase_eligible = false
+  if customer == blank
+    assign first_purchase_eligible = true
+  elsif customer.orders_count == 0
+    assign first_purchase_eligible = true
+  endif
+  # When the Warm Wallet is active, it takes priority — wallet and first-purchase
+  # are mutually exclusive by design (wallet only exists AFTER your first order).
+  if wallet_active
+    assign first_purchase_eligible = false
+  endif
+-%}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+{{ 'kit-configurator-v1.css' | asset_url | stylesheet_tag }}
+
+<!-- TEST_MARKER_QWERTY_42 --><div class="kit-configurator{% if section.settings.mode == 'configurator-only' %} is-config-only{% endif %}">
+<script>(function(){
+  /* Set CSS custom properties on .kit-configurator wrapper from Liquid section
+     settings. Inline <style> blocks and inline style="" attrs both got silently
+     stripped by Shopify's section render — JS-set styles aren't sanitized so this
+     is the reliable path. The asset CSS uses var(--name) refs that resolve once
+     these are set. */
+  var el = document.currentScript && document.currentScript.previousElementSibling;
+  if (!el || !el.classList || !el.classList.contains('kit-configurator')) {
+    el = document.querySelector('.kit-configurator');
+  }
+  if (!el) return;
+  el.style.setProperty('--hero_height_vh', '{{ section.settings.hero_height_vh | default: 64 }}vh');
+  el.style.setProperty('--hero_height_min', '{{ section.settings.hero_height_min | default: 560 }}px');
+  el.style.setProperty('--hero_focus_desktop', '{{ section.settings.hero_focus_desktop | default: "center center" }}');
+  el.style.setProperty('--hero_heading_size', '{{ section.settings.hero_heading_size | default: 80 }}px');
+  el.style.setProperty('--hero_sub_size', '{{ section.settings.hero_sub_size | default: 16 }}px');
+  el.style.setProperty('--bridge_heading_size', '{{ section.settings.bridge_heading_size | default: 44 }}px');
+  el.style.setProperty('--bridge_sub_size', '{{ section.settings.bridge_sub_size | default: 15 }}px');
+  el.style.setProperty('--bridge_image_aspect', '{{ section.settings.bridge_image_aspect | default: "16 / 9" }}');
+  el.style.setProperty('--bridge_image_max_height', '{{ section.settings.bridge_image_max_height | default: 560 }}px');
+  el.style.setProperty('--kelvin_heading_size', '{{ section.settings.kelvin_heading_size | default: 40 }}px');
+  el.style.setProperty('--kelvin_sub_size', '{{ section.settings.kelvin_sub_size | default: 15 }}px');
+  el.style.setProperty('--kelvin_image_aspect', '{{ section.settings.kelvin_image_aspect | default: "16 / 9" }}');
+  el.style.setProperty('--kelvin_image_max_height', '{{ section.settings.kelvin_image_max_height | default: 620 }}px');
+  el.style.setProperty('--cfg_heading_size', '{{ section.settings.cfg_heading_size | default: 44 }}px');
+  el.style.setProperty('--why_heading_size', '{{ section.settings.why_heading_size | default: 38 }}px');
+  el.style.setProperty('--why_panel_heading_size', '{{ section.settings.why_panel_heading_size | default: 28 }}px');
+  el.style.setProperty('--reviews_heading_size', '{{ section.settings.reviews_heading_size | default: 34 }}px');
+  el.style.setProperty('--faq_heading_size', '{{ section.settings.faq_heading_size | default: 32 }}px');
+  el.style.setProperty('--cta_heading_size', '{{ section.settings.cta_heading_size | default: 44 }}px');
+  el.style.setProperty('--hero_aspect_mobile', '{{ section.settings.hero_aspect_mobile | default: "4 / 3" }}');
+  el.style.setProperty('--hero_mobile_min_height', '{{ section.settings.hero_mobile_min_height | default: 260 }}px');
+  el.style.setProperty('--hero_mobile_max_vh', '{{ section.settings.hero_mobile_max_vh | default: 46 }}vh');
+  el.style.setProperty('--hero_focus_mobile', '{{ section.settings.hero_focus_mobile | default: "center 45%" }}');
+  el.style.setProperty('--hero_heading_size_mobile', '{{ section.settings.hero_heading_size_mobile | default: 42 }}px');
+  el.style.setProperty('--hero_sub_size_mobile', '{{ section.settings.hero_sub_size_mobile | default: 14 }}px');
+  el.style.setProperty('--why_panel_heading_size_minus_4', '{{ section.settings.why_panel_heading_size | default: 28 | minus: 4 }}px');
+})();</script>
+
+
+<!-- HERO — full-bleed room photography, emotional anchor only (no interactive slider) -->
+<section class="room-hero">
+  <div class="bg">
+    <picture>
+      {%- if section.settings.hero_image_mobile != blank -%}
+        <source media="(max-width: 900px)" srcset="{{ section.settings.hero_image_mobile | image_url: width: 1200 }}">
+      {%- endif -%}
+      <img class="hero-bg" src="{{ hero_image_url }}" alt="{{ section.settings.hero_image_alt | default: 'Warm 2700K layered lighting in a real room' }}">
+    </picture>
+  </div>
+  <div class="wrap">
+    <h1>{{ section.settings.heading | default: 'Build your <span>warm</span> room.' }}</h1>
+    <p class="sub">{{ section.settings.subheading | default: 'Pick your lamps. Plug in. The room is done.' }}</p>
+    <a class="scroll-hint" href="#why-section" onclick="document.querySelector('.why').scrollIntoView({behavior:'smooth'});return false;">{{ section.settings.scroll_hint_text | default: 'See why' }} ↓</a>
+  </div>
+</section>
+
+<!-- WHY — 3 panels, diagnostic (Section 02) -->
+<section class="why" id="why-section">
+  <div class="wrap">
+    <div class="head">
+      <span class="k">{{ section.settings.why_kicker | default: 'Why this kit works' }}</span>
+      <h2>{{ section.settings.why_heading | default: 'Why your room feels <span>off right now</span>.' }}</h2>
+    </div>
+    <div class="panels">
+      <div class="panel">
+        <div class="img"><img src="{% if section.settings.why_p1_image != blank %}{{ section.settings.why_p1_image | image_url: width: 1400 }}{% else %}{{ 'why2700k-bulb-clean.jpeg' | asset_url }}{% endif %}" alt="{{ section.settings.why_p1_image_alt | default: 'Warm 2700K bulb vs cold overhead' }}"></div>
+        <div class="body">
+          {%- if section.settings.why_p1_label != blank -%}<span class="n">{{ section.settings.why_p1_label }}</span>{%- endif -%}
+          <h3>{{ section.settings.why_p1_heading | default: 'Your overhead light is too blue.' }}</h3>
+          <p>{{ section.settings.why_p1_body | default: 'Most ceiling bulbs are 4000K — the same blue-white as an office. This kit is 2700K — warm like firelight.' }}</p>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="img"><img src="{% if section.settings.why_p2_image != blank %}{{ section.settings.why_p2_image | image_url: width: 1400 }}{% else %}{{ 'why2700k-bedroom.jpeg' | asset_url }}{% endif %}" alt="{{ section.settings.why_p2_image_alt | default: 'Room with layered lamp lighting' }}"></div>
+        <div class="body">
+          {%- if section.settings.why_p2_label != blank -%}<span class="n">{{ section.settings.why_p2_label }}</span>{%- endif -%}
+          <h3>{{ section.settings.why_p2_heading | default: 'Only the ceiling is lit.' }}</h3>
+          <p>{{ section.settings.why_p2_body | default: "Your room has one light, from overhead. Hotels use 4–6 lamps at different heights — that's what makes a room feel settled." }}</p>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="img"><img src="{% if section.settings.why_p3_image != blank %}{{ section.settings.why_p3_image | image_url: width: 1400 }}{% else %}{{ 'why2700k-compare-room.jpeg' | asset_url }}{% endif %}" alt="{{ section.settings.why_p3_image_alt | default: 'Warm room vs cool room comparison' }}"></div>
+        <div class="body">
+          {%- if section.settings.why_p3_label != blank -%}<span class="n">{{ section.settings.why_p3_label }}</span>{%- endif -%}
+          <h3>{{ section.settings.why_p3_heading | default: 'And it seems like a hassle.' }}</h3>
+          <p>{{ section.settings.why_p3_body | default: 'New fixtures usually mean an electrician, a landlord conversation, or drilling. This kit plugs in. 10 minutes, no tools.' }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="foot">
+      <button class="scroll-to-kit" data-scroll-target="#kelvin-moment" type="button">{{ section.settings.why_cta | default: 'What the kit is' }} ↓</button>
+    </div>
+  </div>
+</section>
+
+<!-- KELVIN MOMENT — 2700K / science (moved up — sits between Problem and Bridge) -->
+<section class="kelvin-moment" id="kelvin-moment">
+  <div class="wrap">
+    <div class="k-head">
+      <span class="k">{{ section.settings.kelvin_kicker | default: '2700K · The Science' }}</span>
+      <h2>{{ section.settings.kelvin_heading | default: 'Why <span>2700K</span> specifically.' }}</h2>
+      <p class="sub">{{ section.settings.kelvin_sub | default: "It's the color of a sunset, or a fire. Your brain reads it as evening — the body's cue that the day is winding down. Drag the slider to feel the difference." }}</p>
+    </div>
+    <div class="k-compare">
+      <div class="compare-slider" id="compare-slider">
+        <img class="compare-cold" src="{{ hero_cold_url }}" alt="Same room under cold 4000K light">
+        <img class="compare-warm" id="compare-warm" src="{{ hero_warm_url }}" alt="Warm 2700K layered lighting">
+        <div class="compare-control" id="compare-control">
+          <span class="c-label cold">Cold 4000K</span>
+          <div class="c-track" id="compare-track">
+            <div class="c-knob" id="compare-knob" role="slider" aria-label="Lighting comparison" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100" tabindex="0"></div>
+          </div>
+          <span class="c-label warm">Warm 2700K</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BRIDGE — What the kit actually is (Section 03) -->
+<section class="kit-bridge" id="kit-bridge">
+  <div class="wrap">
+    <div class="bridge-head">
+      <span class="k">{{ section.settings.bridge_kicker | default: 'The Kit' }}</span>
+      <h2>{{ section.settings.bridge_heading | default: 'Three lamps. Plug in. <span>Room done.</span>' }}</h2>
+      <p class="sub">{{ section.settings.bridge_sub | default: '3 lamps · 2700K · plug in · no electrician · about 10 minutes.' }}</p>
+    </div>
+    <div class="bridge-hero">
+      <img src="{{ bridge_image_url }}" alt="{{ section.settings.bridge_image_alt | default: 'Recommended 3-lamp kit installed in a real room' }}">
+    </div>
+    <div class="bridge-value">
+      <div class="v-stat">
+        <span class="v">{{ section.settings.bridge_stat_1_v | default: '$259' }}</span>
+        <span class="l">{{ section.settings.bridge_stat_1_l | default: 'of extras, included' }}</span>
+      </div>
+      <div class="v-stat">
+        <span class="v">{{ section.settings.bridge_stat_2_v | default: '$150' }}</span>
+        <span class="l">{{ section.settings.bridge_stat_2_l | default: 'Warm Credit · next room' }}</span>
+      </div>
+      <div class="v-stat">
+        <span class="v">{{ section.settings.bridge_stat_3_v | default: '2700K' }}</span>
+        <span class="l">{{ section.settings.bridge_stat_3_l | default: 'warm, in every bulb' }}</span>
+      </div>
+    </div>
+    <div class="bridge-foot">
+      <button class="scroll-to-kit" data-scroll-target=".reviews" type="button">{{ section.settings.bridge_cta | default: 'See real rooms' }} ↓</button>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS — Rooms people actually live in (Section 04) -->
+<section class="reviews">
+  <div class="wrap">
+    <div class="head">
+      <span class="k">{{ section.settings.reviews_kicker | default: 'Inside their rooms' }}</span>
+      <h2>{{ section.settings.reviews_heading | default: 'Rooms <span>people actually live in</span>.' }}</h2>
+      <p class="sub">{{ section.settings.reviews_sub | default: '4.8 stars · 500+ kits shipped · from the first launch cohort.' }}</p>
+    </div>
+    <div class="grid">
+      <div class="r">
+        <div class="img"><img src="{% if section.settings.review1_image != blank %}{{ section.settings.review1_image | image_url: width: 1200 }}{% else %}{{ 'review-room-1.jpeg' | asset_url }}{% endif %}" alt=""></div>
+        <div class="body">
+          <div class="stars">★★★★★</div>
+          <h4 class="rv-h">{{ section.settings.review1_headline | default: '"My room finally feels like it&#39;s mine."' }}</h4>
+          <p class="quote">{{ section.settings.review1_quote | default: '"I used to just tolerate the cold ceiling light. Now at night I actually want to be in here. Whole vibe changed — and I didn&#39;t even paint anything."' }}</p>
+          <div class="byline"><span class="nm">{{ section.settings.review1_name | default: 'Mara K.' }}</span><span class="loc">{{ section.settings.review1_location | default: 'Brooklyn · Renter' }}</span></div>
+        </div>
+      </div>
+      <div class="r">
+        <div class="img"><img src="{% if section.settings.review2_image != blank %}{{ section.settings.review2_image | image_url: width: 1200 }}{% else %}{{ 'review-room-2.jpeg' | asset_url }}{% endif %}" alt=""></div>
+        <div class="body">
+          <div class="stars">★★★★★</div>
+          <h4 class="rv-h">{{ section.settings.review2_headline | default: '"Set up in 10 minutes. No tools."' }}</h4>
+          <p class="quote">{{ section.settings.review2_quote | default: '"Was worried it&#39;d be a project. It wasn&#39;t. Plugged in three lamps, swapped my nightstand bulb, done. Less work than assembling IKEA — and I&#39;ve been sleeping earlier."' }}</p>
+          <div class="byline"><span class="nm">{{ section.settings.review2_name | default: 'Daniel S.' }}</span><span class="loc">{{ section.settings.review2_location | default: 'Los Angeles · Apartment' }}</span></div>
+        </div>
+      </div>
+      <div class="r">
+        <div class="img"><img src="{% if section.settings.review3_image != blank %}{{ section.settings.review3_image | image_url: width: 1200 }}{% else %}{{ 'review-room-3.jpeg' | asset_url }}{% endif %}" alt=""></div>
+        <div class="body">
+          <div class="stars">★★★★★</div>
+          <h4 class="rv-h">{{ section.settings.review3_headline | default: '"Worth it just for the bedside lamps."' }}</h4>
+          <p class="quote">{{ section.settings.review3_quote | default: '"I almost bought these separately for $400+. Got the whole kit for less, and the extra accessories (tapers, bulb refills) were a nice surprise. Taking it all with me when I move."' }}</p>
+          <div class="byline"><span class="nm">{{ section.settings.review3_name | default: 'Priya R.' }}</span><span class="loc">{{ section.settings.review3_location | default: 'Austin · Renter' }}</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="reviews-cta">
+      <button class="scroll-to-kit" data-scroll-target=".main-split" type="button">Build your kit ↓</button>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST — thin transition strip before the configurator -->
+<section class="trust">
+  <ul>
+    <li><span class="ic">✓</span><span class="t">{{ section.settings.trust_1 | default: '<b>Free</b> shipping · no minimum' }}</span></li>
+    <li><span class="ic">✓</span><span class="t">{{ section.settings.trust_2 | default: '<b>30-day</b> returns' }}</span></li>
+    <li><span class="ic">✓</span><span class="t">{{ section.settings.trust_3 | default: 'Plugs in · <b>no install</b>' }}</span></li>
+    <li><span class="ic">✓</span><span class="t">{{ section.settings.trust_4 | default: 'Warm <b>2700K</b> bulbs included' }}</span></li>
+  </ul>
+</section>
+
+<!-- CONFIGURATOR — Section 05 · Build your kit (V1 ledger · 2026-04-25T01:05:00Z) -->
+<!-- WBD_CACHE_TEST_MARKER_2026_04_25_REBUILD_V3 -->
+<section class="configurator" data-build="wbd-2026-04-25-v3">
+  <div class="wrap">
+    {%- if wallet_active -%}
+      <!-- Warm Wallet banner — visible only to logged-in customers with an active credit.
+           Auto-applies at checkout via ?discount= URL param (see submitKit() in JS). -->
+      <div class="warm-wallet-banner" role="status">
+        <div class="ww-icon"><span class="material-symbols-outlined">account_balance_wallet</span></div>
+        <div class="ww-body">
+          <span class="ww-kicker">{{ section.settings.wallet_kicker | default: 'Warm Wallet' }}</span>
+          <span class="ww-msg">
+            <b>${{ wallet_balance }}</b> credit ready —
+            {%- if wallet_expires != '' -%}
+              auto-applies at checkout{%- comment -%} (expires {{ wallet_expires }}) {%- endcomment -%}
+              <span class="ww-expires"> · expires {{ wallet_expires }}</span>
+            {%- else -%}
+              auto-applies at checkout
+            {%- endif -%}
+          </span>
+        </div>
+      </div>
+    {%- endif -%}
+
+    {%- comment -%}
+      Pre-compute per-tier free-value totals from configured blocks.
+      MUST run BEFORE the cfg-head badge + col-left Total line that
+      consume `extras_total`. Liquid evaluates top-to-bottom; if this
+      runs after the consumers, both render `$0` (FIX 2026-04-25).
+    {%- endcomment -%}
+    {%- assign t1_total = 0 -%}
+    {%- assign t2_total = 0 -%}
+    {%- for block in starter_blocks -%}
+      {%- assign pr_str = block.settings.was_price | default: '$0' | remove: '$' | remove: ',' -%}
+      {%- assign pr_num = pr_str | plus: 0 -%}
+      {%- if block.settings.tier == '1' -%}{%- assign t1_total = t1_total | plus: pr_num -%}{%- endif -%}
+      {%- if block.settings.tier == '2' -%}{%- assign t2_total = t2_total | plus: pr_num -%}{%- endif -%}
+    {%- endfor -%}
+    {%- if t1_total == 0 -%}{%- assign t1_total = 79 -%}{%- endif -%}
+    {%- if t2_total == 0 -%}{%- assign t2_total = 180 -%}{%- endif -%}
+    {%- assign extras_total = t1_total | plus: t2_total -%}
+
+    <div class="cfg-head">
+      <div class="cfg-head-text">
+        <h2>{{ section.settings.cfg_heading | default: 'Build your kit' }}</h2>
+      </div>
+    </div>
+
+<div class="main-split" id="main-split">
+  <!-- LEFT: 01 What's included — explicit tier groups -->
+  <div class="col col-left">
+    <div class="col-head">
+      <div class="ph"><span class="num">{{ section.settings.cfg_left_number | default: '01' }}</span><span class="t">{{ section.settings.cfg_left_title | default: "What's included" }}</span></div>
+      <span class="meta meta-free"><span class="was">${{ extras_total }}</span><span class="now">Free</span></span>
+      {%- comment -%} Hidden status targets — JS writes to these; tier-value + CTA sub render the visible state. {%- endcomment -%}
+      <span class="sr-only" aria-hidden="true" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)"><span id="pc-num">0</span> · <span id="tier-label">No tier yet</span></span>
+    </div>
+
+    {%- comment -%}
+      Starter kit tier items — wired to section.blocks (type: starter_product).
+      Tier totals (t1_total, t2_total) were already computed at the top of
+      the section above the cfg-head badge. Reused here for the tier-value
+      headers (the "$79 Free" / "$180 Free" amber pills).
+    {%- endcomment -%}
+
+    {%- if starter_blocks.size > 0 -%}
+      {%- comment -%}
+        Note: we avoid `| where: 'settings.tier', '1'` — that filter doesn't reliably
+        match nested block settings in Shopify Liquid. Instead, iterate and check
+        `block.settings.tier` inline. Tier values are string '1' / '2' per the schema.
+      {%- endcomment -%}
+
+      <!-- Tier 1 group -->
+      <div class="tier-group unlocked" id="tier1-group">
+        <div class="tier-header">
+          <div class="tier-label"><span class="k">Tier 1</span><span class="t">At 2+ lamps</span></div>
+          <span class="tier-status" id="tier1-status">Unlocked</span>
+          <div class="tier-value"><span class="was">${{ t1_total }}</span><span class="now">Free</span></div>
+        </div>
+        <div class="announce" role="status" aria-live="polite"><span class="ic">✓</span><div class="body"><span class="ti">Tier 01 unlocked</span><span class="su"><b>${{ t1_total }}</b> in free extras added to your kit</span></div><button class="x" type="button" aria-label="Dismiss" onclick="this.closest('.announce').classList.add('dismissed')">×</button></div>
+        <div class="tier-items">
+          {%- for block in starter_blocks -%}
+            {%- if block.settings.tier != '1' -%}{%- continue -%}{%- endif -%}
+            {%- comment -%}
+              Shopify's `type: "product"` setting can return either a Product drop
+              directly OR a handle string depending on theme/admin config. Handle
+              both: if it's already a Product (has a .title), use it; otherwise
+              look up via all_products[handle]. UNLISTED products may not resolve
+              via all_products — variant_gid_override + product_url_override let us
+              hardcode the variant + url for those.
+            {%- endcomment -%}
+            {%- assign raw_product = block.settings.product -%}
+            {%- if raw_product.id != blank -%}
+              {%- assign sp = raw_product -%}
+            {%- else -%}
+              {%- assign sp = all_products[raw_product] -%}
+            {%- endif -%}
+            {%- assign sp_vid = sp.selected_or_first_available_variant.id -%}
+            {%- if block.settings.variant_gid_override != blank -%}{%- assign sp_vid = block.settings.variant_gid_override -%}{%- endif -%}
+            {%- assign sp_url = sp.url | default: '#' -%}
+            {%- if block.settings.product_url_override != blank -%}{%- assign sp_url = block.settings.product_url_override -%}{%- endif -%}
+
+            {%- assign label_lower = block.settings.label | default: '' | downcase -%}
+            {%- assign is_credit = block.settings.credit -%}
+            {%- if label_lower contains 'credit' -%}{%- assign is_credit = true -%}{%- endif -%}
+            {%- if is_credit -%}
+              <button type="button" class="tg-item" {{ block.shopify_attributes }} data-tg-popover data-gift-name="{{ block.settings.label | default: 'Next Room Credit' | escape }}" data-gift-was="{{ block.settings.was_price | default: '$150' | escape }}" aria-label="{{ block.settings.label | default: 'Next Room Credit' | escape }} — view details">
+                <span class="tg-item__pic tg-item__pic--credit"><span class="ph-amount">$150</span></span>
+                <div class="info"><span class="check" aria-hidden="true">✓</span><span class="nm">{{ block.settings.label | default: 'Next Room Credit' }}</span></div>
+                <span class="was">{{ block.settings.was_price | default: '$150' }}</span>
+                <span class="free">Free</span>
+              </button>
+            {%- else -%}
+              {%- assign label_key = block.settings.label | default: sp.title | downcase -%}
+              {%- assign tg_img = '' -%}
+              {%- if label_key contains 'bulb' -%}{%- assign tg_img = 'home-v2-tier1-bulb.png' -%}
+              {%- elsif label_key contains 'care' -%}{%- assign tg_img = 'home-v2-tier1-care-kit.png' -%}
+              {%- elsif label_key contains 'layering' or label_key contains 'guide' -%}{%- assign tg_img = 'home-v2-tier1-guide.png' -%}
+              {%- elsif label_key contains 'taper' -%}{%- assign tg_img = 'home-v2-tier2-tapers.png' -%}
+              {%- endif -%}
+              {%- assign tg_img_url = '' -%}
+              {%- if tg_img != '' -%}{%- assign tg_img_url = tg_img | asset_url -%}
+              {%- elsif sp.featured_image -%}{%- assign tg_img_url = sp.featured_image | image_url: width: 192 -%}
+              {%- endif -%}
+              <button type="button" class="tg-item" {{ block.shopify_attributes }} data-starter-id="{{ sp_vid }}" data-tg-popover data-gift-name="{{ block.settings.label | default: sp.title | escape }}" data-gift-img="{{ tg_img_url }}" data-gift-was="{{ block.settings.was_price | default: '' | escape }}" aria-label="{{ block.settings.label | default: sp.title | escape }} — view details">
+                {%- if tg_img != '' -%}
+                  <span class="tg-item__pic"><img src="{{ tg_img | asset_url }}" alt="" loading="lazy" width="48" height="48"></span>
+                {%- elsif sp.featured_image -%}
+                  <span class="tg-item__pic"><img src="{{ sp.featured_image | image_url: width: 96 }}" alt="" loading="lazy" width="48" height="48"></span>
+                {%- else -%}
+                  <span class="tg-item__pic tg-item__pic--ph"></span>
+                {%- endif -%}
+                <div class="info"><span class="check" aria-hidden="true">✓</span><span class="nm">{{ block.settings.label | default: sp.title }}</span></div>
+                <span class="was">{{ block.settings.was_price | default: '' }}</span>
+                <span class="free">Free</span>
+              </button>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+
+      <!-- Tier 2 group (includes Warm Credit) -->
+      <div class="tier-group unlocked" id="tier2-group">
+        <div class="tier-header">
+          <div class="tier-label"><span class="k">Tier 2</span><span class="t">3+ lamps · 1 floor lamp</span></div>
+          <span class="tier-status" id="tier2-status">Unlocked</span>
+          <div class="tier-value"><span class="was">${{ t2_total }}</span><span class="now">Free</span></div>
+        </div>
+        <div class="announce" role="status" aria-live="polite"><span class="ic">✓</span><div class="body"><span class="ti">Tier 02 unlocked</span><span class="su"><b>${{ t2_total }}</b> in free extras — $150 room credit included</span></div><button class="x" type="button" aria-label="Dismiss" onclick="this.closest('.announce').classList.add('dismissed')">×</button></div>
+        <div class="tier-items">
+          {%- for block in starter_blocks -%}
+            {%- if block.settings.tier != '2' -%}{%- continue -%}{%- endif -%}
+            {%- assign label_lower = block.settings.label | default: '' | downcase -%}
+            {%- assign is_credit = block.settings.credit -%}
+            {%- if label_lower contains 'credit' -%}{%- assign is_credit = true -%}{%- endif -%}
+            {%- if is_credit -%}
+              <button type="button" class="tg-item" {{ block.shopify_attributes }} data-tg-popover data-gift-name="{{ block.settings.label | default: 'Next Room Credit' | escape }}" data-gift-was="{{ block.settings.was_price | default: '$150' | escape }}" aria-label="{{ block.settings.label | default: 'Next Room Credit' | escape }} — view details">
+                <span class="tg-item__pic tg-item__pic--credit"><span class="ph-amount">$150</span></span>
+                <div class="info"><span class="check" aria-hidden="true">✓</span><span class="nm">{{ block.settings.label | default: 'Next Room Credit' }}</span></div>
+                <span class="was">{{ block.settings.was_price | default: '$150' }}</span>
+                <span class="free">Free</span>
+              </button>
+            {%- else -%}
+              {%- comment -%}
+              Shopify's `type: "product"` setting can return either a Product drop
+              directly OR a handle string depending on theme/admin config. Handle
+              both: if it's already a Product (has a .title), use it; otherwise
+              look up via all_products[handle]. UNLISTED products may not resolve
+              via all_products — variant_gid_override + product_url_override let us
+              hardcode the variant + url for those (e.g. Pocket).
+            {%- endcomment -%}
+            {%- assign raw_product = block.settings.product -%}
+            {%- if raw_product.id != blank -%}
+              {%- assign sp = raw_product -%}
+            {%- else -%}
+              {%- assign sp = all_products[raw_product] -%}
+            {%- endif -%}
+            {%- assign sp_vid = sp.selected_or_first_available_variant.id -%}
+            {%- if block.settings.variant_gid_override != blank -%}{%- assign sp_vid = block.settings.variant_gid_override -%}{%- endif -%}
+            {%- assign sp_url = sp.url | default: '#' -%}
+            {%- if block.settings.product_url_override != blank -%}{%- assign sp_url = block.settings.product_url_override -%}{%- endif -%}
+              {%- assign label_key = block.settings.label | default: sp.title | downcase -%}
+              {%- assign tg_img = '' -%}
+              {%- if label_key contains 'bulb' -%}{%- assign tg_img = 'home-v2-tier1-bulb.png' -%}
+              {%- elsif label_key contains 'care' -%}{%- assign tg_img = 'home-v2-tier1-care-kit.png' -%}
+              {%- elsif label_key contains 'layering' or label_key contains 'guide' -%}{%- assign tg_img = 'home-v2-tier1-guide.png' -%}
+              {%- elsif label_key contains 'taper' -%}{%- assign tg_img = 'home-v2-tier2-tapers.png' -%}
+              {%- endif -%}
+              {%- assign tg_img_url = '' -%}
+              {%- if tg_img != '' -%}{%- assign tg_img_url = tg_img | asset_url -%}
+              {%- elsif sp.featured_image -%}{%- assign tg_img_url = sp.featured_image | image_url: width: 192 -%}
+              {%- endif -%}
+              <button type="button" class="tg-item" {{ block.shopify_attributes }} data-starter-id="{{ sp_vid }}" data-tg-popover data-gift-name="{{ block.settings.label | default: sp.title | escape }}" data-gift-img="{{ tg_img_url }}" data-gift-was="{{ block.settings.was_price | default: '' | escape }}" aria-label="{{ block.settings.label | default: sp.title | escape }} — view details">
+                {%- if tg_img != '' -%}
+                  <span class="tg-item__pic"><img src="{{ tg_img | asset_url }}" alt="" loading="lazy" width="48" height="48"></span>
+                {%- elsif sp.featured_image -%}
+                  <span class="tg-item__pic"><img src="{{ sp.featured_image | image_url: width: 96 }}" alt="" loading="lazy" width="48" height="48"></span>
+                {%- else -%}
+                  <span class="tg-item__pic tg-item__pic--ph"></span>
+                {%- endif -%}
+                <div class="info"><span class="check" aria-hidden="true">✓</span><span class="nm">{{ block.settings.label | default: sp.title }}</span></div>
+                <span class="was">{{ block.settings.was_price | default: '' }}</span>
+                <span class="free">Free</span>
+              </button>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- else -%}
+      {%- comment -%} Fallback to static mock markup if no blocks configured {%- endcomment -%}
+      <!-- Tier 1 group -->
+      <div class="tier-group unlocked" id="tier1-group">
+        <div class="tier-header">
+          <div class="tier-label"><span class="k">Tier 1</span><span class="t">At 2+ lamps</span></div>
+          <span class="tier-status" id="tier1-status">Unlocked</span>
+          <div class="tier-value"><span class="was">$79</span><span class="now">Free</span></div>
+        </div>
+        <div class="announce" role="status" aria-live="polite"><span class="ic">✓</span><div class="body"><span class="ti">Tier 01 unlocked</span><span class="su"><b>$79</b> in free extras added to your kit</span></div><button class="x" type="button" aria-label="Dismiss" onclick="this.closest('.announce').classList.add('dismissed')">×</button></div>
+        <div class="tier-items">
+          <div class="tg-item">
+            <span class="tg-item__pic"><img src="{{ 'home-v2-tier1-bulb.png' | asset_url }}" alt="" loading="lazy" width="48" height="48"></span>
+            <div class="info"><span class="check" aria-hidden="true">✓</span><span class="nm">2700K Replacement Bulb</span></div>
+            <span class="was">$15</span>
+            <span class="free">Free</span>
+          </div>
+          <div class="tg-item">
+            <span class="tg-item__pic"><img src="{{ 'home-v2-tier1-care-kit.png' | asset_url }}" alt="" loading="lazy" width="48" height="48"></span>
+            <div class="info"><span class="check" aria-hidden="true">✓</span><span class="nm">Lamp Care Kit</span></div>
+            <span class="was">$35</span>
+            <span class="free">Free</span>
+          </div>
+          <div class="tg-item">
+            <span class="tg-item__pic"><img src="{{ 'home-v2-tier1-guide.png' | asset_url }}" alt="" loading="lazy" width="48" height="48"></span>
+            <div class="info"><span class="check" aria-hidden="true">✓</span><span class="nm">The Warm Layering Guide</span></div>
+            <span class="was">$29</span>
+            <span class="free">Free</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tier 2 group (includes Warm Credit) -->
+      <div class="tier-group unlocked" id="tier2-group">
+        <div class="tier-header">
+          <div class="tier-label"><span class="k">Tier 2</span><span class="t">3+ lamps · 1 floor lamp</span></div>
+          <span class="tier-status" id="tier2-status">Unlocked</span>
+          <div class="tier-value"><span class="was">$259</span><span class="now">Free</span></div>
+        </div>
+        <div class="announce" role="status" aria-live="polite"><span class="ic">✓</span><div class="body"><span class="ti">Tier 02 unlocked</span><span class="su"><b>$259</b> in free extras — $150 room credit included</span></div><button class="x" type="button" aria-label="Dismiss" onclick="this.closest('.announce').classList.add('dismissed')">×</button></div>
+        <div class="tier-items">
+          {%- assign mini_hero = all_products['pocket'].featured_image -%}
+          <a class="tg-item" href="/products/pocket" aria-label="Rechargeable Mini Lamp — view product">
+            <span class="tg-item__pic"><img src="{% if mini_hero %}{{ mini_hero | image_url: width: 96 }}{% else %}{{ 'home-v2-tier2-mini-lamp.png' | asset_url }}{% endif %}" alt="" loading="lazy" width="48" height="48"></span>
+            <div class="info"><span class="check" aria-hidden="true">✓</span><span class="nm">Rechargeable Mini Lamp</span></div>
+            <span class="was">$99</span>
+            <span class="free">Free</span>
+          </a>
+          <div class="tg-item">
+            <span class="tg-item__pic"><img src="{{ 'home-v2-tier2-tapers.png' | asset_url }}" alt="" loading="lazy" width="48" height="48"></span>
+            <div class="info"><span class="check" aria-hidden="true">✓</span><span class="nm">Hand-Poured Beeswax Tapers</span></div>
+            <span class="was">$10</span>
+            <span class="free">Free</span>
+          </div>
+          <div class="tg-item">
+            <span class="tg-item__pic tg-item__pic--credit"><span class="ph-amount">$150</span></span>
+            <div class="info"><span class="check" aria-hidden="true">✓</span><span class="nm">Next Room Credit</span></div>
+            <span class="was">$150</span>
+            <span class="free">Free</span>
+          </div>
+        </div>
+      </div>
+    {%- endif -%}
+
+    <div class="always-included">
+      <span class="ai-label">{{ section.settings.ai_label | default: 'Always included' }}</span>
+      <ul>
+        <li><span class="material-symbols-outlined">check</span><span>{{ section.settings.ai_item_1 | default: 'Free shipping' }}</span></li>
+        <li><span class="material-symbols-outlined">check</span><span>{{ section.settings.ai_item_2 | default: '30-day returns' }}</span></li>
+        <li><span class="material-symbols-outlined">check</span><span>{{ section.settings.ai_item_3 | default: '2700K bulbs included' }}</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- RIGHT: 02 Your kit -->
+  <div class="col col-right">
+    <div class="col-head col-head--right">
+      <div class="ph">
+        <span class="num">{{ section.settings.cfg_right_number | default: '02' }}</span>
+        <div class="ph-text">
+          <span class="t">{{ section.settings.cfg_right_title | default: 'Your kit' }}</span>
+          <span class="ph-sub">Choose 4 lamps</span>
+        </div>
+      </div>
+      <span class="meta meta-count"><em id="meta-pc-num">0</em> / 4 selected</span>
+      {%- comment -%} Reset button kept in DOM (id #reset-btn) so JS click listener still works,
+           but hidden per user feedback 2026-04-25 — "Use our picks" was distracting. {%- endcomment -%}
+      <button class="reset" id="reset-btn" type="button" hidden>
+        <span class="material-symbols-outlined" aria-hidden="true">auto_awesome</span>
+        {{ section.settings.cfg_reset_text | default: 'Use our picks' }}
+      </button>
+    </div>
+    <div class="slots" id="slots" style="--slots-cols: {{ section.settings.slots_per_row | default: 2 }};"></div>
+
+    {%- comment -%}
+      Anchor reminder removed per design 2026-04-23 — the floor-lamp requirement
+      is already called out in col-hint and on slot 03. The CSS rules and
+      `anchor_hint_title` / `anchor_hint_body` settings are left in place so
+      this block can be reinstated by uncommenting the markup below.
+      <div class="anchor-reminder">
+        <div class="anchor-icon"><span class="material-symbols-outlined">anchor</span></div>
+        <div class="anchor-body">
+          <h4>{{ section.settings.anchor_hint_title | default: "Floor lamp unlocks Tier 02" }}</h4>
+          <p>{{ section.settings.anchor_hint_body | default: 'At least one floor lamp gives the room a real anchor and unlocks the full gift set.' }}</p>
+        </div>
+      </div>
+    {%- endcomment -%}
+
+    <!-- Add-to-bag form: posts selected variants to Shopify cart.
+         return_to=/checkout redirects straight to checkout after the POST succeeds,
+         bypassing the cart/bag page entirely. -->
+    <form action="{{ routes.cart_add_url }}" method="post" enctype="multipart/form-data" data-kit-cart-form id="kit-cart-form">
+      <input type="hidden" name="return_to" value="/checkout">
+      <div class="kit-cta-row">
+        {%- comment -%} Hidden status — JS writes state here for future use / screen readers. {%- endcomment -%}
+        <div class="kit-status" aria-hidden="true">
+          <span class="l">Your kit</span>
+          <span class="status-text" id="kit-status-text">No lamps added</span>
+          <div class="kit-progress" id="kit-progress">
+            <span class="seg"></span><span class="seg"></span><span class="seg"></span><span class="seg"></span>
+          </div>
+        </div>
+        <div class="kit-total">
+          <span class="v" id="kit-total-v">Up to <b>$338</b> in free extras</span>
+          <span class="sub" id="kit-total-sub" hidden></span>
+        </div>
+        <button class="add-btn disabled" id="kit-add-btn" type="submit" disabled><span class="add-btn__lbl">Pick a Lamp</span><span class="add-btn__arrow" aria-hidden="true">›</span></button>
+      </div>
+      <!-- Hidden inputs populated by JS on submit. Leaves unused slots empty. -->
+      <div data-kit-hidden-inputs style="display:none"></div>
+    </form>
+  </div>
+</div>
+  </div>
+</section>
+
+<!-- BROWSE — Pick your own (Section 06, slot-aware catalog grid) -->
+<section class="browse">
+  <div class="wrap">
+    <div class="browse-head">
+      <h3><span class="num">{{ section.settings.browse_number | default: '03' }}</span>{{ section.settings.browse_title | default: 'Pick your own' }}</h3>
+      {%- if section.settings.browse_hint != blank -%}<span class="hint">{{ section.settings.browse_hint }}</span>{%- endif -%}
+    </div>
+    <div class="fs">
+      <div class="fg">
+        <span class="chip on" data-filter="all">All <span id="cnt-all">(0)</span></span>
+        <span class="chip" data-filter="floor">Floor lamps <span id="cnt-floor">(0)</span></span>
+        <span class="chip" data-filter="table">Table lamps <span id="cnt-table">(0)</span></span>
+        {%- comment -%}
+          Search toggle — sits at the end of the chip row (desktop + mobile).
+          Click expands the .kit-search bar below; matches re-filter the grid
+          live as the user types. No reload, no API call — products are already
+          in JS memory.
+        {%- endcomment -%}
+        <select class="kit-sort" id="kit-sort" aria-label="Sort lamps">
+          <option value="default">Featured</option>
+          <option value="price-asc">Price: low → high</option>
+          <option value="price-desc">Price: high → low</option>
+          <option value="name">Name: A–Z</option>
+        </select>
+        <button type="button" class="kit-search-btn" id="kit-search-btn" aria-expanded="false" aria-controls="kit-search-bar" aria-label="Search lamps">
+          <span class="material-symbols-outlined">search</span>
+        </button>
+      </div>
+      <div class="kit-search" id="kit-search-bar" hidden>
+        <span class="kit-search__icon material-symbols-outlined" aria-hidden="true">search</span>
+        <input type="search" id="kit-search-input" class="kit-search__input"
+               placeholder="Search by name…" autocomplete="off" spellcheck="false"
+               aria-label="Search lamps in this kit">
+        <button type="button" class="kit-search__clear" id="kit-search-clear" aria-label="Clear search" hidden>
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+    </div>
+    <div class="p-grid" id="grid"></div>
+    <nav class="p-pager hidden" id="grid-pager" aria-label="Product pages">
+      <span class="p-page-info" id="grid-page-info"></span>
+      <div class="p-dots" id="grid-dots"></div>
+      <div class="p-ctrls">
+        <button type="button" class="p-btn" id="grid-prev" aria-label="Previous page">‹</button>
+        <button type="button" class="p-btn" id="grid-next" aria-label="Next page">›</button>
+      </div>
+    </nav>
+    {%- comment -%} Browse-bottom Complete Kit CTA — visible at 2+ lamps. {%- endcomment -%}
+    <div class="browse-complete" id="browse-complete">
+      <div class="browse-complete__line">
+        <span class="browse-complete__count" id="browse-complete-count">0 lamps in your kit</span>
+        <span class="browse-complete__sub" id="browse-complete-sub">Add a 2nd lamp to unlock $79 in free gifts</span>
+      </div>
+      <button class="browse-complete__cta" id="browse-complete-cta" type="button">Complete kit</button>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq">
+  <div class="wrap">
+    <div class="head">
+      <span class="k">{{ section.settings.faq_kicker | default: 'Details' }}</span>
+      <h2>{{ section.settings.faq_heading | default: "Questions we've already <span>answered</span>." }}</h2>
+    </div>
+    <details>
+      <summary>{{ section.settings.faq1_q | default: 'Do I need an electrician?' }} <span class="ic">+</span></summary>
+      <p>{{ section.settings.faq1_a | default: "No. Every lamp in this kit is plug-in. There's no ceiling access, no hardwiring, no switches to install. Unboxing is the installation — plug it in and the room works." }}</p>
+    </details>
+    <details>
+      <summary>{{ section.settings.faq2_q | default: 'Will this light a full room?' }} <span class="ic">+</span></summary>
+      <p>{{ section.settings.faq2_a | default: 'Yes. A full kit is 3+ lamps with one floor lamp as the anchor — the floor lamp is what makes the room actually feel lit, not just accented. Two secondary lamps plus the anchor cover every zone you use after dark. Larger rooms: add a fourth or fifth lamp.' }}</p>
+    </details>
+    <details>
+      <summary>{{ section.settings.faq3_q | default: 'What does "2700K" mean?' }} <span class="ic">+</span></summary>
+      <p>{{ section.settings.faq3_a | default: "Color temperature. 2700K is warm white — the color of firelight and the standard in almost every hotel and fine dining room. It's been shown to be gentler on evening circadian rhythm than the 4000K+ you'll find in most big-box LEDs." }}</p>
+    </details>
+    <details>
+      <summary>{{ section.settings.faq4_q | default: 'How does the $150 Warm Credit work?' }} <span class="ic">+</span></summary>
+      <p>{{ section.settings.faq4_a | default: 'It applies automatically to your account at checkout. When you come back to configure your next room — any Tier 2 kit (3+ lamps with a floor-lamp anchor) — the credit comes off the total. Not a discount; the second room is how the system works.' }}</p>
+    </details>
+    <details>
+      <summary>{{ section.settings.faq5_q | default: 'Can I swap lamps later?' }} <span class="ic">+</span></summary>
+      <p>{{ section.settings.faq5_a | default: 'Yes, right now and after purchase. On this page, tap any slot to see alternatives. Once shipped, our 30-day return policy covers swaps — no questions, pre-paid return label.' }}</p>
+    </details>
+    <details>
+      <summary>{{ section.settings.faq6_q | default: 'What if I just want one lamp?' }} <span class="ic">+</span></summary>
+      <p>{{ section.settings.faq6_a | default: "The kit framework is optional. You can buy any lamp individually. But you'll lose the Tier 1 / Tier 2 freebies and the Warm Credit — which together are worth $338 on a 3+ lamp kit with the floor-lamp anchor." }}</p>
+    </details>
+    <details>
+      <summary>{{ section.settings.faq7_q | default: 'How fast does it ship?' }} <span class="ic">+</span></summary>
+      <p>{{ section.settings.faq7_a | default: 'Orders placed before 2 PM PT ship the same day; everything else goes out next business day. Standard shipping is free in the continental US and arrives in 3–5 business days. Expedited and 2-day options at checkout.' }}</p>
+    </details>
+    <details>
+      <summary>{{ section.settings.faq8_q | default: 'What if I don&#39;t love it?' }} <span class="ic">+</span></summary>
+      <p>{{ section.settings.faq8_a | default: '30-day returns, no questions asked. Plug the kit in, live with it for a week or four. If the room doesn&#39;t feel different, send it back with the pre-paid label we include in the box. Full refund, no restocking fees — even the freebies stay yours.' }}</p>
+    </details>
+    <details>
+      <summary>{{ section.settings.faq9_q | default: 'Do you ship outside the US?' }} <span class="ic">+</span></summary>
+      <p>{{ section.settings.faq9_a | default: 'Not yet. The kit is US-only right now — the plug standard, voltage, and free shipping all assume a US address. Email hello@warmbydesign.com if you want a heads-up when we open to your country.' }}</p>
+    </details>
+    <div class="faq-cta">
+      <button class="scroll-to-kit" data-scroll-target=".main-split" type="button">Ready? Back to your kit ↑</button>
+    </div>
+  </div>
+</section>
+
+<!-- UNLOCKED SUMMARY — prominent recap + trust row above the Complete-your-order CTA.
+     JS updates text + progress bar + tier statuses inside renderUnlockedSummary(). -->
+<section class="kit-unlocked-summary" id="kit-unlocked-summary" aria-live="polite">
+  <div class="wrap">
+    <span class="k">Your kit so far</span>
+    <h3 class="us-headline" id="us-headline">Pick 2 lamps to start earning <em>free extras</em></h3>
+    <div class="us-value-row">
+      <div class="us-big">
+        <span class="us-label">Free extras earned</span>
+        <span class="us-v" id="us-value">$0</span>
+        <span class="us-of">of up to $338</span>
+      </div>
+      <div class="us-bar"><span class="fill" id="us-bar-fill"></span></div>
+    </div>
+    <div class="us-tiers">
+      <div class="us-tier" id="us-t1">
+        <div class="us-tier-head"><span class="check">✓</span><span class="badge">Tier 01</span><span class="v">$79</span></div>
+        <span class="us-tier-sub">2+ lamps · Bulb · Care Kit · Warm Layering Guide</span>
+      </div>
+      <div class="us-tier" id="us-t2">
+        <div class="us-tier-head"><span class="check">✓</span><span class="badge">Tier 02</span><span class="v">$259</span></div>
+        <span class="us-tier-sub">3+ lamps · 1 floor lamp · Rechargeable lamp ($99) · Tapers · $150 credit</span>
+      </div>
+    </div>
+    {%- comment -%} Trust row — star rating + kit count + guarantees. Builds confidence
+      right before the Complete-your-order CTA. {%- endcomment -%}
+    <div class="us-trust">
+      <span class="us-trust-item"><span class="us-stars">★★★★★</span><b>4.9</b><span>·</span>2,000+ kits shipped</span>
+      <span class="us-trust-item"><span class="material-symbols-outlined ic">local_shipping</span>Free shipping</span>
+      <span class="us-trust-item"><span class="material-symbols-outlined ic">keep</span>30-day returns</span>
+      <span class="us-trust-item"><span class="material-symbols-outlined ic">lightbulb</span>2700K bulbs in</span>
+    </div>
+  </div>
+</section>
+
+<!-- SECOND CTA -->
+<section class="second-cta">
+  <div class="wrap">
+    <span class="k">{{ section.settings.cta_kicker | default: 'Ready when you are' }}</span>
+    <h2>{{ section.settings.cta_heading | default: 'Your <span>Evening Room</span> is configured.' }}</h2>
+    <p>{{ section.settings.cta_subline | default: 'Your lamps, 2700K lighting, $338 of accessories, and $150 toward your next room.' }}</p>
+    <div class="cta-row">
+      <button class="btn-main" id="second-cta-btn" type="button">{{ section.settings.cta_button_text | default: 'Complete your order' }}</button>
+      <button class="btn-ghost" type="button" onclick="document.querySelector('.col-right').scrollIntoView({behavior:'smooth'})">{{ section.settings.cta_secondary_text | default: 'Configure again' }}</button>
+    </div>
+  </div>
+</section>
+
+<!-- Sticky dock -->
+<div class="dock" id="dock">
+  <div class="dock-slots" id="dock-slots"></div>
+  <div class="dock-tier">
+    <div class="r1">
+      <span class="badge" id="dock-badge">Pick 2 lamps to start</span>
+      <span class="label-inline" id="dock-pieces"><b>0</b> lamps</span>
+    </div>
+    <div class="r2" id="dock-subline">+ $150 next-room credit included</div>
+    <div class="dock-extras" id="dock-extras"></div>
+  </div>
+  <div class="dock-total">
+    <span class="l">Your kit</span>
+    <span class="v" id="dock-total">$897</span>
+    <span class="v-sub" id="dock-total-sub">+ $338 in free extras</span>
+  </div>
+  <button class="btn" id="dock-cta" type="button">Complete your order</button>
+</div>
+
+
+<!-- Gift info popover — small modal triggered by clicking a Tier 1/2 gift item -->
+<div class="gift-pop" id="gift-pop" hidden role="dialog" aria-modal="true" aria-labelledby="gift-pop-name">
+  <div class="gift-pop__backdrop" data-gift-close></div>
+  <div class="gift-pop__panel">
+    <button type="button" class="gift-pop__x" data-gift-close aria-label="Close">×</button>
+    <div class="gift-pop__pic"><img id="gift-pop-img" src="" alt=""><span class="gift-pop__pic--credit" id="gift-pop-credit" hidden>$150</span></div>
+    <h4 class="gift-pop__name" id="gift-pop-name"></h4>
+    <p class="gift-pop__desc" id="gift-pop-desc"></p>
+    <div class="gift-pop__price"><span class="gift-pop__was" id="gift-pop-was"></span><span class="gift-pop__free">Free</span></div>
+  </div>
+</div>
+
+<!-- Product Details Modal -->
+<!-- Quick variant picker — opens when a variant product is clicked from the
+     browse grid. Type-only mini card: name, type · price, then a 2-column
+     grid of swatch pills, then a View details footer. -->
+<div class="kit-qp" id="kit-qp" hidden role="dialog" aria-modal="true" aria-label="Pick a color">
+  <div class="kit-qp__backdrop" data-qp-close></div>
+  <div class="kit-qp__panel">
+    <button type="button" class="kit-qp__close" data-qp-close aria-label="Close">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+    <div class="kit-qp__head">
+      <h3 class="kit-qp__name" id="kit-qp-title">—</h3>
+      <div class="kit-qp__meta">
+        <span class="kit-qp__type" id="kit-qp-type">Lamp</span>
+        <span class="kit-qp__dot">·</span>
+        <span class="kit-qp__price" id="kit-qp-price">—</span>
+      </div>
+    </div>
+    <div class="kit-qp__pick">
+      <span class="kit-qp__pick-lbl">Pick a color</span>
+      <span class="kit-qp__pick-hint">tap to add</span>
+    </div>
+    <div class="kit-qp__rail" id="kit-qp-rail" role="radiogroup" aria-label="Color"></div>
+    <button type="button" class="kit-qp__details" id="kit-qp-details">
+      View details<span class="material-symbols-outlined">arrow_forward</span>
+    </button>
+  </div>
+</div>
+
+<div class="modal" id="product-modal" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-content">
+    <button class="modal-close" data-close aria-label="Close details" type="button">×</button>
+
+    {%- comment -%}
+      Gallery — mirrors product page #pdpTrack pattern exactly. Each slot is a
+      flex child of 100% width; show(i) sets translateX(-i * 100%). Day/night
+      pairs render as a scene slot with layered images + an INLINE <input
+      type="range"> (same as .pdp-scene-slider). Single images render as a
+      single <img> slot. Thumbnails are one per slot — the day thumb represents
+      the whole scene (night is never its own thumb).
+    {%- endcomment -%}
+    <div class="modal-gallery">
+      <div class="modal-img" id="modal-main-wrap">
+        <div class="modal-track" id="modal-track"></div>
+        <button class="modal-nav modal-nav-prev" type="button" aria-label="Previous image" id="modal-prev">‹</button>
+        <button class="modal-nav modal-nav-next" type="button" aria-label="Next image" id="modal-next">›</button>
+        {%- comment -%}
+          Hero swatch overlay — overlays the modal hero exactly like the PDP's
+          `.pdp-hsw`. Glass pill at bottom-left with [Color · ActiveName | chips].
+          Click a chip → re-render the gallery for that variant + swap the image.
+          Hidden via [hidden] for non-variant products.
+        {%- endcomment -%}
+        <div class="modal-hsw" id="modal-hsw" hidden>
+          <div class="modal-hsw__lbl">
+            <span class="modal-hsw__lbl-k">Color</span>
+            <span class="modal-hsw__lbl-v" id="modal-hsw-name">—</span>
+          </div>
+          <div class="modal-hsw__row" id="modal-hsw-rail"></div>
+        </div>
+      </div>
+      <div class="modal-thumbs" id="modal-thumbs"></div>
+    </div>
+
+    <div class="modal-body">
+      <span class="kicker" id="modal-kicker">Warm Lamp · Floor</span>
+      <h2 id="modal-name"></h2>
+      <span class="modal-price" id="modal-price"></span>
+      {%- comment -%}
+        Right-column variant picker — populated by JS when a multi-variant
+        product is opened. Always visible in the body (mirrors PDP buybox),
+        regardless of which gallery slot is on screen. Stays in sync with the
+        hero overlay (.modal-hsw): clicking either picker swaps the active
+        variant in both.
+      {%- endcomment -%}
+      <div class="modal-variants" id="modal-variants" hidden>
+        <div class="modal-variants__hd">
+          <span class="modal-variants__lbl">Color</span>
+          <span class="modal-variants__val" id="modal-variant-name">—</span>
+        </div>
+        <div class="modal-variants__rail" id="modal-variant-rail"></div>
+      </div>
+      {%- comment -%} Add-to-kit CTA moved up here (right under variants, above highlights/desc/specs)
+        per UX feedback 2026-04-26 — primary action shouldn't be hidden at the bottom of a long scroll. {%- endcomment -%}
+      <button class="modal-add" id="modal-add" type="button">Add to kit</button>
+      <div class="modal-highlights" id="modal-highlights"></div>
+      <p class="desc" id="modal-desc"></p>
+      <div class="specs" id="modal-specs"></div>
+    </div>
+  </div>
+</div>
+
+</div>{%- comment -%} /.kit-configurator {%- endcomment -%}
+
+<style>
+.kit-configurator {
+  --hero_height_vh: {{ section.settings.hero_height_vh | default: 64 }}vh;
+  --hero_height_min: {{ section.settings.hero_height_min | default: 560 }}px;
+  --hero_focus_desktop: {{ section.settings.hero_focus_desktop | default: 'center center' }};
+  --hero_heading_size: {{ section.settings.hero_heading_size | default: 80 }}px;
+  --hero_sub_size: {{ section.settings.hero_sub_size | default: 16 }}px;
+  --bridge_heading_size: {{ section.settings.bridge_heading_size | default: 44 }}px;
+  --bridge_sub_size: {{ section.settings.bridge_sub_size | default: 15 }}px;
+  --bridge_image_aspect: {{ section.settings.bridge_image_aspect | default: '16 / 9' }};
+  --bridge_image_max_height: {{ section.settings.bridge_image_max_height | default: 560 }}px;
+  --kelvin_heading_size: {{ section.settings.kelvin_heading_size | default: 40 }}px;
+  --kelvin_sub_size: {{ section.settings.kelvin_sub_size | default: 15 }}px;
+  --kelvin_image_aspect: {{ section.settings.kelvin_image_aspect | default: '16 / 9' }};
+  --kelvin_image_max_height: {{ section.settings.kelvin_image_max_height | default: 620 }}px;
+  --cfg_heading_size: {{ section.settings.cfg_heading_size | default: 44 }}px;
+  --why_heading_size: {{ section.settings.why_heading_size | default: 38 }}px;
+  --why_panel_heading_size: {{ section.settings.why_panel_heading_size | default: 28 }}px;
+  --reviews_heading_size: {{ section.settings.reviews_heading_size | default: 34 }}px;
+  --faq_heading_size: {{ section.settings.faq_heading_size | default: 32 }}px;
+  --cta_heading_size: {{ section.settings.cta_heading_size | default: 44 }}px;
+  --hero_aspect_mobile: {{ section.settings.hero_aspect_mobile | default: '4 / 3' }};
+  --hero_mobile_min_height: {{ section.settings.hero_mobile_min_height | default: 260 }}px;
+  --hero_mobile_max_vh: {{ section.settings.hero_mobile_max_vh | default: 46 }}vh;
+  --hero_focus_mobile: {{ section.settings.hero_focus_mobile | default: 'center 45%' }};
+  --hero_heading_size_mobile: {{ section.settings.hero_heading_size_mobile | default: 42 }}px;
+  --hero_sub_size_mobile: {{ section.settings.hero_sub_size_mobile | default: 14 }}px;
+  --why_panel_heading_size_minus_4: {{ section.settings.why_panel_heading_size | default: 28 | minus: 4 }}px;
+}
+
+  /* Kit page only: auto-hide the theme's site nav on scroll-down so the
+     kit selection dock (also sticky at top) isn't overlapped. The nav
+     slides back in on scroll-up or near the top of the page. */
+  #mainNav.wd-nav { transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
+  #mainNav.wd-nav--hidden { transform: translateY(-100%); }
+</style>
+
+<script>
+(function(){
+  /* Scroll-direction aware nav hide — kit page only. */
+  const siteNav = document.getElementById('mainNav');
+  if (siteNav) {
+    let lastY = window.scrollY;
+    let ticking = false;
+    const HIDE_THRESHOLD = 120;   // px scrolled before we start hiding
+    const UP_DEADZONE = 4;        // px of upward jitter ignored
+    const setHidden = (hidden) => {
+      siteNav.classList.toggle('wd-nav--hidden', hidden);
+      document.body.classList.toggle('site-nav-hidden', hidden);
+    };
+    const onScroll = () => {
+      const y = window.scrollY;
+      if (y < HIDE_THRESHOLD) {
+        setHidden(false);
+      } else if (y > lastY + 2) {
+        // scrolling down
+        setHidden(true);
+      } else if (y < lastY - UP_DEADZONE) {
+        // scrolling up
+        setHidden(false);
+      }
+      lastY = y;
+      ticking = false;
+    };
+    window.addEventListener('scroll', () => {
+      if (!ticking) { requestAnimationFrame(onScroll); ticking = true; }
+    }, { passive: true });
+  }
+
+  /* Sticky dock fit: write live --kit-nav-h (so the dock sits flush under the
+     nav with no visible gap, regardless of breakpoint or font-loading reflow)
+     and --kit-dock-h (so the mobile body reservation matches the dock's actual
+     height including safe-area, never clipping page content). */
+  const dockEl = document.getElementById('dock');
+  const root = document.documentElement;
+  const measure = () => {
+    if (siteNav) {
+      const h = Math.round(siteNav.getBoundingClientRect().height);
+      if (h > 0) root.style.setProperty('--kit-nav-h', h + 'px');
+    }
+    if (dockEl) {
+      const h = Math.round(dockEl.getBoundingClientRect().height);
+      if (h > 0) root.style.setProperty('--kit-dock-h', h + 'px');
+    }
+  };
+  measure();
+  window.addEventListener('resize', measure, { passive: true });
+  window.addEventListener('load', measure, { once: true });
+  if ('ResizeObserver' in window) {
+    const ro = new ResizeObserver(measure);
+    if (siteNav) ro.observe(siteNav);
+    if (dockEl) ro.observe(dockEl);
+  }
+})();
+
+(function(){
+  /* Swatch color map — kept in sync with snippets/swatch-color-map.liquid.
+     Hardcoded as an object literal (no Liquid render dependency) so a snippet
+     issue can't silently break the kit configurator. */
+  const SWATCH_HEX = {
+    white: '#F0EDE8', black: '#1A1A1A', coffee: '#5A2E2E', brown: '#9A5F3F',
+    blue: '#3A5C7C', orange: '#C1633A', cream: '#E8DFD0', walnut: '#6B4423',
+    brass: '#A67C3A', rosso: '#5A2E2E', yellow: '#D9A824', red: '#8C2E2E',
+    green: '#415A3E', gray: '#7A7A7A', grey: '#7A7A7A', silver: '#C0C0C0',
+    gold: '#C9A85F'
+  };
+  function hexFor(colorKey){
+    return SWATCH_HEX[(colorKey || '').toLowerCase().trim()] || '#F0EDE8';
+  }
+
+  /* ============================================================
+     PRODUCTS — sourced from Shopify collections.
+     Priority:
+       1. section.settings.kit_collection (merchant-curated)
+       2. collections['floor-lamps'] + collections['table-lamps'] combined
+       3. Hardcoded mock data (demo mode — cart disabled)
+     Each product exposes: id, variantId, slot, name, price (cents→dollar int),
+     code, img, desc, specs (from metafields when available).
+     ============================================================ */
+  {%- if use_default_pair == false and kit_collection and kit_collection.products.size > 0 -%}
+  const products = [
+    {%- for product in kit_collection.products limit: 12 -%}
+      {% render 'kit-product-json', product: product %}{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+  ];
+  {%- elsif floor_collection.products.size > 0 or table_collection.products.size > 0 -%}
+  {%- comment -%}
+    Include ALL floor + table products; pagination (8/page desktop, 6/page
+    mobile) handles display. Merchant can customize by picking a single
+    kit_collection, which then replaces this pair.
+  {%- endcomment -%}
+  {%- assign any_emitted = 0 -%}
+  const products = [
+    {%- for product in floor_collection.products -%}
+      {% if any_emitted > 0 %},{% endif %}{% render 'kit-product-json', product: product %}
+      {%- assign any_emitted = any_emitted | plus: 1 -%}
+    {%- endfor -%}
+    {%- for product in table_collection.products -%}
+      {% if any_emitted > 0 %},{% endif %}{% render 'kit-product-json', product: product %}
+      {%- assign any_emitted = any_emitted | plus: 1 -%}
+    {%- endfor -%}
+  ];
+  {%- else -%}
+  /* Fallback: no collection configured — uses mock data with local asset URLs. */
+  const products = [
+    {id:'cedar',   productId:null, variantId:null, slot:'floor',   name:'Cedar',   price:459, priceMoney:'$459', code:'FL-07', img:'{{ "kit-cedar.jpeg" | asset_url }}',
+      desc:'A minimal brass floor lamp. Hand-finished walnut spine, linen-wrapped shade, plug-in base. Puts out a soft reading-level pool right where the chair or headboard needs it.',
+      specs:{Height:'60 in',Base:'10 in dia',Wattage:'9W · 2700K',Finish:'Brushed brass'}},
+    {id:'wren',    productId:null, variantId:null, slot:'table', name:'Wren',    price:179, priceMoney:'$179', code:'BD-11', img:'{{ "kit-wren.jpeg" | asset_url }}',
+      desc:'The thinnest lamp we make. Inline switch, matte walnut body, linen drum shade. Designed to vanish into the nightstand until you turn it on.',
+      specs:{Height:'16 in',Base:'6 in dia',Wattage:'6W · 2700K',Finish:'Matte walnut'}},
+    {id:'moor',    productId:null, variantId:null, slot:'table', name:'Moor',    price:219, priceMoney:'$219', code:'BD-09', img:'{{ "kit-moor.jpeg" | asset_url }}',
+      desc:'Stacked turned-wood base with a weighted feel. Warm linen shade casts a generous glow on the pillow. The kit default for a reason.',
+      specs:{Height:'18 in',Base:'7 in dia',Wattage:'6W · 2700K',Finish:'Oiled ash'}},
+    {id:'onyx',    productId:null, variantId:null, slot:'table', name:'Onyx',    price:199, priceMoney:'$199', code:'BD-12', img:'{{ "kit-onyx.jpeg" | asset_url }}',
+      desc:'Blackened brass bedside with a low-profile drum. Slightly cooler silhouette than Moor, same warm light. For rooms that lean modern.',
+      specs:{Height:'17 in',Base:'6.5 in dia',Wattage:'6W · 2700K',Finish:'Blackened brass'}},
+    {id:'cairn',   productId:null, variantId:null, slot:'table', name:'Cairn',   price:189, priceMoney:'$189', code:'BD-13', img:'{{ "kit-cairn.jpeg" | asset_url }}',
+      desc:'A single river-stone form in terracotta ceramic. Hand-thrown, slightly varied, grounding on a wooden nightstand.',
+      specs:{Height:'15 in',Base:'7 in dia',Wattage:'6W · 2700K',Finish:'Unglazed terracotta'}},
+    {id:'pebble',  productId:null, variantId:null, slot:'table',  name:'Pebble',  price:149, priceMoney:'$149', code:'AC-03', img:'{{ "kit-pebble.jpeg" | asset_url }}',
+      desc:'A small warm orb that goes anywhere — dresser, shelf, windowsill. Magnetic USB-C base for quick placement. Reads with a single hour of charge.',
+      specs:{Height:'6 in',Base:'3.5 in dia',Runtime:'8 hrs',Charging:'USB-C magnetic'}},
+    {id:'loop',    productId:null, variantId:null, slot:'table',  name:'Loop',    price:169, priceMoney:'$169', code:'AC-02', img:'{{ "kit-loop.jpeg" | asset_url }}',
+      desc:'Sculptural curved-tube accent in matte bronze. Throws a narrow warm wash upward. Doubles as quiet architectural presence even off.',
+      specs:{Height:'10 in',Base:'4 in dia',Wattage:'4W · 2700K',Finish:'Matte bronze'}},
+    {id:'eclipse', productId:null, variantId:null, slot:'table',  name:'Eclipse', price:159, priceMoney:'$159', code:'AC-04', img:'{{ "kit-eclipse.jpeg" | asset_url }}',
+      desc:'Half-moon shade on a travertine puck. Washes the wall behind with a soft hotel-style gradient. Surprisingly quiet in a room full of angles.',
+      specs:{Height:'8 in',Base:'5 in dia',Wattage:'4W · 2700K',Finish:'Travertine + brass'}},
+  ];
+  {%- endif -%}
+
+  /* Kit is a flat list of selected lamp ids. Order is selection order.
+     Tier 1 = 2+ lamps. Tier 2 = 3+ lamps AND one of them is a floor lamp (the "anchor"). */
+  const MAX_LAMPS = 4;
+  // Slot-position unlock hints (merchant-editable via section settings).
+  const UNLOCK_T1_HINT = {{ section.settings.unlock_t1_hint | default: 'Unlocks Tier 1' | json }};
+  const UNLOCK_T2_HINT = {{ section.settings.unlock_t2_hint | default: 'Unlocks Tier 2' | json }};
+  const firstOfSlot = (slot) => { const p = products.find(x => x.slot === slot); return p ? p.id : null; };
+  const floorId = firstOfSlot('floor');
+  const tableId = firstOfSlot('table');
+  /* Recommended seeds — each entry is {id, variantId}. variantId is auto-resolved
+     via defaultVariantOf() when the kit is reset to "Use our picks". */
+  const RECOMMENDED = [floorId, tableId, tableId].filter(Boolean).map(id => ({ id, variantId: null }));
+  let state = { selected: [], filter:'all', query: '', sort:'default', lastTier: null, page: 0 };
+
+  const get = id => products.find(p=>p.id===id);
+  /* Find a specific variant inside a product (or null if not a variant product). */
+  const variantOf = (p, vid) => {
+    if (!p || !p.variants || !p.variants.length) return null;
+    const found = p.variants.find(v => String(v.id) === String(vid));
+    return found || null;
+  };
+  /* Default variant for a product — first available, falls back to first listed. */
+  const defaultVariantOf = (p) => {
+    if (!p) return null;
+    if (p.variants && p.variants.length){
+      return p.variants.find(v => v.available) || p.variants[0];
+    }
+    return null;
+  };
+  /* Effective image/price for a slot — variant's image+price overrides product's. */
+  const slotImage = (s) => {
+    const p = get(s.id); if (!p) return '';
+    const v = variantOf(p, s.variantId);
+    return (v && v.img) || p.img;
+  };
+  const slotPrice = (s) => {
+    const p = get(s.id); if (!p) return 0;
+    const v = variantOf(p, s.variantId);
+    return (v && typeof v.price === 'number') ? v.price : (p.price || 0);
+  };
+  const slotVariantTitle = (s) => {
+    const p = get(s.id); if (!p) return '';
+    const v = variantOf(p, s.variantId);
+    return v ? v.title : '';
+  };
+  const pieces = () => state.selected.length;
+  const hasAnchor = () => state.selected.some(s => (get(s.id) || {}).slot === 'floor');
+  const total = () => state.selected.reduce((sum,s)=>sum+slotPrice(s),0);
+  const tier = () => {
+    const n = pieces();
+    if(n >= 3 && hasAnchor()) return 2;
+    if(n >= 2) return 1;
+    return 0;
+  };
+  // Anchor index within the selected array (first floor lamp found, or -1)
+  const anchorIndex = () => state.selected.findIndex(s => (get(s.id) || {}).slot === 'floor');
+
+  /* ---- Slots — dynamic cards based on selection order ---- */
+  function renderSlots(){
+    const wrap = document.getElementById('slots');
+    const anchorIdx = anchorIndex();
+    const n = state.selected.length;
+    /* Always render exactly MAX_LAMPS (=4) slot cells so the 2×2 grid never shifts. */
+    const visibleCount = MAX_LAMPS;
+
+    const cards = [];
+    for(let i = 0; i < visibleCount; i++){
+      const slot = state.selected[i];
+      const p = slot ? get(slot.id) : null;
+      const v = slot && p ? variantOf(p, slot.variantId) : null;
+      const isAnchor = p && p.slot === 'floor' && i === anchorIdx;
+      const labelTop = `Lamp ${String(i+1).padStart(2,'0')}`;
+      const labelRight = (p && isAnchor) ? 'Anchor' : '';
+
+      let emptyHint = '';
+      if (i === 1) emptyHint = `<span class="hint">${UNLOCK_T1_HINT}</span>`;
+      else if (i === 2) emptyHint = `<span class="hint is-anchor">${UNLOCK_T2_HINT}</span>`;
+
+      let filledHTML = '';
+      if (p){
+        const img = slotImage(slot);
+        const price = slotPrice(slot);
+        const variantTitle = v ? v.title : '';
+        const colorCount = (p.variants && p.variants.length) ? p.variants.length : 0;
+        /* Variant chip on slot card — shows the active variant's color + a "+N" pill
+           when the product has 2+ variants. Click opens the modal so the user can
+           swap variants without removing the slot. */
+        const variantChip = (v && colorCount > 1) ? `
+          <span class="slot-variant" data-slot-index="${i}" title="${variantTitle.replace(/"/g,'&quot;')}">
+            <span class="slot-variant__chip" style="background:${hexFor(v.colorKey || v.option1)}"></span>
+            <span class="slot-variant__count">+${colorCount}</span>
+          </span>` : '';
+        filledHTML = `
+        <div class="slot-card${isAnchor?' is-anchor':''}" data-slot-index="${i}">
+          <img src="${img}" alt="${p.name}">
+          ${isAnchor ? '<span class="anchor-tag">Anchor</span>' : ''}
+          ${variantChip}
+          <span class="rm" data-remove-index="${i}">×</span>
+          <div class="info">
+            <h4>${p.name}${variantTitle ? ` <span class="info-variant">· ${variantTitle}</span>` : ''}</h4>
+            <span class="pr">$${price}</span>
+          </div>
+        </div>`;
+      }
+      const cardHTML = p ? filledHTML : `
+        <div class="slot-empty" data-slot-empty="${i}">
+          <span class="plus">+</span>
+          <span class="label">Add lamp</span>
+          ${emptyHint}
+        </div>`;
+
+      cards.push(`<div class="slot">
+        <div class="slot-label"><span class="nm">${labelTop}</span><span class="req${labelRight==='Anchor'?' anchor':''}">${labelRight}</span></div>
+        ${cardHTML}
+      </div>`);
+    }
+    wrap.innerHTML = cards.join('');
+    // Swap to horizontal carousel when we're rendering more cards than the grid holds.
+    wrap.classList.toggle('overflow', visibleCount > 4);
+
+    wrap.querySelectorAll('[data-remove-index]').forEach(b => b.addEventListener('click', e => {
+      e.stopPropagation();
+      const idx = parseInt(b.dataset.removeIndex, 10);
+      state.selected.splice(idx, 1);
+      renderAll();
+    }));
+    /* Click a filled slot card → open modal in "edit slot" mode so the user can
+       swap variants. The variant chip on the card has its own handler that does
+       the same thing (delegated below). */
+    wrap.querySelectorAll('.slot-card').forEach(card => card.addEventListener('click', e => {
+      if (e.target.closest('[data-remove-index]')) return;
+      const idx = parseInt(card.dataset.slotIndex, 10);
+      const slot = state.selected[idx];
+      if (!slot) return;
+      openDetails(slot.id, { editSlotIndex: idx });
+    }));
+    wrap.querySelectorAll('.slot-empty').forEach(el => el.addEventListener('click', () => {
+      document.querySelector('.browse').scrollIntoView({behavior:'smooth', block:'start'});
+    }));
+  }
+
+  /* ---- Included list ---- */
+  function renderIncluded(){
+    const t = tier();
+    const n = pieces();
+    document.getElementById('pc-num').textContent = n;
+    document.getElementById('tier-label').textContent = t===0 ? 'No tier yet' : `Tier ${t}`;
+
+    // Tier 1 group
+    const t1g = document.getElementById('tier1-group');
+    t1g.classList.toggle('unlocked', t >= 1);
+    t1g.classList.toggle('locked', t < 1);
+    document.getElementById('tier1-status').textContent = t >= 1 ? 'Unlocked' : 'Locked';
+
+    // Tier 2 group
+    const t2g = document.getElementById('tier2-group');
+    t2g.classList.toggle('unlocked', t >= 2);
+    t2g.classList.toggle('locked', t < 2);
+    document.getElementById('tier2-status').textContent = t >= 2 ? 'Unlocked' : 'Locked';
+
+    // Label is always "Free" — skip credit pills so the $ amount stays intact.
+    t1g.querySelectorAll('.tg-item .free:not(.free--credit)').forEach(el => el.textContent = 'Free');
+    t2g.querySelectorAll('.tg-item .free:not(.free--credit)').forEach(el => el.textContent = 'Free');
+
+    // The old #incl-total element was replaced by the Always-Included benefits list.
+    // Guard the assignment so the JS doesn't throw when the element is absent.
+    const inclTotalEl = document.getElementById('incl-total');
+    if (inclTotalEl) {
+      let v = 0;
+      if(t >= 1) v += 79;
+      if(t >= 2) v += 30 + 150;
+      inclTotalEl.textContent = v === 0 ? '—' : `$${v}`;
+    }
+
+    // Celebrate threshold crossing — visual pulse only, no toast popup
+    if(state.lastTier !== null && t > state.lastTier && t >= 1){
+      const el = t === 2 ? document.getElementById('tier2-group') : document.getElementById('tier1-group');
+      if(el){
+        el.classList.add('just-unlocked');
+        setTimeout(()=>el.classList.remove('just-unlocked'), 900);
+      }
+    }
+    state.lastTier = t;
+  }
+
+  /* ---- Dock + hero ---- */
+  function renderDock(){
+    const t = tier();
+    const n = pieces();
+    const lampTotal = total();
+
+    const wrap = document.getElementById('dock-slots');
+    // Show up to 3 dock slot previews — selected lamps first, then placeholders
+    const DOCK_VISIBLE = 3;
+    const anchorIdx = anchorIndex();
+    const slotHTML = [];
+    for(let i = 0; i < DOCK_VISIBLE; i++){
+      const slot = state.selected[i];
+      const p = slot ? get(slot.id) : null;
+      if(p){
+        const isAnchor = p.slot === 'floor' && i === anchorIdx;
+        const short = isAnchor ? 'Anchor' : (p.slot === 'floor' ? 'Floor' : 'Table');
+        const img = slotImage(slot);
+        slotHTML.push(`<div class="dock-slot filled${isAnchor?' is-anchor':''}"><img src="${img}" alt="${p.name}"><span class="st">${short}</span></div>`);
+      } else {
+        const short = i === 0 ? 'Pick 1' : (i === 1 ? 'Pick 2' : 'Anchor');
+        slotHTML.push(`<div class="dock-slot"><span class="lm">+</span><span class="st">${short}</span></div>`);
+      }
+    }
+    // If user has more than DOCK_VISIBLE, show a +N chip on the last slot
+    if(state.selected.length > DOCK_VISIBLE){
+      const extra = state.selected.length - DOCK_VISIBLE;
+      slotHTML.push(`<div class="dock-slot dock-slot-more"><span class="lm">+${extra}</span><span class="st">more</span></div>`);
+    }
+    wrap.innerHTML = slotHTML.join('');
+
+    const badge = document.getElementById('dock-badge');
+    badge.className = 'badge ' + (t===2?'':(t===1?'t1':'t0'));
+    const floor = hasAnchor();
+    if(t===2)      badge.textContent = 'All extras unlocked';
+    else if(t===1) badge.textContent = 'Tier 01 unlocked';
+    else           badge.textContent = 'Pick 2 lamps to start';
+
+    /* Dock subline — straightforward copy, no "yours" phrasing. */
+    const subline = document.getElementById('dock-subline');
+    if(subline){
+      if(t===2){
+        subline.innerHTML = `$259 in free extras + <b>$150 credit</b>`;
+      } else if(t===1){
+        if(!floor) subline.innerHTML = `Add a <b>floor lamp</b> to unlock Tier 02`;
+        else       subline.innerHTML = `1 more lamp unlocks <b>$259 in extras + $150 credit</b>`;
+      } else {
+        subline.innerHTML = `Up to <b>$338</b> in free extras`;
+      }
+    }
+
+    document.getElementById('dock-pieces').innerHTML = `<b>${n}</b> ${n===1?'lamp':'lamps'}`;
+
+    // Free extras visual row
+    const DOCK_EXTRAS = [
+      {img:'{% if all_products["pocket"].featured_image %}{{ all_products["pocket"].featured_image | image_url: width: 96 }}{% else %}{{ "kit-acc-pocket.jpeg" | asset_url }}{% endif %}',   name:'Rechargeable Mini Lamp', tier:2},
+      {img:'{{ "kit-acc-diffuser.jpeg" | asset_url }}', name:'Warm Tapers',     tier:2},
+      {img:'{{ "kit-acc-care.jpeg" | asset_url }}',     name:'Care Cloth',      tier:1},
+      {img:'{{ "kit-acc-atlas.jpeg" | asset_url }}',    name:'Layering Guide',  tier:1},
+      {img:'{{ "kit-acc-bulbs.jpeg" | asset_url }}',    name:'Bulb Refill',     tier:1},
+      {credit:true,                 name:'$150 Credit',     tier:2}
+    ];
+    const extras = document.getElementById('dock-extras');
+    const extrasHTML = DOCK_EXTRAS.map(e => {
+      if(e.credit) return `<div class="mini th-credit" title="$150 Warm Credit toward your next room">$</div>`;
+      return `<div class="mini" title="${e.name}${t>=e.tier?' · Free':''}"><img src="${e.img}" alt=""></div>`;
+    }).join('');
+    let hintText;
+    if(t===0) hintText = `<b>Rechargeable lamp · Tapers · Care · Bulb · Guide</b> unlock at 2 lamps`;
+    else if(t===1){
+      if(!hasAnchor()) hintText = `Add a <b>floor lamp</b> + 1 more for the rechargeable lamp, Tapers & $150 credit`;
+      else hintText = `Add <b>1 more lamp</b> for the rechargeable lamp, Tapers + $150 credit`;
+    }
+    else hintText = `<b>Rechargeable lamp · Tapers · Care · Bulb · Guide</b> + <b>$150 credit</b> — all yours`;
+    extras.className = 'dock-extras' + (t>=2?' unlocked':'');
+    extras.innerHTML = extrasHTML + `<span class="hint">${hintText}</span>`;
+
+    document.getElementById('dock-total').textContent = n===0 ? '—' : `$${lampTotal}`;
+    const totSub = document.getElementById('dock-total-sub');
+    if(t >= 2){ totSub.textContent = '+ $259 in free extras'; totSub.style.display='block'; }
+    else if(t === 1){ totSub.textContent = '+ $79 in free extras'; totSub.style.display='block'; }
+    else { totSub.style.display='none'; }
+
+    const cta = document.getElementById('dock-cta');
+    if(n === 0){
+      cta.classList.add('disabled'); cta.disabled = true;
+      cta.textContent = 'Pick a lamp';
+    } else {
+      cta.classList.remove('disabled'); cta.disabled = false;
+      cta.textContent = 'Complete your order';
+    }
+
+    // Hero tier/price removed — price + tier live in Section 02 now
+    // (null-guarded in case legacy elements exist)
+    const hp = document.getElementById('hero-price');
+    if(hp) hp.textContent = n===0 ? '—' : `$${lampTotal}`;
+    const ht = document.getElementById('hero-tier');
+    if(ht){ ht.textContent = badge.textContent; ht.className = 'tier-top ' + (t===2?'':(t===1?'t1':'t0'))}
+
+    // Update visible "0 / 4 selected" count in col-head
+    const metaPc = document.getElementById('meta-pc-num');
+    if (metaPc) metaPc.textContent = n;
+
+    // Kit CTA row sync (inside Section 02) — price on top line (.v), hint below (.sub).
+    const kitV = document.getElementById('kit-total-v');
+    const kitSubLine = document.getElementById('kit-total-sub');
+    if (n === 0){
+      kitV.innerHTML = 'Up to <b>$338</b> in free extras';
+      kitV.classList.add('is-empty');
+      kitSubLine.innerHTML = '';
+      kitSubLine.hidden = true;
+    } else {
+      kitV.innerHTML = `$${lampTotal}`;
+      kitV.classList.remove('is-empty');
+      let subText = '';
+      if (t >= 2) subText = '<b>$259</b> free + $150 credit included';
+      else if (t === 1) subText = floor ? '1 more lamp unlocks <b>Tier 02</b>' : 'Add a <b>floor lamp</b> for Tier 02';
+      else subText = 'Add 1 more lamp for <b>Tier 01</b>';
+      kitSubLine.innerHTML = subText;
+      kitSubLine.hidden = false;
+    }
+    const kitBtn = document.getElementById('kit-add-btn');
+    const kitBtnLbl = kitBtn.querySelector('.add-btn__lbl');
+    if(n === 0){
+      kitBtn.classList.add('disabled'); kitBtn.disabled = true;
+      if (kitBtnLbl) kitBtnLbl.textContent = 'Pick a Lamp'; else kitBtn.textContent = 'Pick a Lamp';
+    } else {
+      kitBtn.classList.remove('disabled'); kitBtn.disabled = false;
+      if (kitBtnLbl) kitBtnLbl.textContent = 'Complete your order'; else kitBtn.textContent = 'Complete your order';
+    }
+
+    // Kit status — lamp count line + progress dashes (4 segments, light up per lamp)
+    const statusText = document.getElementById('kit-status-text');
+    if (statusText) {
+      if (n === 0)      statusText.textContent = 'No lamps added';
+      else if (n === 1) statusText.textContent = '1 lamp added';
+      else              statusText.textContent = `${n} lamps added`;
+    }
+    const progress = document.getElementById('kit-progress');
+    if (progress) {
+      const segs = progress.querySelectorAll('.seg');
+      const litCount = Math.min(n, segs.length);
+      segs.forEach((seg, i) => seg.classList.toggle('on', i < litCount));
+    }
+
+    // Hide the anchor reminder once the user has an anchor (floor lamp) in the kit.
+    const anchorReminder = document.querySelector('.col-right .anchor-reminder');
+    if (anchorReminder) anchorReminder.classList.toggle('anchor-met', floor);
+
+    // Second CTA sync — just toggle disabled state; the label is set in markup
+    document.getElementById('second-cta-btn').disabled = n === 0;
+
+    /* Browse-bottom Complete Kit CTA — visible at 2+ lamps, with a tier-aware
+       coaching subline that nudges the user toward the next unlock. */
+    var bc = document.getElementById('browse-complete');
+    if (bc){
+      bc.classList.toggle('is-visible', n >= 2);
+      var bcCount = document.getElementById('browse-complete-count');
+      var bcSub   = document.getElementById('browse-complete-sub');
+      if (bcCount) bcCount.innerHTML = '<b>' + n + '</b> ' + (n === 1 ? 'lamp' : 'lamps') + ' in your kit';
+      if (bcSub){
+        if (t === 0)        bcSub.innerHTML = 'Add 1 more lamp to unlock <b>$79</b> in free gifts';
+        else if (t === 1 && !floor) bcSub.innerHTML = 'Add a <b>floor lamp</b> to unlock <b>$259</b> more in extras';
+        else if (t === 1)   bcSub.innerHTML = 'Add 1 more lamp to unlock <b>$259</b> more in extras + <b>$150</b> credit';
+        else                bcSub.innerHTML = 'All <b>$338</b> in free gifts unlocked · ready to ship';
+      }
+    }
+  }
+
+  /* ---- Grid + Pagination ----
+     Fixed 4-col desktop / 2-col mobile. If filtered products exceed a page,
+     show prev/next + dots. Page size adapts to viewport. */
+  const PAGE_SIZE_DESKTOP = 8;
+  const PAGE_SIZE_MOBILE = 6;
+  function currentPageSize(){
+    return window.matchMedia('(max-width: 900px)').matches ? PAGE_SIZE_MOBILE : PAGE_SIZE_DESKTOP;
+  }
+
+  /* Intelligent mix for the "All" filter:
+     - Lead with a floor-lamp anchor so users immediately see the piece that
+       makes a kit complete.
+     - Interleave floors and tables proportionally so every page shows a
+       real mix (no 3 pages of floors followed by 3 pages of tables).
+     - When filtered to a single slot, preserve the collection's native order. */
+  function mixedAll(){
+    const floors = products.filter(p => p.slot === 'floor');
+    const tables = products.filter(p => p.slot === 'table');
+    if (floors.length === 0) return tables.slice();
+    if (tables.length === 0) return floors.slice();
+    const result = [floors[0]]; // anchor first
+    let fi = 1, ti = 0;
+    while (fi < floors.length || ti < tables.length) {
+      const fp = floors.length ? fi / floors.length : 1;
+      const tp = tables.length ? ti / tables.length : 1;
+      if (ti < tables.length && (fi >= floors.length || tp <= fp)) {
+        result.push(tables[ti++]);
+      } else {
+        result.push(floors[fi++]);
+      }
+    }
+    return result;
+  }
+
+  function renderGrid(){
+    const grid = document.getElementById('grid');
+    let filtered = state.filter === 'all'
+      ? mixedAll()
+      : products.filter(p => p.slot === state.filter);
+    /* Apply search query — case-insensitive substring match against product
+       name (and code, when present). Skip when query is empty. */
+    const q = (state.query || '').trim().toLowerCase();
+    if (q){
+      filtered = filtered.filter(p => {
+        const name = (p.name || '').toLowerCase();
+        const code = (p.code || '').toLowerCase();
+        return name.includes(q) || code.includes(q);
+      });
+    }
+    /* Apply sort — non-destructive copy so the canonical `products` order isn't
+       mutated. Numeric fallback to 0 keeps NaN out of comparators. */
+    if (state.sort === 'price-asc'){
+      filtered = filtered.slice().sort((a,b) => (a.price || 0) - (b.price || 0));
+    } else if (state.sort === 'price-desc'){
+      filtered = filtered.slice().sort((a,b) => (b.price || 0) - (a.price || 0));
+    } else if (state.sort === 'name'){
+      filtered = filtered.slice().sort((a,b) => (a.name || '').localeCompare(b.name || ''));
+    }
+    /* Empty state — render a single full-width message instead of cards. */
+    if (filtered.length === 0){
+      grid.classList.add('p-grid--empty');
+      grid.innerHTML = q
+        ? `No lamps match <em>"${q.replace(/[<>&"']/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c]))}"</em>. Try a different name.`
+        : `No lamps in this filter.`;
+      const pager = document.getElementById('grid-pager');
+      if (pager) pager.classList.add('hidden');
+      return;
+    }
+    grid.classList.remove('p-grid--empty');
+    const pageSize = currentPageSize();
+    const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+    if (state.page == null || state.page >= totalPages) state.page = 0;
+    const pageStart = state.page * pageSize;
+    const pageEnd = pageStart + pageSize;
+    const slice = filtered.slice(pageStart, pageEnd);
+    const cards = slice.map(p => {
+      const count = state.selected.filter(s => s.id === p.id).length;
+      const canAddMore = state.selected.length < MAX_LAMPS;
+      const inKit = count > 0;
+      const productAttr = p.productId ? `data-product-id="${p.productId}"` : '';
+      const variantAttr = p.variantId ? `data-variant-id="${p.variantId}"` : '';
+      const priceAttr = p.priceNoCurrency ? `data-price="${p.priceNoCurrency}"` : `data-price="${p.price}"`;
+      /* Variant count badge (mirrors product-card.liquid) — top-right of image */
+      const variantCount = (p.variants && p.variants.length > 1) ? p.variants.length : 0;
+      const variantBadge = variantCount > 0
+        ? `<span class="card-colors"><em>${variantCount}</em>colors</span>`
+        : '';
+      return `
+      <div class="card${inKit?' in-config':''}" data-id="${p.id}" ${productAttr} ${variantAttr} ${priceAttr}>
+        <div class="ph" data-details>
+          <img src="${p.img}" alt="${p.name}">
+          ${variantBadge}
+          ${inKit ? `
+            <span class="added-badge" aria-label="In your kit">✓</span>
+            <div class="qty">
+              <button type="button" data-qty-minus aria-label="Remove one">−</button>
+              <span class="count">${count}</span>
+              <button type="button" data-qty-plus aria-label="Add one" ${canAddMore?'':'disabled'}>+</button>
+            </div>
+          ` : ''}
+        </div>
+        <div class="nm">
+          <div class="nm-text">
+            <h3>${p.name}</h3>
+            <span class="slot-tag">${p.slot} lamp</span>
+            <span class="pr">${p.priceMoney || '$'+p.price}</span>
+          </div>
+          <button type="button" class="add-btn" data-add aria-label="${inKit?'Remove from kit':'Add to kit'}">${inKit ? 'Added' : '+ Add'}</button>
+        </div>
+      </div>`;
+    });
+
+    // Pad the last page with invisible placeholder cards so the grid height stays
+    // consistent across pages — prevents the pager (and everything below) from
+    // shifting up when the last page has fewer products than PAGE_SIZE.
+    const placeholderCount = Math.max(0, pageSize - slice.length);
+    for (let i = 0; i < placeholderCount; i++) {
+      cards.push(`
+      <div class="card card--placeholder" aria-hidden="true">
+        <div class="ph"></div>
+        <div class="nm">
+          <div class="nm-text"><h3>&nbsp;</h3><span class="pr">&nbsp;</span></div>
+          <button type="button" class="add-btn" tabindex="-1">&nbsp;</button>
+        </div>
+      </div>`);
+    }
+    grid.innerHTML = cards.join('');
+
+    grid.querySelectorAll('.card').forEach(c => {
+      const cardP = get(c.dataset.id);
+      const cardHasVariants = !!(cardP && cardP.variants && cardP.variants.length > 1);
+      c.querySelectorAll('[data-qty-plus]').forEach(b => b.addEventListener('click', e => {
+        e.stopPropagation();
+        if (cardHasVariants) { openQuickPicker(c.dataset.id); return; }
+        adjustQuantity(c.dataset.id, +1);
+      }));
+      c.querySelectorAll('[data-qty-minus]').forEach(b => b.addEventListener('click', e => {
+        e.stopPropagation();
+        adjustQuantity(c.dataset.id, -1);
+      }));
+      // Image click opens the details modal.
+      c.querySelectorAll('[data-details]').forEach(b => b.addEventListener('click', e => {
+        if (e.target.closest('[data-qty-plus],[data-qty-minus]')) return;
+        e.stopPropagation();
+        openDetails(c.dataset.id);
+      }));
+      // "+ Add" button toggles the product into the kit. For variants, opens the
+      // quick picker so the user chooses a color before adding.
+      c.querySelectorAll('[data-add]').forEach(b => b.addEventListener('click', e => {
+        e.stopPropagation();
+        if (cardHasVariants) { openQuickPicker(c.dataset.id); return; }
+        toggleProductInKit(c.dataset.id);
+      }));
+    });
+
+    // --- Pagination UI ---
+    const pager = document.getElementById('grid-pager');
+    const dotsEl = document.getElementById('grid-dots');
+    const infoEl = document.getElementById('grid-page-info');
+    const prevBtn = document.getElementById('grid-prev');
+    const nextBtn = document.getElementById('grid-next');
+    if (totalPages <= 1) {
+      pager.classList.add('hidden');
+    } else {
+      pager.classList.remove('hidden');
+      infoEl.textContent = `Page ${state.page + 1} of ${totalPages}`;
+      dotsEl.innerHTML = Array.from({length: totalPages}, (_, i) =>
+        `<button type="button" class="p-dot${i === state.page ? ' on' : ''}" data-page="${i}" aria-label="Go to page ${i + 1}"${i === state.page ? ' aria-current="true"' : ''}></button>`
+      ).join('');
+      dotsEl.querySelectorAll('.p-dot').forEach(d => d.addEventListener('click', () => {
+        state.page = parseInt(d.dataset.page, 10);
+        renderGrid();
+      }));
+      prevBtn.disabled = state.page === 0;
+      nextBtn.disabled = state.page >= totalPages - 1;
+    }
+  }
+
+  function productCount(id){
+    return state.selected.filter(s => s.id === id).length;
+  }
+
+  /* Build a slot object for a product, defaulting variantId to the product's
+     first available variant when one isn't passed in. */
+  function makeSlot(id, variantId){
+    const p = get(id); if (!p) return null;
+    let vid = variantId;
+    if (!vid){
+      const def = defaultVariantOf(p);
+      vid = def ? def.id : (p.variantId || null);
+    }
+    return { id, variantId: vid };
+  }
+
+  function adjustQuantity(id, delta, variantId){
+    if(delta > 0){
+      if(state.selected.length >= MAX_LAMPS) return;
+      const slot = makeSlot(id, variantId);
+      if (slot) state.selected.push(slot);
+    } else {
+      /* Remove the LAST occurrence of this product (any variant). */
+      let idx = -1;
+      for (let i = state.selected.length - 1; i >= 0; i--){
+        if (state.selected[i].id === id){ idx = i; break; }
+      }
+      if(idx >= 0) state.selected.splice(idx, 1);
+    }
+    renderAll();
+  }
+
+  /* Toggle product in/out of kit. For variant products, optional variantId
+     specifies which variant to add (defaults to first available). */
+  function toggleProductInKit(id, variantId){
+    const idx = state.selected.findIndex(s => s.id === id);
+    if(idx >= 0){
+      state.selected.splice(idx, 1);
+    } else {
+      if(state.selected.length >= MAX_LAMPS) return;
+      const slot = makeSlot(id, variantId);
+      if (slot) state.selected.push(slot);
+    }
+    renderAll();
+  }
+
+  /* Update the variant of a specific slot (in-place edit from the modal). */
+  function setSlotVariant(slotIndex, variantId){
+    const slot = state.selected[slotIndex];
+    if (!slot) return;
+    slot.variantId = variantId;
+    renderAll();
+  }
+
+  document.querySelectorAll('.browse .chip[data-filter]').forEach(c => c.addEventListener('click', () => {
+    state.filter = c.dataset.filter;
+    state.page = 0;
+    renderAll();
+  }));
+
+  /* Sort dropdown — re-renders grid in place (resets to page 0). */
+  const sortEl = document.getElementById('kit-sort');
+  if (sortEl) sortEl.addEventListener('change', () => {
+    state.sort = sortEl.value;
+    state.page = 0;
+    renderGrid();
+  });
+
+  /* ---- Search: toggle, live input, clear ----
+     Toggle button expands the inline search bar below the filter chip row.
+     Typing in the input updates state.query and re-renders the grid live —
+     no debounce needed since products are already in JS memory. */
+  (function setupKitSearch(){
+    const toggleBtn = document.getElementById('kit-search-btn');
+    const bar = document.getElementById('kit-search-bar');
+    const input = document.getElementById('kit-search-input');
+    const clearBtn = document.getElementById('kit-search-clear');
+    if (!toggleBtn || !bar || !input || !clearBtn) return;
+
+    function openBar(){
+      bar.hidden = false;
+      toggleBtn.setAttribute('aria-expanded', 'true');
+      requestAnimationFrame(() => input.focus());
+    }
+    function closeBar(){
+      bar.hidden = true;
+      toggleBtn.setAttribute('aria-expanded', 'false');
+      if (state.query){
+        state.query = '';
+        input.value = '';
+        clearBtn.hidden = true;
+        state.page = 0;
+        renderGrid();
+      }
+    }
+    toggleBtn.addEventListener('click', () => {
+      if (toggleBtn.getAttribute('aria-expanded') === 'true') closeBar();
+      else openBar();
+    });
+    input.addEventListener('input', () => {
+      const v = input.value;
+      state.query = v;
+      clearBtn.hidden = v.length === 0;
+      state.page = 0;
+      renderGrid();
+    });
+    clearBtn.addEventListener('click', () => {
+      input.value = '';
+      state.query = '';
+      clearBtn.hidden = true;
+      state.page = 0;
+      renderGrid();
+      input.focus();
+    });
+    /* Esc inside input closes the bar (and clears the query). */
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Escape'){ e.preventDefault(); closeBar(); toggleBtn.focus(); }
+    });
+    /* Stop the browser's native form-submit on enter (this is a search input
+       inside a form-less container, but Safari sometimes triggers the page
+       form anyway). */
+    input.addEventListener('keypress', e => { if (e.key === 'Enter') e.preventDefault(); });
+  })();
+
+  // Pagination prev/next + viewport-change re-paginate
+  document.getElementById('grid-prev').addEventListener('click', () => {
+    if(state.page > 0){ state.page--; renderGrid(); }
+  });
+  document.getElementById('grid-next').addEventListener('click', () => { state.page++; renderGrid(); });
+  window.addEventListener('resize', () => { renderGrid(); });
+
+  /* Populate filter-chip counts from the live product list */
+  (function initFilterCounts(){
+    const count = (slot) => slot ? products.filter(p => p.slot === slot).length : products.length;
+    const set = (id, n) => { const el = document.getElementById(id); if (el) el.textContent = '(' + n + ')'; };
+    set('cnt-all', count());
+    set('cnt-floor', count('floor'));
+    set('cnt-table', count('table'));
+  })();
+
+  document.getElementById('reset-btn').addEventListener('click', () => {
+    /* Resolve default variants now (RECOMMENDED is captured early when products
+       might not be fully ready). */
+    state.selected = RECOMMENDED.map(r => makeSlot(r.id, r.variantId)).filter(Boolean);
+    state.lastTier = null; renderAll();
+    document.querySelector('.col-right')?.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+
+  /* ============================================================
+     CHECKOUT — AJAX cart submission + direct-to-checkout redirect
+     ============================================================
+
+     Flow:
+       1. Build items array: all selected lamp variants + all unlocked
+          tier-freebie variants (lookup via [data-starter-id]).
+          Freebies are posted at their REAL price — the kit-gift Shopify
+          Function applies a 100%-off product discount server-side when
+          qualifying lamps are present. This is the fraud-resistant path:
+          if someone manipulates the DOM to send freebies without lamps,
+          the Function (and the Cart Validation Function) blocks them.
+       2. POST /cart/add.js (AJAX) — Shopify adds everything to the cart.
+       3. Build checkout URL. If customer has an active Warm Wallet code
+          (from customer.metafields.custom.warm_wallet), append it as
+          ?discount= so Shopify auto-applies it on checkout load.
+       4. window.location.href → /checkout. Cart page is bypassed entirely.
+     ============================================================ */
+  const kitForm = document.getElementById('kit-cart-form');
+  const WARM_WALLET_CODE = {{ wallet_code | json }};
+  const WARM_WALLET_ACTIVE = {{ wallet_active | json }};
+  const FIRST_PURCHASE_CODE = {{ section.settings.first_purchase_code | default: 'FIRSTROOM10' | json }};
+  const FIRST_PURCHASE_ELIGIBLE = {{ first_purchase_eligible | json }};
+  let isSubmitting = false;
+
+  function buildItemsPayload(){
+    const items = [];
+    /* Lamp variants — use the per-slot variantId chosen by the user (defaults to
+       the product's first available variant if user never opened the picker). */
+    state.selected.forEach(slot => {
+      const p = get(slot.id); if (!p) return;
+      const vid = slot.variantId || p.variantId;
+      if (!vid) return;
+      items.push({
+        id: vid,
+        quantity: 1,
+        properties: { _kit: 'lamp' }
+      });
+    });
+    // Tier-unlocked freebie variants — include ONLY at the correct tier.
+    // The Shopify Function on the server side will zero out the price.
+    const t = tier();
+    document.querySelectorAll('.tier-group.unlocked [data-starter-id]').forEach(el => {
+      const vid = el.getAttribute('data-starter-id');
+      if (!vid) return;
+      const isTier2 = !!el.closest('#tier2-group');
+      const isTier1 = !!el.closest('#tier1-group');
+      if ((isTier2 && t >= 2) || (isTier1 && t >= 1)) {
+        items.push({
+          id: vid,
+          quantity: 1,
+          properties: { _kit: isTier2 ? 'gift-tier-2' : 'gift-tier-1' }
+        });
+      }
+    });
+    return items;
+  }
+
+  function buildCheckoutUrl(){
+    // Pick one discount code — Shopify's /checkout?discount= only honors one.
+    // Wallet wins over first-purchase; the two are mutually exclusive by design
+    // (wallet only exists after the first order).
+    let code = null;
+    if (WARM_WALLET_ACTIVE && WARM_WALLET_CODE) {
+      code = WARM_WALLET_CODE;
+    } else if (FIRST_PURCHASE_ELIGIBLE && FIRST_PURCHASE_CODE) {
+      code = FIRST_PURCHASE_CODE;
+    }
+    return code ? `/checkout?discount=${encodeURIComponent(code)}` : '/checkout';
+  }
+
+  function setSubmitting(flag){
+    isSubmitting = flag;
+    [
+      document.getElementById('kit-add-btn'),
+      document.getElementById('dock-cta'),
+      document.getElementById('second-cta-btn')
+    ].forEach(btn => {
+      if (!btn) return;
+      btn.disabled = flag || btn.classList.contains('disabled');
+      if (flag) btn.dataset._label = btn.textContent;
+      btn.textContent = flag ? 'Processing…' : (btn.dataset._label || btn.textContent);
+    });
+  }
+
+  async function submitKit(){
+    if (isSubmitting) return;
+    if (pieces() === 0) return;
+    const hasVariants = products.some(p => p.variantId);
+    if (!hasVariants) {
+      console.warn('Kit Configurator: demo mode — connect Kit Collection in section settings to enable cart.');
+      return;
+    }
+    const items = buildItemsPayload();
+    if (items.length === 0) return;
+    setSubmitting(true);
+    try {
+      const res = await fetch('/cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ items })
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        console.error('Kit Configurator: cart/add failed', res.status, err);
+        throw new Error(err.description || err.message || 'Unable to add items to cart');
+      }
+      // Success — go directly to checkout, bypassing the cart page entirely.
+      window.location.href = buildCheckoutUrl();
+    } catch (err) {
+      console.error(err);
+      setSubmitting(false);
+      alert('Sorry — we couldn’t start checkout. Please try again in a moment.');
+    }
+  }
+
+  // Any of the three CTAs triggers the same flow. stopImmediatePropagation()
+  // prevents the global theme.js cart-add handler from ALSO firing on this form
+  // and racing our /checkout redirect with a window.location.reload().
+  if (kitForm) {
+    kitForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      submitKit();
+    }, true); // Capture phase — runs before document-level bubble listener.
+  }
+  document.getElementById('dock-cta').addEventListener('click', (e) => { e.preventDefault(); submitKit(); });
+  document.getElementById('second-cta-btn').addEventListener('click', (e) => { e.preventDefault(); submitKit(); });
+  var bcBtn = document.getElementById('browse-complete-cta');
+  if (bcBtn) bcBtn.addEventListener('click', (e) => { e.preventDefault(); submitKit(); });
+
+  /* Gift-item popover — clicking a Tier 1/2 gift opens an info modal instead of
+     navigating to the product page. Description copy is hardcoded keyed by name. */
+  const GIFT_INFO = {
+    '2700K Replacement Bulb': 'A backup E26 LED bulb at 2700K — the same warm temperature as the kit lamps. Drop it in any 4000K fixture in your home and the room shifts instantly.',
+    'Lamp Care Kit': 'Microfiber cloth, soft dust brush, and a bulb-safe cleaning spray. Designed for paper shades, brass, ceramic, and glass — keeps every lamp looking new.',
+    'The Warm Layering Guide': 'A printed reference for placing the kit in any room. Anchor positioning, secondary heights, common mistakes — the design logic behind layered lighting in detail.',
+    'Rechargeable Mini Lamp': 'Cordless 2700K table lamp. Runs about 12 hours per charge — for the corners that don\'t have an outlet, a bedside table, or evenings on the patio.',
+    'Hand-Poured Beeswax Tapers': 'Two 100% beeswax tapers. Burn at the warm end of the visible spectrum — like 2700K, but actual fire.',
+    'Beeswax Tapers': 'Two 100% beeswax tapers. Burn at the warm end of the visible spectrum — like 2700K, but actual fire.',
+    'Next Room Credit': '$150 toward your next kit. Auto-applies at checkout when you build another room — a kitchen, an office, a guest space.'
+  };
+  const giftPop = document.getElementById('gift-pop');
+  const giftPopName = document.getElementById('gift-pop-name');
+  const giftPopDesc = document.getElementById('gift-pop-desc');
+  const giftPopImg = document.getElementById('gift-pop-img');
+  const giftPopWas = document.getElementById('gift-pop-was');
+  const giftPopCredit = document.getElementById('gift-pop-credit');
+  function openGiftPop(name, img, was){
+    if (!giftPop) return;
+    giftPopName.textContent = name || '';
+    giftPopDesc.textContent = GIFT_INFO[name] || 'A free extra unlocked with your kit.';
+    if (img) {
+      giftPopImg.src = img; giftPopImg.alt = name || '';
+      giftPopImg.style.display = ''; giftPopCredit.hidden = true;
+    } else {
+      giftPopImg.style.display = 'none'; giftPopCredit.hidden = false;
+    }
+    giftPopWas.textContent = was || '';
+    giftPop.hidden = false;
+    giftPop.setAttribute('data-open', '');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeGiftPop(){
+    if (!giftPop) return;
+    giftPop.removeAttribute('data-open');
+    giftPop.hidden = true;
+    document.body.style.overflow = '';
+  }
+  document.querySelectorAll('[data-gift-close]').forEach(b => b.addEventListener('click', closeGiftPop));
+  document.addEventListener('click', (e) => {
+    const trigger = e.target.closest('[data-tg-popover]');
+    if (!trigger) return;
+    e.preventDefault();
+    openGiftPop(trigger.dataset.giftName, trigger.dataset.giftImg, trigger.dataset.giftWas);
+  });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && giftPop && !giftPop.hidden) closeGiftPop(); });
+
+  // Expose for debugging / integration tests
+  window.__kitSubmit = submitKit;
+
+  /* Back-compat: keep triggerCartSubmit symbol in case anything external references it */
+  function triggerCartSubmit(){ submitKit(); }
+
+  /* Scroll-to-kit CTAs throughout the page */
+  document.querySelectorAll('.scroll-to-kit').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.scrollTarget || '.main-split';
+      document.querySelector(target).scrollIntoView({behavior:'smooth',block:'start'});
+    });
+  });
+
+  /* showToast removed — no more popup notifications */
+
+  /* Dock visibility — IntersectionObserver on a sentinel at the bottom of main-split.
+     When the sentinel exits the top of the viewport, dock slides down from above. */
+  const dock = document.getElementById('dock');
+  const mainSplit = document.querySelector('.main-split');
+
+  // Insert sentinel just after main-split
+  const sentinel = document.createElement('div');
+  sentinel.id = 'dock-sentinel';
+  sentinel.style.cssText = 'width:1px;height:1px;pointer-events:none;opacity:0';
+  mainSplit.parentNode.insertBefore(sentinel, mainSplit.nextSibling);
+
+  function showDock(show){
+    const isMobile = window.matchMedia('(max-width:900px)').matches;
+    let target;
+    if(isMobile){
+      // Mobile: bottom-anchored, slide up from below viewport
+      target = show ? 'translate3d(0, 0, 0)' : 'translate3d(0, 120%, 0)';
+    } else {
+      // Desktop: top-anchored, replaces nav
+      target = show ? 'translate3d(0, 0, 0)' : 'translate3d(0, -160px, 0)';
+    }
+    dock.classList.add('animating');
+    dock.style.setProperty('transform', target, 'important');
+    dock.classList.toggle('visible', show);
+    /* Preserve scroll position — adding kit-dock-open class changes body padding,
+       which otherwise shifts the viewport up when the dock appears while the user
+       is interacting with the kit picker below. */
+    const hadClass = document.body.classList.contains('kit-dock-open');
+    if (hadClass !== show){
+      const sy = window.scrollY;
+      document.body.classList.toggle('kit-dock-open', show);
+      /* Only compensate when shifting padding: adding dock-open adds padding-bottom
+         on mobile, which pushes following content up visually. Re-scroll to keep the
+         user's anchor steady. */
+      requestAnimationFrame(() => { if (Math.abs(window.scrollY - sy) > 2) window.scrollTo(0, sy); });
+    }
+  }
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      // Sentinel is above the viewport when boundingClientRect.top < 0
+      const scrolledPast = !entry.isIntersecting && entry.boundingClientRect.top < 0;
+      showDock(scrolledPast);
+    });
+  }, { threshold: 0, rootMargin: '0px 0px 0px 0px' });
+  io.observe(sentinel);
+
+  // Also respond to resize in case viewport changes
+  window.addEventListener('resize', () => {
+    const r = sentinel.getBoundingClientRect();
+    showDock(r.top < 0);
+  }, { passive: true });
+
+  // Initialize
+  showDock(false);
+  function updateDock(){
+    const r = sentinel.getBoundingClientRect();
+    showDock(r.top < 0);
+  }
+
+  /* Unlocked summary — headline + progress bar + tier card statuses.
+     Called from renderAll(); mirrors tier logic but in a prominent recap
+     section above the second CTA. */
+  const US_TIER1_VALUE = 38;
+  const US_TIER2_VALUE = 211;
+  const US_MAX_VALUE = US_TIER1_VALUE + US_TIER2_VALUE;
+  function renderUnlockedSummary(){
+    const headline = document.getElementById('us-headline');
+    const valEl = document.getElementById('us-value');
+    const barFill = document.getElementById('us-bar-fill');
+    const t1 = document.getElementById('us-t1');
+    const t2 = document.getElementById('us-t2');
+    if (!headline || !valEl || !barFill || !t1 || !t2) return;
+    const t = tier();
+    let earned = 0;
+    if (t >= 1) earned += US_TIER1_VALUE;
+    if (t >= 2) earned += US_TIER2_VALUE;
+    valEl.textContent = `$${earned}`;
+    barFill.style.width = `${Math.round((earned / US_MAX_VALUE) * 100)}%`;
+    t1.classList.toggle('on', t >= 1);
+    t2.classList.toggle('on', t >= 2);
+    if (t === 0){
+      headline.innerHTML = `Pick 2 lamps to start earning <em>free extras</em>`;
+    } else if (t === 1){
+      headline.innerHTML = `Tier 01 unlocked — <em>add a floor lamp</em> to earn the full $259`;
+    } else {
+      headline.innerHTML = `All tiers unlocked — <em>$259 in free extras earned</em>`;
+    }
+  }
+
+  /* Silent re-render: preserve scrollY so tier unlock / lamp add / dock toggle never
+     yanks the viewport. Applied across the full render batch because multiple
+     layouts can change (announce slide-down, unlocked-summary height, dock toggle). */
+  function renderAll(){
+    const sy = window.scrollY;
+    renderSlots();
+    renderIncluded();
+    renderUnlockedSummary();
+    renderDock();
+    renderGrid();
+    updateDock();
+    document.querySelectorAll('.browse .chip[data-filter]').forEach(c => {
+      if(c.dataset.filter === state.filter) c.classList.add('on'); else c.classList.remove('on');
+    });
+    /* Sync to localStorage so the global persistent kit-dock snippet (loaded in
+       layout/theme.liquid on every page) can render the same kit anywhere. */
+    syncKitToStorage();
+    /* Double rAF so we catch the layout AFTER both sync + async (CSS transition)
+       mutations settle. Users perceive this as the page staying anchored. */
+    requestAnimationFrame(() => {
+      if (Math.abs(window.scrollY - sy) > 1) window.scrollTo(0, sy);
+      requestAnimationFrame(() => {
+        if (Math.abs(window.scrollY - sy) > 1) window.scrollTo(0, sy);
+      });
+    });
+  }
+
+  /* Persist current kit state to localStorage. Read by snippets/kit-dock.liquid
+     to render the dock + popover on every page across the site. Also dispatched
+     as 'wbd:kit-updated' so the dock re-renders without polling. */
+  function syncKitToStorage(){
+    try {
+      var payload = {
+        selected: state.selected.map(function(s){
+          var p = get(s.id) || {};
+          var variant = (p.variants || []).find(function(v){ return v.id == s.variantId; });
+          var price = variant ? (variant.price || p.price) : p.price;
+          var img = (typeof slotImage === 'function') ? slotImage(s) : (p.img || '');
+          return {
+            id: s.id,
+            variantId: s.variantId,
+            productId: p.productId || null,
+            name: p.name || '',
+            price: price || 0,
+            img: img,
+            slot: p.slot || null,
+            vt: variant ? (variant.title || '') : ''
+          };
+        }),
+        updatedAt: Date.now(),
+        pageContext: {
+          walletActive: !!WARM_WALLET_ACTIVE,
+          walletCode: WARM_WALLET_CODE,
+          firstPurchaseEligible: !!FIRST_PURCHASE_ELIGIBLE,
+          firstPurchaseCode: FIRST_PURCHASE_CODE
+        }
+      };
+      localStorage.setItem('wbd_kit_state', JSON.stringify(payload));
+      document.dispatchEvent(new CustomEvent('wbd:kit-updated'));
+      if (window.__WBD_KIT_DEBUG) console.log('[wbd-kit] syncKitToStorage wrote', payload.selected.length, 'lamps');
+    } catch(e){
+      console.error('[wbd-kit] syncKitToStorage FAILED:', e);
+    }
+  }
+  /* Debug exposures — see kit-configurator-v2 for usage notes. Also lets the
+     global kit-dock snippet read in-memory state as a fallback if localStorage
+     isn't being written for any reason. */
+  window.__kitState = function(){ return state.selected.slice(); };
+  window.__kitProducts = products;
+  window.__kitForceSync = function(){ syncKitToStorage(); return localStorage.getItem('wbd_kit_state'); };
+
+  /* Expose a remove hook so the global kit-dock popover X buttons can mutate
+     the section's real state instead of just editing localStorage (keeps the
+     in-page UI in lockstep). */
+  window.__kitRemove = function(id){
+    var idx = state.selected.findIndex(function(s){ return s.id === id; });
+    if (idx < 0) return false;
+    state.selected.splice(idx, 1);
+    state.lastTier = null;
+    renderAll();
+    return true;
+  };
+
+  /* Restore kit state from localStorage BEFORE first renderAll, otherwise the
+     initial empty state.selected = [] would overwrite a kit the user built on
+     a previous visit (renderAll → syncKitToStorage writes the empty state). */
+  (function restoreKitFromStorage(){
+    try {
+      var raw = localStorage.getItem('wbd_kit_state');
+      if (!raw) return;
+      var s = JSON.parse(raw);
+      if (!s || !Array.isArray(s.selected) || s.selected.length === 0) return;
+      var restored = [];
+      s.selected.forEach(function(item){
+        if (!item || !item.id) return;
+        var slot = makeSlot(item.id, item.variantId);
+        if (slot) restored.push(slot);
+      });
+      if (restored.length > 0) state.selected = restored;
+    } catch(e){}
+  })();
+
+  renderAll();
+
+  /* If user lands on /pages/kit?action=complete (e.g. clicked "Complete kit"
+     from the persistent dock on a non-kit page), auto-trigger submitKit so they
+     go straight to checkout. */
+  (function autoCompleteIfRequested(){
+    try {
+      var p = new URLSearchParams(window.location.search);
+      if (p.get('action') === 'complete' && state.selected.length > 0){
+        setTimeout(function(){ submitKit(); }, 200);
+      }
+    } catch(e){}
+  })();
+
+  /* ============ Product Details Modal ============ */
+  const SLOT_LABELS = {floor:'Floor Lamp', table:'Table Lamp'};
+  const modal = document.getElementById('product-modal');
+  const modalKicker = document.getElementById('modal-kicker');
+  const modalName = document.getElementById('modal-name');
+  const modalPrice = document.getElementById('modal-price');
+  const modalDesc = document.getElementById('modal-desc');
+  const modalSpecs = document.getElementById('modal-specs');
+  const modalAdd = document.getElementById('modal-add');
+  const modalTrack = document.getElementById('modal-track');
+  const modalThumbs = document.getElementById('modal-thumbs');
+  const modalPrev = document.getElementById('modal-prev');
+  const modalNext = document.getElementById('modal-next');
+  const modalMainWrap = document.getElementById('modal-main-wrap');
+  const modalHighlights = document.getElementById('modal-highlights');
+  let modalProductId = null;
+  let modalSlot_i = 0, modalSlotMax = 0;
+  /* Variant state inside the modal: which variantId is currently selected, and
+     (when editing an existing kit slot) which slot index this modal is bound to. */
+  let modalVariantId = null;
+  let modalEditSlotIndex = -1;
+  /* Two synced variant pickers:
+       modal-hsw  — glass pill overlay on the modal hero (shown only when
+                    slot 0 is active, hidden when gallery is on a scene/shared).
+       modal-variants — right-column picker in modal-body, always visible.
+     Click either picker → setActiveModalVariant updates both. */
+  const modalHswBox = document.getElementById('modal-hsw');
+  const modalHswRail = document.getElementById('modal-hsw-rail');
+  const modalHswName = document.getElementById('modal-hsw-name');
+  const modalVariantsBox = document.getElementById('modal-variants');
+  const modalVariantRail = document.getElementById('modal-variant-rail');
+  const modalVariantName = document.getElementById('modal-variant-name');
+
+  /* Highlights icon map — mirrors product-main.liquid line 340+ icon mapping.
+     Label contains any of the keywords → emit that Material Symbol. */
+  const HL_ICONS = [
+    [['2700k','kelvin'], 'wb_twilight'],
+    [['walnut','wood','bamboo','oak','ash','maple'], 'nature'],
+    [['glass','opal','crystal'], 'blur_on'],
+    [['marble','stone','travertine','alabaster'], 'diamond'],
+    [['linen','fabric','shade','cotton'], 'texture'],
+    [['dimm'], 'light_mode'],
+    [['touch'], 'touch_app'],
+    [['cordless','rechargeable','portable','battery'], 'battery_charging_full'],
+    [['brass','gold','chrome','gunmetal','iron','metal'], 'hexagon'],
+    [['e26','e27','g9','bulb','led'], 'lightbulb'],
+    [['plug','cord'], 'power']
+  ];
+  function iconFor(label){
+    const l = (label || '').toLowerCase();
+    for (const [keys, icon] of HL_ICONS){ if (keys.some(k => l.includes(k))) return icon; }
+    return 'category';
+  }
+
+  /* Specs grouping mirrors product page: Dimensions / Materials / Construction.
+     Keys in product JSON use friendly names; map them back to groups here. */
+  const SPEC_GROUPS = [
+    { label: 'Dimensions', keys: ['Height','Width','Shade','Weight'] },
+    { label: 'Materials',  keys: ['Body','Shade material','Construction'] },
+    { label: 'Light',      keys: ['Color temp','CRI','Bulb','Voltage','Certifications'] }
+  ];
+
+  /* Day/night pair detection — mirrors product-main.liquid alt conventions:
+       "on-off-day-{color}" + "on-off-night-{color}"  (variant-scoped pair)
+       "on-off-day"         + "on-off-night"          (single-SKU pair)
+       "on-off-off"         + "on-off-on"             (legacy single-SKU pair)
+     Finds ALL pairs — a product can have multiple (one per variant color).
+     Returns [{ dayIdx, nightIdx }, ...] in Shopify image order of the day. */
+  function detectOnOffPairs(p){
+    const alts = (p.imageAlts || []).map(a => (a || '').toLowerCase());
+    const pairs = [];
+    const consumed = new Set();
+    alts.forEach((a, i) => {
+      if (consumed.has(i)) return;
+      let color = null;
+      if (a.startsWith('on-off-day-')) color = a.slice(11);
+      else if (a === 'on-off-day' || a === 'on-off-off') color = '';
+      else return;
+      const nightAlts = color === ''
+        ? ['on-off-night', 'on-off-on']
+        : ['on-off-night-' + color];
+      for (let j = 0; j < alts.length; j++){
+        if (j === i || consumed.has(j)) continue;
+        if (nightAlts.indexOf(alts[j]) === -1) continue;
+        pairs.push({ dayIdx: i, nightIdx: j });
+        consumed.add(i); consumed.add(j);
+        break;
+      }
+    });
+    return pairs;
+  }
+
+  /* ===== Modal gallery — ported wholesale from the product page pattern =====
+     Each slot is a 100%-wide flex child of #modal-track; show(i) sets
+     translateX(-i * 100%). Day/night pair = one "scene" slot containing
+     layered <img> tags + an inline <input type="range"> slider. All other
+     images are single-image slots. Slot 0 is always the hero (featured_image
+     leads the images[] array from kit-product-json.liquid). */
+
+  /* Find the day/night pair (if any) that belongs to a specific variant — the
+     pair's day-image alt is "on-off-day-{color}" and option1 (lowercased) is
+     the color key. For non-variant products with a bare "on-off-day"/"on-off-
+     night" pair, that pair has no color suffix; match it via empty colorKey. */
+  function pairForVariant(p, vid){
+    const v = variantOf(p, vid);
+    if (!v) return null;
+    const colorKey = (v.colorKey || v.option1 || '').toLowerCase().trim();
+    const alts = (p.imageAlts || []).map(a => (a || '').toLowerCase());
+    const pairs = detectOnOffPairs(p);
+    if (!pairs.length) return null;
+    /* Find the pair where the day alt's color suffix matches this variant. */
+    for (const pr of pairs){
+      const dayAlt = alts[pr.dayIdx] || '';
+      let suffix = '';
+      if (dayAlt.startsWith('on-off-day-')) suffix = dayAlt.slice(11);
+      else if (dayAlt === 'on-off-day' || dayAlt === 'on-off-off') suffix = '';
+      if (suffix === colorKey) return pr;
+    }
+    /* If colorKey didn't match any suffix, fall back to first pair (single-SKU
+       day/night without color suffix). */
+    if (!colorKey && pairs[0]) return pairs[0];
+    return null;
+  }
+
+  function renderModalGallery(p){
+    const rawImgs = (p.images && p.images.length ? p.images : [p.img]);
+    const rawThumbs = (p.thumbs && p.thumbs.length ? p.thumbs : rawImgs);
+    const rawAlts = (p.imageAlts || []).map(a => (a || '').toLowerCase());
+    const isVariantProduct = !!(p.variants && p.variants.length > 1);
+
+    /* Detect day/night pairs (multi-pair safe — works for variant products). */
+    const pairs = detectOnOffPairs(p);
+    const dayToPair = new Map();   /* dayIdx → pair */
+    const nightSet = new Set();    /* nightIdx — skipped */
+    pairs.forEach(pr => {
+      if (rawImgs[pr.dayIdx] && rawImgs[pr.nightIdx]){
+        dayToPair.set(pr.dayIdx, pr);
+        nightSet.add(pr.nightIdx);
+      }
+    });
+
+    /* Mirrors product-main.liquid slot layout:
+         Slot 0  — HERO (active variant's image for variant products, swaps on
+                   swatch click). For non-variant products, the first non-pair
+                   image OR the first detected pair becomes slot 0 naturally.
+         Slot 1+ — SCENE slots for each detected day/night pair.
+         Slot N+ — SHARED images (not the hero, not part of any pair, not
+                   alt-tagged "hero-*").
+       Thumbnails enable PDP-style navigation. */
+    const slots = [];
+    let heroIdx = -1; /* index into rawImgs that the hero pulls from (skipped from shared) */
+
+    if (isVariantProduct){
+      const v = variantOf(p, modalVariantId) || defaultVariantOf(p);
+      const heroSrc = (v && v.img) || p.img || rawImgs[0] || '';
+      const heroThumb = (v && v.thumb) || rawThumbs[0] || heroSrc;
+      slots.push({ type: 'hero', src: heroSrc, thumb: heroThumb });
+      /* If the active variant's hero matches one of the rawImgs, mark its index
+         to skip from shared so we don't render the same image twice. */
+      heroIdx = rawImgs.findIndex(u => u === heroSrc);
+    } else {
+      /* Non-variant: lead with the FIRST non-pair, non-night image as the hero. */
+      for (let i = 0; i < rawImgs.length; i++){
+        if (nightSet.has(i)) continue;
+        if (dayToPair.has(i)) continue; /* pairs become scenes */
+        if (rawImgs[i]){
+          slots.push({ type: 'hero', src: rawImgs[i], thumb: rawThumbs[i] || rawImgs[i] });
+          heroIdx = i;
+          break;
+        }
+      }
+      /* If no non-pair image exists (e.g. product is JUST a day/night pair),
+         leave hero off — the scene below covers it. */
+    }
+
+    /* SCENE slots — one per pair, in image order. */
+    pairs.forEach(pr => {
+      if (rawImgs[pr.dayIdx] && rawImgs[pr.nightIdx]){
+        slots.push({
+          type: 'scene',
+          day: rawImgs[pr.dayIdx],
+          night: rawImgs[pr.nightIdx],
+          thumb: rawThumbs[pr.dayIdx] || rawImgs[pr.dayIdx]
+        });
+      }
+    });
+
+    /* SHARED slots — anything left over (not hero, not in a pair, not "hero-*"). */
+    rawImgs.forEach((src, i) => {
+      if (!src) return;
+      if (i === heroIdx) return;
+      if (nightSet.has(i)) return;
+      if (dayToPair.has(i)) return;
+      const alt = rawAlts[i] || '';
+      if (alt.indexOf('hero-') === 0) return; /* skip hero-* alts (PDP convention) */
+      slots.push({ type: 'single', src, thumb: rawThumbs[i] || src });
+    });
+
+    modalSlot_i = 0;
+    modalSlotMax = slots.length;
+    const esc = (p.name || '').replace(/"/g,'&quot;');
+
+    /* Loading priority — only the hero (slot 0) loads eagerly with high
+       fetchpriority so it paints fast. The next slot (slot 1) lazy-loads with
+       a hint that it's coming up. The rest defer until the user navigates. */
+    const slideAttrs = (i) => {
+      if (i === 0) return ' loading="eager" decoding="async" fetchpriority="high"';
+      if (i === 1) return ' loading="lazy" decoding="async" fetchpriority="low"';
+      return ' loading="lazy" decoding="async"';
+    };
+
+    /* Render slides. Scene slots have the day/night pair + inline slider
+       baked in — no absolute overlay. The 'hero' slot type uses a special
+       data-modal-hero-img attribute so swatch-chip clicks can find and swap
+       just that image without re-rendering the entire gallery. */
+    modalTrack.innerHTML = slots.map((s, i) => {
+      const attrs = slideAttrs(i);
+      if (s.type === 'scene'){
+        return (
+          `<div class="modal-slide modal-slide-scene" data-slot="${i}">`+
+            `<img class="scene-night" src="${s.night}" alt="${esc} night"${attrs} onerror="this.style.display='none'">`+
+            `<img class="scene-day" src="${s.day}" alt="${esc} day"${attrs} onerror="this.style.display='none'" style="opacity:0.5">`+
+            `<div class="scene-slider-wrap" data-scene-wrap="${i}">`+
+              `<button type="button" class="scene-ss-snap scene-ss-snap-day" data-scene-snap="0" aria-label="Day"><span class="material-symbols-outlined">light_mode</span></button>`+
+              `<div class="scene-slider-track"><input type="range" min="0" max="100" value="50" step="0.1" class="scene-slider" data-scene-slider="${i}" aria-label="Day to Night"></div>`+
+              `<button type="button" class="scene-ss-snap scene-ss-snap-night" data-scene-snap="100" aria-label="Night"><span class="material-symbols-outlined">bedtime</span></button>`+
+            `</div>`+
+          `</div>`
+        );
+      }
+      const heroAttr = s.type === 'hero' ? ' data-modal-hero-img' : '';
+      return `<div class="modal-slide" data-slot="${i}"><img${heroAttr} src="${s.src}" alt="${esc}"${attrs} onerror="this.style.display='none'"></div>`;
+    }).join('');
+
+    /* Thumbs always lazy + small (280px URLs). One thumb per slot — scene pair
+       renders as a single thumb (the day image). */
+    modalThumbs.innerHTML = slots.map((s, i) =>
+      `<button type="button" class="thumb${i===0?' on':''}" data-thumb-index="${i}" aria-label="Image ${i+1}"><img src="${s.thumb}" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'"></button>`
+    ).join('');
+
+    modalThumbs.hidden = slots.length <= 1;
+    modalPrev.hidden = slots.length <= 1;
+    modalNext.hidden = slots.length <= 1;
+
+    /* Snap track back to slot 0 without animating the fresh markup into view. */
+    modalTrack.style.transition = 'none';
+    modalTrack.style.transform = 'translateX(0%)';
+    void modalTrack.offsetWidth; /* reflow */
+    modalTrack.style.transition = '';
+    /* Slot 0 is active on open → show the hero swatch overlay. */
+    modalMainWrap.classList.add('is-hero-active');
+
+    bindSceneSliders();
+    slots.forEach((s, i) => { if (s.type === 'scene') setSceneSlider(i, 50); });
+    scrollActiveThumbIntoView();
+    /* Preload slot 1 so the first swipe right is instant. */
+    if (modalSlotMax > 1) preloadSlot(1);
+  }
+
+  /* Set the day-layer opacity for a scene slot. 0 = full Day, 100 = full Night.
+     Night layer is always opacity 1 under the day layer, so nothing flickers
+     through during the crossfade. Matches product page setSceneSlider exactly. */
+  function setSceneSlider(slotIdx, value){
+    const v = Math.max(0, Math.min(100, parseFloat(value) || 0));
+    const slide = modalTrack.querySelector(`.modal-slide-scene[data-slot="${slotIdx}"]`);
+    if (!slide) return;
+    const dayImg = slide.querySelector('.scene-day');
+    if (dayImg) dayImg.style.opacity = ((100 - v) / 100).toFixed(3);
+    const slider = slide.querySelector('.scene-slider');
+    if (slider){
+      if (parseFloat(slider.value) !== v) slider.value = v;
+      slider.setAttribute('aria-valuenow', String(Math.round(v)));
+      slider.style.setProperty('--scene-fill', v.toFixed(2) + '%');
+    }
+    const wrap = slide.querySelector('.scene-slider-wrap');
+    if (wrap){
+      wrap.classList.toggle('is-day', v < 40);
+      wrap.classList.toggle('is-night', v > 60);
+    }
+  }
+
+  /* Snap-button animation (sun → 0, moon → 100). Ease-out-quart, 420ms. */
+  function animateSceneSlider(slotIdx, targetV, duration){
+    const slider = modalTrack.querySelector(`[data-scene-slider="${slotIdx}"]`);
+    if (!slider) return;
+    const startV = parseFloat(slider.value) || 0;
+    const target = Math.max(0, Math.min(100, targetV));
+    if (startV === target){ setSceneSlider(slotIdx, target); return; }
+    const t0 = performance.now();
+    (function frame(now){
+      const p = Math.min(1, (now - t0) / duration);
+      const eased = 1 - Math.pow(1 - p, 4);
+      setSceneSlider(slotIdx, startV + (target - startV) * eased);
+      if (p < 1) requestAnimationFrame(frame);
+    })(performance.now());
+  }
+
+  /* Bind pointer/input/snap handlers to the freshly-rendered slider DOM.
+     Custom pointerdown handler claims the gesture anywhere on the slider
+     (not just the 3px thumb) — fixes iOS Safari "tap didn't grab" behavior.
+     stopPropagation keeps slider drags from triggering the outer gallery
+     swipe handler. */
+  function bindSceneSliders(){
+    modalTrack.querySelectorAll('.scene-slider').forEach(slider => {
+      const idx = parseInt(slider.dataset.sceneSlider, 10);
+      setSceneSlider(idx, slider.value);
+      slider.addEventListener('input', () => setSceneSlider(idx, slider.value));
+
+      let dragging = false;
+      function valueFromClientX(clientX){
+        const rect = slider.getBoundingClientRect();
+        if (rect.width <= 0) return parseFloat(slider.value) || 0;
+        let pct = (clientX - rect.left) / rect.width;
+        pct = Math.max(0, Math.min(1, pct));
+        return pct * 100;
+      }
+      slider.addEventListener('pointerdown', e => {
+        dragging = true;
+        try { slider.setPointerCapture(e.pointerId); } catch(_){}
+        const v = valueFromClientX(e.clientX);
+        slider.value = v;
+        setSceneSlider(idx, v);
+        e.stopPropagation();
+        e.preventDefault();
+      });
+      slider.addEventListener('pointermove', e => {
+        if (!dragging) return;
+        const v = valueFromClientX(e.clientX);
+        slider.value = v;
+        setSceneSlider(idx, v);
+      });
+      function release(e){
+        if (!dragging) return;
+        dragging = false;
+        try { slider.releasePointerCapture(e.pointerId); } catch(_){}
+      }
+      slider.addEventListener('pointerup', release);
+      slider.addEventListener('pointercancel', release);
+      slider.addEventListener('lostpointercapture', release);
+
+      ['touchstart','touchmove','touchend','mousedown'].forEach(evt => {
+        slider.addEventListener(evt, e => e.stopPropagation(), { passive: true });
+      });
+    });
+
+    modalTrack.querySelectorAll('.scene-ss-snap').forEach(btn => {
+      const wrap = btn.closest('.scene-slider-wrap');
+      if (!wrap) return;
+      const idx = parseInt(wrap.dataset.sceneWrap, 10);
+      const target = parseInt(btn.dataset.sceneSnap, 10) || 0;
+      btn.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); animateSceneSlider(idx, target, 420); });
+      ['touchstart','pointerdown','mousedown'].forEach(evt => {
+        btn.addEventListener(evt, e => e.stopPropagation(), { passive: true });
+      });
+    });
+  }
+
+  /* Keep the active thumb centered in the strip — matches product page's
+     scrollActiveThumbIntoView. */
+  function scrollActiveThumbIntoView(){
+    if (!modalThumbs) return;
+    const active = modalThumbs.querySelector('.thumb.on');
+    if (!active) return;
+    const stripRect = modalThumbs.getBoundingClientRect();
+    const itemRect = active.getBoundingClientRect();
+    const delta = (itemRect.left - stripRect.left) - (stripRect.width / 2) + (itemRect.width / 2);
+    const target = Math.max(0, Math.min(modalThumbs.scrollLeft + delta, modalThumbs.scrollWidth - modalThumbs.clientWidth));
+    if (Math.abs(target - modalThumbs.scrollLeft) < 2) return;
+    try { modalThumbs.scrollTo({ left: target, behavior: 'smooth' }); }
+    catch(_) { modalThumbs.scrollLeft = target; }
+  }
+
+  function showModalSlide(i){
+    if (modalSlotMax <= 1) return;
+    modalSlot_i = ((i % modalSlotMax) + modalSlotMax) % modalSlotMax;
+    modalTrack.style.transform = `translateX(-${modalSlot_i * 100}%)`;
+    modalThumbs.querySelectorAll('.thumb').forEach((el, idx) => el.classList.toggle('on', idx === modalSlot_i));
+    /* Toggle .is-hero-active so the .modal-hsw overlay only paints over slot 0. */
+    modalMainWrap.classList.toggle('is-hero-active', modalSlot_i === 0);
+    scrollActiveThumbIntoView();
+    /* Anticipate the next swipe — kick off fetch for ±1 neighbors so they're
+       cached by the time the user navigates. Browser dedupes by URL. */
+    preloadSlot(modalSlot_i + 1);
+    preloadSlot(modalSlot_i - 1);
+  }
+
+  function preloadSlot(idx){
+    if (idx < 0 || idx >= modalSlotMax) return;
+    const slide = modalTrack.querySelector(`[data-slot="${idx}"]`);
+    if (!slide) return;
+    slide.querySelectorAll('img').forEach(img => {
+      if (!img.src || img.complete) return;
+      const pre = new Image();
+      pre.src = img.src;
+    });
+  }
+
+  function renderModalHighlights(p){
+    const hl = p.highlights || [];
+    if (!hl.length){ modalHighlights.innerHTML = ''; return; }
+    modalHighlights.innerHTML = hl.slice(0,4).map(item =>
+      `<div class="hl"><span class="material-symbols-outlined ic">${iconFor(item)}</span><span class="lb">${item}</span></div>`
+    ).join('');
+  }
+
+  function renderModalSpecs(p){
+    const specs = p.specs || {};
+    const html = SPEC_GROUPS.map(group => {
+      const rows = group.keys.filter(k => specs[k] != null && specs[k] !== '');
+      if (!rows.length) return '';
+      return `<div class="spec-group"><span class="spec-group-label">${group.label}</span>` +
+        rows.map(k => `<div class="spec-row"><span class="l">${k}</span><span class="v">${specs[k]}</span></div>`).join('') +
+      `</div>`;
+    }).join('');
+    modalSpecs.innerHTML = html;
+  }
+
+  /* ===== QUICK VARIANT PICKER =====================================
+     Type-only mini card opened from the browse grid when a variant
+     product is clicked. Name + type · price + 2-col grid of swatch
+     pills + "View details" escape hatch. No image. */
+  const qp = document.getElementById('kit-qp');
+  const qpTitle = document.getElementById('kit-qp-title');
+  const qpRail = document.getElementById('kit-qp-rail');
+  const qpType = document.getElementById('kit-qp-type');
+  const qpPrice = document.getElementById('kit-qp-price');
+  const qpDetailsBtn = document.getElementById('kit-qp-details');
+  let qpProductId = null;
+
+  /* Map slot ('floor' | 'table') → human-readable type label. */
+  const QP_TYPE_LABELS = { floor: 'Floor Lamp', table: 'Table Lamp' };
+
+  function escHtml(s){
+    return String(s == null ? '' : s).replace(/[<>&"']/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  function openQuickPicker(id){
+    const p = get(id); if (!p || !p.variants || p.variants.length <= 1) return;
+    qpProductId = id;
+    if (qpTitle) qpTitle.textContent = p.name || 'Product';
+    if (qpType)  qpType.textContent  = QP_TYPE_LABELS[p.slot] || (p.slot || 'Lamp');
+    if (qpPrice) qpPrice.textContent = p.priceMoney || ('$' + (p.price || 0));
+    if (qpRail){
+      qpRail.innerHTML = p.variants.map(v => {
+        const hex = hexFor(v.colorKey || v.option1);
+        const disabled = v.available === false ? 'disabled aria-disabled="true"' : '';
+        return `<button type="button" class="kit-qp__chip" role="radio"
+                  data-variant-id="${v.id}"
+                  aria-label="${escHtml(v.title)}" title="${escHtml(v.title)}"
+                  ${disabled}>
+                  <span class="kit-qp__chip-disc" style="background:${hex}"></span>
+                  <span class="kit-qp__chip-name">${escHtml(v.title)}</span>
+                </button>`;
+      }).join('');
+    }
+    qp.hidden = false;
+    requestAnimationFrame(() => qp.classList.add('open'));
+    document.body.style.overflow = 'hidden';
+  }
+  function closeQuickPicker(){
+    qp.classList.remove('open');
+    document.body.style.overflow = '';
+    setTimeout(() => { qp.hidden = true; qpProductId = null; }, 200);
+  }
+  /* Backdrop / × button close */
+  if (qp){
+    qp.querySelectorAll('[data-qp-close]').forEach(el => el.addEventListener('click', closeQuickPicker));
+  }
+  /* Chip click → add that variant to the kit and close. If at MAX_LAMPS, the
+     toggleProductInKit call no-ops (existing guard) and we just close. */
+  if (qpRail){
+    qpRail.addEventListener('click', e => {
+      const chip = e.target.closest('.kit-qp__chip');
+      if (!chip || chip.disabled || !qpProductId) return;
+      const vid = chip.dataset.variantId;
+      const slot = makeSlot(qpProductId, vid);
+      if (!slot) { closeQuickPicker(); return; }
+      if (state.selected.length >= MAX_LAMPS) { closeQuickPicker(); return; }
+      state.selected.push(slot);
+      renderAll();
+      closeQuickPicker();
+    });
+  }
+  /* "Or, open details" → swap to the full modal for the same product. */
+  if (qpDetailsBtn){
+    qpDetailsBtn.addEventListener('click', () => {
+      const id = qpProductId;
+      closeQuickPicker();
+      if (id) openDetails(id);
+    });
+  }
+  /* Esc closes */
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && qp && !qp.hidden) closeQuickPicker();
+  });
+
+  /* Open the modal for a product. Optional opts:
+       editSlotIndex — bind the modal to an existing kit slot so changing the
+                       variant edits that slot in place (instead of toggling). */
+  function openDetails(id, opts){
+    const p = get(id); if(!p) return;
+    modalProductId = id;
+    modalEditSlotIndex = (opts && Number.isInteger(opts.editSlotIndex)) ? opts.editSlotIndex : -1;
+    /* Pre-select variant: edit-slot mode → use slot's variant. New-add mode →
+       check if any kit slot already has this product (use its variant) else
+       fall back to product default. */
+    let preselectVid = null;
+    if (modalEditSlotIndex >= 0){
+      const slot = state.selected[modalEditSlotIndex];
+      if (slot) preselectVid = slot.variantId;
+    } else {
+      const existing = state.selected.find(s => s.id === id);
+      if (existing) preselectVid = existing.variantId;
+    }
+    if (!preselectVid){
+      const def = defaultVariantOf(p);
+      preselectVid = def ? def.id : (p.variantId || null);
+    }
+    modalVariantId = preselectVid;
+    modalKicker.textContent = `Warm Lamp · ${SLOT_LABELS[p.slot] || p.slot}`;
+    modalName.textContent = p.name;
+    renderModalHsw(p);
+    renderModalPrice(p);
+    modalDesc.textContent = p.shortDescription || p.desc || '';
+    renderModalGallery(p);
+    renderModalHighlights(p);
+    renderModalSpecs(p);
+    updateModalAddButton();
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden','false');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeDetails(){
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden','true');
+    document.body.style.overflow = '';
+    modalProductId = null;
+    modalEditSlotIndex = -1;
+    modalVariantId = null;
+  }
+
+  /* Render BOTH variant pickers (hero overlay + right-column picker). Both
+     use the same data-variant-id contract, so the delegated click handler
+     applies to either. */
+  function renderModalHsw(p){
+    const isVariant = !!(p.variants && p.variants.length > 1);
+    /* Hide both pickers for non-variant products. */
+    if (!isVariant){
+      if (modalHswBox) { modalHswBox.hidden = true; if (modalHswRail) modalHswRail.innerHTML = ''; if (modalHswName) modalHswName.textContent = ''; }
+      if (modalVariantsBox) { modalVariantsBox.hidden = true; if (modalVariantRail) modalVariantRail.innerHTML = ''; if (modalVariantName) modalVariantName.textContent = ''; }
+      return;
+    }
+    /* Build the chip rail HTML once — same markup string can be reused in both
+       containers because the click handler is delegated by data-variant-id. */
+    const heroChips = p.variants.map(v => {
+      const hex = hexFor(v.colorKey || v.option1);
+      const active = String(v.id) === String(modalVariantId);
+      const disabled = v.available === false ? 'disabled aria-disabled="true"' : '';
+      return `<button type="button" class="modal-hsw__chip${active?' is-on':''}"
+                data-variant-id="${v.id}"
+                aria-label="${(v.title||'').replace(/"/g,'&quot;')}" title="${(v.title||'').replace(/"/g,'&quot;')}"
+                style="background:${hex}" ${disabled}></button>`;
+    }).join('');
+    const bodyChips = p.variants.map(v => {
+      const hex = hexFor(v.colorKey || v.option1);
+      const active = String(v.id) === String(modalVariantId);
+      const disabled = v.available === false ? 'disabled aria-disabled="true"' : '';
+      return `<button type="button" class="modal-variants__chip${active?' is-on':''}"
+                data-variant-id="${v.id}"
+                aria-label="${(v.title||'').replace(/"/g,'&quot;')}" title="${(v.title||'').replace(/"/g,'&quot;')}"
+                style="background:${hex}" ${disabled}></button>`;
+    }).join('');
+    const activeV = variantOf(p, modalVariantId) || defaultVariantOf(p);
+    const activeTitle = activeV ? activeV.title : '';
+    if (modalHswBox) modalHswBox.hidden = false;
+    if (modalHswRail) modalHswRail.innerHTML = heroChips;
+    if (modalHswName) modalHswName.textContent = activeTitle;
+    if (modalVariantsBox) modalVariantsBox.hidden = false;
+    if (modalVariantRail) modalVariantRail.innerHTML = bodyChips;
+    if (modalVariantName) modalVariantName.textContent = activeTitle;
+  }
+
+  /* Render the price — uses variant price if available. */
+  function renderModalPrice(p){
+    const v = variantOf(p, modalVariantId);
+    const txt = (v && v.priceMoney) ? v.priceMoney : (p.priceMoney || `$${p.price}`);
+    modalPrice.textContent = txt;
+  }
+
+  /* Click a variant chip (in either picker) → switch active variant. Swaps
+     ONLY the hero slot's image + thumb (matches PDP behavior — scene/shared
+     slots stay put). Updates both pickers' active chip + label, price, and
+     the Add-to-Kit CTA text. */
+  function setActiveModalVariant(vid){
+    const p = get(modalProductId); if (!p) return;
+    const v = variantOf(p, vid); if (!v) return;
+    modalVariantId = vid;
+    /* Highlight active chip + label in BOTH pickers. */
+    [modalHswRail, modalVariantRail].forEach(rail => {
+      if (!rail) return;
+      rail.querySelectorAll('[data-variant-id]').forEach(c => {
+        c.classList.toggle('is-on', String(c.dataset.variantId) === String(vid));
+      });
+    });
+    if (modalHswName) modalHswName.textContent = v.title;
+    if (modalVariantName) modalVariantName.textContent = v.title;
+    if (modalPrice) modalPrice.textContent = v.priceMoney || `$${v.price}`;
+    /* Swap just the hero slot's image (data-modal-hero-img) + the first thumb. */
+    const heroImg = modalTrack.querySelector('img[data-modal-hero-img]');
+    if (heroImg && v.img) heroImg.src = v.img;
+    const firstThumbImg = modalThumbs.querySelector('.thumb[data-thumb-index="0"] img');
+    if (firstThumbImg && (v.thumb || v.img)) firstThumbImg.src = v.thumb || v.img;
+    /* In edit mode, immediately apply to the slot so the kit reflects choice. */
+    if (modalEditSlotIndex >= 0){
+      setSlotVariant(modalEditSlotIndex, vid);
+    }
+    updateModalAddButton();
+  }
+
+  /* Delegated chip click handlers — fire on either picker. */
+  function bindVariantClicks(rail){
+    if (!rail) return;
+    rail.addEventListener('click', e => {
+      const chip = e.target.closest('[data-variant-id]');
+      if (!chip || chip.disabled) return;
+      setActiveModalVariant(chip.dataset.variantId);
+    });
+  }
+  bindVariantClicks(modalHswRail);
+  bindVariantClicks(modalVariantRail);
+
+  function updateModalAddButton(){
+    if(!modalProductId) return;
+    const p = get(modalProductId);
+    if (modalEditSlotIndex >= 0){
+      /* Edit mode: button always reads "Done" — variant changes apply live. */
+      modalAdd.classList.remove('in-kit');
+      modalAdd.textContent = 'Done';
+      return;
+    }
+    /* Add mode: check if THIS exact (productId, variantId) is already in kit. */
+    const matchIdx = state.selected.findIndex(s =>
+      s.id === modalProductId &&
+      String(s.variantId) === String(modalVariantId)
+    );
+    const inKit = matchIdx >= 0;
+    /* For variant products, append the active variant title so the user can
+       see exactly what's about to be added before clicking. */
+    const v = variantOf(p, modalVariantId);
+    const suffix = (p && p.variants && p.variants.length > 1 && v && v.title)
+      ? ` · ${v.title}`
+      : '';
+    modalAdd.classList.toggle('in-kit', inKit);
+    modalAdd.textContent = (inKit ? 'Remove from kit' : 'Add to kit') + suffix;
+  }
+
+  modal.querySelectorAll('[data-close]').forEach(el => el.addEventListener('click', closeDetails));
+  document.addEventListener('keydown', e => {
+    if (!modal.classList.contains('open')) return;
+    if (e.key === 'Escape') closeDetails();
+    else if (e.key === 'ArrowLeft') showModalSlide(modalSlot_i - 1);
+    else if (e.key === 'ArrowRight') showModalSlide(modalSlot_i + 1);
+  });
+  modalAdd.addEventListener('click', () => {
+    if(!modalProductId) return;
+    if (modalEditSlotIndex >= 0){
+      /* Edit mode: variant already applied via setSlotVariant; just close. */
+      closeDetails();
+      return;
+    }
+    /* Add mode: toggle this exact (product, variant) combination. Modal closes
+       after the action so the user lands back in the picker, not stuck on the
+       same screen they just acted on. */
+    const matchIdx = state.selected.findIndex(s =>
+      s.id === modalProductId &&
+      String(s.variantId) === String(modalVariantId)
+    );
+    if (matchIdx >= 0){
+      state.selected.splice(matchIdx, 1);
+      renderAll();
+      closeDetails();
+    } else {
+      if (state.selected.length >= MAX_LAMPS) return;
+      const slot = makeSlot(modalProductId, modalVariantId);
+      if (slot){
+        state.selected.push(slot);
+        renderAll();
+        closeDetails();
+      }
+    }
+  });
+
+  /* Gallery navigation — prev/next buttons + thumbnail clicks + touch swipe.
+     Swipe threshold 60px + axis lock matches product page's attachSwipe(). */
+  modalPrev.addEventListener('click', () => showModalSlide(modalSlot_i - 1));
+  modalNext.addEventListener('click', () => showModalSlide(modalSlot_i + 1));
+  modalThumbs.addEventListener('click', e => {
+    const btn = e.target.closest('[data-thumb-index]');
+    if (btn) showModalSlide(parseInt(btn.dataset.thumbIndex, 10));
+  });
+
+  (function attachModalSwipe(){
+    let startX = 0, startY = 0, dx = 0, dragging = false, axis = null;
+    modalMainWrap.addEventListener('touchstart', e => {
+      if (modalSlotMax <= 1) return;
+      /* Don't hijack touches that start inside the day/night slider or on the
+         nav buttons — the slider's own pointer handlers take those gestures. */
+      if (e.target.closest('.scene-slider-wrap, .modal-nav')) return;
+      startX = e.touches[0].clientX; startY = e.touches[0].clientY;
+      dragging = true; dx = 0; axis = null;
+      modalTrack.style.transition = 'none';
+    }, { passive: true });
+    modalMainWrap.addEventListener('touchmove', e => {
+      if (!dragging) return;
+      const ddx = e.touches[0].clientX - startX;
+      const ddy = e.touches[0].clientY - startY;
+      if (axis === null && (Math.abs(ddx) > 8 || Math.abs(ddy) > 8)){
+        axis = Math.abs(ddx) > Math.abs(ddy) ? 'x' : 'y';
+      }
+      if (axis === 'x'){
+        dx = ddx;
+        const basePct = -(modalSlot_i * 100);
+        const dragPct = (ddx / modalMainWrap.offsetWidth) * 100;
+        modalTrack.style.transform = `translateX(${basePct + dragPct}%)`;
+      }
+    }, { passive: true });
+    modalMainWrap.addEventListener('touchend', () => {
+      if (!dragging) return;
+      dragging = false;
+      modalTrack.style.transition = 'transform 420ms cubic-bezier(0.22,0.61,0.36,1)';
+      if (axis === 'x' && Math.abs(dx) > 60){
+        showModalSlide(modalSlot_i + (dx < 0 ? 1 : -1));
+      } else {
+        showModalSlide(modalSlot_i);
+      }
+      dx = 0; axis = null;
+    }, { passive: true });
+  })();
+
+  /* ============ Hero lighting crossfade — opacity blend via slider ============ */
+  (function setupCompare(){
+    const warm = document.getElementById('compare-warm');
+    const track = document.getElementById('compare-track');
+    const knob = document.getElementById('compare-knob');
+    if(!warm || !track || !knob) return;
+
+    let dragging = false;
+    let currentPct = 100;
+    function clamp(v){ return Math.max(0, Math.min(100, v)); }
+    function setPos(pct, fromInit){
+      const p = clamp(pct);
+      currentPct = p;
+      warm.style.opacity = (p / 100).toString();
+      knob.style.left = p + '%';
+      knob.setAttribute('aria-valuenow', Math.round(p).toString());
+    }
+    function pctFromClientX(clientX){
+      const r = track.getBoundingClientRect();
+      return ((clientX - r.left) / r.width) * 100;
+    }
+    function onDown(e){
+      dragging = true;
+      knob.classList.add('dragging');
+      try { track.setPointerCapture(e.pointerId); } catch(_) {}
+      setPos(pctFromClientX(e.clientX));
+      e.preventDefault();
+    }
+    function onMove(e){
+      if(!dragging) return;
+      setPos(pctFromClientX(e.clientX));
+    }
+    function onUp(e){
+      dragging = false;
+      knob.classList.remove('dragging');
+      try { track.releasePointerCapture(e.pointerId); } catch(_) {}
+    }
+    track.addEventListener('pointerdown', onDown);
+    track.addEventListener('pointermove', onMove);
+    track.addEventListener('pointerup', onUp);
+    track.addEventListener('pointercancel', onUp);
+
+    // Keyboard support on the knob for accessibility
+    knob.addEventListener('keydown', e => {
+      const step = e.shiftKey ? 10 : 5;
+      if(e.key === 'ArrowLeft' || e.key === 'ArrowDown'){ setPos(currentPct - step); e.preventDefault(); }
+      else if(e.key === 'ArrowRight' || e.key === 'ArrowUp'){ setPos(currentPct + step); e.preventDefault(); }
+      else if(e.key === 'Home'){ setPos(0); e.preventDefault(); }
+      else if(e.key === 'End'){ setPos(100); e.preventDefault(); }
+    });
+
+    // Init at 100% (fully warm by default)
+    setPos(100, true);
+
+    // Brief auto-demo: sweep cold → warm once on load so users understand the control
+    setTimeout(() => {
+      if(dragging) return;
+      const start = performance.now();
+      const duration = 1400;
+      function step(now){
+        const t = Math.min(1, (now - start) / duration);
+        // ease: cold for 0.2s, transition to warm
+        const eased = t < 0.15 ? 0 : (t - 0.15) / 0.85;
+        const smooth = eased < 0.5 ? 2*eased*eased : 1 - Math.pow(-2*eased+2, 2)/2;
+        setPos(smooth * 100);
+        if(t < 1 && !dragging) requestAnimationFrame(step);
+      }
+      setPos(0);
+      requestAnimationFrame(step);
+    }, 900);
+  })();
+
+  /* Trust strip — duplicate items once for seamless marquee loop on mobile.
+     Cloned items are tagged so desktop CSS can hide them. */
+  (function cloneTrust(){
+    const ul = document.querySelector('.kit-configurator .trust ul');
+    if(!ul) return;
+    const items = [...ul.children];
+    items.forEach(item => {
+      const clone = item.cloneNode(true);
+      clone.setAttribute('aria-hidden', 'true');
+      clone.classList.add('trust-clone');
+      ul.appendChild(clone);
+    });
+  })();
+
+  /* Deep-link from the home-page lamp grid (sections/catalog-rail.liquid).
+     Cards there link to /pages/kit?lamp=<handle>; here we resolve that handle
+     to a product, jump the catalog grid to the right pagination page, scroll
+     the card into view, and call openDetails() — same path as clicking VIEW
+     DETAILS. Prior to this, the param was ignored and users just landed on
+     the kit page with no auto-open. */
+  (function openFromLampParam(){
+    let params;
+    try { params = new URLSearchParams(window.location.search); } catch (e) { return; }
+    const lampParam = params.get('lamp');
+    if (!lampParam) return;
+    const target = products.find(p => p.id === lampParam);
+    if (!target) return;
+    /* Reset filter + search so the target is reachable in the grid. */
+    state.filter = 'all';
+    state.query = '';
+    const ordered = mixedAll();
+    let idx = ordered.findIndex(p => p.id === target.id);
+    if (idx < 0) idx = 0;
+    state.page = Math.floor(idx / currentPageSize());
+    renderGrid();
+    /* Sync the visible filter chip state to match. */
+    document.querySelectorAll('.browse .chip[data-filter]').forEach(c => {
+      const isActive = c.dataset.filter === 'all';
+      c.classList.toggle('active', isActive);
+      if (c.hasAttribute('aria-pressed')) c.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+    });
+    /* Strip ?lamp from the URL so the deep-link doesn't re-fire on reload
+       or back-nav (replaceState — no extra history entry). */
+    if (window.history && window.history.replaceState) {
+      const url = new URL(window.location.href);
+      url.searchParams.delete('lamp');
+      window.history.replaceState({}, '', url.pathname + (url.search || '') + url.hash);
+    }
+    /* Wait one frame for renderGrid() to paint, then scroll + open. */
+    requestAnimationFrame(() => {
+      const idAttr = (window.CSS && CSS.escape) ? CSS.escape(target.id) : target.id;
+      const card = document.querySelector('.browse .card[data-id="' + idAttr + '"]');
+      if (card) {
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        /* Small delay so the user sees the scroll land before the modal opens. */
+        setTimeout(() => openDetails(target.id), 650);
+      } else {
+        openDetails(target.id);
+      }
+    });
+  })();
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Kit Configurator V1",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Display mode"
+    },
+    {
+      "type": "select",
+      "id": "mode",
+      "label": "Mode",
+      "info": "Full = standalone /pages/kit. Configurator-only = embed inside another page (hides hero, why, bridge, kelvin, reviews, faq, summary, second-cta, footer).",
+      "options": [
+        { "value": "full", "label": "Full page" },
+        { "value": "configurator-only", "label": "Configurator only (embed)" }
+      ],
+      "default": "full"
+    },
+    {
+      "type": "select",
+      "id": "slots_per_row",
+      "label": "Slots per row (desktop)",
+      "info": "2 = stacked 2×2 grid (default). 4 = single horizontal row of 1:1 squares. Mobile always renders 2-up regardless.",
+      "options": [
+        { "value": "2", "label": "2 columns (2×2 grid)" },
+        { "value": "4", "label": "4 columns (single row)" }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "header",
+      "content": "Hero (section 01)"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Hero heading (HTML allowed)",
+      "default": "Build your <span>warm</span> room."
+    },
+    {
+      "type": "range",
+      "id": "hero_heading_size",
+      "label": "Heading size (desktop)",
+      "min": 40, "max": 120, "step": 2, "unit": "px", "default": 80
+    },
+    {
+      "type": "range",
+      "id": "hero_heading_size_mobile",
+      "label": "Heading size (mobile)",
+      "info": "Acts as a max; very narrow screens step down further via clamp().",
+      "min": 22, "max": 72, "step": 1, "unit": "px", "default": 42
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Hero subheading",
+      "default": "Pick your lamps. Plug in. The room is done."
+    },
+    {
+      "type": "range",
+      "id": "hero_sub_size",
+      "label": "Subheading size (desktop)",
+      "min": 12, "max": 24, "step": 1, "unit": "px", "default": 16
+    },
+    {
+      "type": "range",
+      "id": "hero_sub_size_mobile",
+      "label": "Subheading size (mobile)",
+      "info": "Acts as a max; very narrow screens step down further via clamp().",
+      "min": 10, "max": 22, "step": 1, "unit": "px", "default": 14
+    },
+    {
+      "type": "text",
+      "id": "scroll_hint_text",
+      "label": "Scroll hint button text",
+      "default": "See why",
+      "info": "Arrow is appended automatically."
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Hero background image",
+      "info": "Independent of the Kelvin slider images below. Falls back to the warm Kelvin image. Recommended: 3:2 or 16:10 aspect (e.g. 2400×1500), subject centered so neither desktop nor mobile crops cut the important action."
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image_mobile",
+      "label": "Mobile hero image (optional)",
+      "info": "Optional portrait/square crop for mobile. If set, this replaces the hero image on screens ≤ 900px wide. Recommended: 4:3 or 1:1 (e.g. 1200×900 or 1200×1200), subject centered. If unset, desktop image is used and cropped to the mobile aspect ratio."
+    },
+    {
+      "type": "text",
+      "id": "hero_image_alt",
+      "label": "Hero image alt text",
+      "default": "Warm 2700K layered lighting in a real room"
+    },
+    {
+      "type": "range",
+      "id": "hero_height_vh",
+      "label": "Desktop hero height (vh)",
+      "info": "Percentage of viewport height.",
+      "min": 40, "max": 100, "step": 2, "unit": "%", "default": 64
+    },
+    {
+      "type": "range",
+      "id": "hero_height_min",
+      "label": "Desktop hero min-height",
+      "min": 360, "max": 800, "step": 20, "unit": "px", "default": 560
+    },
+    {
+      "type": "select",
+      "id": "hero_aspect_mobile",
+      "label": "Mobile hero aspect ratio",
+      "info": "How tall the image zone is on mobile (≤ 900px wide).",
+      "options": [
+        { "value": "16 / 9", "label": "16:9 · wide landscape (shortest)" },
+        { "value": "3 / 2",  "label": "3:2 · classic photo" },
+        { "value": "4 / 3",  "label": "4:3 · balanced (default)" },
+        { "value": "1 / 1",  "label": "1:1 · square" },
+        { "value": "4 / 5",  "label": "4:5 · gentle portrait" },
+        { "value": "3 / 4",  "label": "3:4 · portrait" }
+      ],
+      "default": "4 / 3"
+    },
+    {
+      "type": "range",
+      "id": "hero_mobile_min_height",
+      "label": "Mobile hero min-height",
+      "min": 180, "max": 500, "step": 10, "unit": "px", "default": 260
+    },
+    {
+      "type": "range",
+      "id": "hero_mobile_max_vh",
+      "label": "Mobile hero max-height (vh)",
+      "min": 30, "max": 80, "step": 2, "unit": "%", "default": 46
+    },
+    {
+      "type": "select",
+      "id": "hero_focus_desktop",
+      "label": "Desktop image focus point",
+      "info": "Which part of the image stays visible when the viewport crops it.",
+      "options": [
+        { "value": "center top",    "label": "Top" },
+        { "value": "center 30%",    "label": "Upper third" },
+        { "value": "center center", "label": "Center (default)" },
+        { "value": "center 65%",    "label": "Lower third" },
+        { "value": "center bottom", "label": "Bottom" },
+        { "value": "left center",   "label": "Left" },
+        { "value": "right center",  "label": "Right" }
+      ],
+      "default": "center center"
+    },
+    {
+      "type": "select",
+      "id": "hero_focus_mobile",
+      "label": "Mobile image focus point",
+      "options": [
+        { "value": "center top",    "label": "Top" },
+        { "value": "center 30%",    "label": "Upper third" },
+        { "value": "center 45%",    "label": "Above center (default)" },
+        { "value": "center center", "label": "Center" },
+        { "value": "center 65%",    "label": "Lower third" },
+        { "value": "center bottom", "label": "Bottom" }
+      ],
+      "default": "center 45%"
+    },
+
+    {
+      "type": "header",
+      "content": "Kit data source"
+    },
+    {
+      "type": "collection",
+      "id": "kit_collection",
+      "label": "Kit collection",
+      "info": "Products shown as lamp options. Expects up to 9 products with an optional 'slot' metafield (custom.slot = 'floor' for anchor floor lamps; anything else routes to Table lamps). Defaults to the 'floor-lamps' collection if unset."
+    },
+
+    {
+      "type": "header",
+      "content": "Configurator — section heading (section 05)"
+    },
+    {
+      "type": "text",
+      "id": "cfg_heading",
+      "label": "Section heading (HTML allowed for amber span)",
+      "default": "Build your kit"
+    },
+    {
+      "type": "range",
+      "id": "cfg_heading_size",
+      "label": "Heading size (desktop)",
+      "info": "Mobile auto-scales.",
+      "min": 28, "max": 72, "step": 1, "unit": "px", "default": 52
+    },
+    {
+      "type": "textarea",
+      "id": "cfg_sub",
+      "label": "Sub-line",
+      "default": "Everything you need for a warmer home, in one kit."
+    },
+    {
+      "type": "text",
+      "id": "wallet_kicker",
+      "label": "Warm Wallet banner kicker",
+      "default": "Warm Wallet",
+      "info": "Shown to logged-in customers with an active credit. The banner only appears when customer.metafields.custom.warm_wallet has an active code + balance."
+    },
+    {
+      "type": "text",
+      "id": "first_purchase_code",
+      "label": "First-purchase discount code",
+      "default": "FIRSTROOM10",
+      "info": "Shopify discount code auto-applied at checkout for first-time customers (customers with 0 orders). Must match an existing discount code in admin scoped to the \"Customers who haven't purchased\" segment."
+    },
+    {
+      "type": "header",
+      "content": "Configurator — card labels + step numbers"
+    },
+    {
+      "type": "paragraph",
+      "content": "These are the step numbers / titles shown inside the two kit cards and on the Pick your own catalog below. Change them if you renumber the page flow."
+    },
+    {
+      "type": "text",
+      "id": "cfg_left_number",
+      "label": "Card 1 — step number",
+      "default": "01"
+    },
+    {
+      "type": "text",
+      "id": "cfg_left_title",
+      "label": "Card 1 — title",
+      "default": "What's included"
+    },
+    {
+      "type": "text",
+      "id": "cfg_right_number",
+      "label": "Card 2 — step number",
+      "default": "02"
+    },
+    {
+      "type": "text",
+      "id": "cfg_right_title",
+      "label": "Card 2 — title",
+      "default": "Your kit"
+    },
+    {
+      "type": "text",
+      "id": "cfg_reset_text",
+      "label": "Card 2 — reset button text",
+      "default": "Use our picks",
+      "info": "Small button in the Your kit card that restores the anchor-first default pick."
+    },
+    {
+      "type": "text",
+      "id": "browse_number",
+      "label": "Pick your own — step number",
+      "default": "03"
+    },
+    {
+      "type": "text",
+      "id": "browse_title",
+      "label": "Pick your own — title",
+      "default": "Pick your own"
+    },
+    {
+      "type": "text",
+      "id": "browse_hint",
+      "label": "Pick your own — hint text",
+      "default": "Tap any lamp to add, swap, or remove"
+    },
+    {
+      "type": "text",
+      "id": "cfg_right_hint",
+      "label": "Card 2 — subhint under header",
+      "default": "Add 2 lamps to unlock Tier 2, then choose 3+ lamps including an anchor."
+    },
+    {
+      "type": "text",
+      "id": "unlock_t1_hint",
+      "label": "Empty Slot 2 — unlock hint",
+      "default": "Unlocks Tier 1",
+      "info": "Shown under \"Add a lamp\" on the 2nd slot when empty."
+    },
+    {
+      "type": "text",
+      "id": "unlock_t2_hint",
+      "label": "Empty Slot 3 — unlock hint",
+      "default": "Unlocks Tier 2",
+      "info": "Shown under \"Add a lamp\" on the 3rd slot when empty. Slot 4 stays blank (already Tier 2 territory)."
+    },
+    {
+      "type": "header",
+      "content": "Always included (trust list in Card 1)"
+    },
+    {
+      "type": "text",
+      "id": "ai_label",
+      "label": "Group label",
+      "default": "Always included"
+    },
+    {
+      "type": "text",
+      "id": "ai_item_1",
+      "label": "Benefit 1",
+      "default": "Free shipping"
+    },
+    {
+      "type": "text",
+      "id": "ai_item_2",
+      "label": "Benefit 2",
+      "default": "30-day returns"
+    },
+    {
+      "type": "text",
+      "id": "ai_item_3",
+      "label": "Benefit 3",
+      "default": "2700K bulbs included"
+    },
+    {
+      "type": "header",
+      "content": "Anchor reminder (Card 2)"
+    },
+    {
+      "type": "paragraph",
+      "content": "Callout beneath the slot grid. Fades automatically once the user adds a floor lamp (anchor) to their kit."
+    },
+    {
+      "type": "text",
+      "id": "anchor_hint_title",
+      "label": "Title",
+      "default": "Don't forget an anchor"
+    },
+    {
+      "type": "textarea",
+      "id": "anchor_hint_body",
+      "label": "Body",
+      "default": "Choose at least one anchor lamp (floor lamp) in your kit to create beautiful, balanced lighting."
+    },
+
+    {
+      "type": "header",
+      "content": "Kelvin slider images (section 07)"
+    },
+    {
+      "type": "paragraph",
+      "content": "The interactive 2700K vs 4000K comparison slider, lower on the page. These are independent of the hero background image."
+    },
+    {
+      "type": "image_picker",
+      "id": "compare_hero_image",
+      "label": "Cold (4000K) image",
+      "info": "Shown on the \"cold\" side of the Kelvin slider. Falls back to hero-cold-bedroom.jpeg asset."
+    },
+    {
+      "type": "image_picker",
+      "id": "compare_hero_warm_image",
+      "label": "Warm (2700K) image",
+      "info": "Shown on the \"warm\" side of the Kelvin slider. Falls back to hero-evening-bedroom.jpeg asset."
+    },
+
+    {
+      "type": "header",
+      "content": "Why your room feels off — section heading"
+    },
+    {
+      "type": "text",
+      "id": "why_kicker",
+      "label": "Eyebrow kicker",
+      "default": "Why this kit works"
+    },
+    {
+      "type": "text",
+      "id": "why_heading",
+      "label": "Heading (HTML allowed for amber span)",
+      "default": "Why your room feels <span>off right now</span>."
+    },
+    {
+      "type": "range",
+      "id": "why_heading_size",
+      "label": "Section heading size (desktop)",
+      "info": "Mobile auto-scales.",
+      "min": 20, "max": 60, "step": 1, "unit": "px", "default": 38
+    },
+    {
+      "type": "range",
+      "id": "why_panel_heading_size",
+      "label": "Panel heading size (desktop)",
+      "info": "Mobile auto-scales to size minus 4px.",
+      "min": 18,
+      "max": 40,
+      "step": 1,
+      "default": 28,
+      "unit": "px"
+    },
+
+    {
+      "type": "header",
+      "content": "Why panel 01 — Color"
+    },
+    {
+      "type": "image_picker",
+      "id": "why_p1_image",
+      "label": "Panel 1 image",
+      "info": "Falls back to why2700k-bulb-clean.jpeg asset."
+    },
+    {
+      "type": "text",
+      "id": "why_p1_image_alt",
+      "label": "Panel 1 image alt text",
+      "default": "Warm 2700K bulb vs cold overhead"
+    },
+    {
+      "type": "text",
+      "id": "why_p1_label",
+      "label": "Panel 1 label (small kicker above the heading)",
+      "info": "Leave blank to hide the small label."
+    },
+    {
+      "type": "text",
+      "id": "why_p1_heading",
+      "label": "Panel 1 heading",
+      "default": "Your overhead light is too blue."
+    },
+    {
+      "type": "textarea",
+      "id": "why_p1_body",
+      "label": "Panel 1 body",
+      "default": "Most ceiling bulbs are 4000K — the same blue-white as an office. This kit is 2700K — warm like firelight."
+    },
+
+    {
+      "type": "header",
+      "content": "Why panel 02 — One light source"
+    },
+    {
+      "type": "image_picker",
+      "id": "why_p2_image",
+      "label": "Panel 2 image",
+      "info": "Falls back to why2700k-bedroom.jpeg asset."
+    },
+    {
+      "type": "text",
+      "id": "why_p2_image_alt",
+      "label": "Panel 2 image alt text",
+      "default": "Room with layered lamp lighting"
+    },
+    {
+      "type": "text",
+      "id": "why_p2_label",
+      "label": "Panel 2 label (small kicker above the heading)",
+      "info": "Leave blank to hide the small label."
+    },
+    {
+      "type": "text",
+      "id": "why_p2_heading",
+      "label": "Panel 2 heading",
+      "default": "Only the ceiling is lit."
+    },
+    {
+      "type": "textarea",
+      "id": "why_p2_body",
+      "label": "Panel 2 body",
+      "default": "Your room has one light, from overhead. Hotels use 4–6 lamps at different heights — that's what makes a room feel settled."
+    },
+
+    {
+      "type": "header",
+      "content": "Why panel 03 — Hassle"
+    },
+    {
+      "type": "image_picker",
+      "id": "why_p3_image",
+      "label": "Panel 3 image",
+      "info": "Falls back to why2700k-compare-room.jpeg asset."
+    },
+    {
+      "type": "text",
+      "id": "why_p3_image_alt",
+      "label": "Panel 3 image alt text",
+      "default": "Warm room vs cool room comparison"
+    },
+    {
+      "type": "text",
+      "id": "why_p3_label",
+      "label": "Panel 3 label (small kicker above the heading)",
+      "info": "Leave blank to hide the small label."
+    },
+    {
+      "type": "text",
+      "id": "why_p3_heading",
+      "label": "Panel 3 heading",
+      "default": "And it seems like a hassle."
+    },
+    {
+      "type": "textarea",
+      "id": "why_p3_body",
+      "label": "Panel 3 body",
+      "default": "New fixtures usually mean an electrician, a landlord conversation, or drilling. This kit plugs in. 10 minutes, no tools."
+    },
+    {
+      "type": "text",
+      "id": "why_cta",
+      "label": "Diagnostic CTA button text",
+      "default": "What the kit is",
+      "info": "Arrow is appended automatically."
+    },
+
+    {
+      "type": "header",
+      "content": "Bridge — What the kit is (section 03)"
+    },
+    {
+      "type": "text",
+      "id": "bridge_kicker",
+      "label": "Eyebrow kicker",
+      "default": "The Kit"
+    },
+    {
+      "type": "text",
+      "id": "bridge_heading",
+      "label": "Heading (HTML allowed for amber span)",
+      "default": "Three lamps. Plug in. <span>Room done.</span>"
+    },
+    {
+      "type": "range",
+      "id": "bridge_heading_size",
+      "label": "Heading size (desktop)",
+      "info": "Mobile auto-scales.",
+      "min": 22, "max": 72, "step": 1, "unit": "px", "default": 44
+    },
+    {
+      "type": "textarea",
+      "id": "bridge_sub",
+      "label": "Sub-line",
+      "default": "3 lamps · 2700K · plug in · no electrician · about 10 minutes."
+    },
+    {
+      "type": "range",
+      "id": "bridge_sub_size",
+      "label": "Sub-line size (desktop)",
+      "min": 11, "max": 22, "step": 1, "unit": "px", "default": 15
+    },
+    {
+      "type": "image_picker",
+      "id": "bridge_image",
+      "label": "Bridge hero image",
+      "info": "Photo of the recommended 3-lamp kit installed in a real room. Falls back to the hero image."
+    },
+    {
+      "type": "select",
+      "id": "bridge_image_aspect",
+      "label": "Bridge image aspect ratio",
+      "options": [
+        { "value": "21 / 9", "label": "21:9 · cinematic ultra-wide" },
+        { "value": "16 / 9", "label": "16:9 · wide landscape (default)" },
+        { "value": "3 / 2",  "label": "3:2 · classic photo" },
+        { "value": "4 / 3",  "label": "4:3 · balanced" },
+        { "value": "1 / 1",  "label": "1:1 · square" }
+      ],
+      "default": "16 / 9"
+    },
+    {
+      "type": "range",
+      "id": "bridge_image_max_height",
+      "label": "Bridge image max-height (desktop)",
+      "min": 320, "max": 900, "step": 20, "unit": "px", "default": 560
+    },
+    {
+      "type": "text",
+      "id": "bridge_image_alt",
+      "label": "Bridge image alt text",
+      "default": "Recommended 3-lamp kit installed in a real room"
+    },
+    {
+      "type": "text",
+      "id": "bridge_stat_1_v",
+      "label": "Value stat 1 — value",
+      "default": "$259"
+    },
+    {
+      "type": "text",
+      "id": "bridge_stat_1_l",
+      "label": "Value stat 1 — label",
+      "default": "of extras, included"
+    },
+    {
+      "type": "text",
+      "id": "bridge_stat_2_v",
+      "label": "Value stat 2 — value",
+      "default": "$150"
+    },
+    {
+      "type": "text",
+      "id": "bridge_stat_2_l",
+      "label": "Value stat 2 — label",
+      "default": "Warm Credit · next room"
+    },
+    {
+      "type": "text",
+      "id": "bridge_stat_3_v",
+      "label": "Value stat 3 — value",
+      "default": "2700K"
+    },
+    {
+      "type": "text",
+      "id": "bridge_stat_3_l",
+      "label": "Value stat 3 — label",
+      "default": "warm, in every bulb"
+    },
+    {
+      "type": "text",
+      "id": "bridge_cta",
+      "label": "Bridge CTA button text",
+      "default": "See real rooms",
+      "info": "Arrow is appended automatically."
+    },
+
+    {
+      "type": "header",
+      "content": "Kelvin moment — 2700K science (section 07)"
+    },
+    {
+      "type": "paragraph",
+      "content": "Interactive color-temperature comparison. Uses the same warm/cold images as the hero — configure them under \"Hero & Kelvin slider images\" above."
+    },
+    {
+      "type": "text",
+      "id": "kelvin_kicker",
+      "label": "Eyebrow kicker",
+      "default": "2700K · The Science"
+    },
+    {
+      "type": "text",
+      "id": "kelvin_heading",
+      "label": "Heading (HTML allowed for amber span)",
+      "default": "Why <span>2700K</span> specifically."
+    },
+    {
+      "type": "range",
+      "id": "kelvin_heading_size",
+      "label": "Heading size (desktop)",
+      "info": "Mobile auto-scales.",
+      "min": 22, "max": 64, "step": 1, "unit": "px", "default": 40
+    },
+    {
+      "type": "textarea",
+      "id": "kelvin_sub",
+      "label": "Sub-line",
+      "default": "It's the color of a sunset, or a fire. Your brain reads it as evening — the body's cue that the day is winding down. Drag the slider to feel the difference."
+    },
+    {
+      "type": "range",
+      "id": "kelvin_sub_size",
+      "label": "Sub-line size (desktop)",
+      "min": 11, "max": 22, "step": 1, "unit": "px", "default": 15
+    },
+    {
+      "type": "select",
+      "id": "kelvin_image_aspect",
+      "label": "Slider stage aspect ratio",
+      "options": [
+        { "value": "21 / 9", "label": "21:9 · cinematic ultra-wide" },
+        { "value": "16 / 9", "label": "16:9 · wide landscape (default)" },
+        { "value": "3 / 2",  "label": "3:2 · classic photo" },
+        { "value": "4 / 3",  "label": "4:3 · balanced" }
+      ],
+      "default": "16 / 9"
+    },
+    {
+      "type": "range",
+      "id": "kelvin_image_max_height",
+      "label": "Slider stage max-height (desktop)",
+      "min": 360, "max": 900, "step": 20, "unit": "px", "default": 620
+    },
+
+    {
+      "type": "header",
+      "content": "Trust strip"
+    },
+    {
+      "type": "text",
+      "id": "trust_1",
+      "label": "Trust item 1 (HTML allowed)",
+      "default": "<b>Free</b> shipping · no minimum"
+    },
+    {
+      "type": "text",
+      "id": "trust_2",
+      "label": "Trust item 2 (HTML allowed)",
+      "default": "<b>30-day</b> returns"
+    },
+    {
+      "type": "text",
+      "id": "trust_3",
+      "label": "Trust item 3 (HTML allowed)",
+      "default": "Plugs in · <b>no install</b>"
+    },
+    {
+      "type": "text",
+      "id": "trust_4",
+      "label": "Trust item 4 (HTML allowed)",
+      "default": "Warm <b>2700K</b> bulbs included"
+    },
+
+    {
+      "type": "header",
+      "content": "Reviews — section heading"
+    },
+    {
+      "type": "text",
+      "id": "reviews_kicker",
+      "label": "Eyebrow kicker",
+      "default": "Inside their rooms"
+    },
+    {
+      "type": "text",
+      "id": "reviews_heading",
+      "label": "Heading (HTML allowed for amber span)",
+      "default": "Rooms <span>people actually live in</span>."
+    },
+    {
+      "type": "range",
+      "id": "reviews_heading_size",
+      "label": "Heading size (desktop)",
+      "info": "Mobile auto-scales.",
+      "min": 20, "max": 56, "step": 1, "unit": "px", "default": 34
+    },
+    {
+      "type": "text",
+      "id": "reviews_sub",
+      "label": "Sub-line",
+      "default": "4.8 stars · 500+ kits shipped · from the first launch cohort."
+    },
+
+    {
+      "type": "header",
+      "content": "Review 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "review1_image",
+      "label": "Review 1 image",
+      "info": "Falls back to review-room-1.jpeg asset."
+    },
+    {
+      "type": "text",
+      "id": "review1_headline",
+      "label": "Review 1 headline (quoted)",
+      "default": "\"My room finally feels like it's mine.\""
+    },
+    {
+      "type": "textarea",
+      "id": "review1_quote",
+      "label": "Review 1 quote",
+      "default": "\"I used to just tolerate the cold ceiling light. Now at night I actually want to be in here. Whole vibe changed — and I didn't even paint anything.\""
+    },
+    {
+      "type": "text",
+      "id": "review1_name",
+      "label": "Review 1 reviewer name",
+      "default": "Mara K."
+    },
+    {
+      "type": "text",
+      "id": "review1_location",
+      "label": "Review 1 location · context",
+      "default": "Brooklyn · Renter"
+    },
+
+    {
+      "type": "header",
+      "content": "Review 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "review2_image",
+      "label": "Review 2 image",
+      "info": "Falls back to review-room-2.jpeg asset."
+    },
+    {
+      "type": "text",
+      "id": "review2_headline",
+      "label": "Review 2 headline (quoted)",
+      "default": "\"Set up in 10 minutes. No tools.\""
+    },
+    {
+      "type": "textarea",
+      "id": "review2_quote",
+      "label": "Review 2 quote",
+      "default": "\"Was worried it'd be a project. It wasn't. Plugged in three lamps, swapped my nightstand bulb, done. Less work than assembling IKEA — and I've been sleeping earlier.\""
+    },
+    {
+      "type": "text",
+      "id": "review2_name",
+      "label": "Review 2 reviewer name",
+      "default": "Daniel S."
+    },
+    {
+      "type": "text",
+      "id": "review2_location",
+      "label": "Review 2 location · context",
+      "default": "Los Angeles · Apartment"
+    },
+
+    {
+      "type": "header",
+      "content": "Review 3"
+    },
+    {
+      "type": "image_picker",
+      "id": "review3_image",
+      "label": "Review 3 image",
+      "info": "Falls back to review-room-3.jpeg asset."
+    },
+    {
+      "type": "text",
+      "id": "review3_headline",
+      "label": "Review 3 headline (quoted)",
+      "default": "\"Worth it just for the bedside lamps.\""
+    },
+    {
+      "type": "textarea",
+      "id": "review3_quote",
+      "label": "Review 3 quote",
+      "default": "\"I almost bought these separately for $400+. Got the whole kit for less, and the extra accessories (tapers, bulb refills) were a nice surprise. Taking it all with me when I move.\""
+    },
+    {
+      "type": "text",
+      "id": "review3_name",
+      "label": "Review 3 reviewer name",
+      "default": "Priya R."
+    },
+    {
+      "type": "text",
+      "id": "review3_location",
+      "label": "Review 3 location · context",
+      "default": "Austin · Renter"
+    },
+
+    {
+      "type": "header",
+      "content": "FAQ — section heading"
+    },
+    {
+      "type": "text",
+      "id": "faq_kicker",
+      "label": "Eyebrow kicker",
+      "default": "Details"
+    },
+    {
+      "type": "text",
+      "id": "faq_heading",
+      "label": "Heading (HTML allowed for amber span)",
+      "default": "Questions we've already <span>answered</span>."
+    },
+    {
+      "type": "range",
+      "id": "faq_heading_size",
+      "label": "Heading size (desktop)",
+      "info": "Mobile auto-scales.",
+      "min": 20, "max": 52, "step": 1, "unit": "px", "default": 32
+    },
+
+    { "type": "header", "content": "FAQ 1" },
+    { "type": "text", "id": "faq1_q", "label": "Q1 — question",
+      "default": "Do I need an electrician?" },
+    { "type": "textarea", "id": "faq1_a", "label": "Q1 — answer",
+      "default": "No. Every lamp in this kit is plug-in. There's no ceiling access, no hardwiring, no switches to install. Unboxing is the installation — plug it in and the room works." },
+
+    { "type": "header", "content": "FAQ 2" },
+    { "type": "text", "id": "faq2_q", "label": "Q2 — question",
+      "default": "Will this light a full room?" },
+    { "type": "textarea", "id": "faq2_a", "label": "Q2 — answer",
+      "default": "Yes. A full kit is 3+ lamps with one floor lamp as the anchor — the floor lamp is what makes the room actually feel lit, not just accented. Two secondary lamps plus the anchor cover every zone you use after dark. Larger rooms: add a fourth or fifth lamp." },
+
+    { "type": "header", "content": "FAQ 3" },
+    { "type": "text", "id": "faq3_q", "label": "Q3 — question",
+      "default": "What does \"2700K\" mean?" },
+    { "type": "textarea", "id": "faq3_a", "label": "Q3 — answer",
+      "default": "Color temperature. 2700K is warm white — the color of firelight and the standard in almost every hotel and fine dining room. It's been shown to be gentler on evening circadian rhythm than the 4000K+ you'll find in most big-box LEDs." },
+
+    { "type": "header", "content": "FAQ 4" },
+    { "type": "text", "id": "faq4_q", "label": "Q4 — question",
+      "default": "How does the $150 Warm Credit work?" },
+    { "type": "textarea", "id": "faq4_a", "label": "Q4 — answer",
+      "default": "It applies automatically to your account at checkout. When you come back to configure your next room — any Tier 2 kit (3+ lamps with a floor-lamp anchor) — the credit comes off the total. Not a discount; the second room is how the system works." },
+
+    { "type": "header", "content": "FAQ 5" },
+    { "type": "text", "id": "faq5_q", "label": "Q5 — question",
+      "default": "Can I swap lamps later?" },
+    { "type": "textarea", "id": "faq5_a", "label": "Q5 — answer",
+      "default": "Yes, right now and after purchase. On this page, tap any slot to see alternatives. Once shipped, our 30-day return policy covers swaps — no questions, pre-paid return label." },
+
+    { "type": "header", "content": "FAQ 6" },
+    { "type": "text", "id": "faq6_q", "label": "Q6 — question",
+      "default": "What if I just want one lamp?" },
+    { "type": "textarea", "id": "faq6_a", "label": "Q6 — answer",
+      "default": "The kit framework is optional. You can buy any lamp individually. But you'll lose the Tier 1 / Tier 2 freebies and the Warm Credit — which together are worth $259 on a 3+ lamp kit with the floor-lamp anchor." },
+
+    { "type": "header", "content": "FAQ 7 — Shipping" },
+    { "type": "text", "id": "faq7_q", "label": "Q7 — question",
+      "default": "How fast does it ship?" },
+    { "type": "textarea", "id": "faq7_a", "label": "Q7 — answer",
+      "default": "Orders placed before 2 PM PT ship the same day; everything else goes out next business day. Standard shipping is free in the continental US and arrives in 3–5 business days. Expedited and 2-day options at checkout." },
+
+    { "type": "header", "content": "FAQ 8 — Returns" },
+    { "type": "text", "id": "faq8_q", "label": "Q8 — question",
+      "default": "What if I don't love it?" },
+    { "type": "textarea", "id": "faq8_a", "label": "Q8 — answer",
+      "default": "30-day returns, no questions asked. Plug the kit in, live with it for a week or four. If the room doesn't feel different, send it back with the pre-paid label we include in the box. Full refund, no restocking fees — even the freebies stay yours." },
+
+    { "type": "header", "content": "FAQ 9 — International" },
+    { "type": "text", "id": "faq9_q", "label": "Q9 — question",
+      "default": "Do you ship outside the US?" },
+    { "type": "textarea", "id": "faq9_a", "label": "Q9 — answer",
+      "default": "Not yet. The kit is US-only right now — the plug standard, voltage, and free shipping all assume a US address. Email hello@warmbydesign.com if you want a heads-up when we open to your country." },
+
+    {
+      "type": "header",
+      "content": "Closing CTA"
+    },
+    {
+      "type": "text",
+      "id": "cta_kicker",
+      "label": "Eyebrow kicker",
+      "default": "Ready when you are"
+    },
+    {
+      "type": "text",
+      "id": "cta_heading",
+      "label": "Heading (HTML allowed for amber span)",
+      "default": "Your <span>Evening Room</span> is configured."
+    },
+    {
+      "type": "range",
+      "id": "cta_heading_size",
+      "label": "Heading size (desktop)",
+      "info": "Mobile auto-scales.",
+      "min": 24, "max": 64, "step": 1, "unit": "px", "default": 44
+    },
+    {
+      "type": "text",
+      "id": "cta_subline",
+      "label": "Sub-line under heading",
+      "default": "Your lamps, 2700K lighting, $259 of accessories, and $150 toward your next room."
+    },
+    {
+      "type": "text",
+      "id": "cta_button_text",
+      "label": "Closing CTA primary button label",
+      "default": "Complete your order"
+    },
+    {
+      "type": "text",
+      "id": "cta_secondary_text",
+      "label": "Secondary button label",
+      "default": "Configure again"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "starter_product",
+      "name": "Starter kit item",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Free gift product"
+        },
+        {
+          "type": "select",
+          "id": "tier",
+          "label": "Unlocks at",
+          "options": [
+            { "value": "1", "label": "Tier 1 (2+ lamps)" },
+            { "value": "2", "label": "Tier 2 (3+ lamps)" }
+          ],
+          "default": "1"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Display name override",
+          "info": "Leave blank to use the product title."
+        },
+        {
+          "type": "text",
+          "id": "was_price",
+          "label": "Crossed-out 'was' price",
+          "info": "E.g. $18. Leave blank to use product price."
+        },
+        {
+          "type": "text",
+          "id": "variant_gid_override",
+          "label": "Variant ID override (for UNLISTED products)",
+          "info": "Numeric variant ID. Use when the product is UNLISTED (won't resolve via all_products). E.g. 47723843518615"
+        },
+        {
+          "type": "text",
+          "id": "product_url_override",
+          "label": "Product URL override (for UNLISTED products)",
+          "info": "E.g. /products/pocket. Used when the product is UNLISTED."
+        },
+        {
+          "type": "image_picker",
+          "id": "fallback_image",
+          "label": "Fallback thumbnail",
+          "info": "Used when no product is picked or product has no image."
+        },
+        {
+          "type": "checkbox",
+          "id": "credit",
+          "label": "Show as store credit",
+          "info": "Renders the $ credit tile instead of a product thumbnail.",
+          "default": false
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Kit Configurator V1",
+      "blocks": [
+        { "type": "starter_product", "settings": { "tier": "1", "label": "2700K Replacement Bulb", "was_price": "$15" } },
+        { "type": "starter_product", "settings": { "tier": "1", "label": "Lamp Care Kit", "was_price": "$35" } },
+        { "type": "starter_product", "settings": { "tier": "1", "label": "The Warm Layering Guide", "was_price": "$29" } },
+        { "type": "starter_product", "settings": { "tier": "2", "label": "Rechargeable Mini Lamp", "was_price": "$99" } },
+        { "type": "starter_product", "settings": { "tier": "2", "label": "Hand-Poured Beeswax Tapers", "was_price": "$10" } },
+        { "type": "starter_product", "settings": { "tier": "2", "label": "Next Room Credit", "was_price": "$150", "credit": true } }
+      ]
+    }
+  ]
+}
+{% endschema %}

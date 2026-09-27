@@ -1,0 +1,261 @@
+{%- comment -%}
+  Collection List — Variation C: Numbered editorial list
+  Left sticky title + right numbered collection rows + promo cards
+{%- endcomment -%}
+
+<section class="bg-[#F9F9FB]" style="padding-bottom:80px;">
+<div class="max-w-[1920px] mx-auto">
+
+  <!-- ══════════ DESKTOP ══════════ -->
+  <div class="hidden md:block px-12 pt-24 pb-20">
+    <div class="grid grid-cols-12 gap-16">
+
+      <!-- Left: sticky title -->
+      <div class="col-span-3 overflow-hidden">
+        <div class="sticky top-28 self-start">
+          <div class="flex items-center gap-4 mb-5">
+            <div class="w-8 h-px bg-[#C5A059]"></div>
+            <span class="font-label text-[0.7rem] uppercase tracking-[0.25em] text-[#C5A059]">{{ section.settings.eyebrow | default: 'Browse' }}</span>
+          </div>
+          <h1 class="heading-thin text-5xl text-[#131314] tracking-tight mb-4 leading-[1.1]">{{ section.settings.heading | default: 'All Collections' | newline_to_br }}</h1>
+          {%- if section.settings.subheading != blank -%}
+            <p class="font-body text-[0.85rem] font-light text-[#2d3338]/55 leading-relaxed">{{ section.settings.subheading }}</p>
+          {%- endif -%}
+        </div>
+      </div>
+
+      <!-- Right: numbered list -->
+      <div class="col-span-9">
+        {%- assign counter = 0 -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'category_header' -%}
+            <div class="{% if counter > 0 %}pt-8{% endif %} border-t border-[#131314]/6">
+              <span class="font-label text-[0.65rem] uppercase tracking-[0.2em] text-[#C5A059] block pt-10 pb-5">{{ block.settings.title }}</span>
+            </div>
+          {%- elsif block.type == 'collection_row' and block.settings.collection != blank -%}
+            {%- assign counter = counter | plus: 1 -%}
+            {%- assign col = block.settings.collection -%}
+            <a href="{{ col.url | default: '#' }}" class="group flex items-center justify-between py-5 border-b border-[#131314]/6 hover:border-[#C5A059]/30 transition-colors" {{ block.shopify_attributes }}>
+              <div class="flex items-center gap-6">
+                <span class="font-label text-[0.6rem] uppercase text-[#C5A059]/40 w-6">{{ counter | prepend: '00' | slice: -2, 2 }}</span>
+                <span class="font-headline text-[1.6rem] font-[200] text-[#131314] group-hover:text-[#C5A059] transition-colors">{{ block.settings.label | default: col.title | default: 'Collection' }}</span>
+              </div>
+              <div class="flex items-center gap-6">
+                {%- if col != blank -%}
+                  <span class="font-body text-[0.8rem] font-light text-[#2d3338]/40">{{ col.products_count }} pieces</span>
+                {%- endif -%}
+                <span class="material-symbols-outlined text-[#2d3338]/20 group-hover:text-[#C5A059] text-lg transition-colors">arrow_forward</span>
+              </div>
+            </a>
+          {%- elsif block.type == 'promo_card' -%}
+            {%- comment -%} Collect promo cards — rendered after the list {%- endcomment -%}
+          {%- endif -%}
+        {%- endfor -%}
+
+        <!-- Promo cards -->
+        {%- assign promo_blocks = section.blocks | where: 'type', 'promo_card' -%}
+        {%- if promo_blocks.size > 0 -%}
+          <div class="grid grid-cols-2 gap-4 mt-12">
+          {%- for block in promo_blocks -%}
+            <a href="{{ block.settings.url | default: '#' }}" class="collection-card group block relative" {{ block.shopify_attributes }}>
+              <div class="relative overflow-hidden aspect-[16/9]">
+                {%- if block.settings.image != blank -%}
+                  <img width="{{ block.settings.image.width }}" height="{{ block.settings.image.height }}" src="{{ block.settings.image | image_url: width: 800 }}" alt="{{ block.settings.title | escape }}" class="w-full h-full object-cover" loading="lazy">
+                {%- else -%}
+                  <div class="w-full h-full" style="background: linear-gradient(160deg, #c2976a 0%, #6b4f2d 100%);"></div>
+                {%- endif -%}
+                <div class="absolute inset-0 bg-gradient-to-t from-[#131314]/50 via-transparent to-transparent"></div>
+              </div>
+              <div class="absolute bottom-5 left-5">
+                {%- if block.settings.label != blank -%}
+                  <span class="font-label text-[0.5rem] uppercase tracking-[0.2em] text-[#C5A059] block mb-1">{{ block.settings.label }}</span>
+                {%- endif -%}
+                <span class="font-headline text-xl font-[200] text-white">{{ block.settings.title | default: 'Promo' }}</span>
+              </div>
+            </a>
+          {%- endfor -%}
+          </div>
+        {%- endif -%}
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ MOBILE ══════════ -->
+  <div class="md:hidden px-5 pt-14 pb-14">
+    <div class="flex items-center gap-3 mb-5">
+      <div class="w-5 h-px bg-[#C5A059]"></div>
+      <span class="font-label text-[0.55rem] uppercase tracking-[0.2em] text-[#C5A059]">{{ section.settings.eyebrow | default: 'Browse' }}</span>
+    </div>
+    <h1 class="heading-thin text-4xl text-[#131314] tracking-tight mb-8">{{ section.settings.heading | default: 'All Collections' }}</h1>
+
+    {%- assign counter_m = 0 -%}
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'category_header' -%}
+        <span class="font-label text-[0.6rem] uppercase tracking-[0.2em] text-[#C5A059] block {% if counter_m > 0 %}mt-12{% endif %} mb-4">{{ block.settings.title }}</span>
+        <div class="border-t border-[#131314]/6"></div>
+      {%- elsif block.type == 'collection_row' and block.settings.collection != blank -%}
+        {%- assign counter_m = counter_m | plus: 1 -%}
+        {%- assign col = block.settings.collection -%}
+        <a href="{{ col.url | default: '#' }}" class="group flex items-center justify-between py-4 border-b border-[#131314]/6">
+          <div class="flex items-center gap-4">
+            <span class="font-label text-[0.5rem] uppercase text-[#C5A059]/35 w-5">{{ counter_m | prepend: '00' | slice: -2, 2 }}</span>
+            <span class="font-headline text-[1.15rem] font-[200] text-[#131314]">{{ block.settings.label | default: col.title | default: 'Collection' }}</span>
+          </div>
+          <div class="flex items-center gap-3">
+            {%- if col != blank -%}
+              <span class="font-body text-[0.7rem] font-light text-[#2d3338]/35">{{ col.products_count }}</span>
+            {%- endif -%}
+            <span class="material-symbols-outlined text-[#2d3338]/15 text-base">arrow_forward</span>
+          </div>
+        </a>
+      {%- endif -%}
+    {%- endfor -%}
+
+    <!-- Promo cards -->
+    {%- if promo_blocks.size > 0 -%}
+      <div class="grid grid-cols-2 gap-3 mt-10">
+      {%- for block in promo_blocks -%}
+        <a href="{{ block.settings.url | default: '#' }}" class="collection-card group block relative">
+          <div class="relative overflow-hidden aspect-[3/4]">
+            {%- if block.settings.image_mobile != blank -%}
+              <img width="{{ block.settings.image_mobile.width }}" height="{{ block.settings.image_mobile.height }}" src="{{ block.settings.image_mobile | image_url: width: 400 }}" alt="{{ block.settings.title | escape }}" class="w-full h-full object-cover" loading="lazy">
+            {%- elsif block.settings.image != blank -%}
+              <img width="{{ block.settings.image.width }}" height="{{ block.settings.image.height }}" src="{{ block.settings.image | image_url: width: 400 }}" alt="{{ block.settings.title | escape }}" class="w-full h-full object-cover" loading="lazy">
+            {%- else -%}
+              <div class="w-full h-full" style="background: linear-gradient(160deg, #c2976a 0%, #6b4f2d 100%);"></div>
+            {%- endif -%}
+            <div class="absolute inset-0 bg-gradient-to-t from-[#131314]/55 via-transparent to-transparent"></div>
+          </div>
+          <div class="absolute bottom-3 left-3">
+            {%- if block.settings.label != blank -%}
+              <span class="font-label text-[0.35rem] uppercase tracking-[0.15em] text-[#C5A059] block mb-0.5">{{ block.settings.label }}</span>
+            {%- endif -%}
+            <span class="font-headline text-[0.8rem] font-[200] text-white">{{ block.settings.title | default: 'Promo' }}</span>
+          </div>
+        </a>
+      {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+
+</div>
+</section>
+
+<style>
+  .heading-thin { font-family: 'Newsreader', serif; font-weight: 200; font-variation-settings: 'opsz' 72; }
+  .collection-card img { transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+  .collection-card:hover img { transform: scale(1.04); }
+</style>
+
+{% schema %}
+{
+  "name": "Collection List",
+  "tag": "section",
+  "class": "collection-list-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow label",
+      "default": "Browse"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "All\nCollections"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Architectural lighting across 8 categories."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "category_header",
+      "name": "Category header",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Category title",
+          "default": "Indoor Lighting"
+        }
+      ]
+    },
+    {
+      "type": "collection_row",
+      "name": "Collection row",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Name override",
+          "info": "Leave blank to use collection title"
+        }
+      ]
+    },
+    {
+      "type": "promo_card",
+      "name": "Promo card",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Best Sellers"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label above title",
+          "default": "Curated"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Link"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image (desktop)"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_mobile",
+          "label": "Image (mobile)",
+          "info": "Optional. Falls back to desktop image if empty."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection List",
+      "blocks": [
+        { "type": "category_header", "settings": { "title": "Indoor Lighting" } },
+        { "type": "collection_row" },
+        { "type": "collection_row" },
+        { "type": "collection_row" },
+        { "type": "collection_row" },
+        { "type": "collection_row" },
+        { "type": "collection_row" },
+        { "type": "category_header", "settings": { "title": "Outdoor Lighting" } },
+        { "type": "collection_row" },
+        { "type": "collection_row" },
+        { "type": "promo_card", "settings": { "title": "Best Sellers", "label": "Curated" } },
+        { "type": "promo_card", "settings": { "title": "New Arrivals", "label": "Just In" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

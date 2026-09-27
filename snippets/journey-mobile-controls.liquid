@@ -1,0 +1,12 @@
+{% doc %}
+Keeps chat and mobile purchase controls clear of one another.
+{% enddoc %}
+{% stylesheet %}
+body:has(#cart-drawer.open) #aicb-root:not(.aicb-embedded),body:has([data-cart-page]) #aicb-root:not(.aicb-embedded){display:none!important}
+@media(max-width:767px){
+  #sticky-atb>div{padding-bottom:calc(12px + env(safe-area-inset-bottom,0px))}
+  body:has(#sticky-atb[data-visible="false"]) #aicb-root:not(.aicb-embedded):not(:has(.aicb-fab--open)){display:none!important}
+  body:has(#sticky-atb[data-visible="true"]) #aicb-root:not(.aicb-embedded):not(:has(.aicb-fab--open)){bottom:calc(var(--ol-sticky-atb-height,80px) + 12px)!important}
+  #cart-drawer{padding-bottom:env(safe-area-inset-bottom,0px)}
+}
+{% endstylesheet %}

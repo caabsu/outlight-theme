@@ -1,73 +1,108 @@
-{% layout none %}
-
-<!doctype html>
+<!DOCTYPE html>
 <html lang="{{ request.locale.iso_code }}">
-  <head>
-    {% # Inlined CSS Variables %}
-    {% render 'css-variables' %}
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex,nofollow">
+  <title>{{ 'gift_cards.issued.title' | t: value: gift_card.initial_value | money_without_trailing_zeros | strip_html }}&mdash;{{ shop.name }}</title>
+  <link rel="stylesheet" href="{{ 'base.css' | asset_url }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200;0,6..72,300;1,6..72,200&family=Manrope:wght@200;300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Manrope',sans-serif;background:#F9F9FB;color:#131314;-webkit-font-smoothing:antialiased;}
+    .heading-thin{font-family:'Newsreader',serif;font-weight:200;font-variation-settings:'opsz' 72;}
+    .gift-card-wrapper{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1.25rem;}
+    .gift-card-box{width:100%;max-width:480px;}
+    .brand{font-family:'Newsreader',serif;font-weight:200;font-size:1.25rem;color:#131314;text-align:center;margin-bottom:2.5rem;letter-spacing:-0.01em;}
+    .card-visual{background:#131314;padding:2.5rem;margin-bottom:2rem;position:relative;overflow:hidden;}
+    .card-visual::before{content:'';position:absolute;top:0;right:0;width:200px;height:200px;background:radial-gradient(circle,rgba(197,160,89,0.12) 0%,transparent 70%);}
+    .card-label{font-family:'Manrope',sans-serif;font-size:0.6rem;text-transform:uppercase;letter-spacing:0.2em;color:rgba(197,160,89,0.6);margin-bottom:1.5rem;}
+    .card-amount{font-family:'Newsreader',serif;font-weight:200;font-size:4rem;color:#F9F9FB;line-height:1;font-variation-settings:'opsz' 72;margin-bottom:0.5rem;}
+    .card-shop{font-family:'Manrope',sans-serif;font-size:0.75rem;font-weight:300;color:rgba(249,249,251,0.4);}
+    .card-code-section{background:#fff;border:1px solid rgba(19,19,20,0.08);padding:1.5rem;margin-bottom:1.5rem;}
+    .code-label{font-family:'Manrope',sans-serif;font-size:0.58rem;text-transform:uppercase;letter-spacing:0.15em;color:rgba(19,19,20,0.4);margin-bottom:0.75rem;}
+    .code-value{font-family:'Manrope',sans-serif;font-size:1.1rem;font-weight:400;letter-spacing:0.12em;color:#131314;word-break:break-all;}
+    .gift-card-balance{font-family:'Manrope',sans-serif;font-size:0.78rem;font-weight:300;color:rgba(19,19,20,0.55);text-align:center;margin-bottom:1.5rem;}
+    .btn-primary{display:block;width:100%;padding:1rem;font-family:'Manrope',sans-serif;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.15em;text-align:center;text-decoration:none;background:#131314;color:#F9F9FB;border:none;cursor:pointer;transition:background 0.3s;}
+    .btn-primary:hover{background:#C5A059;color:#131314;}
+    .btn-secondary{display:block;width:100%;padding:0.9rem;font-family:'Manrope',sans-serif;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.12em;text-align:center;text-decoration:none;background:transparent;color:rgba(19,19,20,0.5);border:1px solid rgba(19,19,20,0.1);cursor:pointer;margin-top:0.75rem;transition:all 0.3s;}
+    .btn-secondary:hover{border-color:rgba(19,19,20,0.3);color:#131314;}
+    .expired-badge{display:inline-block;font-size:0.6rem;text-transform:uppercase;letter-spacing:0.15em;padding:0.3rem 0.75rem;background:rgba(19,19,20,0.06);color:rgba(19,19,20,0.45);}
+    .qr-section{text-align:center;margin-bottom:1.5rem;}
+    .qr-section svg{max-width:120px;margin:0 auto;}
+    .footer-note{font-size:0.68rem;font-weight:300;color:rgba(19,19,20,0.35);text-align:center;margin-top:2rem;line-height:1.6;}
+  </style>
+</head>
+<body>
 
-    {% # Load and preload the critical CSS %}
-    {{ 'critical.css' | asset_url | stylesheet_tag: preload: true }}
+<div class="gift-card-wrapper">
+  <div class="gift-card-box">
 
-    {% # Social, title, etc. %}
-    {% render 'meta-tags' %}
+    <!-- Brand -->
+    <div class="brand">{{ shop.name }}</div>
 
-    {% style %}
-      main {
-        text-align: center;
-      }
-      main img {
-        display: unset;
-      }
-    {% endstyle %}
+    <!-- Card visual -->
+    <div class="card-visual">
+      <div class="card-label">Gift Card</div>
+      <div class="card-amount">{{ gift_card.initial_value | money_without_trailing_zeros }}</div>
+      <div class="card-shop">{{ shop.name }}</div>
+    </div>
 
-    {{ content_for_header }}
-  </head>
-
-  <body>
-    <main>
-      <div class="shopify-section">
-        <h1>{{ gift_card.balance | money }}</h1>
-
-        {% if gift_card.enabled == false or gift_card.expired %}
-          <p>{{ 'gift_card.expired' | t }}</p>
-        {% endif %}
-
-        {% if gift_card.expires_on %}
-          {% assign expires_on = gift_card.expires_on | date: '%B %e, %Y' %}
-          <p>
-            {{ 'gift_card.expires_on' | t: expires_on: expires_on }}
-          </p>
-        {% endif %}
-
-        <p>
-          {% if settings.logo %}
-            {{ settings.logo | image_url: width: 300 | image_tag: alt: shop.name }}
-          {% else %}
-            <img
-              src="{{ 'gift-card/card.svg' | shopify_asset_url }}"
-              alt="{{ 'gift_card.card' | t }}"
-              width="300"
-              height="200"
-            >
-          {% endif %}
-        </p>
-
-        <h2>{{ shop.name }}</h2>
-        <p>{{ 'gift_card.use_at_checkout' | t }}</p>
-        <p>{{ gift_card.code | format_code }}</p>
-
-        {% if gift_card.pass_url %}
-          <a href="{{ gift_card.pass_url }}">
-            <img
-              src="{{ 'gift-card/add-to-apple-wallet.svg' | shopify_asset_url }}"
-              alt="{{ 'gift_card.add_to_apple_wallet' | t }}"
-              width="200"
-              height="60"
-            >
-          </a>
-        {% endif %}
+    {% unless gift_card.enabled %}
+      <div style="text-align:center;margin-bottom:1rem;">
+        <span class="expired-badge">Gift card expired</span>
       </div>
-    </main>
-  </body>
+    {% endunless %}
+
+    {% if gift_card.balance != gift_card.initial_value %}
+      <div class="gift-card-balance">
+        {{ 'gift_cards.issued.remaining_html' | t: balance: gift_card.balance | money }}
+      </div>
+    {% endif %}
+
+    <!-- QR Code -->
+    {% if gift_card.qr_identifier %}
+      <div class="qr-section">
+        <div id="gift-card-qr"></div>
+      </div>
+    {% endif %}
+
+    <!-- Gift card code -->
+    <div class="card-code-section">
+      <div class="code-label">Gift Card Code</div>
+      <div class="code-value" id="gift-card-code">{{ gift_card.code | format_code }}</div>
+    </div>
+
+    <!-- CTA -->
+    {% if gift_card.enabled %}
+      <a href="{{ shop.url }}" class="btn-primary">Shop at {{ shop.name }}</a>
+    {% endif %}
+
+    <button class="btn-secondary" onclick="window.print();">Print Gift Card</button>
+
+    <p class="footer-note">
+      Gift cards never expire and can be used across multiple orders.<br>
+      {{ shop.name }} &mdash; {{ shop.url | remove: 'https://' | remove: 'http://' }}
+    </p>
+
+  </div>
+</div>
+
+{% if gift_card.qr_identifier %}
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var qrContainer = document.getElementById('gift-card-qr');
+      if (!qrContainer) return;
+      var img = document.createElement('img');
+      img.src = 'https://chart.googleapis.com/chart?cht=qr&chs=150x150&chl=' + encodeURIComponent('{{ gift_card.qr_identifier }}') + '&choe=UTF-8&chld=M|0';
+      img.alt = 'QR code';
+      img.style.maxWidth = '120px';
+      qrContainer.appendChild(img);
+    });
+  </script>
+{% endif %}
+
+</body>
 </html>

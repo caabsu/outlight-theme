@@ -1,2534 +1,680 @@
-<div
-  class="header-wrapper full-width {% if section.settings.enable_sticky %}header-wrapper--sticky{% endif %} {% if section.settings.enable_transparent and template.name == 'index' %}header-wrapper--transparent{% endif %}"
-  style="
-    --header-bg: {{ section.settings.background_color }};
-    --header-text: {{ section.settings.text_color }};
-    --header-text-hover: {{ section.settings.text_color_hover }};
-    --header-text-transparent: {{ section.settings.text_color_transparent }};
-    --header-nav-size: {{ section.settings.nav_font_size }}px;
-    --header-nav-weight: {{ section.settings.nav_font_weight }};
-    --header-height: {{ section.settings.header_height }}px;
-    --header-height-mobile: {{ section.settings.header_height_mobile }}px;
-    --logo-width: {{ settings.logo_width }}px;
-    --logo-width-mobile: {{ settings.logo_width_mobile }}px;
-    --mega-menu-bg: {{ section.settings.mega_menu_bg }};
-    --mega-menu-header-color: {{ section.settings.mega_menu_header_color }};
-    --mega-menu-header-size: {{ section.settings.mega_menu_header_size }}px;
-    --mega-menu-header-weight: {{ section.settings.mega_menu_header_weight }};
-    --mega-menu-link-color: {{ section.settings.mega_menu_link_color }};
-    --mega-menu-link-hover-color: {{ section.settings.mega_menu_link_hover_color }};
-    --mega-menu-link-size: {{ section.settings.mega_menu_link_size }}px;
-    --mega-menu-link-weight: {{ section.settings.mega_menu_link_weight }};
-    --mega-menu-promo-label-color: {{ section.settings.mega_menu_promo_label_color }};
-    --mega-menu-promo-label-size: {{ section.settings.mega_menu_promo_label_size }}px;
-    --mega-menu-promo-label-weight: {{ section.settings.mega_menu_promo_label_weight }};
-    --mega-menu-promo-title-color: {{ section.settings.mega_menu_promo_title_color }};
-    --mega-menu-promo-title-size: {{ section.settings.mega_menu_promo_title_size }}px;
-    --mega-menu-promo-title-weight: {{ section.settings.mega_menu_promo_title_weight }};
-    --mega-menu-promo-image-opacity: {{ section.settings.mega_menu_promo_image_opacity | divided_by: 100.0 }};
-  "
-  data-header-wrapper
->
-  <header class="header">
-    {%- comment -%} Mobile menu toggle {%- endcomment -%}
-    <button class="header__menu-toggle" aria-label="Menu" data-menu-toggle>
-      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
-        <path d="M3 5h14M3 10h14M3 15h14"/>
-      </svg>
+<!-- ============================================================
+   Outlight — Header Section
+   Includes: desktop nav, mobile nav, mega menu, mobile full-screen
+   menu, and cart drawer trigger.
+   ============================================================ -->
+
+{%- liquid
+  assign transparent_on_home = section.settings.transparent_header
+  assign header_logo = section.settings.logo_image | default: settings.logo_image
+  assign header_logo_light = settings.logo_image_light
+  assign header_logo_height = section.settings.logo_width
+  assign header_logo_light_height = section.settings.logo_width
+
+  if header_logo != blank and header_logo.aspect_ratio != blank
+    assign header_logo_height = section.settings.logo_width | divided_by: header_logo.aspect_ratio | round
+  endif
+
+  if header_logo_light != blank and header_logo_light.aspect_ratio != blank
+    assign header_logo_light_height = section.settings.logo_width | divided_by: header_logo_light.aspect_ratio | round
+  endif
+-%}
+
+{%- comment -%} Announcement bar + global header offsets (CSS-variable driven) {%- endcomment -%}
+<style>
+  :root{ --ann-h:40px; --hdr-h:72px; }
+  @media (min-width:768px){ :root{ --hdr-h:88px; } }
+  html.ann-dismissed{ --ann-h:0px; }
+  #ann-bar{
+    position:fixed; top:0; left:0; right:0; z-index:51;
+    height:var(--ann-h); overflow:hidden;
+    background:#131314; color:#F9F9FB;
+    display:flex; align-items:center; justify-content:center;
+    transition:height .25s ease;
+  }
+  #ann-bar p{
+    font-family:'Manrope',sans-serif; margin:0; padding:0 46px; text-align:center;
+    font-size:11px; font-weight:400; letter-spacing:.07em; text-transform:none;
+  }
+  #ann-bar p strong{ color:#ead1a5; font-weight:500; }
+  #ann-bar a{
+    color:inherit; text-decoration:none; display:inline-flex; align-items:center; justify-content:center;
+    min-height:100%;
+  }
+  #ann-bar a:hover strong{ color:#d7b66d; }
+  #ann-bar .ann-close{
+    position:absolute; right:14px; top:50%; transform:translateY(-50%);
+    background:none; border:none; color:#F9F9FB; opacity:.6; cursor:pointer;
+    font-size:20px; line-height:1; padding:6px;
+  }
+  #ann-bar .ann-close:hover{ opacity:1; }
+  #site-header{ top:var(--ann-h) !important; }
+  #site-header > nav{
+    max-width:1360px !important;
+    padding-left:20px !important; padding-right:20px !important;
+  }
+  @media (min-width:768px){
+    #site-header > nav{ padding-left:32px !important; padding-right:32px !important; }
+  }
+  #mega-menu, #search-overlay{ top:calc(var(--ann-h) + var(--hdr-h)) !important; }
+  #main-content{
+    padding-top:calc(var(--ann-h) + var(--hdr-h));
+    transition:padding-top .25s ease;
+  }
+  @media (max-width:400px){
+    #ann-bar p{ font-size:10px; letter-spacing:.03em; padding:0 38px; }
+  }
+</style>
+<script>
+  (function(){ try{ if(localStorage.getItem('ol_ann_dismissed')==='1'){ document.documentElement.classList.add('ann-dismissed'); } }catch(e){} })();
+</script>
+<div id="ann-bar" role="region" aria-label="Store announcement">
+  <a href="/collections/best-sellers" aria-label="Shop the Outlight Clearance Sale">
+    <p>Clearance Sale <span aria-hidden="true">&nbsp;·&nbsp;</span> <strong>60% off all lighting</strong></p>
+  </a>
+  <button class="ann-close" type="button" aria-label="Dismiss announcement" onclick="document.documentElement.classList.add('ann-dismissed');try{localStorage.setItem('ol_ann_dismissed','1');}catch(e){}">&times;</button>
+</div>
+
+<header id="site-header" data-transparent-home="{% if template.name == 'index' and transparent_on_home %}true{% else %}false{% endif %}" class="fixed top-0 left-0 right-0 z-50 bg-[#F9F9FB] transition-all duration-500{% if template.name == 'index' and transparent_on_home %} header-wrapper--transparent{% endif %}">
+  <nav class="flex justify-between items-center w-full px-5 md:px-12 py-4 md:py-6 max-w-[1920px] mx-auto">
+
+    <!-- Mobile: hamburger LEFT -->
+    <button
+      class="md:hidden text-[#2d3338]"
+      aria-label="Open menu"
+      onclick="document.getElementById('mobile-menu').classList.add('open');document.getElementById('menu-backdrop').classList.add('open');"
+    >
+      <span class="material-symbols-outlined text-2xl">menu</span>
     </button>
 
-    {%- comment -%} Logo - Desktop: left, Mobile: center {%- endcomment -%}
-    <a href="{{ routes.root_url }}" class="header__logo-link">
-      {%- if settings.logo_dark -%}
-        <span class="header__logo-default">
-          {{ settings.logo_dark | image_url: width: 600 | image_tag: class: 'header__logo-image', loading: 'eager' }}
-        </span>
-      {%- endif -%}
-      {%- if settings.logo_light -%}
-        <span class="header__logo-transparent">
-          {{ settings.logo_light | image_url: width: 600 | image_tag: class: 'header__logo-image', loading: 'eager' }}
-        </span>
-      {%- endif -%}
-      {%- unless settings.logo_dark or settings.logo_light -%}
-        <span class="header__logo-text">{{ shop.name }}</span>
-      {%- endunless -%}
-    </a>
-
-    {%- comment -%} Navigation - Desktop: center, Mobile: hidden {%- endcomment -%}
-    <nav class="header__nav">
-    {%- for block in section.blocks -%}
-      {%- case block.type -%}
-        {%- when 'menu_item' -%}
-          <div class="header__nav-item" {{ block.shopify_attributes }}>
-            <a href="{{ block.settings.link }}" class="header__nav-link">
-              {{ block.settings.title }}
-            </a>
-          </div>
-
-        {%- when 'mega_menu' -%}
-          <div class="header__nav-item header__nav-item--mega" data-mega-menu {{ block.shopify_attributes }}>
-            <button class="header__nav-link header__nav-link--trigger" data-mega-trigger>
-              {{ block.settings.title }}
-              <span class="header__nav-underline"></span>
-            </button>
-            <div class="mega-menu" data-mega-panel>
-              <div class="mega-menu__container">
-                <div class="mega-menu__layout">
-                  <div class="mega-menu__top">
-                    {%- comment -%} Left side: Two columns of links {%- endcomment -%}
-                    <div class="mega-menu__columns">
-                      {%- comment -%} Column 1: Indoor Lighting {%- endcomment -%}
-                      <div class="mega-menu__column">
-                        <a href="{{ block.settings.column_1_url }}" class="mega-menu__column-header">{{ block.settings.column_1_header | default: 'Indoor Lighting' }}</a>
-                        <ul class="mega-menu__links">
-                          {%- for i in (1..6) -%}
-                            {%- assign link_title_key = 'col1_link_' | append: i | append: '_title' -%}
-                            {%- assign link_url_key = 'col1_link_' | append: i | append: '_url' -%}
-                            {%- assign link_title = block.settings[link_title_key] -%}
-                            {%- assign link_url = block.settings[link_url_key] -%}
-                            {%- if link_title != blank -%}
-                              <li>
-                                <a href="{{ link_url }}" class="mega-menu__link">{{ link_title }}</a>
-                              </li>
-                            {%- endif -%}
-                          {%- endfor -%}
-                        </ul>
-                      </div>
-
-                      {%- comment -%} Column 2: Outdoor Lighting {%- endcomment -%}
-                      <div class="mega-menu__column">
-                        <a href="{{ block.settings.column_2_url }}" class="mega-menu__column-header">{{ block.settings.column_2_header | default: 'Outdoor Lighting' }}</a>
-                        <ul class="mega-menu__links">
-                          {%- for i in (1..6) -%}
-                            {%- assign link_title_key = 'col2_link_' | append: i | append: '_title' -%}
-                            {%- assign link_url_key = 'col2_link_' | append: i | append: '_url' -%}
-                            {%- assign link_title = block.settings[link_title_key] -%}
-                            {%- assign link_url = block.settings[link_url_key] -%}
-                            {%- if link_title != blank -%}
-                              <li>
-                                <a href="{{ link_url }}" class="mega-menu__link">{{ link_title }}</a>
-                              </li>
-                            {%- endif -%}
-                          {%- endfor -%}
-                        </ul>
-                      </div>
-                    </div>
-
-                    {%- comment -%} Right side: Two promo buttons {%- endcomment -%}
-                    <div class="mega-menu__promos">
-                      {%- if block.settings.promo_1_image != blank or block.settings.promo_1_title != blank -%}
-                        <a href="{{ block.settings.promo_1_link }}" class="mega-menu__promo">
-                          {%- if block.settings.promo_1_image != blank -%}
-                            <div class="mega-menu__promo-image">
-                              {{ block.settings.promo_1_image | image_url: width: 600, height: 400, crop: 'center' | image_tag }}
-                            </div>
-                          {%- endif -%}
-                          <div class="mega-menu__promo-content">
-                            {%- if block.settings.promo_1_label != blank -%}
-                              <span class="mega-menu__promo-label">{{ block.settings.promo_1_label }}</span>
-                            {%- endif -%}
-                            {%- if block.settings.promo_1_title != blank -%}
-                              <span class="mega-menu__promo-title">{{ block.settings.promo_1_title }}</span>
-                            {%- endif -%}
-                          </div>
-                        </a>
-                      {%- endif -%}
-
-                      {%- if block.settings.promo_2_image != blank or block.settings.promo_2_title != blank -%}
-                        <a href="{{ block.settings.promo_2_link }}" class="mega-menu__promo">
-                          {%- if block.settings.promo_2_image != blank -%}
-                            <div class="mega-menu__promo-image">
-                              {{ block.settings.promo_2_image | image_url: width: 600, height: 400, crop: 'center' | image_tag }}
-                            </div>
-                          {%- endif -%}
-                          <div class="mega-menu__promo-content">
-                            {%- if block.settings.promo_2_label != blank -%}
-                              <span class="mega-menu__promo-label">{{ block.settings.promo_2_label }}</span>
-                            {%- endif -%}
-                            {%- if block.settings.promo_2_title != blank -%}
-                              <span class="mega-menu__promo-title">{{ block.settings.promo_2_title }}</span>
-                            {%- endif -%}
-                          </div>
-                        </a>
-                      {%- endif -%}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-      {%- endcase -%}
-    {%- endfor -%}
-    </nav>
-
-    {%- comment -%} Right: Icons {%- endcomment -%}
-    <div class="header__right">
-      {% if customer and customer.tags contains 'trade-program' %}
-        <span class="trade-badge">{{ 'trade_program.badge' | t }}</span>
-      {% endif %}
-      <a href="{{ routes.cart_url }}" class="header__icon header__cart" aria-label="{{ 'general.cart' | t }}" data-cart-trigger>
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M4 4h2l2.5 10h7l2-7H7"/>
-          <circle cx="9" cy="17" r="1.5" fill="currentColor"/>
-          <circle cx="14" cy="17" r="1.5" fill="currentColor"/>
-        </svg>
-        {%- if cart.item_count > 0 -%}
-          <span class="header__cart-count">{{ cart.item_count }}</span>
-        {%- endif -%}
-      </a>
-    </div>
-  </header>
-</div>
-
-{%- comment -%} Mobile Drawer {%- endcomment -%}
-<div
-  class="mobile-drawer"
-  data-mobile-drawer
-  style="
-    --mega-menu-header-color: {{ section.settings.mega_menu_header_color }};
-    --mega-menu-header-size: {{ section.settings.mega_menu_header_size }}px;
-    --mega-menu-header-weight: {{ section.settings.mega_menu_header_weight }};
-    --mega-menu-link-color: {{ section.settings.mega_menu_link_color }};
-    --mega-menu-link-size: {{ section.settings.mega_menu_link_size }}px;
-    --mega-menu-link-weight: {{ section.settings.mega_menu_link_weight }};
-    --mega-menu-promo-label-color: {{ section.settings.mega_menu_promo_label_color }};
-    --mega-menu-promo-label-size: {{ section.settings.mega_menu_promo_label_size }}px;
-    --mega-menu-promo-label-weight: {{ section.settings.mega_menu_promo_label_weight }};
-    --mega-menu-promo-title-color: {{ section.settings.mega_menu_promo_title_color }};
-    --mega-menu-promo-title-size: {{ section.settings.mega_menu_promo_title_size }}px;
-    --mega-menu-promo-title-weight: {{ section.settings.mega_menu_promo_title_weight }};
-    --mega-menu-promo-image-opacity: {{ section.settings.mega_menu_promo_image_opacity | divided_by: 100.0 }};
-  "
->
-  <div class="mobile-drawer__overlay" data-drawer-close></div>
-  <div class="mobile-drawer__panel">
-    <div class="mobile-drawer__header">
-      <a href="{{ routes.root_url }}" class="mobile-drawer__logo">
-        {%- if settings.logo_dark -%}
-          {{ settings.logo_dark | image_url: width: 400 | image_tag: class: 'mobile-drawer__logo-image' }}
+    <!-- Desktop: logo LEFT -->
+    <div class="hidden md:block font-headline text-[1.25rem] font-light text-[#131314] tracking-tight">
+      <a href="{{ routes.root_url }}">
+        {%- if header_logo != blank -%}
+          {%- if template.name == 'index' and transparent_on_home and header_logo_light != blank -%}
+            <img
+              id="desktop-logo-light"
+              src="{{ header_logo_light | image_url: width: section.settings.logo_width }}"
+              alt="{{ shop.name }}"
+              width="{{ section.settings.logo_width }}"
+              height="{{ header_logo_light_height }}"
+              loading="eager"
+              class="block"
+            >
+            <img
+              id="desktop-logo-dark"
+              src="{{ header_logo | image_url: width: section.settings.logo_width }}"
+              alt="{{ shop.name }}"
+              width="{{ section.settings.logo_width }}"
+              height="{{ header_logo_height }}"
+              loading="eager"
+              class="block hidden"
+            >
+          {%- else -%}
+            <img
+              src="{{ header_logo | image_url: width: section.settings.logo_width }}"
+              alt="{{ shop.name }}"
+              width="{{ section.settings.logo_width }}"
+              height="{{ header_logo_height }}"
+              loading="eager"
+              class="block"
+            >
+          {%- endif -%}
         {%- else -%}
-          <span class="mobile-drawer__logo-text">{{ shop.name }}</span>
+          Outlight
         {%- endif -%}
       </a>
-      <button class="mobile-drawer__close" data-drawer-close aria-label="{{ 'general.close' | t }}">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M18 6L6 18M6 6l12 12"/>
-        </svg>
-      </button>
     </div>
 
-    {%- comment -%} Mobile Drawer Search {%- endcomment -%}
-    <div class="mobile-drawer__search" data-mobile-search>
-      <form action="{{ routes.search_url }}" method="get" class="mobile-drawer__search-form" data-mobile-search-form>
-        <input type="hidden" name="type" value="product,collection">
-        <svg class="mobile-drawer__search-icon" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
-          <circle cx="9" cy="9" r="6"/>
-          <path d="M13.5 13.5L17 17"/>
-        </svg>
-        <input
-          type="search"
-          name="q"
-          placeholder="What can we help you find?"
-          class="mobile-drawer__search-input"
-          autocomplete="off"
-          data-mobile-search-input
-        >
-      </form>
-      <div class="mobile-drawer__search-results" data-mobile-search-results></div>
-    </div>
-
-    <div class="mobile-drawer__content">
-      {%- for block in section.blocks -%}
-        {%- if block.type == 'mega_menu' -%}
-          <div class="mobile-drawer__mega-menu">
-              {%- comment -%} Column 1: Indoor Lighting {%- endcomment -%}
-              <div class="mobile-drawer__column">
-                <a href="{{ block.settings.column_1_url }}" class="mobile-drawer__column-header">
-                  {{ block.settings.column_1_header | default: 'Indoor Lighting' }}
-                </a>
-                <ul class="mobile-drawer__column-links">
-                  {%- for i in (1..6) -%}
-                    {%- assign link_title_key = 'col1_link_' | append: i | append: '_title' -%}
-                    {%- assign link_url_key = 'col1_link_' | append: i | append: '_url' -%}
-                    {%- assign link_title = block.settings[link_title_key] -%}
-                    {%- assign link_url = block.settings[link_url_key] -%}
-                    {%- if link_title != blank -%}
-                      <li>
-                        <a href="{{ link_url }}" class="mobile-drawer__column-link">{{ link_title }}</a>
-                      </li>
-                    {%- endif -%}
-                  {%- endfor -%}
-                </ul>
-              </div>
-
-              {%- comment -%} Column 2: Outdoor Lighting {%- endcomment -%}
-              <div class="mobile-drawer__column">
-                <a href="{{ block.settings.column_2_url }}" class="mobile-drawer__column-header">
-                  {{ block.settings.column_2_header | default: 'Outdoor Lighting' }}
-                </a>
-                <ul class="mobile-drawer__column-links">
-                  {%- for i in (1..6) -%}
-                    {%- assign link_title_key = 'col2_link_' | append: i | append: '_title' -%}
-                    {%- assign link_url_key = 'col2_link_' | append: i | append: '_url' -%}
-                    {%- assign link_title = block.settings[link_title_key] -%}
-                    {%- assign link_url = block.settings[link_url_key] -%}
-                    {%- if link_title != blank -%}
-                      <li>
-                        <a href="{{ link_url }}" class="mobile-drawer__column-link">{{ link_title }}</a>
-                      </li>
-                    {%- endif -%}
-                  {%- endfor -%}
-                </ul>
-              </div>
-
-              {%- comment -%} Promo buttons {%- endcomment -%}
-              <div class="mobile-drawer__promos">
-                {%- if block.settings.promo_1_mobile_image != blank or block.settings.promo_1_image != blank or block.settings.promo_1_title != blank -%}
-                  <a href="{{ block.settings.promo_1_link }}" class="mobile-drawer__promo">
-                    <div class="mobile-drawer__promo-image">
-                      {%- if block.settings.promo_1_mobile_image != blank -%}
-                        {{ block.settings.promo_1_mobile_image | image_url: width: 800, height: 300, crop: 'center' | image_tag }}
-                      {%- elsif block.settings.promo_1_image != blank -%}
-                        {{ block.settings.promo_1_image | image_url: width: 800, height: 300, crop: 'center' | image_tag }}
-                      {%- endif -%}
-                    </div>
-                    <div class="mobile-drawer__promo-content">
-                      {%- if block.settings.promo_1_label != blank -%}
-                        <span class="mobile-drawer__promo-label">{{ block.settings.promo_1_label }}</span>
-                      {%- endif -%}
-                      {%- if block.settings.promo_1_title != blank -%}
-                        <span class="mobile-drawer__promo-title">{{ block.settings.promo_1_title }}</span>
-                      {%- endif -%}
-                    </div>
-                  </a>
-                {%- endif -%}
-
-                {%- if block.settings.promo_2_mobile_image != blank or block.settings.promo_2_image != blank or block.settings.promo_2_title != blank -%}
-                  <a href="{{ block.settings.promo_2_link }}" class="mobile-drawer__promo">
-                    <div class="mobile-drawer__promo-image">
-                      {%- if block.settings.promo_2_mobile_image != blank -%}
-                        {{ block.settings.promo_2_mobile_image | image_url: width: 800, height: 300, crop: 'center' | image_tag }}
-                      {%- elsif block.settings.promo_2_image != blank -%}
-                        {{ block.settings.promo_2_image | image_url: width: 800, height: 300, crop: 'center' | image_tag }}
-                      {%- endif -%}
-                    </div>
-                    <div class="mobile-drawer__promo-content">
-                      {%- if block.settings.promo_2_label != blank -%}
-                        <span class="mobile-drawer__promo-label">{{ block.settings.promo_2_label }}</span>
-                      {%- endif -%}
-                      {%- if block.settings.promo_2_title != blank -%}
-                        <span class="mobile-drawer__promo-title">{{ block.settings.promo_2_title }}</span>
-                      {%- endif -%}
-                    </div>
-                  </a>
-                {%- endif -%}
-              </div>
-            </div>
+    <!-- Mobile: logo CENTERED (absolute) -->
+    <div class="md:hidden font-headline text-[1.1rem] font-light text-[#131314] tracking-tight absolute left-1/2 -translate-x-1/2">
+      <a href="{{ routes.root_url }}">
+        {%- if header_logo != blank -%}
+          {%- if template.name == 'index' and transparent_on_home and header_logo_light != blank -%}
+            <img
+              id="mobile-logo-light"
+              src="{{ header_logo_light | image_url: width: section.settings.logo_width }}"
+              alt="{{ shop.name }}"
+              width="{{ section.settings.logo_width }}"
+              height="{{ header_logo_light_height }}"
+              loading="eager"
+              class="block"
+            >
+            <img
+              id="mobile-logo-dark"
+              src="{{ header_logo | image_url: width: section.settings.logo_width }}"
+              alt="{{ shop.name }}"
+              width="{{ section.settings.logo_width }}"
+              height="{{ header_logo_height }}"
+              loading="eager"
+              class="block hidden"
+            >
+          {%- else -%}
+            <img
+              src="{{ header_logo | image_url: width: section.settings.logo_width }}"
+              alt="{{ shop.name }}"
+              width="{{ section.settings.logo_width }}"
+              height="{{ header_logo_height }}"
+              loading="eager"
+              class="block"
+            >
+          {%- endif -%}
+        {%- else -%}
+          Outlight
         {%- endif -%}
-      {%- endfor -%}
-
-      {%- comment -%} Footer icons {%- endcomment -%}
-      <div class="mobile-drawer__footer">
-        <a href="/pages/support" class="mobile-drawer__footer-item">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M3 18v-6a9 9 0 0 1 18 0v6"/>
-            <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
-          </svg>
-          <span>Support</span>
-        </a>
-        <a href="{{ routes.account_url }}" class="mobile-drawer__footer-item">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-            <circle cx="12" cy="7" r="4"/>
-          </svg>
-          <span>Account</span>
-          {% if customer and customer.tags contains 'trade-program' %}
-            <span class="trade-badge">{{ 'trade_program.badge' | t }}</span>
-          {% endif %}
-        </a>
-        <a href="/pages/about-us" class="mobile-drawer__footer-item">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-            <polyline points="9 22 9 12 15 12 15 22"/>
-          </svg>
-          <span>About</span>
-        </a>
-      </div>
+      </a>
     </div>
-  </div>
-</div>
 
-{%- comment -%} Search Drawer {%- endcomment -%}
-<div class="search-drawer" data-search-drawer>
-  <div class="search-drawer__overlay" data-search-close></div>
-  <div class="search-drawer__panel">
-    <div class="search-drawer__header">
-      <h2 class="search-drawer__title">{{ section.settings.search_title | default: 'Search' }}</h2>
-      <button type="button" class="search-drawer__close" data-search-close aria-label="Close search">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M18 6L6 18M6 6l12 12"/>
-        </svg>
+    <!-- Desktop: nav CENTER -->
+    <div class="hidden md:flex items-center gap-8">
+      <button
+        id="shop-trigger"
+        class="font-label text-[0.75rem] uppercase tracking-[0.1em] text-[#2d3338]/60 hover:text-[#131314] transition-colors duration-300"
+        aria-haspopup="true"
+        aria-expanded="false"
+        onclick="
+          var mm = document.getElementById('mega-menu');
+          var hdr = document.getElementById('site-header');
+          mm.classList.toggle('open');
+          document.getElementById('mega-backdrop').classList.toggle('open');
+          var isOpen = mm.classList.contains('open');
+          this.setAttribute('aria-expanded', isOpen);
+          if (isOpen) {
+            hdr.classList.remove('header-wrapper--transparent');
+            hdr.classList.add('header-mega-open');
+          } else if (window.scrollY <= 80 && hdr.dataset.transparentHome === 'true') {
+            hdr.classList.add('header-wrapper--transparent');
+            hdr.classList.remove('header-mega-open');
+          } else {
+            hdr.classList.remove('header-mega-open');
+          }
+        "
+      >{{ section.settings.nav1_label | default: 'Shop' }}</button>
+
+      <a
+        href="{{ section.settings.nav2_url | default: '/pages/about-us' }}"
+        class="font-label text-[0.75rem] uppercase tracking-[0.1em] text-[#2d3338]/60 hover:text-[#131314] transition-colors duration-300"
+      >{{ section.settings.nav2_label | default: 'About Us' }}</a>
+
+      <a
+        href="{{ section.settings.nav3_url | default: '/pages/support-center' }}"
+        class="font-label text-[0.75rem] uppercase tracking-[0.1em] text-[#2d3338]/60 hover:text-[#131314] transition-colors duration-300"
+      >{{ section.settings.nav3_label | default: 'Support' }}</a>
+
+      <a
+        href="{{ section.settings.nav4_url | default: '/pages/trade-program-application' }}"
+        class="font-label text-[0.75rem] uppercase tracking-[0.1em] text-[#2d3338]/60 hover:text-[#131314] transition-colors duration-300"
+      >{{ section.settings.nav4_label | default: 'Trade' }}</a>
+
+      {%- if section.settings.nav5_label != blank -%}
+        <a
+          href="{{ section.settings.nav5_url | default: '/collections/best-sellers' }}"
+          class="font-label text-[0.75rem] uppercase tracking-[0.1em] text-[#C5A059] hover:text-[#b8903f] transition-colors duration-300"
+        >{{ section.settings.nav5_label }}</a>
+      {%- endif -%}
+    </div>
+
+    <!-- Icons RIGHT -->
+    <div class="flex items-center gap-4">
+      <!-- Search (desktop only) -->
+      <button
+        type="button"
+        class="hidden md:flex text-[#2d3338] hover:opacity-80 transition-opacity duration-300"
+        aria-label="Search"
+        onclick="openSearchOverlay()"
+      >
+        <span class="material-symbols-outlined text-[1.4rem]">search</span>
+      </button>
+
+      <!-- Account (desktop only) -->
+      <a
+        href="{{ routes.account_url }}"
+        class="hidden md:flex text-[#2d3338] hover:opacity-80 transition-opacity duration-300"
+        aria-label="Account"
+      >
+        <span class="material-symbols-outlined text-[1.4rem]">person</span>
+      </a>
+
+      <!-- Cart — triggers cart drawer -->
+      <button
+        class="relative text-[#2d3338] hover:opacity-80 transition-opacity duration-300"
+        aria-label="Open cart"
+        onclick="document.getElementById('cart-drawer').classList.add('open');document.getElementById('cart-backdrop').classList.add('open');"
+      >
+        <span class="material-symbols-outlined text-2xl">shopping_bag</span>
+        {%- if cart.item_count > 0 -%}
+          <span
+            id="cart-count-badge"
+            class="absolute -top-1 -right-1 w-4 h-4 flex items-center justify-center bg-[#C5A059] text-white font-label text-[0.45rem] leading-none"
+          >{{ cart.item_count }}</span>
+        {%- endif -%}
       </button>
     </div>
 
-    <form action="{{ routes.search_url }}" method="get" class="search-drawer__form">
-      <input type="hidden" name="type" value="product">
-      <div class="search-drawer__input-wrapper">
-        <svg class="search-drawer__input-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
-          <circle cx="9" cy="9" r="6"/>
-          <path d="M13.5 13.5L17 17"/>
-        </svg>
-        <input
-          type="search"
-          name="q"
-          placeholder="{{ section.settings.search_placeholder | default: 'Search products...' }}"
-          class="search-drawer__input"
-          autocomplete="off"
-          data-search-input
-        >
-      </div>
-    </form>
+  </nav>
+</header>
 
-    {%- if section.settings.search_collection != blank -%}
-      <div class="search-drawer__suggested">
-        <h3 class="search-drawer__suggested-title">{{ section.settings.search_suggested_title | default: 'Most searched products' }}</h3>
-        <div class="search-drawer__products">
-          {%- for product in section.settings.search_collection.products limit: 3 -%}
-            <a href="{{ product.url }}" class="search-drawer__product">
-              <div class="search-drawer__product-image">
-                {%- if product.featured_image -%}
-                  {{ product.featured_image | image_url: width: 120, height: 120, crop: 'center' | image_tag: loading: 'lazy' }}
-                {%- else -%}
-                  <div class="search-drawer__product-placeholder"></div>
-                {%- endif -%}
-              </div>
-              <div class="search-drawer__product-info">
-                <span class="search-drawer__product-title">{{ product.title }}</span>
-                <span class="search-drawer__product-price">{{ product.price | money }}</span>
-              </div>
-            </a>
-          {%- endfor -%}
+
+<!-- ============================================================
+   Mega menu backdrop
+   ============================================================ -->
+<div
+  id="mega-backdrop"
+  class="overlay-backdrop fixed inset-0 bg-[#131314]/20 z-[45]"
+  onclick="
+    document.getElementById('mega-menu').classList.remove('open');
+    this.classList.remove('open');
+    document.getElementById('shop-trigger').setAttribute('aria-expanded', 'false');
+    var hdr = document.getElementById('site-header');
+    hdr.classList.remove('header-mega-open');
+    if (window.scrollY <= 80 && hdr.dataset.transparentHome === 'true') {
+      hdr.classList.add('header-wrapper--transparent');
+    }
+  "
+></div>
+
+
+<!-- ============================================================
+   Mega menu dropdown
+   ============================================================ -->
+<div id="mega-menu" class="mega-menu fixed top-[72px] md:top-[88px] left-0 right-0 z-[48] bg-[#F9F9FB] border-t border-[#131314]/5 shadow-lg">
+  <div class="max-w-[1920px] mx-auto px-12 py-10 grid grid-cols-12 gap-10">
+
+    <!-- Indoor Lighting -->
+    <div class="col-span-2">
+      <span class="font-label text-[0.6rem] uppercase tracking-[0.2em] text-[#C5A059] block mb-4">Indoor</span>
+      <div class="w-full h-px bg-[#131314]/6 mb-5"></div>
+      <ul class="space-y-3">
+        <li><a href="{{ routes.collections_url }}/floor-table-lamps" class="font-headline text-[1rem] font-[300] text-[#2d3338]/60 hover:text-[#131314] transition-colors">Floor Lamps</a></li>
+        <li><a href="{{ routes.collections_url }}/desk-lamp"      class="font-headline text-[1rem] font-[300] text-[#2d3338]/60 hover:text-[#131314] transition-colors">Table &amp; Bedside Lamps</a></li>
+        <li><a href="{{ routes.collections_url }}/indoor-wall-lights" class="font-headline text-[1rem] font-[300] text-[#2d3338]/60 hover:text-[#131314] transition-colors">Wall Lights</a></li>
+      </ul>
+    </div>
+
+    <!-- Outdoor Lighting -->
+    <div class="col-span-2">
+      <span class="font-label text-[0.6rem] uppercase tracking-[0.2em] text-[#C5A059] block mb-4">Outdoor</span>
+      <div class="w-full h-px bg-[#131314]/6 mb-5"></div>
+      <ul class="space-y-3">
+        <li><a href="{{ routes.collections_url }}/wall-lights" class="font-headline text-[1rem] font-[300] text-[#2d3338]/60 hover:text-[#131314] transition-colors">Outdoor Wall Lights</a></li>
+        <li><a href="{{ routes.collections_url }}/outdoor-lighting" class="font-headline text-[1rem] font-[300] text-[#2d3338]/60 hover:text-[#131314] transition-colors">Outdoor Lighting</a></li>
+        <li><a href="{{ routes.collections_url }}/path-lights"         class="font-headline text-[1rem] font-[300] text-[#2d3338]/60 hover:text-[#131314] transition-colors">Path &amp; Landscape</a></li>
+      </ul>
+    </div>
+
+    <!-- Promo cards -->
+    <div class="col-span-8 grid grid-cols-2 gap-4">
+
+      <a href="{{ routes.collections_url }}/best-sellers" class="block relative overflow-hidden group" style="aspect-ratio:16/9;">
+        {%- if section.settings.mega_image_1 != blank -%}
+          <img src="{{ section.settings.mega_image_1 | image_url: width: 800 }}" alt="Best Sellers" width="800" height="450" class="absolute inset-0 w-full h-full object-cover" loading="lazy">
+        {%- else -%}
+          <div class="mega-img absolute inset-0 w-full h-full"></div>
+        {%- endif -%}
+        <div class="absolute inset-0 bg-gradient-to-t from-[#131314]/60 via-transparent to-transparent"></div>
+        <div class="absolute bottom-5 left-5">
+          <span class="font-label text-[0.5rem] uppercase tracking-[0.2em] text-[#C5A059] block mb-1">Shop Now</span>
+          <span class="font-headline text-xl font-[200] text-white group-hover:text-[#C5A059] transition-colors">Best Sellers</span>
         </div>
-      </div>
-    {%- endif -%}
+      </a>
+
+      <a href="/collections/best-sellers" class="block relative overflow-hidden group" style="aspect-ratio:16/9;">
+        {%- if section.settings.mega_image_2 != blank -%}
+          <img src="{{ section.settings.mega_image_2 | image_url: width: 800 }}" alt="Clearance Sale" width="800" height="450" class="absolute inset-0 w-full h-full object-cover" loading="lazy">
+        {%- else -%}
+          <div class="mega-img-2 absolute inset-0 w-full h-full"></div>
+        {%- endif -%}
+        <div class="absolute inset-0 bg-gradient-to-t from-[#131314]/60 via-transparent to-transparent"></div>
+        <div class="absolute bottom-5 left-5">
+          <span class="font-label text-[0.5rem] uppercase tracking-[0.2em] text-[#C5A059] block mb-1">Shop Now</span>
+          <span class="font-headline text-xl font-[200] text-white group-hover:text-[#C5A059] transition-colors">Clearance Sale</span>
+        </div>
+      </a>
+
+    </div>
   </div>
 </div>
 
-{% stylesheet %}
-  /* Header Wrapper */
-  .header-wrapper {
-    background-color: var(--header-bg);
-    padding: 0 var(--page-margin);
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    width: 100%;
-    position: relative;
-    z-index: 100;
-  }
 
-  .header-wrapper--sticky {
-    position: sticky;
-    top: var(--announcement-bar-height, 0px);
-    z-index: 100;
-  }
-
-  .header-wrapper--transparent:not(.is-scrolled) {
-    background-color: transparent;
-    position: fixed;
-    top: var(--announcement-bar-height, 0px);
-    left: 0;
-    right: 0;
-  }
-
-  .header-wrapper--transparent.header-wrapper--sticky:not(.is-scrolled) {
-    position: fixed;
-    top: var(--announcement-bar-height, 0px);
-  }
-
-  .header-wrapper--transparent.header-wrapper--sticky.is-scrolled {
-    position: fixed;
-    top: var(--announcement-bar-height, 0px);
-    left: 0;
-    right: 0;
-  }
-
-  /* When mega menu is open but not actually scrolled, keep header below announcement bar */
-  .header-wrapper--transparent.mega-menu-open:not(.actually-scrolled),
-  .header-wrapper--transparent.header-wrapper--sticky.mega-menu-open:not(.actually-scrolled) {
-    position: fixed;
-    top: var(--announcement-bar-height, 0px);
-  }
-
-  .header-wrapper--transparent.is-scrolled {
-    background-color: var(--header-bg);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  }
-
-  /* Header Layout - Desktop: logo left, nav center, icons right */
-  .header {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    grid-template-areas: "logo nav icons";
-    align-items: center;
-    height: var(--header-height);
-    gap: 2rem;
-    max-width: var(--page-width);
-    margin: 0 auto;
-  }
-
-  /* Menu Toggle - Hidden on desktop, visible on mobile */
-  .header__menu-toggle {
-    display: none;
-    background: none;
-    border: none;
-    padding: 0;
-    color: var(--header-text);
-    cursor: pointer;
-    transition: opacity 0.2s ease;
-  }
-
-  .header__menu-toggle:hover {
-    opacity: 0.7;
-  }
-
-  .header-wrapper--transparent:not(.is-scrolled) .header__menu-toggle {
-    color: var(--header-text-transparent);
-  }
-
-  /* Logo - Desktop: left aligned */
-  .header__logo-link {
-    grid-area: logo;
-    justify-self: start;
-    display: block;
-    text-decoration: none;
-    color: var(--header-text);
-  }
-
-  .header__logo-image {
-    display: block;
-    width: var(--logo-width);
-    height: auto;
-  }
-
-  .header__logo-text {
-    font-family: var(--font-heading-family);
-    font-size: 1.5rem;
-    font-weight: var(--font-heading-weight);
-    color: var(--header-text);
-  }
-
-  .header__logo-transparent {
-    display: none;
-  }
-
-  .header-wrapper--transparent:not(.is-scrolled) .header__logo-default {
-    display: none;
-  }
-
-  .header-wrapper--transparent:not(.is-scrolled) .header__logo-transparent {
-    display: block;
-  }
-
-  .header-wrapper--transparent:not(.is-scrolled) .header__logo-text {
-    color: var(--header-text-transparent);
-  }
-
-  /* Navigation - Desktop: center aligned */
-  .header__nav {
-    grid-area: nav;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 2.5rem;
-  }
-
-  /* Navigation Items */
-
-  .header__nav-item {
-    position: relative;
-  }
-
-  .header__nav-link {
-    display: inline-flex;
-    align-items: center;
-    text-decoration: none;
-    color: var(--header-text);
-    font-family: inherit;
-    font-size: var(--header-nav-size);
-    font-weight: var(--header-nav-weight);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    padding: 0.5rem 0;
-    background: none;
-    border: none;
-    cursor: pointer;
-    transition: color 0.2s ease;
-    position: relative;
-  }
-
-  .header__nav-link:hover {
-    color: var(--header-text-hover);
-  }
-
-  .header-wrapper--transparent:not(.is-scrolled) .header__nav-link {
-    color: var(--header-text-transparent);
-  }
-
-  .header-wrapper--transparent:not(.is-scrolled) .header__nav-link:hover {
-    opacity: 0.7;
-  }
-
-  .header__nav-underline {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background-color: currentColor;
-    transform: scaleX(0);
-    transition: transform 0.2s ease;
-  }
-
-  .header__nav-item:hover .header__nav-underline,
-  .header__nav-item--active .header__nav-underline {
-    transform: scaleX(1);
-  }
-
-  /* Right: Icons */
-  .header__right {
-    grid-area: icons;
-    justify-self: end;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 1.25rem;
-  }
-
-  .header__icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--header-text);
-    text-decoration: none;
-    transition: opacity 0.2s ease, color 0.3s ease;
-  }
-
-  .header-wrapper--transparent:not(.is-scrolled) .header__icon {
-    color: var(--header-text-transparent);
-  }
-
-  .header__icon:hover {
-    opacity: 0.7;
-  }
-
-  .header__icon svg {
-    width: 1.25rem;
-    height: 1.25rem;
-  }
-
-  .header__cart {
-    position: relative;
-  }
-
-  .header__cart-count {
-    position: absolute;
-    top: -6px;
-    right: -6px;
-    background-color: #D97706;
-    color: #ffffff;
-    font-size: 0.625rem;
-    font-weight: 600;
-    min-width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 4px;
-  }
-
-  /* Minimal search button */
-  .header__search-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: transparent;
-    border: none;
-    padding: 6px;
-    cursor: pointer;
-    color: var(--header-text);
-    transition: opacity 0.2s ease, color 0.3s ease;
-  }
-
-  .header__search-btn:hover {
-    opacity: 0.7;
-  }
-
-  .header__search-btn svg {
-    width: 18px;
-    height: 18px;
-  }
-
-  .header-wrapper--transparent:not(.is-scrolled) .header__search-btn {
-    color: var(--header-text-transparent);
-  }
-
-  /* Mega Menu */
-  .mega-menu {
-    position: fixed;
-    top: calc(var(--header-height) + var(--announcement-bar-height, 0px));
-    left: 0;
-    right: 0;
-    background-color: var(--mega-menu-bg);
-    box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.08);
+<!-- ============================================================
+   Search overlay (desktop)
+   ============================================================ -->
+<style>
+  .ol-search-panel {
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.2s ease, visibility 0.2s ease;
-    padding: 2.5rem var(--page-margin);
-    z-index: 200;
+    transform: translateY(-10px);
+    transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
   }
-
-  /* When actually scrolled, announcement bar is hidden so mega menu goes to header height only */
-  .header-wrapper--transparent.actually-scrolled .mega-menu {
-    top: var(--header-height);
-  }
-
-  .header__nav-item--mega:hover .mega-menu,
-  .header__nav-item--mega.is-open .mega-menu {
-    opacity: 1;
-    visibility: visible;
-  }
-
-  .mega-menu__container {
-    max-width: var(--page-width);
-    margin: 0 auto;
-  }
-
-  /* Two-column layout with promos below */
-  .mega-menu__layout {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-  }
-
-  .mega-menu__top {
-    display: flex;
-    gap: 4rem;
-  }
-
-  .mega-menu__columns {
-    display: flex;
-    gap: 0;
-    flex: 0 0 auto;
-  }
-
-  .mega-menu__column {
-    min-width: 200px;
-    padding-right: 3rem;
-  }
-
-  .mega-menu__column:first-child {
-    border-right: 1px solid rgba(0, 0, 0, 0.08);
-    padding-right: 3rem;
-    margin-right: 3rem;
-  }
-
-  .mega-menu__column-header {
-    display: block;
-    font-size: var(--mega-menu-header-size);
-    font-weight: var(--mega-menu-header-weight);
-    color: var(--mega-menu-header-color);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    text-decoration: none;
-    margin: 0 0 1.5rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-    transition: opacity 0.2s ease;
-  }
-
-  .mega-menu__column-header:hover {
-    opacity: 0.7;
-  }
-
-  .mega-menu__links {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.875rem;
-  }
-
-  .mega-menu__link {
-    display: block;
-    font-family: var(--font-heading-family);
-    font-size: var(--mega-menu-link-size);
-    font-weight: var(--mega-menu-link-weight);
-    color: var(--mega-menu-link-color);
-    text-decoration: none;
-    transition: color 0.2s ease;
-  }
-
-  .mega-menu__link:hover {
-    color: var(--mega-menu-link-hover-color);
-  }
-
-  /* Promo buttons - horizontal layout with full-cover images */
-  .mega-menu__promos {
-    display: flex;
-    flex-direction: row;
-    gap: 1.5rem;
-    flex: 1;
-    margin-left: 2rem;
-  }
-
-  .mega-menu__promo {
-    flex: 1;
-    position: relative;
-    display: flex;
-    align-items: flex-end;
-    text-decoration: none;
-    background-color: #1C1917;
-    overflow: hidden;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    min-height: 160px;
-  }
-
-  .mega-menu__promo:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-  }
-
-  .mega-menu__promo-image {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    opacity: var(--mega-menu-promo-image-opacity);
-  }
-
-  .mega-menu__promo-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .mega-menu__promo-content {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 0.375rem;
-    padding: 1.5rem 2rem;
-    width: 100%;
-  }
-
-  .mega-menu__promo-label {
-    font-size: var(--mega-menu-promo-label-size);
-    font-weight: var(--mega-menu-promo-label-weight);
-    color: var(--mega-menu-promo-label-color);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-  }
-
-  .mega-menu__promo-title {
-    font-family: var(--font-heading-family);
-    font-size: var(--mega-menu-promo-title-size);
-    font-weight: var(--mega-menu-promo-title-weight);
-    color: var(--mega-menu-promo-title-color);
-  }
-
-  /* Legacy styles for backwards compatibility */
-  .mega-menu__heading {
-    font-size: 0.6875rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--mega-menu-text);
-    opacity: 0.6;
-    margin-bottom: 1.5rem;
-  }
-
-  .mega-menu__grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 1.5rem;
-    max-width: 900px;
-  }
-
-  .mega-menu__card {
-    text-decoration: none;
-    color: var(--mega-menu-text);
-    display: block;
-  }
-
-  .mega-menu__card-image {
-    aspect-ratio: 4/3;
-    overflow: hidden;
-    margin-bottom: 0.75rem;
-    background-color: #f5f5f5;
-  }
-
-  .mega-menu__card-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
-  }
-
-  .mega-menu__card:hover .mega-menu__card-image img {
-    transform: scale(1.05);
-  }
-
-  .mega-menu__card-content {
-    text-align: left;
-  }
-
-  .mega-menu__card-title {
-    font-size: var(--mega-menu-title-size);
-    font-weight: var(--mega-menu-title-weight);
-    margin: 0 0 0.25rem;
-    color: var(--mega-menu-title-color);
-  }
-
-  .mega-menu__card-link {
-    font-size: var(--mega-menu-link-size);
-    font-weight: var(--mega-menu-link-weight);
-    color: var(--mega-menu-link-color);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-  }
-
-  .mega-menu__placeholder {
-    width: 100%;
-    height: 100%;
-    background-color: #eee;
-  }
-
-  /* Mobile Drawer */
-  .mobile-drawer {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 1000;
-    pointer-events: none;
-  }
-
-  .mobile-drawer.is-open {
-    pointer-events: auto;
-  }
-
-  .mobile-drawer__overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-
-  .mobile-drawer.is-open .mobile-drawer__overlay {
-    opacity: 1;
-  }
-
-  .mobile-drawer__panel {
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    max-width: 400px;
-    background-color: #ffffff;
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
-  }
-
-  .mobile-drawer.is-open .mobile-drawer__panel {
-    transform: translateX(0);
-  }
-
-  .mobile-drawer__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1.25rem 1.5rem;
-    border-bottom: 1px solid #eee;
-  }
-
-  .mobile-drawer__logo {
-    text-decoration: none;
-  }
-
-  .mobile-drawer__logo-image {
-    height: 1.5rem;
-    width: auto;
-  }
-
-  .mobile-drawer__logo-text {
-    font-family: var(--font-heading-family);
-    font-size: 1.25rem;
-    font-weight: var(--font-heading-weight);
-    color: #1C1917;
-  }
-
-  .mobile-drawer__close {
-    background: none;
-    border: none;
-    padding: 0.5rem;
-    margin: -0.5rem;
-    cursor: pointer;
-    color: #1C1917;
-  }
-
-  .mobile-drawer__content {
-    flex: 1;
-    padding: 1.5rem;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .mobile-drawer__section {
-    margin-bottom: 2rem;
-  }
-
-  .mobile-drawer__section-heading {
-    font-size: 0.6875rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: #9CA3AF;
-    margin-bottom: 1rem;
-  }
-
-  .mobile-drawer__categories {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  .mobile-drawer__category {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    text-decoration: none;
-    color: #1C1917;
-    padding: 0.5rem 0;
-  }
-
-  .mobile-drawer__category-image {
-    width: 3.5rem;
-    height: 3.5rem;
-    overflow: hidden;
-    flex-shrink: 0;
-    background-color: #f5f5f5;
-  }
-
-  .mobile-drawer__category-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .mobile-drawer__category-title {
-    font-size: 1.125rem;
-    font-weight: 400;
-  }
-
-  .mobile-drawer__footer {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    border-top: 1px solid #eee;
-    padding-top: 1.5rem;
-    margin-top: auto;
-  }
-
-  .mobile-drawer__footer-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-    text-decoration: none;
-    color: #57534E;
-    transition: color 0.2s ease;
-  }
-
-  .mobile-drawer__footer-item:hover {
-    color: #1C1917;
-  }
-
-  .mobile-drawer__footer-item svg {
-    width: 24px;
-    height: 24px;
-  }
-
-  .mobile-drawer__footer-item span {
-    font-size: 0.75rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .mobile-drawer__placeholder {
-    width: 100%;
-    height: 100%;
-    background-color: #eee;
-  }
-
-  /* Mobile Drawer Search */
-  .mobile-drawer__search {
-    padding: 0 1.5rem 1rem;
-    position: relative;
-  }
-
-  .mobile-drawer__search-form {
-    position: relative;
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid #1C1917;
-  }
-
-  .mobile-drawer__search-icon {
-    flex-shrink: 0;
-    color: #A8A29E;
-    margin-right: 10px;
-  }
-
-  .mobile-drawer__search-input {
-    flex: 1;
-    width: 100%;
-    padding: 6px 0;
-    border: none;
-    background: transparent;
-    font-family: var(--font-body-family), sans-serif;
-    font-size: 15px;
-    color: #1C1917;
-    outline: none;
-  }
-
-  .mobile-drawer__search-input::placeholder {
-    color: #A8A29E;
-  }
-
-  .mobile-drawer__search-input::-webkit-search-cancel-button {
-    -webkit-appearance: none;
-    appearance: none;
-  }
-
-  .mobile-drawer__search-results {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background: #ffffff;
-    border-radius: 0 0 8px 8px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-    max-height: 60vh;
-    overflow-y: auto;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-8px);
-    transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
-    z-index: 10;
-  }
-
-  .mobile-drawer__search-results.is-visible {
+  .ol-search-panel.open {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
   }
-
-  .mobile-drawer__search-group {
-    padding: 12px 0;
-    border-bottom: 1px solid #E5E5E5;
-  }
-
-  .mobile-drawer__search-group:last-child {
-    border-bottom: none;
-  }
-
-  .mobile-drawer__search-group-title {
-    font-family: var(--font-body-family), sans-serif;
-    font-size: 10px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: #A8A29E;
-    padding: 0 16px 8px;
-    margin: 0;
-  }
-
-  .mobile-drawer__search-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 16px;
-    text-decoration: none;
-    color: #1C1917;
-    transition: background-color 0.15s ease;
-  }
-
-  .mobile-drawer__search-item:hover {
-    background-color: #F5F5F4;
-  }
-
-  .mobile-drawer__search-item-image {
-    width: 44px;
-    height: 44px;
-    flex-shrink: 0;
-    overflow: hidden;
-    background-color: #F5F5F4;
-    border-radius: 4px;
-  }
-
-  .mobile-drawer__search-item-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .mobile-drawer__search-item-info {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    min-width: 0;
-  }
-
-  .mobile-drawer__search-item-title {
-    font-family: var(--font-heading-family), serif;
-    font-size: 14px;
-    font-weight: 400;
-    color: #1C1917;
-    line-height: 1.3;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .mobile-drawer__search-item-meta {
-    font-family: var(--font-body-family), sans-serif;
-    font-size: 12px;
-    color: #78716C;
-  }
-
-  .mobile-drawer__search-no-results {
-    padding: 24px 16px;
-    text-align: center;
-    color: #78716C;
-    font-size: 14px;
-  }
-
-  .mobile-drawer__search-loading {
-    padding: 24px 16px;
-    text-align: center;
-    color: #A8A29E;
-    font-size: 13px;
-  }
-
-  /* Mobile Drawer Mega Menu */
-  .mobile-drawer__mega-menu {
-    display: flex;
-    flex-direction: column;
-    gap: 2.5rem;
-  }
-
-  .mobile-drawer__column {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  .mobile-drawer__column-header {
-    display: block;
-    font-size: var(--mega-menu-header-size);
-    font-weight: var(--mega-menu-header-weight);
-    color: var(--mega-menu-header-color);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    text-decoration: none;
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-  }
-
-  .mobile-drawer__column-links {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.625rem;
-  }
-
-  .mobile-drawer__column-link {
-    display: block;
-    font-family: var(--font-heading-family);
-    font-size: var(--mega-menu-link-size);
-    font-weight: var(--mega-menu-link-weight);
-    color: var(--mega-menu-link-color);
-    text-decoration: none;
-  }
-
-  .mobile-drawer__promos {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    margin-top: 0.5rem;
-  }
-
-  .mobile-drawer__promo {
-    position: relative;
-    display: flex;
-    align-items: flex-end;
-    text-decoration: none;
-    background-color: #1C1917;
-    overflow: hidden;
-    min-height: 120px;
-  }
-
-  .mobile-drawer__promo-image {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    opacity: var(--mega-menu-promo-image-opacity);
-  }
-
-  .mobile-drawer__promo-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .mobile-drawer__promo-content {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    padding: 1.25rem 1.5rem;
-    width: 100%;
-  }
-
-  .mobile-drawer__promo-label {
-    font-size: var(--mega-menu-promo-label-size);
-    font-weight: var(--mega-menu-promo-label-weight);
-    color: var(--mega-menu-promo-label-color);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-  }
-
-  .mobile-drawer__promo-title {
-    font-family: var(--font-heading-family);
-    font-size: var(--mega-menu-promo-title-size);
-    font-weight: var(--mega-menu-promo-title-weight);
-    color: var(--mega-menu-promo-title-color);
-  }
-
-  /* Mobile Styles - menu toggle left, logo center, cart right */
-  @media screen and (max-width: 768px) {
-    .header {
-      grid-template-columns: 1fr auto 1fr;
-      grid-template-areas: "toggle logo icons";
-      height: var(--header-height-mobile);
-    }
-
-    .header__menu-toggle {
-      grid-area: toggle;
-      display: flex;
-      justify-self: start;
-    }
-
-    .header__logo-link {
-      grid-area: logo;
-      justify-self: center;
-    }
-
-    .header__nav {
-      display: none;
-    }
-
-    .header__right {
-      grid-area: icons;
-      justify-self: end;
-    }
-
-    .header__logo-image {
-      width: var(--logo-width-mobile);
-    }
-  }
-
-  /* Hide body scroll when drawer is open */
-  body.drawer-open {
-    overflow: hidden;
-  }
-
-  /* Search Drawer */
-  .search-drawer {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 1001;
-    pointer-events: none;
-  }
-
-  .search-drawer.is-open {
-    pointer-events: auto;
-  }
-
-  .search-drawer__overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-
-  .search-drawer.is-open .search-drawer__overlay {
-    opacity: 1;
-  }
-
-  .search-drawer__panel {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: 100%;
-    max-width: 420px;
-    background-color: #ffffff;
-    transform: translateX(100%);
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
-  }
-
-  .search-drawer.is-open .search-drawer__panel {
-    transform: translateX(0);
-  }
-
-  .search-drawer__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px 24px;
-    border-bottom: 1px solid #E5E5E5;
-  }
-
-  .search-drawer__title {
-    font-family: var(--font-heading-family), serif;
-    font-size: 20px;
-    font-weight: 400;
-    margin: 0;
-    color: #1C1917;
-  }
-
-  .search-drawer__close {
-    background: none;
-    border: none;
-    padding: 8px;
-    margin: -8px;
-    cursor: pointer;
-    color: #78716C;
-    transition: color 0.2s ease;
-  }
-
-  .search-drawer__close:hover {
-    color: #1C1917;
-  }
-
-  .search-drawer__form {
-    padding: 20px 24px;
-  }
-
-  .search-drawer__input-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-  }
-
-  .search-drawer__input-icon {
-    position: absolute;
-    left: 16px;
-    color: #A8A29E;
-    pointer-events: none;
-  }
-
-  .search-drawer__input {
-    width: 100%;
-    padding: 14px 16px 14px 48px;
-    border: 1px solid #E5E5E5;
-    border-radius: 8px;
-    font-family: var(--font-body-family), sans-serif;
-    font-size: 16px;
-    color: #1C1917;
-    background: #F5F5F4;
-    outline: none;
-    transition: border-color 0.2s ease, background-color 0.2s ease;
-  }
-
-  .search-drawer__input:focus {
-    border-color: #1C1917;
-    background-color: #ffffff;
-  }
-
-  .search-drawer__input::placeholder {
-    color: #A8A29E;
-  }
-
-  .search-drawer__suggested {
-    padding: 0 24px 24px;
-    flex: 1;
-  }
-
-  .search-drawer__suggested-title {
-    font-family: var(--font-body-family), sans-serif;
-    font-size: 12px;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: #78716C;
-    margin: 0 0 16px;
-  }
-
-  .search-drawer__products {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .search-drawer__product {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 12px;
-    background: #F5F5F4;
-    border-radius: 8px;
-    text-decoration: none;
-    transition: background-color 0.2s ease;
-  }
-
-  .search-drawer__product:hover {
-    background: #E7E5E4;
-  }
-
-  .search-drawer__product-image {
-    width: 60px;
-    height: 60px;
-    flex-shrink: 0;
-    overflow: hidden;
-    border-radius: 4px;
-    background: #ffffff;
-  }
-
-  .search-drawer__product-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .search-drawer__product-placeholder {
-    width: 100%;
-    height: 100%;
-    background: #E5E5E5;
-  }
-
-  .search-drawer__product-info {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    min-width: 0;
-  }
-
-  .search-drawer__product-title {
-    font-family: var(--font-heading-family), serif;
-    font-size: 15px;
-    font-weight: 400;
-    color: #1C1917;
-    line-height: 1.3;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .search-drawer__product-price {
-    font-family: var(--font-body-family), sans-serif;
-    font-size: 14px;
-    color: #78716C;
-  }
-
-  @media screen and (max-width: 768px) {
-    .search-drawer__panel {
-      max-width: 100%;
-    }
-  }
-
-  .trade-badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 2px 8px;
-    font-size: 10px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    border-radius: 4px;
-    background: var(--color-accent, #6366f1);
-    color: #fff;
-  }
-{% endstylesheet %}
-
-{% javascript %}
-  const headerWrapper = document.querySelector('[data-header-wrapper]');
-  const isTransparent = headerWrapper && headerWrapper.classList.contains('header-wrapper--transparent');
-  const scrollThreshold = 1;
-  let megaMenuOpen = false;
-
-  // Position header below announcement bar
-  function positionHeader() {
-    const announcementBar = document.querySelector('.announcement-bar:not(.is-hidden)');
-    if (announcementBar && headerWrapper) {
-      const barRect = announcementBar.getBoundingClientRect();
-      const topOffset = barRect.bottom;
-      headerWrapper.style.top = topOffset + 'px';
-    } else if (headerWrapper) {
-      headerWrapper.style.top = '0px';
-    }
-  }
-
-  // Header scroll behavior
-  if (isTransparent) {
-    function updateHeader() {
-      const isActuallyScrolled = window.scrollY > scrollThreshold;
-
-      // Track actual scroll state separately
-      if (isActuallyScrolled) {
-        headerWrapper.classList.add('actually-scrolled');
-      } else {
-        headerWrapper.classList.remove('actually-scrolled');
+</style>
+<div
+  id="search-backdrop"
+  class="overlay-backdrop fixed inset-0 bg-[#131314]/20 z-[46]"
+  onclick="closeSearchOverlay()"
+></div>
+<div id="search-overlay" class="ol-search-panel fixed top-[72px] md:top-[88px] left-0 right-0 z-[47] bg-[#F9F9FB] border-t border-[#131314]/5 shadow-lg">
+  <div class="max-w-[1920px] mx-auto px-5 md:px-12 py-6">
+    <form action="{{ routes.search_url }}" method="get" role="search">
+      <div class="flex items-center gap-4 border-b border-[#131314]/15 pb-3">
+        <span class="material-symbols-outlined text-[#2d3338]/50">search</span>
+        <input
+          id="search-overlay-input"
+          type="search"
+          name="q"
+          placeholder="Search floor lamps, wall lights, outdoor…"
+          class="flex-1 bg-transparent border-none outline-none font-body text-[1rem] font-light text-[#131314] placeholder:text-[#2d3338]/40 focus:ring-0 p-0"
+        >
+        <button type="button" aria-label="Close search" onclick="closeSearchOverlay()" class="text-[#2d3338]/50 hover:text-[#131314] transition-colors">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<!-- ============================================================
+   Mobile menu backdrop
+   ============================================================ -->
+<div
+  id="menu-backdrop"
+  class="overlay-backdrop fixed inset-0 bg-[#131314]/40 z-[60]"
+  onclick="
+    document.getElementById('mobile-menu').classList.remove('open');
+    this.classList.remove('open');
+  "
+></div>
+
+
+<!-- ============================================================
+   Mobile menu — V1 Full Screen
+   ============================================================ -->
+<div id="mobile-menu" class="mobile-menu fixed top-0 left-0 right-0 bottom-0 w-full bg-[#F9F9FB] z-[70] flex flex-col overflow-y-auto">
+
+  <!-- Header row -->
+  <div class="flex items-center justify-between px-5 py-4 border-b border-[#131314]/5">
+    <span class="font-headline text-[1.1rem] font-light text-[#131314] tracking-tight">
+      {%- if header_logo != blank -%}
+        <img
+          src="{{ header_logo | image_url: width: section.settings.logo_width }}"
+          alt="{{ shop.name }}"
+          width="{{ section.settings.logo_width }}"
+          height="{{ header_logo_height }}"
+          loading="lazy"
+          class="block"
+        >
+      {%- else -%}
+        Outlight
+      {%- endif -%}
+    </span>
+    <button
+      aria-label="Close menu"
+      onclick="document.getElementById('mobile-menu').classList.remove('open');document.getElementById('menu-backdrop').classList.remove('open');"
+    >
+      <span class="material-symbols-outlined text-[#2d3338] text-xl">close</span>
+    </button>
+  </div>
+
+  <!-- Search -->
+  <div class="px-5 py-4 border-b border-[#131314]/5">
+    <form action="{{ routes.search_url }}" method="get" role="search">
+      <div class="flex items-center gap-3 border border-[#131314]/8 px-4 py-2.5">
+        <span class="material-symbols-outlined text-[#2d3338]/60 text-lg">search</span>
+        <input
+          type="search"
+          name="q"
+          placeholder="What can we help you find?"
+          class="flex-1 bg-transparent border-none outline-none font-body text-[0.82rem] font-light text-[#131314] placeholder:text-[#2d3338]/60 focus:ring-0 p-0"
+        />
+      </div>
+    </form>
+  </div>
+
+  <!-- Indoor Lighting -->
+  <div class="px-5 pt-6 pb-4">
+    <span class="font-label text-[0.55rem] uppercase tracking-[0.2em] text-[#C5A059] block mb-3">Indoor</span>
+    <div class="h-px bg-[#C5A059]/20 mb-4"></div>
+    <div class="space-y-4">
+      <a href="{{ routes.collections_url }}/floor-table-lamps" class="font-headline text-[1.05rem] font-[300] text-[#2d3338]/55 block">Floor Lamps</a>
+      <a href="{{ routes.collections_url }}/desk-lamp"      class="font-headline text-[1.05rem] font-[300] text-[#2d3338]/55 block">Table &amp; Bedside Lamps</a>
+      <a href="{{ routes.collections_url }}/indoor-wall-lights" class="font-headline text-[1.05rem] font-[300] text-[#2d3338]/55 block">Wall Lights</a>
+    </div>
+  </div>
+
+  <!-- Outdoor Lighting -->
+  <div class="px-5 pb-4">
+    <span class="font-label text-[0.55rem] uppercase tracking-[0.2em] text-[#C5A059] block mb-3">Outdoor</span>
+    <div class="h-px bg-[#C5A059]/20 mb-4"></div>
+    <div class="space-y-4">
+      <a href="{{ routes.collections_url }}/wall-lights" class="font-headline text-[1.05rem] font-[300] text-[#2d3338]/55 block">Outdoor Wall Lights</a>
+      <a href="{{ routes.collections_url }}/outdoor-lighting" class="font-headline text-[1.05rem] font-[300] text-[#2d3338]/55 block">Outdoor Lighting</a>
+      <a href="{{ routes.collections_url }}/path-lights"         class="font-headline text-[1.05rem] font-[300] text-[#2d3338]/55 block">Path &amp; Landscape</a>
+    </div>
+  </div>
+
+  <!-- Promo cards -->
+  <div class="px-5 pt-4 pb-5 space-y-3">
+
+    <a href="{{ routes.collections_url }}/best-sellers" class="block relative overflow-hidden" style="aspect-ratio:2.5/1;">
+      {%- if section.settings.mega_image_1 != blank -%}
+        <img src="{{ section.settings.mega_image_1 | image_url: width: 600 }}" alt="Best Sellers" width="600" height="338" class="absolute inset-0 w-full h-full object-cover" loading="lazy">
+      {%- else -%}
+        <div class="mega-img absolute inset-0 w-full h-full"></div>
+      {%- endif -%}
+      <div class="absolute inset-0 bg-gradient-to-t from-[#131314]/60 via-transparent to-transparent"></div>
+      <div class="absolute bottom-4 left-4">
+        <span class="font-label text-[0.45rem] uppercase tracking-[0.2em] text-[#C5A059] block mb-1">Shop Now</span>
+        <span class="font-headline text-lg font-[200] text-white">Best Sellers</span>
+      </div>
+    </a>
+
+    <a href="/collections/best-sellers" class="block relative overflow-hidden" style="aspect-ratio:2.5/1;">
+      {%- if section.settings.mega_image_2 != blank -%}
+        <img src="{{ section.settings.mega_image_2 | image_url: width: 600 }}" alt="Clearance Sale" width="600" height="338" class="absolute inset-0 w-full h-full object-cover" loading="lazy">
+      {%- else -%}
+        <div class="mega-img-2 absolute inset-0 w-full h-full"></div>
+      {%- endif -%}
+      <div class="absolute inset-0 bg-gradient-to-t from-[#131314]/60 via-transparent to-transparent"></div>
+      <div class="absolute bottom-4 left-4">
+        <span class="font-label text-[0.45rem] uppercase tracking-[0.2em] text-[#C5A059] block mb-1">Shop Now</span>
+        <span class="font-headline text-lg font-[200] text-white">Clearance Sale</span>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- Bottom icon nav -->
+  <div class="mt-auto border-t border-[#131314]/5 px-5 py-4 flex items-center justify-between">
+    <a href="/pages/support-center" class="flex flex-col items-center gap-1">
+      <span class="material-symbols-outlined text-[#2d3338]/55 text-xl">headset_mic</span>
+      <span class="font-label text-[0.45rem] uppercase tracking-[0.1em] text-[#2d3338]/65">Support</span>
+    </a>
+    <a href="{{ routes.account_url }}" class="flex flex-col items-center gap-1">
+      <span class="material-symbols-outlined text-[#2d3338]/55 text-xl">person</span>
+      <span class="font-label text-[0.45rem] uppercase tracking-[0.1em] text-[#2d3338]/65">Account</span>
+    </a>
+    <a href="{{ section.settings.nav2_url | default: '/pages/about-us' }}" class="flex flex-col items-center gap-1">
+      <span class="material-symbols-outlined text-[#2d3338]/55 text-xl">info</span>
+      <span class="font-label text-[0.45rem] uppercase tracking-[0.1em] text-[#2d3338]/65">About</span>
+    </a>
+    <a href="{{ section.settings.nav4_url | default: '/pages/trade-program-application' }}" class="flex flex-col items-center gap-1">
+      <span class="material-symbols-outlined text-[#C5A059]/60 text-xl">verified</span>
+      <span class="font-label text-[0.45rem] uppercase tracking-[0.1em] text-[#C5A059]/50">Trade</span>
+    </a>
+  </div>
+
+</div>
+
+
+<script>
+(function() {
+  var header = document.getElementById('site-header');
+  var isIndex = {{ template.name | json }} === 'index';
+  var transparentOnHome = {{ transparent_on_home | json }};
+  var hasLightLogo = !!(document.getElementById('desktop-logo-light'));
+
+  window.addEventListener('scroll', function() {
+    var scrolled = window.scrollY > 80;
+    var megaOpen = header.classList.contains('header-mega-open');
+
+    if (scrolled) {
+      header.classList.add('header-scrolled');
+      header.classList.remove('header-wrapper--transparent');
+      if (hasLightLogo) {
+        var dl = document.getElementById('desktop-logo-light');
+        var dd = document.getElementById('desktop-logo-dark');
+        var ml = document.getElementById('mobile-logo-light');
+        var md = document.getElementById('mobile-logo-dark');
+        if (dl) { dl.classList.add('hidden'); }
+        if (dd) { dd.classList.remove('hidden'); }
+        if (ml) { ml.classList.add('hidden'); }
+        if (md) { md.classList.remove('hidden'); }
       }
-
-      // Add is-scrolled for styling (background color) when scrolled OR mega menu open
-      if (isActuallyScrolled || megaMenuOpen) {
-        headerWrapper.classList.add('is-scrolled');
-      } else {
-        headerWrapper.classList.remove('is-scrolled');
+    } else {
+      header.classList.remove('header-scrolled');
+      if (isIndex && transparentOnHome && !megaOpen) {
+        header.classList.add('header-wrapper--transparent');
       }
-
-      // Update header position
-      positionHeader();
-    }
-
-    window.addEventListener('scroll', updateHeader, { passive: true });
-    window.addEventListener('resize', positionHeader);
-
-    // Initial positioning
-    positionHeader();
-    updateHeader();
-  }
-
-  // Mobile drawer
-  const mobileDrawer = document.querySelector('[data-mobile-drawer]');
-  const menuToggle = document.querySelector('[data-menu-toggle]');
-  const drawerCloseButtons = document.querySelectorAll('[data-drawer-close]');
-
-  if (menuToggle && mobileDrawer) {
-    menuToggle.addEventListener('click', () => {
-      mobileDrawer.classList.add('is-open');
-      document.body.classList.add('drawer-open');
-    });
-
-    drawerCloseButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        mobileDrawer.classList.remove('is-open');
-        document.body.classList.remove('drawer-open');
-      });
-    });
-  }
-
-  // Position mega menu below header
-  function positionMegaMenu() {
-    if (!headerWrapper) return;
-    const headerRect = headerWrapper.getBoundingClientRect();
-    const megaMenus = document.querySelectorAll('.mega-menu');
-    megaMenus.forEach(menu => {
-      menu.style.top = headerRect.bottom + 'px';
-    });
-  }
-
-  // Mega menu hover behavior (desktop)
-  const megaMenuItems = document.querySelectorAll('[data-mega-menu]');
-
-  megaMenuItems.forEach(item => {
-    let timeout;
-
-    item.addEventListener('mouseenter', () => {
-      clearTimeout(timeout);
-      item.classList.add('is-open');
-      megaMenuOpen = true;
-      if (headerWrapper) {
-        headerWrapper.classList.add('mega-menu-open');
-        if (isTransparent) {
-          headerWrapper.classList.add('is-scrolled');
-          positionHeader();
-        }
+      if (hasLightLogo && isIndex && transparentOnHome) {
+        var dl = document.getElementById('desktop-logo-light');
+        var dd = document.getElementById('desktop-logo-dark');
+        var ml = document.getElementById('mobile-logo-light');
+        var md = document.getElementById('mobile-logo-dark');
+        if (dl) { dl.classList.remove('hidden'); }
+        if (dd) { dd.classList.add('hidden'); }
+        if (ml) { ml.classList.remove('hidden'); }
+        if (md) { md.classList.add('hidden'); }
       }
-      positionMegaMenu();
-    });
-
-    item.addEventListener('mouseleave', () => {
-      timeout = setTimeout(() => {
-        item.classList.remove('is-open');
-        megaMenuOpen = false;
-        if (headerWrapper) {
-          headerWrapper.classList.remove('mega-menu-open');
-          // Only remove is-scrolled if not actually scrolled
-          if (isTransparent && window.scrollY <= scrollThreshold) {
-            headerWrapper.classList.remove('is-scrolled');
-          }
-        }
-      }, 100);
-    });
-  });
-
-  // Search drawer
-  const searchDrawer = document.querySelector('[data-search-drawer]');
-  const searchTrigger = document.querySelector('[data-search-trigger]');
-  const searchCloseButtons = document.querySelectorAll('[data-search-close]');
-  const searchInput = document.querySelector('[data-search-input]');
-
-  function openSearchDrawer() {
-    if (searchDrawer) {
-      searchDrawer.classList.add('is-open');
-      document.body.classList.add('drawer-open');
-      if (searchInput) {
-        setTimeout(() => searchInput.focus(), 300);
-      }
-    }
-  }
-
-  function closeSearchDrawer() {
-    if (searchDrawer) {
-      searchDrawer.classList.remove('is-open');
-      document.body.classList.remove('drawer-open');
-    }
-  }
-
-  if (searchTrigger) {
-    searchTrigger.addEventListener('click', openSearchDrawer);
-  }
-
-  searchCloseButtons.forEach(btn => {
-    btn.addEventListener('click', closeSearchDrawer);
-  });
-
-  // Close search drawer on ESC key
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && searchDrawer && searchDrawer.classList.contains('is-open')) {
-      closeSearchDrawer();
     }
   });
+})();
+</script>
 
-  // Predictive Search - Universal function for all search inputs
-  const PredictiveSearch = {
-    cache: {},
-    debounceTimers: {},
-
-    async search(query, callback) {
-      if (!query || query.length < 2) {
-        callback({ products: [], collections: [] });
-        return;
-      }
-
-      const cacheKey = query.toLowerCase().trim();
-      if (this.cache[cacheKey]) {
-        callback(this.cache[cacheKey]);
-        return;
-      }
-
-      try {
-        const response = await fetch(
-          `/search/suggest.json?q=${encodeURIComponent(query)}&resources[type]=product,collection&resources[limit]=5`
-        );
-        const data = await response.json();
-
-        const results = {
-          products: data.resources?.results?.products || [],
-          collections: data.resources?.results?.collections || []
-        };
-
-        this.cache[cacheKey] = results;
-        callback(results);
-      } catch (error) {
-        console.error('Search error:', error);
-        callback({ products: [], collections: [] });
-      }
-    },
-
-    debounce(key, fn, delay = 200) {
-      if (this.debounceTimers[key]) {
-        clearTimeout(this.debounceTimers[key]);
-      }
-      this.debounceTimers[key] = setTimeout(fn, delay);
-    },
-
-    renderResults(results, container, options = {}) {
-      const { products, collections } = results;
-
-      if (products.length === 0 && collections.length === 0) {
-        container.innerHTML = '<div class="mobile-drawer__search-no-results">No results found</div>';
-        container.classList.add('is-visible');
-        return;
-      }
-
-      let html = '';
-
-      // Collections
-      if (collections.length > 0) {
-        html += '<div class="mobile-drawer__search-group">';
-        html += '<h4 class="mobile-drawer__search-group-title">Collections</h4>';
-        collections.forEach(collection => {
-          html += `
-            <a href="${collection.url}" class="mobile-drawer__search-item">
-              <div class="mobile-drawer__search-item-image">
-                ${collection.featured_image?.url
-                  ? `<img src="${collection.featured_image.url}&width=88" alt="${collection.title}" loading="lazy">`
-                  : ''}
-              </div>
-              <div class="mobile-drawer__search-item-info">
-                <span class="mobile-drawer__search-item-title">${collection.title}</span>
-              </div>
-            </a>
-          `;
-        });
-        html += '</div>';
-      }
-
-      // Products
-      if (products.length > 0) {
-        html += '<div class="mobile-drawer__search-group">';
-        html += '<h4 class="mobile-drawer__search-group-title">Products</h4>';
-        products.forEach(product => {
-          let price = '';
-          if (product.price) {
-            const priceValue = parseFloat(product.price);
-            price = new Intl.NumberFormat('en-US', {
-              style: 'currency',
-              currency: Shopify?.currency?.active || 'USD',
-              minimumFractionDigits: priceValue % 1 === 0 ? 0 : 2,
-              maximumFractionDigits: 2
-            }).format(priceValue);
-          }
-          html += `
-            <a href="${product.url}" class="mobile-drawer__search-item">
-              <div class="mobile-drawer__search-item-image">
-                ${product.featured_image?.url
-                  ? `<img src="${product.featured_image.url}&width=88" alt="${product.title}" loading="lazy">`
-                  : ''}
-              </div>
-              <div class="mobile-drawer__search-item-info">
-                <span class="mobile-drawer__search-item-title">${product.title}</span>
-                <span class="mobile-drawer__search-item-meta">${price}</span>
-              </div>
-            </a>
-          `;
-        });
-        html += '</div>';
-      }
-
-      container.innerHTML = html;
-      container.classList.add('is-visible');
-    },
-
-    hideResults(container) {
-      container.classList.remove('is-visible');
-    },
-
-    init(inputSelector, resultsSelector, formSelector) {
-      const input = document.querySelector(inputSelector);
-      const results = document.querySelector(resultsSelector);
-      const form = document.querySelector(formSelector);
-
-      if (!input || !results) return;
-
-      input.addEventListener('input', (e) => {
-        const query = e.target.value.trim();
-
-        if (query.length < 2) {
-          this.hideResults(results);
-          return;
-        }
-
-        results.innerHTML = '<div class="mobile-drawer__search-loading">Searching...</div>';
-        results.classList.add('is-visible');
-
-        this.debounce(inputSelector, () => {
-          this.search(query, (data) => {
-            this.renderResults(data, results);
-          });
-        });
-      });
-
-      input.addEventListener('focus', () => {
-        const query = input.value.trim();
-        if (query.length >= 2) {
-          results.classList.add('is-visible');
-        }
-      });
-
-      // Hide results when clicking outside
-      document.addEventListener('click', (e) => {
-        if (!input.contains(e.target) && !results.contains(e.target)) {
-          this.hideResults(results);
-        }
-      });
-
-      // Form submit goes to search results page
-      if (form) {
-        form.addEventListener('submit', (e) => {
-          const query = input.value.trim();
-          if (!query) {
-            e.preventDefault();
-          }
-        });
-      }
-
-      // ESC key hides results
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-          this.hideResults(results);
-          input.blur();
-        }
-      });
-    }
-  };
-
-  // Initialize mobile drawer search
-  PredictiveSearch.init(
-    '[data-mobile-search-input]',
-    '[data-mobile-search-results]',
-    '[data-mobile-search-form]'
-  );
-
-  // Also add predictive search to header search drawer
-  const headerSearchInput = document.querySelector('[data-search-input]');
-  const headerSearchForm = document.querySelector('.search-drawer__form');
-
-  if (headerSearchInput && headerSearchForm) {
-    // Create results container for header search if not exists
-    let headerSearchResults = document.querySelector('[data-header-search-results]');
-    if (!headerSearchResults) {
-      headerSearchResults = document.createElement('div');
-      headerSearchResults.className = 'mobile-drawer__search-results';
-      headerSearchResults.setAttribute('data-header-search-results', '');
-      headerSearchResults.style.position = 'relative';
-      headerSearchResults.style.marginTop = '8px';
-      headerSearchResults.style.maxHeight = '50vh';
-      headerSearchForm.parentNode.insertBefore(headerSearchResults, headerSearchForm.nextSibling);
-    }
-
-    headerSearchInput.addEventListener('input', (e) => {
-      const query = e.target.value.trim();
-
-      if (query.length < 2) {
-        PredictiveSearch.hideResults(headerSearchResults);
-        return;
-      }
-
-      headerSearchResults.innerHTML = '<div class="mobile-drawer__search-loading">Searching...</div>';
-      headerSearchResults.classList.add('is-visible');
-
-      PredictiveSearch.debounce('header-search', () => {
-        PredictiveSearch.search(query, (data) => {
-          PredictiveSearch.renderResults(data, headerSearchResults);
-        });
-      });
-    });
-
-    headerSearchInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        PredictiveSearch.hideResults(headerSearchResults);
-      }
-    });
+<script>
+  function openSearchOverlay() {
+    var o = document.getElementById('search-overlay');
+    var b = document.getElementById('search-backdrop');
+    if (o) o.classList.add('open');
+    if (b) b.classList.add('open');
+    var i = document.getElementById('search-overlay-input');
+    if (i) setTimeout(function () { i.focus(); }, 60);
   }
-{% endjavascript %}
+  function closeSearchOverlay() {
+    var o = document.getElementById('search-overlay');
+    var b = document.getElementById('search-backdrop');
+    if (o) o.classList.remove('open');
+    if (b) b.classList.remove('open');
+  }
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeSearchOverlay();
+  });
+</script>
 
 {% schema %}
 {
-  "name": "t:sections.header.name",
+  "name": "Header",
+  "class": "header-section",
   "settings": [
     {
-      "type": "header",
-      "content": "t:sections.header.settings.behavior.header"
-    },
-    {
       "type": "checkbox",
-      "id": "enable_sticky",
-      "label": "t:sections.header.settings.behavior.enable_sticky",
-      "default": true
+      "id": "transparent_header",
+      "label": "Transparent header on homepage",
+      "default": true,
+      "info": "When enabled, the header background is transparent on the homepage, overlaying the hero section."
     },
     {
-      "type": "checkbox",
-      "id": "enable_transparent",
-      "label": "t:sections.header.settings.behavior.enable_transparent",
-      "info": "t:sections.header.settings.behavior.transparent_info",
-      "default": false
-    },
-    {
-      "type": "header",
-      "content": "t:sections.header.settings.layout.header"
+      "type": "image_picker",
+      "id": "logo_image",
+      "label": "Logo image",
+      "info": "Recommended height: 40px. Leave blank to show the Outlight wordmark."
     },
     {
       "type": "range",
-      "id": "header_height",
-      "label": "t:sections.header.settings.layout.height_desktop",
-      "min": 56,
-      "max": 120,
-      "step": 4,
-      "unit": "px",
-      "default": 72
-    },
-    {
-      "type": "range",
-      "id": "header_height_mobile",
-      "label": "t:sections.header.settings.layout.height_mobile",
-      "min": 48,
-      "max": 80,
-      "step": 4,
-      "unit": "px",
-      "default": 56
+      "id": "logo_width",
+      "label": "Logo width (px)",
+      "min": 60,
+      "max": 300,
+      "step": 10,
+      "default": 90,
+      "unit": "px"
     },
     {
       "type": "header",
-      "content": "t:sections.header.settings.colors.header"
-    },
-    {
-      "type": "color",
-      "id": "background_color",
-      "label": "t:sections.header.settings.colors.background",
-      "default": "#F7F5F0"
-    },
-    {
-      "type": "color",
-      "id": "text_color",
-      "label": "t:sections.header.settings.colors.text",
-      "default": "#1C1917"
-    },
-    {
-      "type": "color",
-      "id": "text_color_transparent",
-      "label": "t:sections.header.settings.colors.text_transparent",
-      "info": "t:sections.header.settings.colors.text_transparent_info",
-      "default": "#FFFFFF"
-    },
-    {
-      "type": "header",
-      "content": "t:sections.header.settings.nav_style.header"
-    },
-    {
-      "type": "color",
-      "id": "text_color_hover",
-      "label": "t:sections.header.settings.nav_style.text_hover",
-      "default": "#78716C"
-    },
-    {
-      "type": "range",
-      "id": "nav_font_size",
-      "label": "t:sections.header.settings.nav_style.font_size",
-      "min": 10,
-      "max": 16,
-      "step": 1,
-      "unit": "px",
-      "default": 13
-    },
-    {
-      "type": "select",
-      "id": "nav_font_weight",
-      "label": "t:sections.header.settings.nav_style.font_weight",
-      "options": [
-        { "value": "400", "label": "t:options.font_weight.regular" },
-        { "value": "500", "label": "t:options.font_weight.medium" },
-        { "value": "600", "label": "t:options.font_weight.semibold" },
-        { "value": "700", "label": "t:options.font_weight.bold" }
-      ],
-      "default": "500"
-    },
-    {
-      "type": "header",
-      "content": "t:sections.header.settings.mega_menu.header"
-    },
-    {
-      "type": "color",
-      "id": "mega_menu_bg",
-      "label": "t:sections.header.settings.mega_menu.background",
-      "default": "#FFFFFF"
-    },
-    {
-      "type": "header",
-      "content": "t:sections.header.settings.mega_menu.title_style"
-    },
-    {
-      "type": "color",
-      "id": "mega_menu_title_color",
-      "label": "t:sections.header.settings.mega_menu.title_color",
-      "default": "#1C1917"
-    },
-    {
-      "type": "range",
-      "id": "mega_menu_title_size",
-      "label": "t:sections.header.settings.mega_menu.title_size",
-      "min": 12,
-      "max": 24,
-      "step": 1,
-      "unit": "px",
-      "default": 15
-    },
-    {
-      "type": "select",
-      "id": "mega_menu_title_weight",
-      "label": "t:sections.header.settings.mega_menu.title_weight",
-      "options": [
-        { "value": "400", "label": "t:options.font_weight.regular" },
-        { "value": "500", "label": "t:options.font_weight.medium" },
-        { "value": "600", "label": "t:options.font_weight.semibold" },
-        { "value": "700", "label": "t:options.font_weight.bold" }
-      ],
-      "default": "500"
-    },
-    {
-      "type": "header",
-      "content": "t:sections.header.settings.mega_menu.link_style"
-    },
-    {
-      "type": "color",
-      "id": "mega_menu_link_color",
-      "label": "t:sections.header.settings.mega_menu.link_color",
-      "default": "#78716C"
-    },
-    {
-      "type": "color",
-      "id": "mega_menu_link_hover_color",
-      "label": "t:sections.header.settings.mega_menu.link_hover_color",
-      "default": "#1C1917"
-    },
-    {
-      "type": "range",
-      "id": "mega_menu_link_size",
-      "label": "t:sections.header.settings.mega_menu.link_size",
-      "min": 12,
-      "max": 24,
-      "step": 1,
-      "unit": "px",
-      "default": 15
-    },
-    {
-      "type": "select",
-      "id": "mega_menu_link_weight",
-      "label": "t:sections.header.settings.mega_menu.link_weight",
-      "options": [
-        { "value": "400", "label": "t:options.font_weight.regular" },
-        { "value": "500", "label": "t:options.font_weight.medium" },
-        { "value": "600", "label": "t:options.font_weight.semibold" }
-      ],
-      "default": "500"
-    },
-    {
-      "type": "header",
-      "content": "t:sections.header.settings.mega_menu.promo_style"
-    },
-    {
-      "type": "range",
-      "id": "mega_menu_promo_image_opacity",
-      "label": "t:sections.header.settings.mega_menu.promo_image_opacity",
-      "min": 0,
-      "max": 100,
-      "step": 5,
-      "unit": "%",
-      "default": 60
-    },
-    {
-      "type": "color",
-      "id": "mega_menu_promo_label_color",
-      "label": "t:sections.header.settings.mega_menu.promo_label_color",
-      "default": "#FFFFFF"
-    },
-    {
-      "type": "range",
-      "id": "mega_menu_promo_label_size",
-      "label": "t:sections.header.settings.mega_menu.promo_label_size",
-      "min": 10,
-      "max": 18,
-      "step": 1,
-      "unit": "px",
-      "default": 12
-    },
-    {
-      "type": "select",
-      "id": "mega_menu_promo_label_weight",
-      "label": "t:sections.header.settings.mega_menu.promo_label_weight",
-      "options": [
-        { "value": "400", "label": "t:options.font_weight.regular" },
-        { "value": "500", "label": "t:options.font_weight.medium" },
-        { "value": "600", "label": "t:options.font_weight.semibold" },
-        { "value": "700", "label": "t:options.font_weight.bold" }
-      ],
-      "default": "500"
-    },
-    {
-      "type": "color",
-      "id": "mega_menu_promo_title_color",
-      "label": "t:sections.header.settings.mega_menu.promo_title_color",
-      "default": "#FFFFFF"
-    },
-    {
-      "type": "range",
-      "id": "mega_menu_promo_title_size",
-      "label": "t:sections.header.settings.mega_menu.promo_title_size",
-      "min": 14,
-      "max": 32,
-      "step": 1,
-      "unit": "px",
-      "default": 20
-    },
-    {
-      "type": "select",
-      "id": "mega_menu_promo_title_weight",
-      "label": "t:sections.header.settings.mega_menu.promo_title_weight",
-      "options": [
-        { "value": "400", "label": "t:options.font_weight.regular" },
-        { "value": "500", "label": "t:options.font_weight.medium" },
-        { "value": "600", "label": "t:options.font_weight.semibold" },
-        { "value": "700", "label": "t:options.font_weight.bold" }
-      ],
-      "default": "600"
-    },
-    {
-      "type": "header",
-      "content": "t:sections.header.settings.mega_menu.column_header_style"
-    },
-    {
-      "type": "color",
-      "id": "mega_menu_header_color",
-      "label": "t:sections.header.settings.mega_menu.column_header_color",
-      "default": "#1C1917"
-    },
-    {
-      "type": "range",
-      "id": "mega_menu_header_size",
-      "label": "t:sections.header.settings.mega_menu.column_header_size",
-      "min": 10,
-      "max": 24,
-      "step": 1,
-      "unit": "px",
-      "default": 13
-    },
-    {
-      "type": "select",
-      "id": "mega_menu_header_weight",
-      "label": "t:sections.header.settings.mega_menu.column_header_weight",
-      "options": [
-        { "value": "400", "label": "t:options.font_weight.regular" },
-        { "value": "500", "label": "t:options.font_weight.medium" },
-        { "value": "600", "label": "t:options.font_weight.semibold" },
-        { "value": "700", "label": "t:options.font_weight.bold" }
-      ],
-      "default": "600"
-    },
-    {
-      "type": "header",
-      "content": "Search drawer"
+      "content": "Navigation links"
     },
     {
       "type": "text",
-      "id": "search_title",
-      "label": "Drawer title",
-      "default": "Search"
+      "id": "nav1_label",
+      "label": "Nav 1 label (opens mega menu)",
+      "default": "Shop"
     },
     {
       "type": "text",
-      "id": "search_placeholder",
-      "label": "Search placeholder",
-      "default": "Search products..."
+      "id": "nav2_label",
+      "label": "Nav 2 label",
+      "default": "About Us"
+    },
+    {
+      "type": "url",
+      "id": "nav2_url",
+      "label": "Nav 2 URL"
     },
     {
       "type": "text",
-      "id": "search_suggested_title",
-      "label": "Suggested products title",
-      "default": "Most searched products"
+      "id": "nav3_label",
+      "label": "Nav 3 label",
+      "default": "Support"
     },
     {
-      "type": "collection",
-      "id": "search_collection",
-      "label": "Suggested products collection",
-      "info": "Select a collection to show as suggested products"
-    }
-  ],
-  "blocks": [
-    {
-      "type": "menu_item",
-      "name": "t:sections.header.blocks.menu_item.name",
-      "settings": [
-        {
-          "type": "text",
-          "id": "title",
-          "label": "t:sections.header.blocks.menu_item.settings.title",
-          "default": "Link"
-        },
-        {
-          "type": "url",
-          "id": "link",
-          "label": "t:sections.header.blocks.menu_item.settings.link"
-        }
-      ]
+      "type": "url",
+      "id": "nav3_url",
+      "label": "Nav 3 URL"
     },
     {
-      "type": "mega_menu",
-      "name": "t:sections.header.blocks.mega_menu.name",
-      "settings": [
-        {
-          "type": "text",
-          "id": "title",
-          "label": "t:sections.header.blocks.mega_menu.settings.title",
-          "default": "Shop"
-        },
-        {
-          "type": "header",
-          "content": "t:sections.header.blocks.mega_menu.settings.column_1.header"
-        },
-        {
-          "type": "text",
-          "id": "column_1_header",
-          "label": "t:sections.header.blocks.mega_menu.settings.column_1.title",
-          "default": "Indoor Lighting"
-        },
-        {
-          "type": "url",
-          "id": "column_1_url",
-          "label": "t:sections.header.blocks.mega_menu.settings.column_1.url"
-        },
-        {
-          "type": "text",
-          "id": "col1_link_1_title",
-          "label": "t:sections.header.blocks.mega_menu.settings.link_1"
-        },
-        {
-          "type": "url",
-          "id": "col1_link_1_url",
-          "label": "t:sections.header.blocks.mega_menu.settings.link_1_url"
-        },
-        {
-          "type": "text",
-          "id": "col1_link_2_title",
-          "label": "t:sections.header.blocks.mega_menu.settings.link_2"
-        },
-        {
-          "type": "url",
-          "id": "col1_link_2_url",
-          "label": "t:sections.header.blocks.mega_menu.settings.link_2_url"
-        },
-        {
-          "type": "text",
-          "id": "col1_link_3_title",
-          "label": "t:sections.header.blocks.mega_menu.settings.link_3"
-        },
-        {
-          "type": "url",
-          "id": "col1_link_3_url",
-          "label": "t:sections.header.blocks.mega_menu.settings.link_3_url"
-        },
-        {
-          "type": "text",
-          "id": "col1_link_4_title",
-          "label": "t:sections.header.blocks.mega_menu.settings.link_4"
-        },
-        {
-          "type": "url",
-          "id": "col1_link_4_url",
-          "label": "t:sections.header.blocks.mega_menu.settings.link_4_url"
-        },
-        {
-          "type": "text",
-          "id": "col1_link_5_title",
-          "label": "t:sections.header.blocks.mega_menu.settings.link_5"
-        },
-        {
-          "type": "url",
-          "id": "col1_link_5_url",
-          "label": "t:sections.header.blocks.mega_menu.settings.link_5_url"
-        },
-        {
-          "type": "text",
-          "id": "col1_link_6_title",
-          "label": "t:sections.header.blocks.mega_menu.settings.link_6"
-        },
-        {
-          "type": "url",
-          "id": "col1_link_6_url",
-          "label": "t:sections.header.blocks.mega_menu.settings.link_6_url"
-        },
-        {
-          "type": "header",
-          "content": "t:sections.header.blocks.mega_menu.settings.column_2.header"
-        },
-        {
-          "type": "text",
-          "id": "column_2_header",
-          "label": "t:sections.header.blocks.mega_menu.settings.column_2.title",
-          "default": "Outdoor Lighting"
-        },
-        {
-          "type": "url",
-          "id": "column_2_url",
-          "label": "t:sections.header.blocks.mega_menu.settings.column_2.url"
-        },
-        {
-          "type": "text",
-          "id": "col2_link_1_title",
-          "label": "t:sections.header.blocks.mega_menu.settings.link_1"
-        },
-        {
-          "type": "url",
-          "id": "col2_link_1_url",
-          "label": "t:sections.header.blocks.mega_menu.settings.link_1_url"
-        },
-        {
-          "type": "text",
-          "id": "col2_link_2_title",
-          "label": "t:sections.header.blocks.mega_menu.settings.link_2"
-        },
-        {
-          "type": "url",
-          "id": "col2_link_2_url",
-          "label": "t:sections.header.blocks.mega_menu.settings.link_2_url"
-        },
-        {
-          "type": "text",
-          "id": "col2_link_3_title",
-          "label": "t:sections.header.blocks.mega_menu.settings.link_3"
-        },
-        {
-          "type": "url",
-          "id": "col2_link_3_url",
-          "label": "t:sections.header.blocks.mega_menu.settings.link_3_url"
-        },
-        {
-          "type": "text",
-          "id": "col2_link_4_title",
-          "label": "t:sections.header.blocks.mega_menu.settings.link_4"
-        },
-        {
-          "type": "url",
-          "id": "col2_link_4_url",
-          "label": "t:sections.header.blocks.mega_menu.settings.link_4_url"
-        },
-        {
-          "type": "text",
-          "id": "col2_link_5_title",
-          "label": "t:sections.header.blocks.mega_menu.settings.link_5"
-        },
-        {
-          "type": "url",
-          "id": "col2_link_5_url",
-          "label": "t:sections.header.blocks.mega_menu.settings.link_5_url"
-        },
-        {
-          "type": "text",
-          "id": "col2_link_6_title",
-          "label": "t:sections.header.blocks.mega_menu.settings.link_6"
-        },
-        {
-          "type": "url",
-          "id": "col2_link_6_url",
-          "label": "t:sections.header.blocks.mega_menu.settings.link_6_url"
-        },
-        {
-          "type": "header",
-          "content": "t:sections.header.blocks.mega_menu.settings.promo_1.header"
-        },
-        {
-          "type": "image_picker",
-          "id": "promo_1_image",
-          "label": "t:sections.header.blocks.mega_menu.settings.promo_image"
-        },
-        {
-          "type": "image_picker",
-          "id": "promo_1_mobile_image",
-          "label": "t:sections.header.blocks.mega_menu.settings.promo_mobile_image"
-        },
-        {
-          "type": "text",
-          "id": "promo_1_label",
-          "label": "t:sections.header.blocks.mega_menu.settings.promo_label",
-          "default": "Shop now"
-        },
-        {
-          "type": "text",
-          "id": "promo_1_title",
-          "label": "t:sections.header.blocks.mega_menu.settings.promo_title",
-          "default": "Best Sellers"
-        },
-        {
-          "type": "url",
-          "id": "promo_1_link",
-          "label": "t:sections.header.blocks.mega_menu.settings.promo_link"
-        },
-        {
-          "type": "header",
-          "content": "t:sections.header.blocks.mega_menu.settings.promo_2.header"
-        },
-        {
-          "type": "image_picker",
-          "id": "promo_2_image",
-          "label": "t:sections.header.blocks.mega_menu.settings.promo_image"
-        },
-        {
-          "type": "image_picker",
-          "id": "promo_2_mobile_image",
-          "label": "t:sections.header.blocks.mega_menu.settings.promo_mobile_image"
-        },
-        {
-          "type": "text",
-          "id": "promo_2_label",
-          "label": "t:sections.header.blocks.mega_menu.settings.promo_label",
-          "default": "Shop now"
-        },
-        {
-          "type": "text",
-          "id": "promo_2_title",
-          "label": "t:sections.header.blocks.mega_menu.settings.promo_title",
-          "default": "New Arrivals"
-        },
-        {
-          "type": "url",
-          "id": "promo_2_link",
-          "label": "t:sections.header.blocks.mega_menu.settings.promo_link"
-        },
-        {
-          "type": "header",
-          "content": "t:sections.header.blocks.mega_menu.settings.mobile.header"
-        },
-        {
-          "type": "text",
-          "id": "mobile_heading",
-          "label": "t:sections.header.blocks.mega_menu.settings.mobile_heading",
-          "info": "t:sections.header.blocks.mega_menu.settings.mobile_heading_info"
-        }
-      ]
+      "type": "text",
+      "id": "nav4_label",
+      "label": "Nav 4 label",
+      "default": "Trade"
+    },
+    {
+      "type": "url",
+      "id": "nav4_url",
+      "label": "Nav 4 URL",
+      "info": "Defaults to /pages/trade-program-application."
+    },
+    {
+      "type": "text",
+      "id": "nav5_label",
+      "label": "Nav 5 label (accent colour — use for Sale)",
+      "default": "Sale",
+      "info": "Leave blank to hide. Shown in gold to stand out."
+    },
+    {
+      "type": "url",
+      "id": "nav5_url",
+      "label": "Nav 5 URL",
+      "info": "Defaults to /collections/best-sellers."
+    },
+    {
+      "type": "header",
+      "content": "Mega menu promo cards"
+    },
+    {
+      "type": "image_picker",
+      "id": "mega_image_1",
+      "label": "Best Sellers image",
+      "info": "16:9 aspect ratio. Falls back to gradient if empty."
+    },
+    {
+      "type": "image_picker",
+      "id": "mega_image_2",
+      "label": "Clearance Sale image",
+      "info": "16:9 aspect ratio. Falls back to gradient if empty."
     }
   ]
 }

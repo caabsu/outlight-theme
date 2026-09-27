@@ -1,706 +1,194 @@
-{% comment %}
-  Testimonials carousel section
-  Desktop: Arrow navigation
-  Mobile: Dot indicators
-{% endcomment %}
+{%- comment -%}
+  testimonials.liquid — Homepage reviews (catalog redesign round 2, variation 1)
+  Three-column quote grid on warm background. Reviews are editable blocks.
+  Grid: 3 cols, 1 col at <=900px.
+{%- endcomment -%}
 
-<div class="testimonials full-width"
-  data-autoplay="{{ section.settings.autoplay }}"
-  data-autoplay-interval="{{ section.settings.autoplay_interval }}"
-  style="
-  --section-padding-top: {{ section.settings.padding_top }}px;
-  --section-padding-bottom: {{ section.settings.padding_bottom }}px;
-  --section-bg: {{ section.settings.section_bg }};
-  --card-bg: {{ section.settings.card_bg }};
-  --card-padding-desktop: {{ section.settings.card_padding_desktop }}px;
-  --card-padding-mobile: {{ section.settings.card_padding_mobile }}px;
-  --card-radius: {{ section.settings.card_radius }}px;
-  --star-color: {{ section.settings.star_color }};
-  --quote-size-desktop: {{ section.settings.quote_size_desktop }}px;
-  --quote-size-mobile: {{ section.settings.quote_size_mobile }}px;
-  --quote-color: {{ section.settings.quote_color }};
-  --quote-weight: {{ section.settings.quote_weight }};
-  --quote-line-height: {{ section.settings.quote_line_height }};
-  --author-size-desktop: {{ section.settings.author_size_desktop }}px;
-  --author-size-mobile: {{ section.settings.author_size_mobile }}px;
-  --author-color: {{ section.settings.author_color }};
-  --author-weight: {{ section.settings.author_weight }};
-  --nav-color: {{ section.settings.nav_color }};
-  --dot-color: {{ section.settings.dot_color }};
-  --dot-active-color: {{ section.settings.dot_active_color }};
-">
-  {% render 'scroll-animation' %}
-  <div class="testimonials__container">
-    <div class="testimonials__card scroll-animate">
-      {%- comment -%} Stars {%- endcomment -%}
-      <div class="testimonials__stars">
-        {% for i in (1..5) %}
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--star-color)" stroke="var(--star-color)" stroke-width="1">
-            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-          </svg>
-        {% endfor %}
+{%- assign s = section.settings -%}
+{%- assign review_blocks = section.blocks | where: 'type', 'review' -%}
+
+<style>
+  #ol-rev-{{ section.id }}{
+    --ink:#131314;--paper:#F9F9FB;--gold:#C5A059;--warm:#f4f0eb;--body:#2d3338;
+    --serif:'Newsreader',Georgia,serif;
+    --sans:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    display:block;
+    background:var(--warm);
+    font-family:var(--sans);
+    padding:80px 0;
+  }
+  #ol-rev-{{ section.id }} *{box-sizing:border-box;margin:0;padding:0;}
+  #ol-rev-{{ section.id }} a{color:inherit;text-decoration:none;}
+  #ol-rev-{{ section.id }} .ol-container{
+    width:100%;max-width:1360px;margin:0 auto;padding:0 32px;
+  }
+  #ol-rev-{{ section.id }} .section-head{
+    display:flex;align-items:flex-end;justify-content:space-between;
+    gap:32px;margin-bottom:48px;
+  }
+  #ol-rev-{{ section.id }} .eyebrow{
+    font-family:var(--sans);font-size:11px;font-weight:600;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--gold);
+  }
+  #ol-rev-{{ section.id }} .section-head h2{
+    font-family:var(--serif);font-weight:200;
+    font-size:clamp(28px,3.4vw,42px);line-height:1.08;letter-spacing:-0.01em;
+    margin-top:16px;color:var(--ink);
+  }
+  #ol-rev-{{ section.id }} .section-head h2 em{font-style:italic;color:var(--gold);}
+  #ol-rev-{{ section.id }} .head-link{
+    font-size:13px;font-weight:500;letter-spacing:.04em;white-space:nowrap;
+    padding-bottom:3px;border-bottom:1px solid var(--ink);
+    transition:color .2s,border-color .2s;color:var(--ink);
+  }
+  #ol-rev-{{ section.id }} .head-link:hover{color:var(--gold);border-color:var(--gold);}
+  #ol-rev-{{ section.id }} .review-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:24px;
+  }
+  #ol-rev-{{ section.id }} .review-card{
+    background:var(--paper);padding:48px 32px;
+    border:1px solid rgba(19,19,20,.07);
+    display:flex;flex-direction:column;
+  }
+  #ol-rev-{{ section.id }} .stars{
+    color:var(--gold);font-size:15px;letter-spacing:2px;line-height:1;
+    margin-bottom:24px;
+  }
+  #ol-rev-{{ section.id }} .review-card blockquote{
+    font-family:var(--serif);font-weight:300;font-size:21px;line-height:1.32;
+    color:var(--ink);flex:1;
+  }
+  #ol-rev-{{ section.id }} .review-card cite{
+    font-style:normal;font-size:12px;font-weight:600;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--body);margin-top:32px;
+  }
+  #ol-rev-{{ section.id }} .review-card cite span{color:var(--gold);}
+  @media (max-width:900px){
+    #ol-rev-{{ section.id }} .ol-container{padding:0 24px;}
+    #ol-rev-{{ section.id }} .review-grid{grid-template-columns:1fr;}
+  }
+  @media (max-width:600px){
+    #ol-rev-{{ section.id }} .ol-container{padding:0 20px;}
+    #ol-rev-{{ section.id }} .section-head{
+      flex-direction:column;align-items:flex-start;gap:16px;
+    }
+    #ol-rev-{{ section.id }} .section-head h2{margin-top:8px;}
+  }
+</style>
+
+<section id="ol-rev-{{ section.id }}">
+  <div class="ol-container">
+    <div class="section-head">
+      <div>
+        {%- if s.eyebrow != blank -%}
+          <span class="eyebrow">{{ s.eyebrow | escape }}</span>
+        {%- endif -%}
+        <h2>{{ s.heading }}</h2>
       </div>
+      {%- if s.link_text != blank -%}
+        <a href="{{ s.link_url | default: '/collections/best-sellers' }}" class="head-link">{{ s.link_text | escape }}</a>
+      {%- endif -%}
+    </div>
 
-      {%- comment -%} Slides {%- endcomment -%}
-      <div class="testimonials__track" data-testimonial-track>
-        {% for block in section.blocks %}
-          <div class="testimonials__slide {% if forloop.first %}is-active{% endif %}" data-slide="{{ forloop.index0 }}" {{ block.shopify_attributes }}>
-            <blockquote class="testimonials__quote">
-              "{{ block.settings.quote }}"
-            </blockquote>
-            <cite class="testimonials__author">
-              {{ block.settings.author }}
-              {%- if block.settings.subtitle != blank %} — {{ block.settings.subtitle }}{% endif -%}
-            </cite>
-          </div>
-        {% endfor %}
-      </div>
-
-      {%- comment -%} Desktop Navigation Arrows {%- endcomment -%}
-      {% if section.blocks.size > 1 %}
-        <div class="testimonials__nav-arrows">
-          <button type="button" class="testimonials__arrow testimonials__arrow--prev" data-prev aria-label="Previous testimonial">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="19" y1="12" x2="5" y2="12"></line>
-              <polyline points="12 19 5 12 12 5"></polyline>
-            </svg>
-          </button>
-          <button type="button" class="testimonials__arrow testimonials__arrow--next" data-next aria-label="Next testimonial">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-              <polyline points="12 5 19 12 12 19"></polyline>
-            </svg>
-          </button>
+    <div class="review-grid">
+      {%- for block in review_blocks -%}
+        <div class="review-card" {{ block.shopify_attributes }}>
+          <span class="stars" aria-hidden="true">★★★★★</span>
+          <blockquote>{{ block.settings.quote }}</blockquote>
+          <cite>{{ block.settings.name | escape }}{% if block.settings.location != blank %} — <span>{{ block.settings.location | escape }}</span>{% endif %}</cite>
         </div>
-      {% endif %}
-
-      {%- comment -%} Mobile Dot Indicators {%- endcomment -%}
-      {% if section.blocks.size > 1 %}
-        <div class="testimonials__dots">
-          {% for block in section.blocks %}
-            <button type="button" class="testimonials__dot {% if forloop.first %}is-active{% endif %}" data-dot="{{ forloop.index0 }}" aria-label="Go to testimonial {{ forloop.index }}"></button>
-          {% endfor %}
-        </div>
-      {% endif %}
+      {%- endfor -%}
     </div>
   </div>
-</div>
-
-{% stylesheet %}
-  .testimonials {
-    background: var(--section-bg);
-    padding: var(--section-padding-top) 0 var(--section-padding-bottom);
-  }
-
-  .testimonials__container {
-    max-width: var(--page-width);
-    margin: 0 auto;
-    padding: 0 var(--page-margin);
-  }
-
-  .testimonials__card {
-    background: var(--card-bg);
-    border-radius: var(--card-radius);
-    padding: var(--card-padding-mobile);
-    text-align: center;
-    position: relative;
-  }
-
-  .testimonials__stars {
-    display: flex;
-    justify-content: center;
-    gap: 4px;
-    margin-bottom: 24px;
-  }
-
-  .testimonials__stars svg {
-    width: 20px;
-    height: 20px;
-  }
-
-  .testimonials__track {
-    position: relative;
-    overflow: hidden;
-    touch-action: pan-x pan-y;
-    cursor: grab;
-    -webkit-user-select: none;
-    user-select: none;
-  }
-
-  .testimonials__track:active {
-    cursor: grabbing;
-  }
-
-  @media (max-width: 767px) {
-    .testimonials__track {
-      touch-action: pan-y;
-      min-height: 120px;
-    }
-  }
-
-  .testimonials__slide {
-    display: none;
-    animation: fadeIn 0.4s ease;
-  }
-
-  .testimonials__slide.is-active {
-    display: block;
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .testimonials__quote {
-    font-family: var(--font-heading-family), serif;
-    font-size: var(--quote-size-mobile);
-    font-weight: var(--quote-weight);
-    font-style: italic;
-    color: var(--quote-color);
-    line-height: var(--quote-line-height);
-    margin: 0 0 24px;
-    max-width: 800px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .testimonials__author {
-    font-family: var(--font-body-family), sans-serif;
-    font-size: var(--author-size-mobile);
-    font-weight: var(--author-weight);
-    font-style: normal;
-    color: var(--author-color);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-  }
-
-  /* Navigation Arrows - Hidden on mobile */
-  .testimonials__nav-arrows {
-    display: none;
-  }
-
-  .testimonials__arrow {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    border: 1px solid var(--nav-color);
-    background: transparent;
-    color: var(--nav-color);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
-  }
-
-  .testimonials__arrow:hover {
-    background: var(--nav-color);
-    color: var(--card-bg);
-  }
-
-  /* Dot Indicators - Visible on mobile */
-  .testimonials__dots {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    margin-top: 24px;
-  }
-
-  .testimonials__dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    border: none;
-    background: var(--dot-color);
-    cursor: pointer;
-    padding: 0;
-    transition: background 0.2s ease;
-  }
-
-  .testimonials__dot.is-active {
-    background: var(--dot-active-color);
-  }
-
-  /* Desktop */
-  @media (min-width: 768px) {
-    .testimonials__card {
-      padding: var(--card-padding-desktop);
-    }
-
-    .testimonials__stars {
-      margin-bottom: 32px;
-    }
-
-    .testimonials__stars svg {
-      width: 24px;
-      height: 24px;
-    }
-
-    .testimonials__quote {
-      font-size: var(--quote-size-desktop);
-      margin-bottom: 32px;
-    }
-
-    .testimonials__author {
-      font-size: var(--author-size-desktop);
-    }
-
-    .testimonials__nav-arrows {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      margin-top: 32px;
-    }
-
-    .testimonials__dots {
-      display: none;
-    }
-  }
-{% endstylesheet %}
-
-{% javascript %}
-  (function() {
-    const container = document.querySelector('.testimonials');
-    const track = document.querySelector('[data-testimonial-track]');
-    if (!track || !container) return;
-
-    const slides = track.querySelectorAll('[data-slide]');
-    const prevBtn = document.querySelector('[data-prev]');
-    const nextBtn = document.querySelector('[data-next]');
-    const dots = document.querySelectorAll('[data-dot]');
-    let currentIndex = 0;
-    const total = slides.length;
-
-    // Autoplay settings
-    const autoplayEnabled = container.dataset.autoplay === 'true';
-    const autoplayInterval = parseInt(container.dataset.autoplayInterval) || 7000;
-    let autoplayTimer = null;
-
-    const goToSlide = (index) => {
-      // Wrap around
-      if (index < 0) index = total - 1;
-      if (index >= total) index = 0;
-
-      slides.forEach((slide, i) => {
-        slide.classList.toggle('is-active', i === index);
-      });
-
-      dots.forEach((dot, i) => {
-        dot.classList.toggle('is-active', i === index);
-      });
-
-      currentIndex = index;
-    };
-
-    // Autoplay functions
-    const startAutoplay = () => {
-      if (autoplayEnabled && total > 1) {
-        stopAutoplay();
-        autoplayTimer = setInterval(() => goToSlide(currentIndex + 1), autoplayInterval);
-      }
-    };
-
-    const stopAutoplay = () => {
-      if (autoplayTimer) {
-        clearInterval(autoplayTimer);
-        autoplayTimer = null;
-      }
-    };
-
-    const resetAutoplay = () => {
-      stopAutoplay();
-      startAutoplay();
-    };
-
-    // Navigation buttons
-    if (prevBtn) {
-      prevBtn.addEventListener('click', () => {
-        goToSlide(currentIndex - 1);
-        resetAutoplay();
-      });
-    }
-
-    if (nextBtn) {
-      nextBtn.addEventListener('click', () => {
-        goToSlide(currentIndex + 1);
-        resetAutoplay();
-      });
-    }
-
-    // Dot navigation
-    dots.forEach(dot => {
-      dot.addEventListener('click', () => {
-        const index = parseInt(dot.dataset.dot);
-        goToSlide(index);
-        resetAutoplay();
-      });
-    });
-
-    // Touch/Swipe support
-    let touchStartX = 0;
-    let touchStartY = 0;
-    let touchEndX = 0;
-    let touchEndY = 0;
-    let isSwiping = false;
-    const swipeThreshold = 30;
-
-    track.addEventListener('touchstart', (e) => {
-      touchStartX = e.touches[0].clientX;
-      touchStartY = e.touches[0].clientY;
-      isSwiping = true;
-      stopAutoplay();
-    }, { passive: true });
-
-    track.addEventListener('touchmove', (e) => {
-      if (!isSwiping) return;
-      touchEndX = e.touches[0].clientX;
-      touchEndY = e.touches[0].clientY;
-
-      // Check if horizontal swipe is dominant
-      const diffX = Math.abs(touchStartX - touchEndX);
-      const diffY = Math.abs(touchStartY - touchEndY);
-
-      if (diffX > diffY && diffX > 10) {
-        // Horizontal swipe detected - prevent vertical scroll
-        e.preventDefault();
-      }
-    }, { passive: false });
-
-    track.addEventListener('touchend', (e) => {
-      if (!isSwiping) return;
-      isSwiping = false;
-      handleSwipe();
-      startAutoplay();
-    }, { passive: true });
-
-    const handleSwipe = () => {
-      const diffX = touchStartX - touchEndX;
-      const diffY = Math.abs(touchStartY - touchEndY);
-
-      // Only trigger if horizontal movement is greater than vertical
-      if (Math.abs(diffX) > swipeThreshold && Math.abs(diffX) > diffY) {
-        if (diffX > 0) {
-          // Swipe left - next slide
-          goToSlide(currentIndex + 1);
-        } else {
-          // Swipe right - previous slide
-          goToSlide(currentIndex - 1);
-        }
-      }
-    };
-
-    // Pause autoplay on hover (desktop)
-    container.addEventListener('mouseenter', stopAutoplay);
-    container.addEventListener('mouseleave', startAutoplay);
-
-    // Pause when not visible
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) {
-        stopAutoplay();
-      } else {
-        startAutoplay();
-      }
-    });
-
-    // Start autoplay
-    startAutoplay();
-  })();
-{% endjavascript %}
+</section>
 
 {% schema %}
 {
-  "name": "Testimonials",
+  "name": "Reviews",
+  "tag": "section",
+  "class": "ol-reviews-section",
   "settings": [
     {
-      "type": "header",
-      "content": "Autoplay"
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Verified Reviews"
     },
     {
-      "type": "checkbox",
-      "id": "autoplay",
-      "label": "Enable autoplay",
-      "default": true
+      "type": "richtext",
+      "id": "heading",
+      "label": "Heading (italic = gold accent)",
+      "default": "<p>From <em>real rooms</em></p>"
     },
     {
-      "type": "range",
-      "id": "autoplay_interval",
-      "label": "Autoplay interval",
-      "min": 3000,
-      "max": 15000,
-      "step": 1000,
-      "default": 7000,
-      "unit": "ms",
-      "info": "Time between slides in milliseconds"
+      "type": "text",
+      "id": "link_text",
+      "label": "Link text",
+      "default": "Read all reviews"
     },
     {
-      "type": "header",
-      "content": "Section spacing"
-    },
-    {
-      "type": "range",
-      "id": "padding_top",
-      "label": "Padding top",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "default": 40
-    },
-    {
-      "type": "range",
-      "id": "padding_bottom",
-      "label": "Padding bottom",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "default": 40
-    },
-    {
-      "type": "header",
-      "content": "Colors"
-    },
-    {
-      "type": "color",
-      "id": "section_bg",
-      "label": "Section background",
-      "default": "#ffffff"
-    },
-    {
-      "type": "color",
-      "id": "card_bg",
-      "label": "Card background",
-      "default": "#F5F5F4"
-    },
-    {
-      "type": "header",
-      "content": "Card"
-    },
-    {
-      "type": "range",
-      "id": "card_padding_desktop",
-      "label": "Card padding (desktop)",
-      "min": 20,
-      "max": 120,
-      "step": 4,
-      "unit": "px",
-      "default": 60
-    },
-    {
-      "type": "range",
-      "id": "card_padding_mobile",
-      "label": "Card padding (mobile)",
-      "min": 16,
-      "max": 60,
-      "step": 4,
-      "unit": "px",
-      "default": 32
-    },
-    {
-      "type": "range",
-      "id": "card_radius",
-      "label": "Card border radius",
-      "min": 0,
-      "max": 40,
-      "step": 2,
-      "unit": "px",
-      "default": 8
-    },
-    {
-      "type": "header",
-      "content": "Stars"
-    },
-    {
-      "type": "color",
-      "id": "star_color",
-      "label": "Star color",
-      "default": "#D97706"
-    },
-    {
-      "type": "header",
-      "content": "Quote - Desktop"
-    },
-    {
-      "type": "range",
-      "id": "quote_size_desktop",
-      "label": "Font size",
-      "min": 18,
-      "max": 48,
-      "step": 1,
-      "unit": "px",
-      "default": 28
-    },
-    {
-      "type": "header",
-      "content": "Quote - Mobile"
-    },
-    {
-      "type": "range",
-      "id": "quote_size_mobile",
-      "label": "Font size",
-      "min": 14,
-      "max": 32,
-      "step": 1,
-      "unit": "px",
-      "default": 18
-    },
-    {
-      "type": "header",
-      "content": "Quote - General"
-    },
-    {
-      "type": "color",
-      "id": "quote_color",
-      "label": "Quote color",
-      "default": "#1C1917"
-    },
-    {
-      "type": "select",
-      "id": "quote_weight",
-      "label": "Quote weight",
-      "options": [
-        { "value": "300", "label": "Light" },
-        { "value": "400", "label": "Regular" },
-        { "value": "500", "label": "Medium" }
-      ],
-      "default": "400"
-    },
-    {
-      "type": "select",
-      "id": "quote_line_height",
-      "label": "Line height",
-      "options": [
-        { "value": "1.3", "label": "Tight" },
-        { "value": "1.5", "label": "Normal" },
-        { "value": "1.7", "label": "Relaxed" }
-      ],
-      "default": "1.5"
-    },
-    {
-      "type": "header",
-      "content": "Author"
-    },
-    {
-      "type": "range",
-      "id": "author_size_desktop",
-      "label": "Font size (desktop)",
-      "min": 10,
-      "max": 18,
-      "step": 1,
-      "unit": "px",
-      "default": 13
-    },
-    {
-      "type": "range",
-      "id": "author_size_mobile",
-      "label": "Font size (mobile)",
-      "min": 10,
-      "max": 16,
-      "step": 1,
-      "unit": "px",
-      "default": 12
-    },
-    {
-      "type": "color",
-      "id": "author_color",
-      "label": "Author color",
-      "default": "#57534E"
-    },
-    {
-      "type": "select",
-      "id": "author_weight",
-      "label": "Author weight",
-      "options": [
-        { "value": "400", "label": "Regular" },
-        { "value": "500", "label": "Medium" },
-        { "value": "600", "label": "Semibold" }
-      ],
-      "default": "500"
-    },
-    {
-      "type": "header",
-      "content": "Navigation"
-    },
-    {
-      "type": "color",
-      "id": "nav_color",
-      "label": "Arrow color",
-      "default": "#1C1917"
-    },
-    {
-      "type": "color",
-      "id": "dot_color",
-      "label": "Dot color (inactive)",
-      "default": "#D6D3D1"
-    },
-    {
-      "type": "color",
-      "id": "dot_active_color",
-      "label": "Dot color (active)",
-      "default": "#1C1917"
+      "type": "url",
+      "id": "link_url",
+      "label": "Link URL"
     }
   ],
   "blocks": [
     {
-      "type": "testimonial",
-      "name": "Testimonial",
+      "type": "review",
+      "name": "Review",
+      "limit": 6,
       "settings": [
         {
           "type": "textarea",
           "id": "quote",
           "label": "Quote",
-          "default": "It's rare to find an object that feels both ancient and modern. The texture of the raw ceramic brings so much character to my stark white desk."
+          "default": "“The corner finally makes sense.”"
         },
         {
           "type": "text",
-          "id": "author",
-          "label": "Author",
-          "default": "JAMES L."
+          "id": "name",
+          "label": "Reviewer name",
+          "default": "Marielle R."
         },
         {
           "type": "text",
-          "id": "subtitle",
-          "label": "Subtitle",
-          "default": "VERIFIED BUYER"
+          "id": "location",
+          "label": "Reviewer location",
+          "default": "Portland, OR"
         }
       ]
     }
   ],
   "presets": [
     {
-      "name": "Testimonials",
+      "name": "Reviews",
       "blocks": [
         {
-          "type": "testimonial",
+          "type": "review",
           "settings": {
-            "quote": "It's rare to find an object that feels both ancient and modern. The texture of the raw ceramic brings so much character to my stark white desk.",
-            "author": "JAMES L.",
-            "subtitle": "VERIFIED BUYER"
+            "quote": "“The corner finally makes sense.”",
+            "name": "Marielle R.",
+            "location": "Portland, OR"
           }
         },
         {
-          "type": "testimonial",
+          "type": "review",
           "settings": {
-            "quote": "The craftsmanship is impeccable. Every detail has been thoughtfully considered, from the weight of the base to the quality of the shade.",
-            "author": "MICHAEL R.",
-            "subtitle": "VERIFIED BUYER"
+            "quote": "“Warmer than I expected. It changed the whole room.”",
+            "name": "David O.",
+            "location": "Austin, TX"
           }
         },
         {
-          "type": "testimonial",
+          "type": "review",
           "settings": {
-            "quote": "I've received so many compliments on this piece. It truly elevates the entire room and creates such a warm, inviting atmosphere.",
-            "author": "EMMA S.",
-            "subtitle": "VERIFIED BUYER"
+            "quote": "“Shipped in four days. The entry reads intentional now.”",
+            "name": "Priya N.",
+            "location": "San Diego, CA"
           }
         }
       ]
     }
-  ],
-  "enabled_on": {
-    "templates": ["*"],
-    "groups": ["*"]
-  }
+  ]
 }
 {% endschema %}

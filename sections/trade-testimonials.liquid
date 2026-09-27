@@ -1,0 +1,118 @@
+<section class="bg-[#131314] py-20 md:py-28 px-5 md:px-12">
+  <div class="max-w-[1920px] mx-auto">
+
+    <!-- Large centered number -->
+    <div class="text-center mb-3">
+      <div class="heading-thin text-[5rem] md:text-[8rem] text-[#F9F9FB] leading-none" style="font-variation-settings: 'opsz' 72;">{{ section.settings.social_proof_number }}</div>
+    </div>
+    <div class="text-center mb-16 md:mb-20">
+      <span class="font-label text-[0.65rem] md:text-[0.7rem] uppercase tracking-[0.25em] text-[#F9F9FB]/35">{{ section.settings.social_proof_label }}</span>
+    </div>
+
+    <!-- Desktop: 3 testimonials side by side with gold dividers -->
+    <div class="hidden md:flex items-stretch gap-0">
+      {% for block in section.blocks %}
+        {% unless forloop.first %}
+          <div style="width:1px; background: rgba(197,160,89,0.15); flex-shrink:0;"></div>
+        {% endunless %}
+        <div class="flex-1 px-10 lg:px-14" {{ block.shopify_attributes }}>
+          <p class="quote-thin text-xl lg:text-2xl text-[#F9F9FB]/80 leading-[1.5] mb-8">{{ block.settings.quote }}</p>
+          <div class="w-6 h-px bg-[#C5A059]/40 mb-4"></div>
+          <span class="font-body text-[0.9rem] font-[400] text-[#C5A059] block mb-1">{{ block.settings.name }}</span>
+          <span class="font-label text-[0.55rem] uppercase tracking-[0.15em] text-[#F9F9FB]/30">{{ block.settings.role }}</span>
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Mobile: stacked testimonials -->
+    <div class="md:hidden flex flex-col gap-10">
+      {% for block in section.blocks %}
+        <div class="{% unless forloop.last %}pb-10 border-b border-[#F9F9FB]/6{% endunless %}" {{ block.shopify_attributes }}>
+          <p class="quote-thin text-lg text-[#F9F9FB]/75 leading-[1.55] mb-6">{{ block.settings.quote }}</p>
+          <div class="w-5 h-px bg-[#C5A059]/40 mb-3"></div>
+          <span class="font-body text-[0.85rem] font-[400] text-[#C5A059] block mb-1">{{ block.settings.name }}</span>
+          <span class="font-label text-[0.5rem] uppercase tracking-[0.15em] text-[#F9F9FB]/30">{{ block.settings.role }}</span>
+        </div>
+      {% endfor %}
+    </div>
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Trade Testimonials",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "social_proof_number",
+      "label": "Large number",
+      "default": "1,200+"
+    },
+    {
+      "type": "text",
+      "id": "social_proof_label",
+      "label": "Number label",
+      "default": "trade professionals trust Outlight"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "quote",
+          "label": "Quote",
+          "default": "\"The 30% discount alone changed how we approach project budgets.\""
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Name",
+          "default": "Maren Holt"
+        },
+        {
+          "type": "text",
+          "id": "role",
+          "label": "Role & studio",
+          "default": "Principal, Holt Studio — Copenhagen"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Trade Testimonials",
+      "blocks": [
+        {
+          "type": "testimonial",
+          "settings": {
+            "quote": "\"The 30% discount alone changed how we approach project budgets. But the account manager relationship is what keeps us coming back — it's a genuinely different experience.\"",
+            "name": "Maren Holt",
+            "role": "Principal, Holt Studio — Copenhagen"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "quote": "\"We specify lighting on fifty-plus hospitality projects a year. Outlight's trade portal, technical files, and guaranteed shipping windows are exactly what a practice at our scale needs.\"",
+            "name": "Luca Ferrante",
+            "role": "Director, Ferrante + Partners — Milan"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "quote": "\"The IES files load directly into our lighting simulation software. No back-and-forth, no delays. That alone saves us hours per project — and the discount margins are exceptional.\"",
+            "name": "Astrid Voss",
+            "role": "Lighting Consultant — Amsterdam"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

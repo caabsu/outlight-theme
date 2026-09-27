@@ -1,0 +1,5 @@
+{% comment %}Outlight custom checkout. Set enabled to false to restore native Shopify checkout.{% endcomment %}
+<script>
+  window.OutlightCheckout = {enabled: true, origin: 'https://checkout.outlight.us'};
+</script>
+<script src="{{ 'outlight-checkout.js' | asset_url }}" defer></script>

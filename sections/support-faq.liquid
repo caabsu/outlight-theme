@@ -1,0 +1,217 @@
+<style>
+  .ol-accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+  .ol-accordion-content.open { max-height: 400px; }
+  .ol-accordion-icon { transition: transform 0.3s ease; }
+  .ol-accordion-trigger.open .ol-accordion-icon { transform: rotate(45deg); }
+  .ol-support-answer p { margin: 0; }
+  .ol-support-answer p + p { margin-top: 0.75rem; }
+</style>
+
+<div class="h-px bg-[#131314]/6 mx-5 md:mx-12"></div>
+
+{%- comment -%} ── Category 1 ── {%- endcomment -%}
+<div class="px-5 md:px-12 py-10 md:py-14 max-w-3xl mx-auto">
+  <div class="flex items-center justify-between mb-6 md:mb-8">
+    <div class="flex items-center gap-3 md:gap-4">
+      <div class="w-5 md:w-6 h-px bg-[#C5A059]"></div>
+      <span class="font-label text-[0.6rem] md:text-[0.7rem] uppercase tracking-[0.12em] text-[#C5A059]">{{ section.settings.category_1_title }}</span>
+    </div>
+  </div>
+
+  {%- for block in section.blocks -%}
+    {%- if block.settings.category == 'category_1' -%}
+      <button class="ol-accordion-trigger w-full flex items-center justify-between py-4 md:py-5 border-b border-[#131314]/6" onclick="olToggleAccordion(this)" {{ block.shopify_attributes }}>
+        <span class="font-body text-[0.85rem] md:text-[0.95rem] font-[300] text-[#131314] text-left">{{ block.settings.question }}</span>
+        <span class="material-symbols-outlined ol-accordion-icon text-[#2d3338]/60 text-sm md:text-base shrink-0">add</span>
+      </button>
+      <div class="ol-accordion-content border-b border-[#131314]/6">
+        <div class="ol-support-answer py-3 md:py-4 font-body text-[0.8rem] md:text-[0.9rem] font-light text-[#2d3338]/60 leading-relaxed rte">{{ block.settings.answer }}</div>
+      </div>
+    {%- endif -%}
+  {%- endfor -%}
+</div>
+
+{%- comment -%} ── Category 2 ── {%- endcomment -%}
+<div class="px-5 md:px-12 pb-10 md:pb-14 max-w-3xl mx-auto">
+  <div class="flex items-center justify-between mb-6 md:mb-8">
+    <div class="flex items-center gap-3 md:gap-4">
+      <div class="w-5 md:w-6 h-px bg-[#C5A059]"></div>
+      <span class="font-label text-[0.6rem] md:text-[0.7rem] uppercase tracking-[0.12em] text-[#C5A059]">{{ section.settings.category_2_title }}</span>
+    </div>
+  </div>
+
+  {%- for block in section.blocks -%}
+    {%- if block.settings.category == 'category_2' -%}
+      <button class="ol-accordion-trigger w-full flex items-center justify-between py-4 md:py-5 border-b border-[#131314]/6" onclick="olToggleAccordion(this)" {{ block.shopify_attributes }}>
+        <span class="font-body text-[0.85rem] md:text-[0.95rem] font-[300] text-[#131314] text-left">{{ block.settings.question }}</span>
+        <span class="material-symbols-outlined ol-accordion-icon text-[#2d3338]/60 text-sm md:text-base shrink-0">add</span>
+      </button>
+      <div class="ol-accordion-content border-b border-[#131314]/6">
+        <div class="ol-support-answer py-3 md:py-4 font-body text-[0.8rem] md:text-[0.9rem] font-light text-[#2d3338]/60 leading-relaxed rte">{{ block.settings.answer }}</div>
+      </div>
+    {%- endif -%}
+  {%- endfor -%}
+</div>
+
+<script>
+function olToggleAccordion(btn) {
+  btn.classList.toggle('open');
+  btn.nextElementSibling.classList.toggle('open');
+}
+</script>
+
+{% assign support_faq_count = 0 %}
+{% capture support_faq_entities %}
+  {% for block in section.blocks %}
+    {% assign support_question = block.settings.question | strip %}
+    {% assign support_answer = block.settings.answer | strip_html | strip_newlines | replace: '&nbsp;', ' ' | replace: '  ', ' ' | strip %}
+    {% if support_question != blank and support_answer != blank %}
+      {% if support_faq_count > 0 %},{% endif %}
+      {
+        "@type": "Question",
+        "name": {{ support_question | json }},
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": {{ support_answer | json }}
+        }
+      }
+      {% assign support_faq_count = support_faq_count | plus: 1 %}
+    {% endif %}
+  {% endfor %}
+{% endcapture %}
+
+{% if support_faq_count > 0 %}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {{ support_faq_entities | strip }}
+      ]
+    }
+  </script>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Support FAQ",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "category_1_title",
+      "label": "Category 1 title",
+      "default": "Shipping & Warranty"
+    },
+    {
+      "type": "text",
+      "id": "category_2_title",
+      "label": "Category 2 title",
+      "default": "Returns & Exchanges"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "faq_item",
+      "name": "FAQ item",
+      "settings": [
+        {
+          "type": "select",
+          "id": "category",
+          "label": "Category",
+          "options": [
+            { "value": "category_1", "label": "Category 1" },
+            { "value": "category_2", "label": "Category 2" }
+          ],
+          "default": "category_1"
+        },
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Support FAQ",
+      "settings": {
+        "category_1_title": "Shipping & Warranty",
+        "category_2_title": "Returns & Exchanges"
+      },
+      "blocks": [
+        {
+          "type": "faq_item",
+          "settings": {
+            "category": "category_1",
+            "question": "How long does shipping take?",
+            "answer": "<p>Free US shipping with estimated delivery in 4 days from placing your order. Tracking is sent when your order ships.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "category": "category_1",
+            "question": "How much is shipping?",
+            "answer": "<p>Free shipping on all orders to the contiguous United States. No minimum purchase required.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "category": "category_1",
+            "question": "Where do you ship from?",
+            "answer": "<p>We ship from fulfilment centres in Utah and Tennessee.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "category": "category_1",
+            "question": "What does the warranty cover?",
+            "answer": "<p>2-year warranty covering manufacturing defects in materials and workmanship.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "category": "category_2",
+            "question": "What is the return policy?",
+            "answer": "<p>We accept returns within 30 days of delivery. Items must be in original, unused condition.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "category": "category_2",
+            "question": "Is there a restocking fee?",
+            "answer": "<p>A 20% restocking fee applies to all returned items.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "category": "category_2",
+            "question": "How do I start a return?",
+            "answer": "<p>Visit our Returns Portal with your order number and email address.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "category": "category_2",
+            "question": "How does an exchange work?",
+            "answer": "<p>Contact our support team to initiate an exchange. We ship the replacement once we receive the original.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
