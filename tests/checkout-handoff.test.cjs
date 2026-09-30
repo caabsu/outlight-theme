@@ -48,7 +48,7 @@ test('ordinary, multi-product and discount-split carts keep the secure card rout
   }
 });
 
-test('unsafe quantities and unsupported cart features retain the native route without dropping data', async () => {
+test('unsafe quantities and unsupported cart features retain the safe recovery without dropping data', async () => {
   const bags = [
     cart([line(AVEN, 6), line(AVEN, 5)]), cart([line(AVEN, 1.5)]), cart([line(AVEN, 0)]), cart([line(AVEN, 11)]),
     cart([line(AVEN, 1, {properties: {engraving: 'Keep me'}})]), cart([line(AVEN, 1, {gift_card: true})]),
@@ -62,7 +62,7 @@ test('unsafe quantities and unsupported cart features retain the native route wi
     h.click(); await h.flush();
     assert.equal(h.submissions.length, 0);
     assert.equal(h.dialogs.length, 1);
-    assert.equal(h.dialogs[0].children.find(child => child.dataset.nativeCheckout).href, '/checkout');
+    assert.ok(!h.dialogs[0].children.some(child => child.dataset.nativeCheckout));
     assert.equal(JSON.stringify(bag), original);
   }
 });
@@ -78,7 +78,7 @@ test('line, cart and applied codes are normalized and deduplicated; automatic di
   assert.deepEqual(JSON.parse(h.submissions[0].fields.context).privacy, {analytics: false, marketing: false});
   const native = harness(cart([line(AVEN, 1, {properties: {custom: 'yes'}, line_level_discount_allocations: allocations})]));
   native.click(); await native.flush();
-  assert.equal(native.dialogs[0].children.find(child => child.dataset.nativeCheckout).href, '/checkout?discount=LINE25');
+  assert.ok(!native.dialogs[0].children.some(child => child.dataset.nativeCheckout));
 });
 
 test('one transient network, HTTP or JSON failure retries only the cart read', async () => {

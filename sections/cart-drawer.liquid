@@ -124,7 +124,7 @@
         {%- if remaining_cents <= 0 -%}{{ 'cart.drawer.shipping_tax' | t }}{%- else -%}{{ 'cart.drawer.calculated_shipping_tax' | t }}{%- endif -%}
       </p>
       {%- if remaining_cents > 0 -%}<p class="ol-drawer-shipping">{%- assign shipping_remaining = remaining_cents | money -%}{{ 'cart.drawer.shipping_threshold' | t: amount: shipping_remaining }}</p>{%- endif -%}
-      <a href="{{ routes.cart_url }}/checkout" class="ol-drawer-checkout" data-checkout-btn><span class="material-symbols-outlined" aria-hidden="true">lock</span>{{ 'cart.drawer.checkout' | t }}<span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></a>
+      <a href="{{ routes.cart_url }}?whop_checkout=1" class="ol-drawer-checkout" data-checkout-btn><span class="material-symbols-outlined" aria-hidden="true">lock</span>{{ 'cart.drawer.checkout' | t }}<span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></a>
       <a class="ol-drawer-policy" href="{{ shop.refund_policy.url }}">{{ 'cart.drawer.policy_link' | t }}</a>
     </div>
   {%- else -%}

@@ -15,6 +15,7 @@
     "title": "Your Cart",
     "empty": "Your cart is empty",
     "checkout": "Checkout",
+    "proceed_checkout": "Proceed to Checkout",
     "subtotal": "Subtotal",
     "shipping_note": "Free US shipping. Estimated delivery in 4 days. Tax calculated at checkout.",
     "discount_included": "Discount included",
@@ -50,8 +51,8 @@
   },
   "checkout": {
     "recovery_title": "Checkout needs another try",
-    "unavailable": "We could not open secure checkout. Your bag is saved. Try again, or continue with PayPal.",
-    "unsupported": "This bag needs our alternative checkout, where PayPal is currently available. You can also return to your bag or contact us for help.",
+    "unavailable": "We could not open secure checkout. Your bag is saved. Please try again.",
+    "unsupported": "We could not transfer all the details in this bag to secure checkout. Your bag is saved. Return to your bag or contact us for help.",
     "retry": "Try secure checkout again",
     "paypal": "Continue with PayPal",
     "back": "Return to bag",

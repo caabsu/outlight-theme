@@ -87,11 +87,9 @@
         </div>
         <p class="ol-cart-summary-note">{{ 'cart.shipping_note' | t }}</p>
 {% render 'cart-purchase-assurance' %}
-        <form action="/checkout" method="post">
-          <button type="submit" class="font-label" style="display:flex;align-items:center;justify-content:center;width:100%;padding:15px;background:#131314;border:none;font-size:0.75rem;font-weight:500;text-transform:uppercase;letter-spacing:0.16em;color:#F9F9FB;cursor:pointer;margin-bottom:12px;transition:background 0.25s;" onmouseover="this.style.background='#C5A059'" onmouseout="this.style.background='#131314'">
-            <span class="material-symbols-outlined ol-cart-checkout-icon" aria-hidden="true">lock</span>Proceed to Checkout
-          </button>
-        </form>
+        <a href="{{ routes.cart_url }}?whop_checkout=1" data-checkout-btn class="font-label" style="display:flex;align-items:center;justify-content:center;width:100%;padding:15px;background:#131314;border:none;font-size:0.75rem;font-weight:500;text-transform:uppercase;letter-spacing:0.16em;color:#F9F9FB;cursor:pointer;margin-bottom:12px;transition:background 0.25s;text-decoration:none;" onmouseover="this.style.background='#C5A059'" onmouseout="this.style.background='#131314'">
+          <span class="material-symbols-outlined ol-cart-checkout-icon" aria-hidden="true">lock</span>{{ 'cart.proceed_checkout' | t }}
+        </a>
 
       </div>
 
